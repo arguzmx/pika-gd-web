@@ -1,0 +1,26 @@
+<ngx-table #table [configuration]="configuration" [data]="data" [columns]="columns" [pagination]="pagination"
+    (event)="eventEmitted($event)">
+</ngx-table>
+
+
+<ng-template #boolTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <nb-checkbox [checked]="row[column.key]" [disabled]="true"></nb-checkbox>
+</ng-template>
+
+
+<ng-template #dialogColPicker let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>Seleccionar columnas</nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                    <div class="col-lg-6"  *ngFor="let col of this.columnasBase">
+                        <nb-checkbox *ngIf="col.Alternable"  (checkedChange)="AlternarColumna(col.Id, $event)"  
+                        [value]="col.Visible">{{ col.Nombre }}</nb-checkbox>
+                    </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <button nbButton (click)="ref.close()">Cerrar</button>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
