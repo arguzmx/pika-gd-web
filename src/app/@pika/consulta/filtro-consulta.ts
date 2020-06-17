@@ -19,4 +19,7 @@ export class FiltroConsulta {
 
   // Valores para el filtro
   Valor: any[];
+
+  // Valores serializados para la consulta de la API
+  ValorString?: string;
 }

@@ -12,9 +12,9 @@ import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
 import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { Operacion } from '../../../../@pika/consulta/operacion';
 import { tDate, tTime } from '../../../../@pika/metadata';
-import { FormSearchService } from '../form-search-service';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { isDate } from 'date-fns';
+import { EditorService } from '../../services/editor-service';
 @Component({
   selector: 'ngx-pika-field-datetime',
   templateUrl: './pika-field-datetime.component.html',
@@ -33,8 +33,8 @@ export class PikaFieldDatetimeComponent extends SearchFieldBase
   isDate: boolean = false;
   isTime: boolean = false;
 
-  constructor(searchService: FormSearchService) {
-    super(searchService);
+  constructor(editorService: EditorService) {
+    super(editorService);
   }
 
   verificaFiltro(): void {
@@ -53,14 +53,14 @@ export class PikaFieldDatetimeComponent extends SearchFieldBase
 
     this.setValidIcon(valid);
     if (valid) {
-      this.searchService.AgregarFiltro(this.filtro);
+      this.editorService.AgregarFiltro(this.filtro);
     } else { 
-      this.searchService.InvalidarFiltro(this.filtro);
+      this.editorService.InvalidarFiltro(this.filtro);
     }
   }
 
   closeFilter(): void {
-    this.searchService.EliminarFiltro(this.config);
+    this.editorService.EliminarFiltro(this.config);
   }
 
   fecha1(event) {

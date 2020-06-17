@@ -6,8 +6,8 @@ import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
 import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { Operacion } from '../../../../@pika/consulta/operacion';
 import { tDouble, tInt32, tInt64 } from '../../../../@pika/metadata';
-import { FormSearchService } from '../form-search-service';
 import { SearchFieldBase } from '../search-fields/search-field-base';
+import { EditorService } from '../../services/editor-service';
 
 @Component({
   selector: 'ngx-pika-field-numeric',
@@ -22,8 +22,8 @@ export class PikaFieldNumericComponent extends SearchFieldBase
   group: FormGroup;
   mask: string = 'separator.4';
 
-  constructor(searchService: FormSearchService) {
-    super(searchService);
+  constructor(editorService: EditorService) {
+    super(editorService);
   }
 
   verificaFiltro(): void {
@@ -44,14 +44,14 @@ export class PikaFieldNumericComponent extends SearchFieldBase
 
     this.setValidIcon(valid);
     if (valid) {
-      this.searchService.AgregarFiltro(this.filtro);
+      this.editorService.AgregarFiltro(this.filtro);
     } else {
-      this.searchService.InvalidarFiltro(this.filtro);
+      this.editorService.InvalidarFiltro(this.filtro);
     }
   }
 
   closeFilter(): void {
-    this.searchService.EliminarFiltro(this.config);
+    this.editorService.EliminarFiltro(this.config);
   }
 
   toggleBetween(value) {

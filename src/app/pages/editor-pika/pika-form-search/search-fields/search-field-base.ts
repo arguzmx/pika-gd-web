@@ -1,14 +1,14 @@
-import { FormSearchService } from './../form-search-service';
-import { FiltroConsulta } from '../../../../@pika/consulta';
 
+import { EditorService } from '../../services/editor-service';
+import { FiltroConsulta } from '../../../../@pika/consulta';
 export class SearchFieldBase {
   VALID_COLOR: string = 'success';
   INVALID_COLOR: string = 'basic';
   VALID_ICON: string = 'checkmark-circle-2';
   INVALID_ICON: string = 'checkmark-circle-2-outline';
 
-  constructor(searchService: FormSearchService) {
-    this.searchService = searchService;
+  constructor(editorService: EditorService) {
+    this.editorService = editorService;
     this.filtro = {
       Negacion: false,
       Propiedad: '',
@@ -17,7 +17,7 @@ export class SearchFieldBase {
     };
   }
 
-  searchService: FormSearchService;
+  editorService: EditorService;
   validstatus: string = this.INVALID_COLOR;
   validIcon: string = this.INVALID_ICON;
   filtro: FiltroConsulta;

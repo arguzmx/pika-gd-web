@@ -5,8 +5,8 @@ import { ConfigCampo } from '../search-fields/config-campo';
 import { FormGroup } from '@angular/forms';
 import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
 import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
-import { FormSearchService } from '../form-search-service';
 import { SearchFieldBase } from '../search-fields/search-field-base';
+import { EditorService } from '../../services/editor-service';
 
 @Component({
   selector: 'ngx-pika-field-bool',
@@ -19,8 +19,8 @@ export class PikaFieldBoolComponent  extends SearchFieldBase implements OnInit, 
   config: ConfigCampo;
   group: FormGroup;
 
-  constructor(searchService: FormSearchService) {
-    super(searchService);
+  constructor(editorService: EditorService) {
+    super(editorService);
   }
 
   verificaFiltro(): void {
@@ -30,16 +30,16 @@ export class PikaFieldBoolComponent  extends SearchFieldBase implements OnInit, 
 
     this.setValidIcon(valid);
     if (valid) {
-      this.searchService.AgregarFiltro(this.filtro);
+      this.editorService.AgregarFiltro(this.filtro);
     } else {
-      this.searchService.InvalidarFiltro(this.filtro);
+      this.editorService.InvalidarFiltro(this.filtro);
     }
 
   }
 
 
   closeFilter(): void {
-    this.searchService.EliminarFiltro(this.config);
+    this.editorService.EliminarFiltro(this.config);
   }
 
   ngOnInit(): void {

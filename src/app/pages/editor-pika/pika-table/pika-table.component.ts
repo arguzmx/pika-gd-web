@@ -8,20 +8,15 @@ import {
   ChangeDetectionStrategy,
   TemplateRef,
   ViewEncapsulation,
-  Inject,
 } from '@angular/core';
 import { Config, Columns, DefaultConfig, APIDefinition } from 'ngx-easy-table';
 import { NbDialogService, NbToastrService, NbIconConfig } from '@nebular/theme';
-import { ColumnaTabla, TablaEventObject } from '../services/pika-editor-service';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import PikaEditorBase from '../editor-base';
 import { Consulta } from '../../../@pika/consulta';
-import { environment } from '../../../../environments/environment';
-import { FormSearchService } from '../pika-form-search/form-search-service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { EditorService } from '../services/editor-service';
+import { ColumnaTabla } from '../model/columna-tabla';
+import { TablaEventObject } from '../model/tabla-event-object';
 
 @Component({
   selector: 'ngx-pika-table',
@@ -30,14 +25,19 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PikaTableComponent extends PikaEditorBase implements OnInit, OnDestroy {
+export class PikaTableComponent implements OnInit, OnDestroy {
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
-  @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
+  @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<
+    any
+  >;
 
   private onDestroy$: Subject<void> = new Subject<void>();
 
-  private iconConfigWarning: NbIconConfig = { icon: 'alert-triangle-outline', pack: 'eva' };
+  private iconConfigWarning: NbIconConfig = {
+    icon: 'alert-triangle-outline',
+    pack: 'eva',
+  };
   public configuration: Config;
   public data: any;
   public columns: Columns[] = [];
@@ -67,83 +67,58 @@ export class PikaTableComponent extends PikaEditorBase implements OnInit, OnDest
     private readonly cdr: ChangeDetectorRef,
     private dialogService: NbDialogService,
     private toastrService: NbToastrService,
-    private searchService: FormSearchService,
-    route: ActivatedRoute,
-    http: HttpClient,
-  ) {
-
-      super(route,  http);
-
-
-  }
-
+    private editorService: EditorService,
+  ) {}
 
   // establece la configuración de las columnas de la tabla  a partir de los metadatos recibidos
   private EstableceColumnas(columnas: ColumnaTabla[]): void {
     this.columns = [];
     for (let i = 0; i < columnas.length; i++) {
       if (columnas[i].Visible)
-      this.columns.push({
-        key: columnas[i].Id,
-        title: columnas[i].Nombre,
-        orderEnabled: columnas[i].Ordenable,
-        searchEnabled: columnas[i].Buscable,
-        cellTemplate: columnas[i].Tipo === 'bool' ? this.boolTpl : null,
-      });
+        this.columns.push({
+          key: columnas[i].Id,
+          title: columnas[i].Nombre,
+          orderEnabled: columnas[i].Ordenable,
+          searchEnabled: columnas[i].Buscable,
+          cellTemplate: columnas[i].Tipo === 'bool' ? this.boolTpl : null,
+        });
     }
-    this.GetData(this.consulta);
-  }
-
-  // Obiene una página de datos desde el servidor
-  private GetData(consulta: Consulta) {
-    this.configuration.isLoading = true;
-    this.eService.GetData(consulta).subscribe(
-        (response) => {
-          this.data = response.Elementos;
-          this.cdr.markForCheck();
-          this.pagination.count = response.ConteoTotal;
-          this.pagination = { ...this.pagination };
-          this.configuration.isLoading = false;
-        },
-        (error) => {
-          this.toastrService.info('Error obtener página de datos');
-        }, () => {
-          this.configuration.isLoading = false;
-        },
-      );
+    this.editorService.NuevaConsulta(this.consulta);
   }
 
   // Mustra el selector de columnas
   public MOstrarColumnas(): void {
-    this.tmpcolumnas = this.columnasBase.map(obj => ({...obj}));
-       this.dialogService.open(
-       this.dialogColPicker,
-       { context: '' }).onClose.subscribe(() => {
+    this.tmpcolumnas = this.columnasBase.map((obj) => ({ ...obj }));
+    this.dialogService
+      .open(this.dialogColPicker, { context: '' })
+      .onClose.subscribe(() => {
         this.CheckColumnasSeleccionadas();
-       });
+      });
   }
 
-
-private CheckColumnasSeleccionadas() {
-  if (this.tmpcolumnas.filter(x => x.Visible === true).length === 0) {
-    this.toastrService.show('Debe tener al menos una columna visible', 'Advertencia',  this.iconConfigWarning);
-    this.MOstrarColumnas();
-  } else {
-    this.columnasBase = this.tmpcolumnas.map(obj => ({...obj}));
-    this.EstableceColumnas(this.columnasBase);
+  private CheckColumnasSeleccionadas() {
+    if (this.tmpcolumnas.filter((x) => x.Visible === true).length === 0) {
+      this.toastrService.show(
+        'Debe tener al menos una columna visible',
+        'Advertencia',
+        this.iconConfigWarning,
+      );
+      this.MOstrarColumnas();
+    } else {
+      this.columnasBase = this.tmpcolumnas.map((obj) => ({ ...obj }));
+      this.EstableceColumnas(this.columnasBase);
+    }
   }
-}
 
   public AlternarColumna(id: any, checked: boolean): void {
-    const updateItem =  this.tmpcolumnas.filter(x => x.Id === id)[0];
-    const  index = this.tmpcolumnas.indexOf(updateItem);
-    updateItem .Visible = checked;
-    this.tmpcolumnas[index] = updateItem ;
+    const updateItem = this.tmpcolumnas.filter((x) => x.Id === id)[0];
+    const index = this.tmpcolumnas.indexOf(updateItem);
+    updateItem.Visible = checked;
+    this.tmpcolumnas[index] = updateItem;
   }
 
-
   public refrescarTabla(): void {
-    this.GetData(this.consulta);
+    this.editorService.NuevaConsulta(this.consulta);
   }
 
   // Captura los eventos del grid
@@ -158,10 +133,18 @@ private CheckColumnasSeleccionadas() {
 
   // evalua el evento de paginacdo
   private onPagination(obj: TablaEventObject): void {
-    this.pagination.limit = obj.value.limit ? obj.value.limit : this.pagination.limit;
-    this.pagination.offset = obj.value.page ? obj.value.page : this.pagination.offset;
-    this.pagination.sort = !!obj.value.key ? obj.value.key : this.pagination.sort;
-    this.pagination.order = !!obj.value.order ? obj.value.order : this.pagination.order;
+    this.pagination.limit = obj.value.limit
+      ? obj.value.limit
+      : this.pagination.limit;
+    this.pagination.offset = obj.value.page
+      ? obj.value.page
+      : this.pagination.offset;
+    this.pagination.sort = !!obj.value.key
+      ? obj.value.key
+      : this.pagination.sort;
+    this.pagination.order = !!obj.value.order
+      ? obj.value.order
+      : this.pagination.order;
     this.pagination = { ...this.pagination };
     this.consulta.consecutivo = 0;
     this.consulta.indice = this.pagination.offset - 1;
@@ -169,67 +152,69 @@ private CheckColumnasSeleccionadas() {
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
-    this.GetData(this.consulta);
-  }
-
-  // inicializa la tabla para la UI
-  InicializaTabla(): void {
-    this.eService.ObtieneMetadatos.subscribe( (valid) => {
-      if ( valid ) {
-        this.columnasBase = this.eService.GetColumnasTabla();
-        this.EstableceColumnas(this.columnasBase);
-      } else {
-        this.toastrService.info('Error obtener metadaatos');
-      }
-    }, (error) => {
-      this.toastrService.info('Error obtener metadaatos');
-    } );
+    this.editorService.NuevaConsulta(this.consulta);
   }
 
   ngOnInit(): void {
     this.ConfiguraTabla();
-    this.inicializaCliente();
     this.FiltrosListener();
     this.FiltrosListosListener();
+    this.ObtieneMetadatosListener();
+    this.ObtienePaginaListener();
   }
 
-  FiltrosListosListener(): void {
-    this.searchService.ObtieneFiltrosValidos()
+  ObtienePaginaListener() {
+    this.editorService.ObtieneNuevaPaginaisponible()
     .pipe(takeUntil(this.onDestroy$))
-    .subscribe( validos => {
-      if (validos) {
-          console.log(this.filtros);
-      }
-    });
-  }
-
-  FiltrosListener(): void {
-    this.searchService.ObtieneFiltros()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( filtros => {
-      this.filtros = filtros;
-    });
-  }
-
-
-  inicializaCliente(): void {
-    this.route.queryParams.subscribe(
-      (params) => {
-        if (params[environment.editorToken]) {
-          this.entidad = params[environment.editorToken];
-        }
-
-        if (this.entidad !== '') {
-          this.CreaCliente();
-          this.InicializaTabla();
-        } else {
-          this.toastrService.info('Error obtener entidad');
+    .subscribe(
+      (response) => {
+        if (response) {
+          this.data = response.Elementos;
+          this.cdr.markForCheck();
+          this.pagination.count = response.ConteoTotal;
+          this.pagination = { ...this.pagination };
+          this.configuration.isLoading = false;
         }
       },
       (error) => {
-        this.toastrService.info('Error obtener entidad');
+        this.toastrService.info('Error obtener página de datos');
       },
-    );
+      () => {
+        this.configuration.isLoading = false;
+      });
+  }
+
+  ObtieneMetadatosListener() {
+    this.editorService
+      .ObtieneMetadatosDisponibles()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((validos) => {
+        if (validos) {
+          this.columnasBase = this.editorService.GetColumnasTabla();
+          this.EstableceColumnas(this.columnasBase);
+          this.refrescarTabla();
+        }
+      });
+  }
+
+  FiltrosListosListener(): void {
+    this.editorService
+      .ObtieneFiltrosValidos()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((validos) => {
+        if (validos) {
+          console.log(this.filtros);
+        }
+      });
+  }
+
+  FiltrosListener(): void {
+    this.editorService
+      .ObtieneFiltros()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((filtros) => {
+        this.filtros = filtros;
+      });
   }
 
   ///  Inicializa las opciones para la tabla
@@ -244,5 +229,4 @@ private CheckColumnasSeleccionadas() {
   ngOnDestroy(): void {
     this.onDestroy$.next();
   }
-
 }

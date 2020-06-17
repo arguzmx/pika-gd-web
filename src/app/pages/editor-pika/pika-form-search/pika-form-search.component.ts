@@ -1,19 +1,14 @@
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
 import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation,
   OnDestroy, ChangeDetectorRef, Input } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import PikaEditorBase from '../editor-base';
-import { ActivatedRoute } from '@angular/router';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ConfigCampo } from './search-fields/config-campo';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { PikaQueryBuilderService } from '../services/pika-query-builder.service';
 import { Propiedad, tDouble, tDateTime, tInt32,
   tInt64, tDate, tTime, tList } from '../../../@pika/metadata';
-import { environment } from '../../../../environments/environment';
-import { FormSearchService } from './form-search-service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EditorService } from '../services/editor-service';
+import { NbToastrService } from '@nebular/theme';
 
 
 @Component({
@@ -22,9 +17,8 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './pika-form-search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  providers: [ PikaQueryBuilderService ],
 })
-export class PikaFormSearchComponent extends PikaEditorBase implements OnInit, OnDestroy {
+export class PikaFormSearchComponent implements OnInit, OnDestroy {
 private index: number = 1;
 private CTL_PREFIX: string = 'ctl-';
 private CTL_SUFIX_2ND: string = '-2nd';
@@ -46,14 +40,11 @@ private filtros: FiltroConsulta[] = [];
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private editorService: EditorService,
     private toastrService: NbToastrService,
-    private searchService: FormSearchService,
-    route: ActivatedRoute,
-    http: HttpClient,
     private fb: FormBuilder,
-    private queryBuilderService: PikaQueryBuilderService,
   ) {
-      super(route,  http);
+
   }
 
   ngOnDestroy(): void {
@@ -95,14 +86,25 @@ private filtros: FiltroConsulta[] = [];
 
   ngOnInit(): void {
     this.formaDinamica = this.createGroup();
-    this.inicializaCliente();
     this.FiltrosEliminadosListener();
     this.FiltrosEliminarTodosListener();
     this.FiltrosListener();
+    this.ObtieneMetadatosListener();
+  }
+
+  ObtieneMetadatosListener() {
+    this.editorService
+      .ObtieneMetadatosDisponibles()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((validos) => {
+        if (validos) {
+          this.propiedes = this.editorService.GetCamposFlitrables();
+        }
+      });
   }
 
   FiltrosEliminadosListener(): void {
-    this.searchService.ObtieneFiltrosEliminados()
+    this.editorService.ObtieneFiltrosEliminados()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( item => {
       if (item) {
@@ -117,7 +119,7 @@ private filtros: FiltroConsulta[] = [];
 
 
   FiltrosEliminarTodosListener(): void {
-    this.searchService.ObtieneEliminarTodos()
+    this.editorService.ObtieneEliminarTodos()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( item => {
       if (item) {
@@ -127,7 +129,7 @@ private filtros: FiltroConsulta[] = [];
   }
 
   FiltrosListener(): void {
-    this.searchService.ObtieneFiltros()
+    this.editorService.ObtieneFiltros()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( filtros => {
       this.filtros = filtros;
@@ -165,7 +167,7 @@ private filtros: FiltroConsulta[] = [];
       return;
     }
 
-    this.searchService.EstablecerFiltrosValidos();
+    this.editorService.EstablecerFiltrosValidos();
   }
 
 
@@ -216,40 +218,8 @@ private filtros: FiltroConsulta[] = [];
 
 
   eliminarFiltros(): void {
-    this.searchService.EliminarTodosFiltros();
+    this.editorService.EliminarTodosFiltros();
   }
 
-
-  InicializaComponente(): void {
-    this.eService.ObtieneMetadatos.subscribe( (valid) => {
-      if ( valid ) {
-        this.propiedes = this.eService.GetCamposFlitrables();
-      } else {
-        this.toastrService.info('Error obtener metadaatos');
-      }
-    }, (error) => {
-      this.toastrService.info('Error obtener metadaatos');
-    } );
-  }
-
-  inicializaCliente(): void {
-    this.route.queryParams.subscribe(
-      (params) => {
-        if (params[environment.editorToken]) {
-          this.entidad = params[environment.editorToken];
-        }
-
-        if (this.entidad !== '') {
-          this.CreaCliente();
-          this.InicializaComponente();
-        } else {
-          this.toastrService.info('Error obtener entidad');
-        }
-      },
-      (error) => {
-        this.toastrService.info('Error obtener entidad');
-      },
-    );
-  }
 
 }
