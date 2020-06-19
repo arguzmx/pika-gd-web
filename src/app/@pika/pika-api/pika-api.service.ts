@@ -14,8 +14,8 @@ export class PikaApiService <T, U> {
   private Endpoint: string;
 
   constructor(
-    private baseUrl: string,
-    private TipoEntidad: string,
+    baseUrl: string,
+    TipoEntidad: string,
     private http: HttpClient,
   ) {
     this.Endpoint = '';
@@ -39,6 +39,7 @@ export class PikaApiService <T, U> {
   }
 
   Page(consulta: Consulta): Observable<Paginado<T>> {
+
     let qs: string = `?i=${consulta.indice}&t=${consulta.tamano}`;
     qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}`;
 
@@ -46,7 +47,7 @@ export class PikaApiService <T, U> {
     consulta.FiltroConsulta.forEach((f) => {
       qs =
         qs +
-        `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}}&f[${index}][v]=${f.Valor}}`;
+        `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}}&f[${index}][v]=${f.ValorString}}`;
       index++;
     });
 

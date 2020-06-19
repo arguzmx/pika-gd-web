@@ -1,225 +1,225 @@
+import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
+import { Propiedad } from './../../../@pika/metadata/propiedad';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
-import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation,
-  OnDestroy, ChangeDetectorRef, Input } from '@angular/core';
-import { ConfigCampo } from './search-fields/config-campo';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+  OnDestroy,
+  Input,
+} from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Propiedad, tDouble, tDateTime, tInt32,
-  tInt64, tDate, tTime, tList } from '../../../@pika/metadata';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EditorService } from '../services/editor-service';
-import { NbToastrService } from '@nebular/theme';
-
+import {
+  tDateTime,
+  tDate,
+  tTime,
+  tInt32,
+  tInt64,
+  tDouble,
+  tList,
+} from '../../../@pika/metadata';
+import {
+  CTL_OP_PREFIX,
+  CTL_NEG_PREFIX,
+  CTL1_PREFIX,
+  CTL2_PREFIX,
+} from '../model/campo';
 
 @Component({
   selector: 'ngx-pika-form-search',
-  styleUrls:  ['./pika-form-search.component.scss'],
+  styleUrls: ['./pika-form-search.component.scss'],
   templateUrl: './pika-form-search.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
 })
 export class PikaFormSearchComponent implements OnInit, OnDestroy {
-private index: number = 1;
-private CTL_PREFIX: string = 'ctl-';
-private CTL_SUFIX_2ND: string = '-2nd';
-private SEL_PREFIX: string = 'sel-';
-private NEG_PREFIX: string = 'neg-';
-public propiedes: Propiedad[] = [];
-public Campos: ConfigCampo[] = [];
-@Input() GrupoFiltrosId: string;
+  public PropiedadesFiltro: Propiedad[] = [];
+  public Propiedades: Propiedad[] = [];
+  @Input() GrupoFiltrosId: string;
 
-public selectedProp: string;
-public formaDinamica: FormGroup;
-get controls() { return this.Campos.filter(({type}) => type !== 'button'); }
-get changes() { return this.formaDinamica.valueChanges; }
-get valid() { return this.formaDinamica.valid; }
-get value() { return this.formaDinamica.value; }
+  public selectedProp: string;
+  public formaDinamica: FormGroup;
 
-private onDestroy$: Subject<void> = new Subject<void>();
-private filtros: FiltroConsulta[] = [];
+  private onDestroy$: Subject<void> = new Subject<void>();
+  private filtros: FiltroConsulta[] = [];
 
   constructor(
-    private readonly cdr: ChangeDetectorRef,
     private editorService: EditorService,
-    private toastrService: NbToastrService,
+    private appLog: AppLogService,
     private fb: FormBuilder,
-  ) {
-
-  }
+  ) {}
 
   ngOnDestroy(): void {
-       this.onDestroy$.next();
+    this.onDestroy$.next();
+  }
+
+  maxCampos(p: Propiedad): number {
+    switch (p.TipoDatoId) {
+      case tDateTime:
+      case tDate:
+      case tTime:
+      case tDouble:
+      case tInt32:
+      case tInt64:
+        return 2;
+    }
+
+    return 1;
   }
 
   regenerarForma(): void {
     // Onbtiene la lista de controles exietnets
-      const controls = Object.keys(this.formaDinamica.controls);
+    const controls = Object.keys(this.formaDinamica.controls);
 
-      // Obtiene los objetos de la configuración en base a la lista de nombres
-      const configControls = this.controls.map((item) => item.name);
+    // Obtiene los campos en la forma a aprtir de la configuracion
+    const configControls = [];
+    const Ids: string[] = [];
+    this.PropiedadesFiltro.forEach((c) => {
+      configControls.push(CTL_OP_PREFIX + c.Id);
+      configControls.push(CTL_NEG_PREFIX + c.Id);
+      configControls.push(CTL1_PREFIX + c.Id);
+      if (this.maxCampos(c) === 2) configControls.push(CTL2_PREFIX + c.Id);
+    });
 
-      // Para cada control que no se encuentre en la lista de existentes
-      // Elimina cada control que spertenezca a la configurcion actual
-      controls
-        .filter((control) => !configControls.includes(control))
-        .forEach((control) => {
-           if ( (!control.startsWith(this.SEL_PREFIX))
-           &&  (!control.startsWith(this.NEG_PREFIX))
-           &&  (!control.endsWith(this.CTL_SUFIX_2ND))) {
-            this.formaDinamica.removeControl(control);
-           }
-           });
+    // Elimina los campos que ya no estan en ñla configuracion
+    // y que estaban en la forma
+    controls
+      .filter((control) => !configControls.includes(control))
+      .forEach((control) => {
+        this.formaDinamica.removeControl(control);
+      });
 
-      // Crea los controles faltantes
-      configControls
-        .filter((control) => !controls.includes(control))
-        .forEach((name) => {
-          const config = this.Campos.find((control) => control.name === name);
-          this.formaDinamica.addControl(config.name, this.createControl(config));
-          this.formaDinamica.addControl(config.negCheckboxCtlId, this.createNegControl(config));
-          this.formaDinamica.addControl(config.selOpCtlId, this.createSelControl(config));
-          if(config.secondValId) this.formaDinamica.addControl(config.secondValId, this.createControl(config));
-        });
+    // Crea los comtroles faltantes
+    this.PropiedadesFiltro.forEach((c) => {
+      let n = CTL_OP_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.formaDinamica.addControl(
+          CTL_OP_PREFIX + c.Id,
+          this.createControl(c),
+        );
+      }
+
+      n = CTL_NEG_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.formaDinamica.addControl(
+          CTL_NEG_PREFIX + c.Id,
+          this.createControl(c),
+        );
+      }
+
+      n = CTL1_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.formaDinamica.addControl(
+          CTL1_PREFIX + c.Id,
+          this.createControl(c),
+        );
+      }
+      if (this.maxCampos(c) === 2) {
+        n = CTL2_PREFIX + c.Id;
+        if (!controls.includes(n)) {
+          this.formaDinamica.addControl(
+            CTL2_PREFIX + c.Id,
+            this.createControl(c),
+          );
+        }
+      }
+    });
   }
-
-
 
   ngOnInit(): void {
     this.formaDinamica = this.createGroup();
     this.FiltrosEliminadosListener();
-    this.FiltrosEliminarTodosListener();
     this.FiltrosListener();
     this.ObtieneMetadatosListener();
   }
 
+  // Recibe todos las propiedades disponibles
   ObtieneMetadatosListener() {
     this.editorService
       .ObtieneMetadatosDisponibles()
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe((validos) => {
-        if (validos) {
-          this.propiedes = this.editorService.GetCamposFlitrables();
+      .subscribe((metadatos) => {
+        if (metadatos) {
+          // asigna todas las propeidades que estan marcadas para b´suqueda
+          this.Propiedades = metadatos.Propiedades.filter(
+            (x) => x.Buscable === true,
+          );
         }
       });
   }
 
   FiltrosEliminadosListener(): void {
-    this.editorService.ObtieneFiltrosEliminados()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( item => {
-      if (item) {
-        const index = this.Campos.indexOf(item, 0);
-        if (index > -1) {
-          this.Campos.splice(index, 1);
+    this.editorService
+      .ObtieneFiltrosEliminados()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((item) => {
+        if (item) {
+          const index = this.PropiedadesFiltro.indexOf(item, 0);
+          if (index > -1) {
+            this.PropiedadesFiltro.splice(index, 1);
+          }
+          this.regenerarForma();
         }
-        this.regenerarForma();
-      }
-    });
-  }
-
-
-  FiltrosEliminarTodosListener(): void {
-    this.editorService.ObtieneEliminarTodos()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( item => {
-      if (item) {
-        this.Campos = [];
-      }
-    });
+      });
   }
 
   FiltrosListener(): void {
-    this.editorService.ObtieneFiltros()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( filtros => {
-      this.filtros = filtros;
-    });
+    this.editorService
+      .ObtieneFiltros()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((filtros) => {
+        this.filtros = filtros;
+      });
   }
-
 
   createGroup() {
     const group = this.fb.group({});
-    this.Campos.forEach(control => group.addControl(control.name, this.createControl(control)));
     return group;
   }
 
-  createControl(config: ConfigCampo) {
-    const { disabled, validation, value } = config;
-    return this.fb.control({ disabled, value }, validation);
+  createControl(p: Propiedad) {
+    return this.fb.control({ disabled: false, value: null }, []);
   }
-
-  createNegControl(config: ConfigCampo) {
-    const { disabled, validation, value } = { disabled: false, validation:[], value: false };
-    return this.fb.control({ disabled, value }, validation);
-  }
-
-  createSelControl(config: ConfigCampo) {
-    const { disabled, validation, value } = { disabled: false, validation:[], value: false };
-    return this.fb.control({ disabled, value }, validation);
-  }
-
 
   filtrar(): void {
-
     // Verifica que en caso de tener algun filtro al menos uno se halle configurado
-    if((this.filtros.length === 0) && (this.Campos.length > 0) ) {
-      this.toastrService.warning('No tiene filtros válidos en la consulta');
+    if (this.filtros.length === 0 && this.PropiedadesFiltro.length > 0) {
+      this.appLog.Advertencia('', 'No tiene filtros válidos en la consulta');
       return;
     }
 
     this.editorService.EstablecerFiltrosValidos();
   }
 
-
-
   addFiltro(): void {
     if (this.selectedProp) {
-     const propiedad =  this.propiedes.filter(x => x.Id === this.selectedProp)[0];
-     if(propiedad){
-       this.index++;
-       const propIdBase = propiedad.Id + '-' + this.index.toString();
-       const campo: ConfigCampo = {
-        Id: propiedad.Id,
-        disabled: false,
-        label: propiedad.Nombre,
-        name: this.CTL_PREFIX + propIdBase,
-        options: null,
-        placeholder: '',
-        type: propiedad.TipoDatoId,
-        validation: null,
-        value: null,
-        selOpCtlId: this.SEL_PREFIX + propIdBase,
-        negCheckboxCtlId: this.NEG_PREFIX + propIdBase,
-        secondValId: null,
-      };
-
-
-      switch (propiedad.TipoDatoId)
-      {
-        case tDate:
-        case tDateTime:
-        case tTime:
-        case tInt64:
-        case tInt32:
-        case tDouble:
-          campo.secondValId = this.CTL_PREFIX + propIdBase + this.CTL_SUFIX_2ND;
-        break;
-
-        case tList:
-          campo.listVal = propiedad.ValoresLista;
-        break;
+      const propiedad = this.Propiedades.find(
+        (x) => x.Id === this.selectedProp,
+      );
+      if (propiedad) {
+        const existente = this.PropiedadesFiltro.find(
+          (x) => x.Id === this.selectedProp,
+        );
+        if (existente) {
+          this.appLog.Advertencia(
+            '',
+            'El filtro ya ha sido añadido',
+          );
+        } else {
+          this.PropiedadesFiltro.push(propiedad);
+          this.regenerarForma();
+        }
       }
-
-       this.Campos.push(campo);
-       this.regenerarForma();
-     }
     }
   }
 
-
   eliminarFiltros(): void {
+    this.PropiedadesFiltro = [];
+    this.regenerarForma();
     this.editorService.EliminarTodosFiltros();
   }
-
-
 }

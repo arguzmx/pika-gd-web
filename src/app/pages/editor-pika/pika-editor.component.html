@@ -1,33 +1,94 @@
 <div class="row">
     <div class="col-lg-12">
-        <nb-card accent="info">
-            <nb-card-header>
-                Demo
-                <button class="single-view-button" nbButton size="small" on-click="refrescarTabla()" 
-                nbPopoverPlacement="bottom" nbPopover="Actualizar" nbPopoverTrigger="hint">
-                    <nb-icon icon="refresh" pack="eva"></nb-icon>
-                </button>
-                <button class="grid-view-button" nbButton size="small"  on-click="mostrarFiltro()" 
-                nbPopoverPlacement="bottom" nbPopover="Establecer filtro" nbPopoverTrigger="hint">
-                    <nb-icon icon="funnel-outline" pack="eva"></nb-icon>
-                </button>
-                <button class="grid-view-button" nbButton size="small" on-click="mostrariSelColumna()" 
-                nbPopoverPlacement="bottom" nbPopover="Seleccionar columnas" nbPopoverTrigger="hint">
-                    <nb-icon icon="grid-outline" pack="eva"></nb-icon>
-                </button>
-            </nb-card-header>
-            <nb-card-body>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ngx-pika-form-search [GrupoFiltrosId]="1" ></ngx-pika-form-search>
-                    </div>
-                </div> 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ngx-pika-table></ngx-pika-table>
-                    </div>
-                </div>
-            </nb-card-body>
-        </nb-card>
+        <nb-reveal-card [showToggleButton]="false" [revealed]="vistaAlterna">
+            <nb-card-front>
+                <nb-card accent="info" size="large">
+                    <nb-card-header>
+                        Demo
+                        <button class="single-view-button" nbButton size="small" on-click="refrescarTabla()"
+                            nbPopoverPlacement="bottom" nbPopover="Actualizar" nbPopoverTrigger="hint">
+                            <nb-icon icon="refresh" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrarCrear()"
+                            nbPopoverPlacement="bottom" nbPopover="Crear nuevo" nbPopoverTrigger="hint">
+                            <nb-icon icon="plus-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrarBusqueda()"
+                            nbPopoverPlacement="bottom" nbPopover="Buscar" nbPopoverTrigger="hint">
+                            <nb-icon icon="search-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrariSelColumna()"
+                            nbPopoverPlacement="bottom" nbPopover="Seleccionar columnas" nbPopoverTrigger="hint">
+                            <nb-icon icon="grid-outline" pack="eva"></nb-icon>
+                        </button>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ngx-pika-table></ngx-pika-table>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                    <nb-card-footer>
+
+                    </nb-card-footer>
+                </nb-card>
+            </nb-card-front>
+            <nb-card-back *ngIf="EsBusueda">
+                <nb-card accent="danger" size="large">
+                    <nb-card-header>Buscar
+                        <button class="single-view-button" nbButton size="small" on-click="borrarFiltros()"
+                            nbPopoverPlacement="bottom" nbPopover="Borrar filtros" nbPopoverTrigger="hint">
+                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="ocultarVistaTrasera()"
+                            nbPopoverPlacement="bottom" nbPopover="Cerrar" nbPopoverTrigger="hint">
+                            <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                        </button>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ngx-pika-form-search [GrupoFiltrosId]="1"></ngx-pika-form-search>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </nb-card-back>
+            <nb-card-back *ngIf="EsCrear">
+                <nb-card accent="danger" size="large">
+                    <nb-card-header>
+                        Crear
+                        <button class="single-view-button" nbButton size="small" on-click="crearEntidad()"
+                            nbPopoverPlacement="bottom" nbPopover="Guardar" nbPopoverTrigger="hint">
+                            <nb-icon icon="checkmark-circle-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="ocultarVistaTrasera()"
+                            nbPopoverPlacement="bottom" nbPopover="Cerrar" nbPopoverTrigger="hint">
+                            <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                        </button>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ngx-pika-form-edit></ngx-pika-form-edit>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+
+            </nb-card-back>
+        </nb-reveal-card>
+
     </div>
 </div>

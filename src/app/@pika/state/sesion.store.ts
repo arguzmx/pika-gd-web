@@ -27,13 +27,8 @@ export function createInitialState(): SesionState {
       token: '',
       Nombre: '',
       isLoggedIn: false,
+      uilocale: 'es-MX',
       Menus: [
-        {
-          title: 'E-commerce',
-          icon: 'shopping-cart-outline',
-          link: '/pages/dashboard',
-          home: true,
-        },
         {
           title: 'IoT Dashboard',
           icon: 'home-outline',

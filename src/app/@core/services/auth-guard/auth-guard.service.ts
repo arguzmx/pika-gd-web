@@ -8,7 +8,7 @@ import { NbAuthService } from '@nebular/auth';
 export class IsAuthorizedGuard implements CanActivate {
     constructor(private auth: NbAuthService, private router: Router) { }
     async canActivate(): Promise<boolean> {
-      const authenticated = await this.auth.isAuthenticated().toPromise();
+      const authenticated = await this.auth.isAuthenticatedOrRefresh().toPromise();
       if (!authenticated) {
         this.router.navigate(['/acceso/login']);
       } else {
@@ -28,7 +28,7 @@ export class IsChldrenAuthorizedGuard implements CanActivate, CanActivateChild {
 
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const authenticated = await this.auth.isAuthenticated().toPromise();
+    const authenticated = await this.auth.isAuthenticatedOrRefresh().toPromise();
     if (!authenticated) {
       this.router.navigate(['/acceso/login']);
     } else {
@@ -41,7 +41,7 @@ export class IsChldrenAuthorizedGuard implements CanActivate, CanActivateChild {
   }
 
   async canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const authenticated = await this.auth.isAuthenticated().toPromise();
+    const authenticated = await this.auth.isAuthenticatedOrRefresh().toPromise();
     if (!authenticated) {
       this.router.navigate(['/acceso/login']);
     } else {

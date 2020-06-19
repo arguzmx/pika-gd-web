@@ -5,12 +5,12 @@
                 <div class="form-group">
                     <nb-icon icon="close" status="basic"  (click)="closeFilter()" ></nb-icon>
                     <nb-icon [icon]="validIcon" [status]="validstatus"></nb-icon>
-                    <label  class="subtitle">&nbsp;{{config.label}}</label>
+                    <label  class="subtitle">&nbsp;{{config.Nombre}}</label>
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-6">
                 <div class="form-group" [formGroup]="group">
-                    <nb-checkbox [formControlName]="config.negCheckboxCtlId" (checkedChange)="checkChange($event)"
+                    <nb-checkbox [formControlName]="negCtlId" (checkedChange)="checkChange($event)"
                      class="subtitle">No</nb-checkbox>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                 <div class="form-group" [formGroup]="group">
                     <nb-select 
                     size="small" fullWidth="true" hero="true" 
-                    placeholder="Opciones" [formControlName]="config.selOpCtlId" (selectedChange)="toggleBetween($event)" >
+                    [formControlName]="opCtlId" (selectedChange)="toggleBetween($event)" >
                         <nb-option *ngFor="let op of operadores" [value]="op.Operacion">{{op.Texto}}</nb-option>
                     </nb-select>
                 </div>
@@ -28,8 +28,7 @@
                     <div class="form-group"  [formGroup]="group">
                         <input type="text" [mask]="mask" thousandSeparator="" (input)="valor1($event)"
                         nbInput fieldSize="tiny" fullWidth="true" 
-                        [attr.placeholder]="config.placeholder" 
-                        [formControlName]="config.name"  
+                        [formControlName]="ctl1Id"  
                         class="form-control"
                              />
                     </div>
@@ -39,9 +38,8 @@
                     <div  class="form-group"  [formGroup]="group">
                         
                         <input type="text" [mask]="mask" thousandSeparator="" (input)="valor2($event)"
-                        nbInput fieldSize="tiny" fullWidth="true" 
-                        [attr.placeholder]="config.placeholder" 
-                        [formControlName]="config.secondValId"  
+                        nbInput fieldSize="tiny" fullWidth="true" [allowNegativeNumbers]="negativos"
+                        [formControlName]="ctl2Id"  
                         class="form-control"
                              />
                         

@@ -16,4 +16,6 @@ export class SesionQuery extends Query<SesionState> {
 
   public menus$ = this.select(({ sesion }) => sesion.Menus);
 
+  public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
+
 }

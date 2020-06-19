@@ -1,3 +1,4 @@
+import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
 import {
   Component,
@@ -44,6 +45,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
   public columnasBase: ColumnaTabla[] = [];
   private tmpcolumnas: ColumnaTabla[] = [];
   private filtros: FiltroConsulta[] = [];
+  private notificar: boolean = false;
 
   public pagination = {
     limit: 10,
@@ -66,7 +68,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private dialogService: NbDialogService,
-    private toastrService: NbToastrService,
+    private appLog: AppLogService,
     private editorService: EditorService,
   ) {}
 
@@ -98,11 +100,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
 
   private CheckColumnasSeleccionadas() {
     if (this.tmpcolumnas.filter((x) => x.Visible === true).length === 0) {
-      this.toastrService.show(
-        'Debe tener al menos una columna visible',
-        'Advertencia',
-        this.iconConfigWarning,
-      );
+      this.appLog.Advertencia('', 'Debe tener al menos una columna visible');
       this.MOstrarColumnas();
     } else {
       this.columnasBase = this.tmpcolumnas.map((obj) => ({ ...obj }));
@@ -174,10 +172,13 @@ export class PikaTableComponent implements OnInit, OnDestroy {
           this.pagination.count = response.ConteoTotal;
           this.pagination = { ...this.pagination };
           this.configuration.isLoading = false;
+          if (this.notificar) this.appLog.Exito('',
+          `${response.ConteoTotal} elementos encontrados`);
+          this.notificar = false;
         }
       },
       (error) => {
-        this.toastrService.info('Error obtener página de datos');
+        this.appLog.Falla('', 'Error obtener página de datos');
       },
       () => {
         this.configuration.isLoading = false;
@@ -197,23 +198,32 @@ export class PikaTableComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Ontiene la validación apra los filtros añadidos
+  // y obtiene una nueva pa´gina si los fisltros son válidos
   FiltrosListosListener(): void {
     this.editorService
       .ObtieneFiltrosValidos()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((validos) => {
         if (validos) {
-          console.log(this.filtros);
+          this.consulta.FiltroConsulta = this.filtros;
+          this.editorService.NuevaConsulta(this.consulta);
+          this.notificar = true;
         }
       });
   }
 
+  // Obtiene cambios a los filtros
   FiltrosListener(): void {
     this.editorService
       .ObtieneFiltros()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((filtros) => {
         this.filtros = filtros;
+        if ( this.filtros.length === 0){
+          this.consulta.FiltroConsulta = this.filtros;
+          // this.editorService.NuevaConsulta(this.consulta);
+        }
       });
   }
 
@@ -223,6 +233,9 @@ export class PikaTableComponent implements OnInit, OnDestroy {
     this.configuration.isLoading = true;
     this.configuration.serverPagination = true;
     this.configuration.threeWaySort = false;
+    this.configuration.tableLayout.style = 'normal';
+    this.configuration.tableLayout.striped = true;
+    this.configuration.tableLayout.borderless = false;
     // this.configuration.horizontalScroll = true;
   }
 

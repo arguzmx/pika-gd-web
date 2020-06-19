@@ -9,7 +9,6 @@ export const  tTime = 'time';
 export const  tBinaryData = 'bin';
 export const  tList = 'list';
 
-
 export class TipoDato {
     Id: string;
     Nombre: string;

@@ -38,13 +38,11 @@ export class SearchFieldBase {
   }
 
   opChange(value) {
-    
     this.filtro.Operador = value;
     this.verificaFiltro();
   }
 
   inputChange(value: any) {
-    console.log(value);
     if (this.filtro.Valor.length === 0) {
       this.filtro.Valor.push(value);
     } else {
@@ -54,7 +52,6 @@ export class SearchFieldBase {
   }
 
   input2Change(value: any) {
-    console.log(value);
     if (this.filtro.Valor.length === 0) {
       this.filtro.Valor.push(null);
       this.filtro.Valor.push(value);
@@ -66,6 +63,10 @@ export class SearchFieldBase {
       }
     }
     this.verificaFiltro();
+  }
+
+  setValorString(valor: string) {
+    this.filtro.ValorString = valor;
   }
 
   verificaFiltro(): void {}

@@ -30,4 +30,9 @@
   @include ngx-pace-theme();
 
   @include nb-overrides();
+
+  [nbInput].status-basic.ng-invalid {
+    border-left: 5px solid #a94442; /* red */
+  } 
+
 };
