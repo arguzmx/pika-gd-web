@@ -1,19 +1,16 @@
+import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { Consulta } from './../../../@pika/consulta/consulta';
 import { ColumnaTabla } from './../model/columna-tabla';
 import { environment } from './../../../../environments/environment.prod';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
-import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs/Rx';
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
-import { ConfigCampo } from '../pika-form-search/search-fields/config-campo';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs/Rx';
+import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { MetadataInfo, Propiedad } from '../../../@pika/metadata';
-import { Notificacion, TipoNotifiacion } from '../model/notificacion';
 import { Paginado } from '../../../@pika/consulta';
-import { switchMap, debounceTime } from 'rxjs/operators';
-
-
+import { debounceTime } from 'rxjs/operators';
 
 @Injectable()
     export class EditorService {
@@ -51,42 +48,34 @@ import { switchMap, debounceTime } from 'rxjs/operators';
     private metadataSuscription: Subscription;
 
     // Contructor 
-    constructor(private route: ActivatedRoute, private http: HttpClient) { 
-
-      console.log("Creando compoente");
-      this.ngOnInit();
+    constructor(private route: ActivatedRoute, private applog: AppLogService,
+      private http: HttpClient) {
+      this.Init();
     }
-    
 
     // al iniciar
-    ngOnInit(): void {
-      console.log("inciiando compoente");
+    Init(): void {
         this.route.queryParams.subscribe(
             (params) => {
               if (params[environment.editorToken]) {
                 this.entidad = params[environment.editorToken];
               }
-              console.log("enbtidad =" + this.entidad);
-
               if (this.entidad !== '') {
-                console.log("OK =" + this.entidad);
                 this.cliente = new PikaApiService(environment.apiUrl, this.entidad, this.http);
                 this.metadataSuscription = this.cliente.GetMetadata().subscribe(x => {
-                  console.log(x);
                     this.EstableceMetadatos(x);
                 }, (error) => {
-                    this.Notificar('', `Error al obtener los metadatos de la entidad ${this.entidad}`,
-                    TipoNotifiacion.Error);
+                    this.applog.Falla('', `Error al obtener los metadatos de la entidad ${this.entidad}`);
                     this.metadataSuscription.unsubscribe();
                 }, () => {
                     this.metadataSuscription.unsubscribe();
                 } );
               } else {
-                this.Notificar('', 'Error al obtener la entidad de ruta', TipoNotifiacion.Error);
+                this.applog.Falla('', 'Error al obtener la entidad de ruta');
               }
             },
             (error) => {
-                this.Notificar('', 'Error al obtener el parámetro de ruta', TipoNotifiacion.Error);
+              this.applog.Falla('', 'Error al obtener el parámetro de ruta');
             },
           );
     }
@@ -110,7 +99,7 @@ import { switchMap, debounceTime } from 'rxjs/operators';
             this.consultaActual = consulta;
             this.NuevaPaginaisponible.next(this.paginaActual);
         }, (e) => {
-            this.Notificar('', `Error al obtener la página de resulatdos: ${e}`, TipoNotifiacion.Error);
+            this.applog.Falla('', `Error al obtener la página de resulatdos: ${e}`);
         });
     }
 
@@ -180,7 +169,7 @@ import { switchMap, debounceTime } from 'rxjs/operators';
     // Eventos búsqueda
     // ------------------------------------------------------
 
-    ObtieneFiltrosEliminados(): Observable<ConfigCampo> {
+    ObtieneFiltrosEliminados(): Observable<Propiedad> {
         return this.EliminaFiltroSubject.asObservable();
     }
 
@@ -212,10 +201,10 @@ import { switchMap, debounceTime } from 'rxjs/operators';
             }
     }
 
-    EliminarFiltro(config: ConfigCampo) {
+    EliminarFiltro(config: Propiedad) {
         this.EliminaFiltroSubject.next(config);
 
-        const filtro = this.filtros.filter( x => x.Id === config.name )[0];
+        const filtro = this.filtros.filter( x => x.Id === config.Id )[0];
         if (filtro) {
             const index = this.filtros.indexOf(filtro, 0);
             if (index > -1) {
@@ -241,24 +230,5 @@ import { switchMap, debounceTime } from 'rxjs/operators';
         this.FiltrosSubject.next(this.filtros);
     }
 
-
-
-    // --------------------------------------------------------------------------------------------------------------
-    // --------------------------------------------------------------------------------------------------------------
-
-    // Eventos NOtificacion
-    // ------------------------------------------------------
-    ObtieneNotificaciones(): Observable<Notificacion> {
-        return this.Notificacion.asObservable();
-    }
-
-
-    // Setters notificacion
-    // ------------------------------------------------------
-
-    Notificar(t: string, m: string, tipo: TipoNotifiacion) {
-        const n: Notificacion = { Titulo: t, Mensaje: m, Tipo: tipo };
-        this.Notificacion.next(n);
-    }
 
 }

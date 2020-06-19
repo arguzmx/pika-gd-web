@@ -9,5 +9,6 @@ export interface Sesion {
     token: string;
     isLoggedIn: boolean;
     Menus: NbMenuItem[];
+    uilocale: string;
 }
 

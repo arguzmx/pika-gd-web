@@ -1,7 +1,7 @@
-import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { AppLogService } from './@pika/servicios/app-log/app-log.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, Inject } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
@@ -21,6 +21,8 @@ import { IsAuthorizedGuard, IsChldrenAuthorizedGuard } from './@core/services/au
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { environment } from '../environments/environment';
 import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider';
+import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
+import { PikaModule } from './@pika/pika-module';
 
 
 @NgModule({
@@ -45,7 +47,8 @@ import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider'
     environment.production ? [] : AkitaNgDevtools,
   ],
   bootstrap: [AppComponent],
-  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders],
+  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders,
+    { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService],
 })
 export class AppModule {
   constructor(

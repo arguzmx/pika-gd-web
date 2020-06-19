@@ -1,6 +1,6 @@
+import { Propiedad } from './../../../../@pika/metadata/propiedad';
+import { CampoBuscable, CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from './../../model/campo';
 import { Component, OnInit, OnChanges } from '@angular/core';
-import { Campo } from '../search-fields/search-fields.directive';
-import { ConfigCampo } from '../search-fields/config-campo';
 import { FormGroup } from '@angular/forms';
 import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
 import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
@@ -8,6 +8,8 @@ import { Operacion } from '../../../../@pika/consulta/operacion';
 import { tDouble, tInt32, tInt64 } from '../../../../@pika/metadata';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { EditorService } from '../../services/editor-service';
+import { id } from '@swimlane/ngx-charts';
+
 
 @Component({
   selector: 'ngx-pika-field-numeric',
@@ -15,16 +17,22 @@ import { EditorService } from '../../services/editor-service';
   styleUrls: ['./pika-field-numeric.component.scss'],
 })
 export class PikaFieldNumericComponent extends SearchFieldBase
-  implements OnInit, Campo {
+  implements OnInit, CampoBuscable {
   isBetween: boolean = false;
   operadores: TextpOperador[] = OperadoresBusqueda.Numerico();
-  config: ConfigCampo;
+  config: Propiedad;
   group: FormGroup;
   mask: string = 'separator.4';
+  negativos: boolean = true;
+  ctl1Id: string;
+  ctl2Id: string;
+  negCtlId: string;
+  opCtlId: string;
 
   constructor(editorService: EditorService) {
     super(editorService);
   }
+
 
   verificaFiltro(): void {
     let valid: boolean = true;
@@ -41,9 +49,14 @@ export class PikaFieldNumericComponent extends SearchFieldBase
         valid = !isNaN(this.filtro.Valor[0]);
       }
     }
-
+    this.setValorString(null);
     this.setValidIcon(valid);
     if (valid) {
+      if (this.filtro.Operador === Operacion.OP_BETWEN.toString()) {
+        this.setValorString(this.filtro.Valor[0] + ',' + this.filtro.Valor[1]);
+      } else {
+        this.setValorString(this.filtro.Valor[0]);
+      }
       this.editorService.AgregarFiltro(this.filtro);
     } else {
       this.editorService.InvalidarFiltro(this.filtro);
@@ -68,8 +81,14 @@ export class PikaFieldNumericComponent extends SearchFieldBase
   }
   ngOnInit(): void {
     this.filtro.Propiedad = this.config.Id;
-    this.filtro.Id = this.config.name;
-    switch (this.config.type) {
+    this.filtro.Id = this.config.Id;
+
+    this.opCtlId = CTL_OP_PREFIX + this.config.Id;
+    this.negCtlId = CTL_NEG_PREFIX + this.config.Id;
+    this.ctl1Id = CTL1_PREFIX + this.config.Id;
+    this.ctl2Id = CTL2_PREFIX + this.config.Id;
+
+    switch (this.config.TipoDatoId ) {
       case tDouble:
         this.mask = 'separator.4';
         break;

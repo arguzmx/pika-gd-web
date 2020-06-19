@@ -1,0 +1,8 @@
+<div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="form-group" [formGroup]="group">
+        <label [for]="config.Id" class="label">{{config.Nombre}}</label>
+        <div>
+            <nb-toggle [formControlName]="config.Id" [id]="config.Id"></nb-toggle>
+        </div>
+    </div>
+</div>

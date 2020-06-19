@@ -2,8 +2,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { NgModule } from '@angular/core';
 import { NbPopoverModule, NbInputModule, NbCardModule, NbButtonModule,
   NbActionsModule, NbUserModule, NbCheckboxModule, NbRadioModule, NbDatepickerModule,
-  NbSelectModule, NbIconModule, NbFormFieldModule } from '@nebular/theme';
-import { FormsRoutingModule } from '../forms/forms-routing.module';
+  NbSelectModule, NbIconModule, NbFormFieldModule, NbToggleModule } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { ThemeModule } from '../../@theme/theme.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +16,14 @@ import { PikaFieldDatetimeComponent } from './pika-form-search/pika-field-dateti
 import { PikaFieldNumericComponent } from './pika-form-search/pika-field-numeric/pika-field-numeric.component';
 import { PikaFieldListComponent } from './pika-form-search/pika-field-list/pika-field-list.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { PikaFormEditComponent } from './pika-form-edit/pika-form-edit.component';
+import { PikaListEditorComponent } from './pika-form-edit/pika-list-editor/pika-list-editor.component';
+import { PikaNumericEditorComponent } from './pika-form-edit/pika-numeric-editor/pika-numeric-editor.component';
+import { PikaStringEditorComponent } from './pika-form-edit/pika-string-editor/pika-string-editor.component';
+import { EditFliedsDirective } from './pika-form-edit/edit-field.directive';
+import { PikaBoolEditorComponent } from './pika-form-edit/pika-bool-editor/pika-bool-editor.component';
+import { PikaDatetimeEditorComponent } from './pika-form-edit/pika-datetime-editor/pika-datetime-editor.component';
+import { PikaHiddenEditorComponent } from './pika-form-edit/pika-hidden-editor/pika-hidden-editor.component';
 
 @NgModule({
   imports: [
@@ -24,6 +31,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     OwlNativeDateTimeModule,
     NgxMaskModule.forRoot(),
     NbPopoverModule,
+    NbToggleModule,
     NbInputModule,
     NbCardModule,
     NbButtonModule,
@@ -34,7 +42,6 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     NbFormFieldModule,
     NbIconModule,
     NbDatepickerModule,
-    FormsRoutingModule,
     NbSelectModule,
     NbIconModule,
     TableModule,
@@ -45,6 +52,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
   ],
   declarations: [
     SearchFieldsDirective,
+    EditFliedsDirective,
     PikaEditorComponent,
     PikaTableComponent,
     PikaFormSearchComponent,
@@ -53,6 +61,14 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     PikaFieldDatetimeComponent,
     PikaFieldNumericComponent,
     PikaFieldListComponent,
+    PikaFormEditComponent,
+    PikaStringEditorComponent,
+    PikaListEditorComponent,
+    PikaNumericEditorComponent,
+    PikaStringEditorComponent,
+    PikaBoolEditorComponent,
+    PikaDatetimeEditorComponent,
+    PikaHiddenEditorComponent,
   ],
 })
 export class PikaEditorModule { }

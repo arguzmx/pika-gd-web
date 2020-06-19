@@ -1,0 +1,9 @@
+<div class="col-lg-6 col-md-6 col-sm-12">
+    <div class="form-group" [formGroup]="group">
+        <label [for]="config.Id" class="label">&nbsp;{{config.Nombre}}</label>
+        <nb-select size="small" fullWidth="true" hero="true" placeholder="Opciones" [formControlName]="config.Id"
+            [id]="config.Id">
+            <nb-option *ngFor="let item of list" [value]="item.Id">{{item.Texto}}</nb-option>
+        </nb-select>
+    </div>
+</div>

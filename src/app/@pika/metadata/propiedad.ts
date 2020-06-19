@@ -6,11 +6,11 @@ import { AtributoMetadato } from './atributo-metadato';
 import { ValorLista } from './valor-lista';
 import { AtributoListaValores } from './atributo-valorlista';
 
-export class Propiedad {
+export interface Propiedad {
     Id: string;
     Nombre: string;
     TipoDatoId: string;
-    ValorDefault: any;
+    ValorDefault?: string;
     IndiceOrdenamiento: number;
     Buscable: boolean;
     Ordenable: boolean;
@@ -32,4 +32,6 @@ export class Propiedad {
     Atributos?: AtributoMetadato[];
     AtributoListaValores?: AtributoListaValores;
     ValoresLista?: ValorLista[];
+    OrdenarValoresListaPorNombre?:  boolean;
+    Valor?: string;
 }
