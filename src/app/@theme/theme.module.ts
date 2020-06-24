@@ -39,6 +39,7 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
+import { TranslateModule } from '@ngx-translate/core';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -52,6 +53,7 @@ const NB_MODULES = [
   NbButtonModule,
   NbSelectModule,
   NbIconModule,
+  TranslateModule,
   NbEvaIconsModule,
 ];
 const COMPONENTS = [

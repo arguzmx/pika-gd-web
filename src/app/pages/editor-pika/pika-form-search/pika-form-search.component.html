@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-2 col-md-2 col-sm-6">
-      <label>Filtrar por</label>
+      <label>{{t['ui.filtrarpor']}}</label>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
       <nb-select fullWidth="true" size="small" [(selected)]="selectedProp">
@@ -12,10 +12,10 @@
   <div class="col-lg-12">
     <div class="d-flex justify-content-center">
       <button (click)="addFiltro()" nbButton>
-        <nb-icon icon="plus-circle-outline"></nb-icon>Añadir
+        <nb-icon icon="plus-circle-outline"></nb-icon>{{t['ui.adicionar']}}
       </button>
       <button (click)="filtrar()" nbButton>
-        <nb-icon icon="checkmark"></nb-icon>Aplicar
+        <nb-icon icon="checkmark"></nb-icon>{{t['ui.aplicar']}}
       </button>
     </div>
   </div>

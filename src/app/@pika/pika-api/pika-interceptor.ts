@@ -4,7 +4,7 @@ import { HttpInterceptor, HttpRequest,
     HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-
+    const HCULTURE: string = 'culture';
     const HUSUARIOID: string = 'uid';
     const HDOMINIOID: string = 'did';
     const HUNIDADORGID: string = 'tid';
@@ -39,6 +39,7 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     headerSettings[HDOMINIOID] = s.IdDominio;
     headerSettings[HUSUARIOID] = s.IdUsuario;
     headerSettings[HUNIDADORGID] = s.IdUnidadOrganizacional;
+    headerSettings[HCULTURE] = s.uilocale;
     const newHeader = new HttpHeaders(headerSettings);
     return newHeader;
   }

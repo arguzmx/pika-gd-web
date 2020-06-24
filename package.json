@@ -48,6 +48,8 @@
     "@nebular/eva-icons": "5.0.0",
     "@nebular/security": "5.0.0",
     "@nebular/theme": "5.0.0",
+    "@ngx-translate/core": "^12.1.2",
+    "@ngx-translate/http-loader": "^5.0.0",
     "@swimlane/ngx-charts": "^13.0.2",
     "angular-ng-autocomplete": "^2.0.1",
     "angular2-chartjs": "0.4.1",

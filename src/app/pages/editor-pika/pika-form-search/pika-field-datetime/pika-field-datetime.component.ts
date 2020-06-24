@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Propiedad } from './../../../../@pika/metadata/propiedad';
 import { CampoBuscable, CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from './../../model/campo';
 import {
@@ -6,13 +7,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
-import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { Operacion } from '../../../../@pika/consulta/operacion';
 import { tDate, tTime } from '../../../../@pika/metadata';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { isDate, formatISO } from 'date-fns';
 import { EditorService } from '../../services/editor-service';
+import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-pika-field-datetime',
@@ -25,15 +25,17 @@ export class PikaFieldDatetimeComponent extends SearchFieldBase
   @ViewChild('dt2') date2: any;
 
   isBetween: boolean = false;
-  operadores: TextpOperador[] = OperadoresBusqueda.FechaHora();
   config: Propiedad;
   group: FormGroup;
   isDateTime: boolean = true;
   isDate: boolean = false;
   isTime: boolean = false;
+  ops = [Operacion.OP_EQ, Operacion.OP_BETWEN, Operacion.OP_GT, Operacion.OP_GTE,
+    Operacion.OP_LT, Operacion.OP_LTE];
 
-  constructor(editorService: EditorService) {
-    super(editorService);
+  constructor(appLog: AppLogService, ts: TranslateService, editorService: EditorService) {
+    super(ts, appLog, editorService);
+    this.ts = ['ui.no'];
   }
   ctl1Id: string;
   ctl2Id: string;
@@ -89,6 +91,9 @@ export class PikaFieldDatetimeComponent extends SearchFieldBase
   }
 
   ngOnInit(): void {
+    this.ObtenerTraducciones();
+    this.ObtenerOperadores(this.ops);
+
     this.filtro.Propiedad = this.config.Id;
     this.filtro.Id = this.config.Id;
 

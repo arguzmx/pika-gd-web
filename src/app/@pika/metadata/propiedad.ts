@@ -34,4 +34,5 @@ export interface Propiedad {
     ValoresLista?: ValorLista[];
     OrdenarValoresListaPorNombre?:  boolean;
     Valor?: string;
+    AccionesCrud: number;
 }
