@@ -97,6 +97,7 @@ export class EditorMockProps {
       ValidadorTexto: null,
       ValidadorNumero: null,
       Atributos: [],
+      AccionesCrud: 255,
     };
   }
 }

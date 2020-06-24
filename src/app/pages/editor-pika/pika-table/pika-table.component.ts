@@ -1,3 +1,5 @@
+import { ValidadorTexto } from './../../../@pika/metadata/validador-texto';
+import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
 import {
@@ -11,13 +13,16 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { Config, Columns, DefaultConfig, APIDefinition } from 'ngx-easy-table';
-import { NbDialogService, NbToastrService, NbIconConfig } from '@nebular/theme';
-import { Consulta } from '../../../@pika/consulta';
+import { NbDialogService, NbIconConfig } from '@nebular/theme';
+import { Consulta, Operacion } from '../../../@pika/consulta';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { EditorService } from '../services/editor-service';
 import { ColumnaTabla } from '../model/columna-tabla';
 import { TablaEventObject } from '../model/tabla-event-object';
+import { ComponenteBase } from '../../../@core/comunes/componente-base';
+import { FILTRO_TARJETA_EDITAR, VerboTarjeta } from '../model/tarjeta-visible';
+import { RouteReuseStrategy } from '@angular/router';
 
 @Component({
   selector: 'ngx-pika-table',
@@ -26,12 +31,11 @@ import { TablaEventObject } from '../model/tabla-event-object';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class PikaTableComponent implements OnInit, OnDestroy {
+export class PikaTableComponent extends ComponenteBase implements OnInit, OnDestroy {
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
-  @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<
-    any
-  >;
+  @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
+  @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -46,6 +50,9 @@ export class PikaTableComponent implements OnInit, OnDestroy {
   private tmpcolumnas: ColumnaTabla[] = [];
   private filtros: FiltroConsulta[] = [];
   private notificar: boolean = false;
+  private entidadSeleccionada: any = null;
+  public eliminarLogico: boolean = false;
+  private dialogComnfirmDelRef: any;
 
   public pagination = {
     limit: 10,
@@ -66,11 +73,15 @@ export class PikaTableComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    translator: TranslateService,
+    appLog: AppLogService,
     private readonly cdr: ChangeDetectorRef,
     private dialogService: NbDialogService,
-    private appLog: AppLogService,
     private editorService: EditorService,
-  ) {}
+  ) {
+    super(appLog, translator);
+    this.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar'];
+  }
 
   // establece la configuración de las columnas de la tabla  a partir de los metadatos recibidos
   private EstableceColumnas(columnas: ColumnaTabla[]): void {
@@ -85,7 +96,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
           cellTemplate: columnas[i].Tipo === 'bool' ? this.boolTpl : null,
         });
     }
-    this.editorService.NuevaConsulta(this.consulta);
+    this.refrescarTabla(true);
   }
 
   // Mustra el selector de columnas
@@ -100,7 +111,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
 
   private CheckColumnasSeleccionadas() {
     if (this.tmpcolumnas.filter((x) => x.Visible === true).length === 0) {
-      this.appLog.Advertencia('', 'Debe tener al menos una columna visible');
+      this.appLog.AdvertenciaT('editor-pika.mensajes.warn-sin-columnas');
       this.MOstrarColumnas();
     } else {
       this.columnasBase = this.tmpcolumnas.map((obj) => ({ ...obj }));
@@ -115,17 +126,40 @@ export class PikaTableComponent implements OnInit, OnDestroy {
     this.tmpcolumnas[index] = updateItem;
   }
 
-  public refrescarTabla(): void {
+  public refrescarTabla(notificar: boolean): void {
+    this.notificar = notificar;
     this.editorService.NuevaConsulta(this.consulta);
   }
 
   // Captura los eventos del grid
   eventEmitted($event: { event: string; value: any }): void {
+
     switch ($event.event) {
       case 'onOrder':
       case 'onPagination':
         this.onPagination($event);
+        this.entidadSeleccionada = null;
         break;
+
+      case 'onClick':
+        this.entidadSeleccionada = $event.value.row;
+        break;
+
+      case 'onDoubleClick':
+        this.entidadSeleccionada = $event.value.row;
+        this.EditarEntidadSeleccionada();
+        break;
+    }
+
+    this.editorService.EntidadSeleccionada(this.entidadSeleccionada);
+  }
+
+  EditarEntidadSeleccionada(): void {
+    if (this.entidadSeleccionada) {
+      this.editorService.EstableceTarjetaTraseraVisible( { Visible: true,
+        FiltroUI: FILTRO_TARJETA_EDITAR ,  Nombre: '',
+        Verbo: VerboTarjeta.editar, Payload: this.entidadSeleccionada } );
+      this.editorService.EditarEntidad(this.entidadSeleccionada);
     }
   }
 
@@ -150,7 +184,7 @@ export class PikaTableComponent implements OnInit, OnDestroy {
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
-    this.editorService.NuevaConsulta(this.consulta);
+    this.refrescarTabla(false);
   }
 
   ngOnInit(): void {
@@ -159,6 +193,23 @@ export class PikaTableComponent implements OnInit, OnDestroy {
     this.FiltrosListosListener();
     this.ObtieneMetadatosListener();
     this.ObtienePaginaListener();
+    this.ObtenerTraducciones();
+    this.ObtieneResultadoAPI();
+  }
+
+  ObtieneResultadoAPI(): void {
+    this.editorService.ObtieneResultadoAPI()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(
+      (response) => {
+        if (response) {
+          if (response.ok) { 
+            this.entidadSeleccionada = null;
+            this.editorService.EntidadSeleccionada(this.entidadSeleccionada);
+            this.refrescarTabla(false);
+          }
+        }
+    });
   }
 
   ObtienePaginaListener() {
@@ -172,13 +223,13 @@ export class PikaTableComponent implements OnInit, OnDestroy {
           this.pagination.count = response.ConteoTotal;
           this.pagination = { ...this.pagination };
           this.configuration.isLoading = false;
-          if (this.notificar) this.appLog.Exito('',
-          `${response.ConteoTotal} elementos encontrados`);
+          if (this.notificar) this.appLog.ExitoT('editor-pika.mensajes.ok-pagina-datos', null,
+          {cantidad: response.ConteoTotal});
           this.notificar = false;
         }
       },
       (error) => {
-        this.appLog.Falla('', 'Error obtener página de datos');
+        this.appLog.FallaT('editor-pika.mensajes.err-pagina-datos', null , { error: error});
       },
       () => {
         this.configuration.isLoading = false;
@@ -191,11 +242,28 @@ export class PikaTableComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((validos) => {
         if (validos) {
+
+          this.eliminarLogico  = (validos.ElminarLogico === true) ? true : false;
+
+          if (this.eliminarLogico) {
+            this.filtros.push(this.FiltroEliminadas());
+          }
+
+          this.consulta.FiltroConsulta = this.filtros;
           this.columnasBase = this.editorService.GetColumnasTabla();
           this.EstableceColumnas(this.columnasBase);
-          this.refrescarTabla();
+          this.refrescarTabla(true);
         }
       });
+  }
+
+  // Genra el iltro base para las entidades con eliminación lógica
+  private FiltroEliminadas(): FiltroConsulta {
+    return  {
+          Negacion: false, Operador: Operacion.OP_EQ,
+          ValorString: 'false', Propiedad: 'Eliminada', Id: 'Eliminada',
+          Valor: [true],
+        };
   }
 
   // Ontiene la validación apra los filtros añadidos
@@ -206,9 +274,13 @@ export class PikaTableComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((validos) => {
         if (validos) {
+          if (this.eliminarLogico && (this.filtros.length === 0)) {
+            this.filtros.push(this.FiltroEliminadas());
+          }
+          this.entidadSeleccionada = null;
+          this.editorService.EntidadSeleccionada(this.entidadSeleccionada);
           this.consulta.FiltroConsulta = this.filtros;
-          this.editorService.NuevaConsulta(this.consulta);
-          this.notificar = true;
+          this.refrescarTabla(true);
         }
       });
   }
@@ -220,12 +292,36 @@ export class PikaTableComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((filtros) => {
         this.filtros = filtros;
-        if ( this.filtros.length === 0){
-          this.consulta.FiltroConsulta = this.filtros;
-          // this.editorService.NuevaConsulta(this.consulta);
-        }
       });
   }
+
+
+  EliminarEntidades(): void {
+    const msg = this.eliminarLogico ?
+    'editor-pika.mensajes.warn-crud-eliminar-logico' : 'editor-pika.mensajes.warn-crud-eliminar';
+    this.translate.get(msg, { nombre: this.ObtenerNombre(this.entidadSeleccionada) }).pipe(first())
+    .subscribe( m =>  {
+      this.dialogComnfirmDelRef = this.dialogService
+      .open(this.dialogConfirmDelete, { context: m });
+    });
+  }
+
+     // INtenta obtener le nombre de la entidad para el despliegue
+     private ObtenerNombre(entidad: any): string {
+      let n: string = '';
+      if (entidad['Nombre']) n = entidad['Nombre'];
+      if ((n === '') && (entidad['Descripcion'])) n = entidad['Descripcion'];
+      return n;
+   }
+
+
+  // Se llama desde el template
+  private ConfirmarEliminarEntidades() {
+    this.dialogComnfirmDelRef.close();
+    this.editorService.EliminarEntidad(this.entidadSeleccionada.Id,
+      this.ObtenerNombre(this.entidadSeleccionada), '');
+  }
+
 
   ///  Inicializa las opciones para la tabla
   ConfiguraTabla(): void {
@@ -236,7 +332,15 @@ export class PikaTableComponent implements OnInit, OnDestroy {
     this.configuration.tableLayout.style = 'normal';
     this.configuration.tableLayout.striped = true;
     this.configuration.tableLayout.borderless = false;
+    this.configuration.selectRow = true;
+    this.configuration.checkboxes = false;
     // this.configuration.horizontalScroll = true;
+  }
+
+
+  AlternarCheckboxes(): void {
+    this.configuration.checkboxes = !this.configuration.checkboxes;
+    this.configuration.selectRow = !this.configuration.checkboxes;
   }
 
   ngOnDestroy(): void {

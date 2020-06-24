@@ -2,7 +2,7 @@
   <div class="form-inline">
     <div class="col-lg-3 col-md-6 col-sm-12">
       <div class="form-group">
-        <label class="subtitle text-primary">Editar</label>
+        <label class="subtitle text-primary">{{t['uieditar']}}</label>
       </div>
     </div>
   </div>
@@ -12,10 +12,21 @@
   <form [formGroup]="formaDinamica">
     <div class="row">
       <div class="col-lg-12">
-        
-        <ng-container *ngFor="let campo of metadatos.Propiedades;" 
+        <ng-container *ngFor="let campo of editorService.metadatos.Propiedades;" 
           ngxEditField [config]="campo" [group]="formaDinamica">
         </ng-container>
       </div>
     </div>
   </form>
+  <div class="row pt-4 pb-4">
+    <div class="col-lg-12">
+      <div class="d-flex justify-content-center">
+        <button *ngIf="!enLlamadaApi" (click)="guardar()" nbButton [disabled]="enLlamadaApi">
+          <nb-icon icon="checkmark"></nb-icon>{{t['ui.guardar']}}
+        </button>
+        <button *ngIf="!modoEditar && !enLlamadaApi" (click)="guardarAdicionar()" nbButton [disabled]="enLlamadaApi">
+          <nb-icon icon="checkmark-circle"></nb-icon>{{t['ui.guardar-adicionar']}}
+        </button>
+      </div>
+    </div>
+  </div>

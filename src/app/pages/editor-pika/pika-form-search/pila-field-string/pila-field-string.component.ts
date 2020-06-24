@@ -1,30 +1,33 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Propiedad } from './../../../../@pika/metadata/propiedad';
 import { CampoBuscable, CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from './../../model/campo';
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
-import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { EditorService } from '../../services/editor-service';
+import { Operacion } from '../../../../@pika/consulta';
+import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-pila-field-string',
   styleUrls: ['./pila-field-string.component.scss'],
   templateUrl: './pila-field-string.component.html',
 })
-export class PikaFieldStringComponent extends SearchFieldBase implements OnInit, 
+export class PikaFieldStringComponent extends SearchFieldBase implements OnInit,
 CampoBuscable {
 
-  operadores: TextpOperador[] = OperadoresBusqueda.Texto();
   config: Propiedad;
   group: FormGroup;
   ctl1Id: string;
   ctl2Id: string;
   negCtlId: string;
   opCtlId: string;
+  ops = [Operacion.OP_EQ, Operacion.OP_CONTAINS, Operacion.OP_ENDS,
+    Operacion.OP_STARTS, Operacion.OP_FULLTEXT];
 
-  constructor(editorService: EditorService) {
-    super(editorService);
+  constructor(appLog: AppLogService, ts: TranslateService, editorService: EditorService) {
+    super(ts, appLog, editorService);
+    this.ts = ['ui.no'];
   }
 
   verificaFiltro(): void {
@@ -61,6 +64,10 @@ CampoBuscable {
 
 
   ngOnInit(): void {
+
+    this.ObtenerTraducciones();
+    this.ObtenerOperadores(this.ops);
+
     this.filtro.Propiedad = this.config.Id;
     this.filtro.Id = this.config.Id;
 

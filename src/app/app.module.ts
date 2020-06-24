@@ -2,7 +2,7 @@ import { AppLogService } from './@pika/servicios/app-log/app-log.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
@@ -22,12 +22,19 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { environment } from '../environments/environment';
 import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider';
 import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
-import { PikaModule } from './@pika/pika-module';
-
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: httpTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -53,4 +60,8 @@ import { PikaModule } from './@pika/pika-module';
 export class AppModule {
   constructor(
   ) { }
+}
+
+export function httpTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http);
 }

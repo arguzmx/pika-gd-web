@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+import { ComponenteBase } from './../../../@core/comunes/componente-base';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { Propiedad } from './../../../@pika/metadata/propiedad';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
@@ -20,7 +22,6 @@ import {
   tInt32,
   tInt64,
   tDouble,
-  tList,
 } from '../../../@pika/metadata';
 import {
   CTL_OP_PREFIX,
@@ -36,7 +37,7 @@ import {
   changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None,
 })
-export class PikaFormSearchComponent implements OnInit, OnDestroy {
+export class PikaFormSearchComponent extends ComponenteBase  implements OnInit, OnDestroy {
   public PropiedadesFiltro: Propiedad[] = [];
   public Propiedades: Propiedad[] = [];
   @Input() GrupoFiltrosId: string;
@@ -48,10 +49,14 @@ export class PikaFormSearchComponent implements OnInit, OnDestroy {
   private filtros: FiltroConsulta[] = [];
 
   constructor(
+    ts: TranslateService,
+    appLog: AppLogService,
     private editorService: EditorService,
-    private appLog: AppLogService,
     private fb: FormBuilder,
-  ) {}
+  ) {
+    super(appLog, ts);
+    this.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
@@ -135,6 +140,7 @@ export class PikaFormSearchComponent implements OnInit, OnDestroy {
     this.FiltrosEliminadosListener();
     this.FiltrosListener();
     this.ObtieneMetadatosListener();
+    this.ObtenerTraducciones();
   }
 
   // Recibe todos las propiedades disponibles
@@ -188,7 +194,7 @@ export class PikaFormSearchComponent implements OnInit, OnDestroy {
   filtrar(): void {
     // Verifica que en caso de tener algun filtro al menos uno se halle configurado
     if (this.filtros.length === 0 && this.PropiedadesFiltro.length > 0) {
-      this.appLog.Advertencia('', 'No tiene filtros válidos en la consulta');
+      this.appLog.AdvertenciaT('editor-pika.mensajes.warn-sin-filtros-busqueda');
       return;
     }
 
@@ -205,9 +211,8 @@ export class PikaFormSearchComponent implements OnInit, OnDestroy {
           (x) => x.Id === this.selectedProp,
         );
         if (existente) {
-          this.appLog.Advertencia(
-            '',
-            'El filtro ya ha sido añadido',
+          this.appLog.AdvertenciaT(
+            'editor-pika.mensajes.warn-filtros-existente',
           );
         } else {
           this.PropiedadesFiltro.push(propiedad);

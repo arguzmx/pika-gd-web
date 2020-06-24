@@ -1,7 +1,7 @@
-import { TipoNotifiacion } from './model/notificacion';
+import { TranslateService } from '@ngx-translate/core';
 import { PikaTableComponent } from './pika-table/pika-table.component';
-import { Component, OnInit, OnDestroy, ViewChild, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
-import { EditorService } from './services/editor-service'; 
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { EditorService } from './services/editor-service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SesionQuery } from '../../@pika/state/sesion.query';
@@ -9,22 +9,17 @@ import { DateTimeAdapter } from 'ng-pick-datetime';
 import { PikaFormSearchComponent } from './pika-form-search/pika-form-search.component';
 import { PikaFormEditComponent } from './pika-form-edit/pika-form-edit.component';
 import { AppLogService } from '../../@pika/servicios/app-log/app-log.service';
+import { ComponenteBase } from '../../@core/comunes/componente-base';
+import { TarjetaVisible, FILTRO_TARJETA_EDITAR, VerboTarjeta, FILTRO_TARJETA_BUSCAR } from './model/tarjeta-visible';
 
-
-export const enum vista {
-  none = 0,
-  search = 1,
-  add = 2,
-  edit = 3,
-}
 
 @Component({
   selector: 'ngx-pika-editor',
   templateUrl: './pika-editor.component.html',
   styleUrls: ['./pika-editor.component.scss'],
-  providers: [EditorService]
+  providers: [EditorService],
 })
-export class PikaEditorComponent implements OnInit, OnDestroy, AfterViewInit  {
+export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDestroy, AfterViewInit  {
 
   @ViewChildren(PikaTableComponent) tablas: QueryList<PikaTableComponent>;
   @ViewChildren(PikaFormSearchComponent) search: QueryList<PikaFormSearchComponent>;
@@ -33,78 +28,98 @@ export class PikaEditorComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   private onDestroy$: Subject<void> = new Subject<void>();
   vistaAlterna: boolean = false;
-  tipovista: vista = vista.search;
- 
-  EsBusueda: boolean = true;
-  EsCrear: boolean = false;
-  EsEditar: boolean = false;
+  tarjetaTrasera: TarjetaVisible = null;
+  contenidoTarjetaTrasera: string = '';
+  editarActivo: boolean = false;
 
     constructor(
-      private appLog: AppLogService,
+      translate: TranslateService,
+      appLog: AppLogService,
       private editorService: EditorService,
       private sesion: SesionQuery,
       private dateTimeAdapter: DateTimeAdapter<any>,
       ) {
-
-      }
+      super(appLog, translate);
+      this.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol',
+      'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar'];
+    }
 
   ngAfterViewInit(): void {
 
   }
 
-      borrarFiltros() {
+      borrarFiltros(): void {
         this.search.first.eliminarFiltros();
       }
 
-  refrescarTabla() {
-    this.tablas.first.refrescarTabla();
+  refrescarTabla(): void {
+    this.tablas.first.refrescarTabla(true);
   }
 
 
-  mostrariSelColumna() {
+  mostrariSelColumna(): void {
     this.tablas.first.MOstrarColumnas();
   }
 
-  mostrarBusqueda() {
-    this.tipovista = vista.search;
-    this.EsBusueda = true;
-    this.EsCrear = false;
-    this.EsEditar = false;
-    this.vistaAlterna = true;
+  mostrarBusqueda(): void {
+     this.editorService.EstableceTarjetaTraseraVisible( { Visible: true, FiltroUI: FILTRO_TARJETA_BUSCAR , Nombre: ''
+     , Verbo: VerboTarjeta.buscar, Payload: null } );
   }
 
 
-  mostrarCrear() {
-    this.tipovista = vista.search;
-    this.EsBusueda = false;
-    this.EsCrear = true;
-    this.EsEditar = false;
-    this.vistaAlterna = true;
+  mostrarCrear(): void {
+    this.editorService.EstableceTarjetaTraseraVisible( { Visible: true,
+      FiltroUI: FILTRO_TARJETA_EDITAR , Nombre: ''
+    , Verbo: VerboTarjeta.adicionar, Payload: null } );
+    this.editorService.EditarEntidad(null);
   }
 
-
-  mostrarEditar() {
-    this.tipovista = vista.search;
-    this.EsBusueda = false;
-    this.EsCrear = true;
-    this.EsEditar = false;
-    this.vistaAlterna = true;
+  mostrarEditar(): void {
+    this.tablas.first.EditarEntidadSeleccionada();
   }
-
 
   ocultarVistaTrasera() {
-    this.vistaAlterna = false;
+    this.editorService.EstableceTarjetaTraseraVisible(null);
   }
 
-  crearEntidad() {
-    this.editor.first.crearEntidad();
+  mostrarEliminar(): void {
+    this.tablas.first.EliminarEntidades();
   }
 
   ngOnInit(): void {
     this.FiltrosListosListener();
     this.SetLocaleListeter();
+    this.ObtenerTraducciones();
+    this.ObtieneTarjetaTraseraVisible();
+    this.ObtieneEntidadSeleccionada();
   }
 
+  ObtieneEntidadSeleccionada(): void {
+    this.editorService.ObtieneEntidadSeleccionada()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( r => {
+      if (r) {
+        this.editarActivo = true;
+      } else {
+        this.editarActivo = false;
+      }
+    });
+  }
+
+  ObtieneTarjetaTraseraVisible(): void {
+    this.editorService.ObtieneTarjetaTraseraVisible()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( r => {
+      this.tarjetaTrasera = r;
+      if (r) {
+        this.vistaAlterna = r.Visible;
+        this.contenidoTarjetaTrasera = r.FiltroUI;
+      } else {
+        this.vistaAlterna = false;
+        this.contenidoTarjetaTrasera = '';
+      }
+    });
+  }
 
   SetLocaleListeter() {
     this.sesion.uilocale$.subscribe( l => {

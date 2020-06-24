@@ -1,14 +1,14 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Propiedad } from './../../../../@pika/metadata/propiedad';
 import { CampoBuscable, CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from './../../model/campo';
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
-import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { Operacion } from '../../../../@pika/consulta/operacion';
 import { tDouble, tInt32, tInt64 } from '../../../../@pika/metadata';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { EditorService } from '../../services/editor-service';
-import { id } from '@swimlane/ngx-charts';
+import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
+
 
 
 @Component({
@@ -19,7 +19,6 @@ import { id } from '@swimlane/ngx-charts';
 export class PikaFieldNumericComponent extends SearchFieldBase
   implements OnInit, CampoBuscable {
   isBetween: boolean = false;
-  operadores: TextpOperador[] = OperadoresBusqueda.Numerico();
   config: Propiedad;
   group: FormGroup;
   mask: string = 'separator.4';
@@ -28,9 +27,12 @@ export class PikaFieldNumericComponent extends SearchFieldBase
   ctl2Id: string;
   negCtlId: string;
   opCtlId: string;
+  ops = [Operacion.OP_EQ, Operacion.OP_BETWEN, Operacion.OP_GT, Operacion.OP_GTE,
+    Operacion.OP_LT, Operacion.OP_LTE];
 
-  constructor(editorService: EditorService) {
-    super(editorService);
+  constructor(appLog: AppLogService, ts: TranslateService, editorService: EditorService) {
+    super(ts, appLog, editorService);
+    this.ts = ['ui.no'];
   }
 
 
@@ -80,6 +82,10 @@ export class PikaFieldNumericComponent extends SearchFieldBase
     this.input2Change(valor.srcElement.value);
   }
   ngOnInit(): void {
+
+    this.ObtenerTraducciones();
+    this.ObtenerOperadores(this.ops);
+
     this.filtro.Propiedad = this.config.Id;
     this.filtro.Id = this.config.Id;
 

@@ -1,13 +1,20 @@
+import { TranslateService } from '@ngx-translate/core';
 
 import { EditorService } from '../../services/editor-service';
-import { FiltroConsulta } from '../../../../@pika/consulta';
-export class SearchFieldBase {
+import { FiltroConsulta, TextpOperador } from '../../../../@pika/consulta';
+import { ComponenteBase } from '../../../../@core/comunes/componente-base';
+import { first } from 'rxjs/operators';
+import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
+
+export class SearchFieldBase extends ComponenteBase {
   VALID_COLOR: string = 'success';
   INVALID_COLOR: string = 'basic';
   VALID_ICON: string = 'checkmark-circle-2';
   INVALID_ICON: string = 'checkmark-circle-2-outline';
 
-  constructor(editorService: EditorService) {
+  constructor(ts: TranslateService, 
+    appLog: AppLogService, editorService: EditorService) {
+    super(appLog, ts);
     this.editorService = editorService;
     this.filtro = {
       Negacion: false,
@@ -21,6 +28,17 @@ export class SearchFieldBase {
   validstatus: string = this.INVALID_COLOR;
   validIcon: string = this.INVALID_ICON;
   filtro: FiltroConsulta;
+  operadores: TextpOperador[] = [];
+
+  ObtenerOperadores(ops: string[]): void {
+    const keys = ops.map ( x =>  'operadores.' + x);
+    this.translate.get(keys).pipe(first()).subscribe( res => {
+      ops.forEach( x =>  {
+        const t = res['operadores.' + x];
+        this.operadores.push({ Texto: t, Operacion: x} );
+      });
+    });
+ }
 
   setValidIcon(valid: boolean) {
     if (valid) {

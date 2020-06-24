@@ -1,16 +1,21 @@
+import { TraduccionEntidad } from './../../../@core/comunes/traduccion-entidad';
+import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { Consulta } from './../../../@pika/consulta/consulta';
 import { ColumnaTabla } from './../model/columna-tabla';
 import { environment } from './../../../../environments/environment.prod';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { MetadataInfo, Propiedad } from '../../../@pika/metadata';
 import { Paginado } from '../../../@pika/consulta';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, first } from 'rxjs/operators';
+import { ResultadoAPI, TipoOperacionAPI } from '../../../@pika/pika-api/resultado-api';
+import { TarjetaVisible } from '../model/tarjeta-visible';
+
 
 @Injectable()
     export class EditorService {
@@ -26,7 +31,7 @@ import { debounceTime } from 'rxjs/operators';
     // CLiente APi PIKA
     public cliente: PikaApiService<any, string>;
 
-    private metadatos: MetadataInfo;
+    public metadatos: MetadataInfo = null;
 
     // Subjects relacionados con la gestión de configuración de búsueda
     private EliminaFiltroSubject = new BehaviorSubject(null);
@@ -37,52 +42,239 @@ import { debounceTime } from 'rxjs/operators';
     // Subject relacionados con la gestion de metadatos
     private MetdatosDisponibles = new BehaviorSubject(null);
 
-    // Subject relacionados con el paginado de datos
+    // Subject relacionados con llamadas a meetodos de API
     private NuevaPaginaisponible = new BehaviorSubject(null);
 
+    // Subjet para CRUD de API
+    private SubjectEditarEntidad = new BehaviorSubject(null);
+    private SubjectEntidadSeleccionada = new BehaviorSubject(null);
+    private ResultadoAPI = new BehaviorSubject(null);
+    private LlamadaAPI = new BehaviorSubject(null);
+
+    // Subjects de UI
+    private TarjetaTraseraVivible = new BehaviorSubject(null);
 
     // Subject relacionados con la gestion mensajes en la UI
     private Notificacion = new BehaviorSubject(null);
 
-    // Control de la suscripcion para obetenr los metadatos
-    private metadataSuscription: Subscription;
-
-    // Contructor 
-    constructor(private route: ActivatedRoute, private applog: AppLogService,
+    // Contructor
+    constructor(
+      private ts: TranslateService,
+      private router: Router,
+      private route: ActivatedRoute,
+      private applog: AppLogService,
       private http: HttpClient) {
       this.Init();
     }
 
     // al iniciar
     Init(): void {
-        this.route.queryParams.subscribe(
+        this.route.queryParams
+        .subscribe(
             (params) => {
               if (params[environment.editorToken]) {
                 this.entidad = params[environment.editorToken];
               }
               if (this.entidad !== '') {
-                this.cliente = new PikaApiService(environment.apiUrl, this.entidad, this.http);
-                this.metadataSuscription = this.cliente.GetMetadata().subscribe(x => {
+                this.LlamadaAPI.next(false);
+                this.cliente = new PikaApiService(environment.apiUrl, this.entidad, this.router, this.http);
+                this.cliente.GetMetadata().pipe(first()).subscribe(x => {
                     this.EstableceMetadatos(x);
                 }, (error) => {
-                    this.applog.Falla('', `Error al obtener los metadatos de la entidad ${this.entidad}`);
-                    this.metadataSuscription.unsubscribe();
-                }, () => {
-                    this.metadataSuscription.unsubscribe();
-                } );
+                    this.handleHTTPError(error, 'metadatos', '');
+                },
+                  () => {
+                    this.LlamadaAPI.next(false);
+                });
               } else {
-                this.applog.Falla('', 'Error al obtener la entidad de ruta');
+                this.applog.FallaT('editor-pika.mensajes.err-entidad-ruta');
               }
             },
             (error) => {
-              this.applog.Falla('', 'Error al obtener el parámetro de ruta');
+              this.applog.FallaT('editor-pika.mensajes.err-param-ruta');
             },
           );
     }
 
+    private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
+      if (error instanceof  HttpResponseBase) {
+
+        if (error.status === 401) {
+          this.router.navigate(['/acceso/login']);
+        } else {
+          this.MuestraErrorHttp(error, modulo, nombreEntidad);
+        }
+
+      } else {
+
+      }
+
+    }
+
+private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): void {
+  const traducciones: string[] = [];
+  traducciones.push('entidades.' + modulo);
+
+  this.ts.get(traducciones)
+  .pipe(first())
+  .subscribe( t => {
+
+    let trad: TraduccionEntidad =  null;
+    if ((t['entidades.' + modulo] !== 'entidades.' + modulo)
+      && t['entidades.' + modulo].indexOf('|') > 0 ) {
+      trad = new TraduccionEntidad(t['entidades.' + modulo]);
+    } else {
+      trad = new TraduccionEntidad( modulo + '|' + modulo + 's|' + '|');
+    }
+
+    if (error instanceof  HttpResponseBase) {
+      switch (error.status) {
+
+        case 400:
+            this.applog.FallaT('editor-pika.mensajes.err-datos-erroneos', null,
+            { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+            break;
+
+        case 404:
+            this.applog.FallaT('editor-pika.mensajes.err-datos-noexiste', null,
+            { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+            break;
+
+        case 409:
+            this.applog.FallaT('editor-pika.mensajes.err-datos-conflicto', null,
+            { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+            break;
+
+          case 500:
+            this.applog.FallaT('editor-pika.mensajes.err-datos-servidor', null,
+            { entidad: trad.singular, prefijo: trad.prefijoSingular, error: error.statusText } );
+            break;
+      }
+    }
+  });
+
+}
 
     // --------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------
+
+    // Eventos UI
+    // ------------------------------------------------------
+    ObtieneTarjetaTraseraVisible(): Observable<TarjetaVisible> {
+      return this.TarjetaTraseraVivible.asObservable();
+    }
+
+    EstableceTarjetaTraseraVisible(tarjeta: TarjetaVisible) {
+      this.TarjetaTraseraVivible.next(tarjeta);
+    }
+
+    // Eventos CRUD
+    // ------------------------------------------------------
+
+    ObtieneEditarEntidad(): Observable<any> {
+      return this.SubjectEditarEntidad.asObservable();
+    }
+
+    ObtieneEnLlamadaAPI(): Observable<boolean> {
+      return this.LlamadaAPI.asObservable();
+    }
+
+    ObtieneResultadoAPI(): Observable<ResultadoAPI> {
+      return this.ResultadoAPI.asObservable();
+    }
+
+    ObtieneEntidadSeleccionada(): Observable<any> {
+      return this.SubjectEntidadSeleccionada.asObservable();
+    }
+
+    EntidadSeleccionada(entidad: any): void {
+      this.SubjectEntidadSeleccionada.next(entidad);
+    }
+
+    EditarEntidad(entidad: any): void {
+      this.SubjectEditarEntidad.next(entidad);
+    }
+
+    ActualizarEntidad(Id: string, entidad: any, idoperacion: string): void  {
+      this.LlamadaAPI.next(true);
+       const nombre = this.ObtenerNombre(entidad);
+       this.cliente.Put(Id, entidad).pipe(
+         debounceTime(500),
+       ).subscribe( resultado =>  {
+
+        this.applog.ExitoT('editor-pika.mensajes.ok-entidad-act', null, { nombre: nombre});
+        this.ResultadoAPI.next( this.CreaRespuestaAPI(true, idoperacion,
+          TipoOperacionAPI.Actualizar,  null, nombre, resultado));
+
+       }, (err) => {
+        this.handleHTTPError(err, this.entidad, nombre);
+        this.ResultadoAPI.next( this.CreaRespuestaAPI(false, idoperacion,
+          TipoOperacionAPI.Actualizar, err, nombre));
+
+        }, () => {
+        this.LlamadaAPI.next(false);
+       } );
+     }
+
+   CreaEntidad(entidad: any, idoperacion: string): void  {
+    this.LlamadaAPI.next(true);
+     const nombre = this.ObtenerNombre(entidad);
+     this.cliente.Post(entidad).pipe(
+       debounceTime(500),
+     ).subscribe( resultado =>  {
+
+      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-add', null, { nombre: nombre});
+      this.ResultadoAPI.next( this.CreaRespuestaAPI(true, idoperacion,
+        TipoOperacionAPI.Crear,  null, nombre, resultado));
+
+     }, (error) => {
+      this.handleHTTPError(error, this.entidad, '');
+      this.ResultadoAPI.next( this.CreaRespuestaAPI(false, idoperacion,
+        TipoOperacionAPI.Crear, error, nombre));
+
+     }, () => {
+      this.LlamadaAPI.next(false);
+     } );
+   }
+
+
+   EliminarEntidad(Id: string, nombre: string, idoperacion: string): void  {
+    this.LlamadaAPI.next(true);
+     this.cliente.Delete([Id]).pipe(
+       debounceTime(500),
+     ).subscribe( resultado =>  {
+
+      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-del', null, { nombre: nombre});
+      this.ResultadoAPI.next( this.CreaRespuestaAPI(true, idoperacion,
+        TipoOperacionAPI.Eliminar,  null, nombre, resultado));
+     }, (error) => {
+      this.handleHTTPError(error, this.entidad, '');
+      this.ResultadoAPI.next( this.CreaRespuestaAPI(false, idoperacion,
+        TipoOperacionAPI.Eliminar, error, nombre));
+     }, () => {
+      this.LlamadaAPI.next(false);
+     } );
+   }
+
+   // INtenta obtener le nombre de la entidad para el despliegue
+   private ObtenerNombre(entidad: any): string {
+      let n: string = '';
+      if (entidad['Nombre']) n = entidad['Nombre'];
+      if ((n === '') && (entidad['Descripcion'])) n = entidad['Descripcion'];
+      return n;
+   }
+
+   private CreaRespuestaAPI(ok: boolean, id: string, tipo: TipoOperacionAPI,
+    err?: any, nombre?: string, entidad?: any): ResultadoAPI {
+    const r = new ResultadoAPI();
+    r.operacion = tipo;
+    r.nombre = nombre ? nombre : '';
+    r.ok = ok;
+    r.idoperacion = id;
+    r.error = err;
+    r.entidad = entidad;
+    return r;
+   }
 
     // Eventos paginado de datos
     // ------------------------------------------------------
@@ -92,17 +284,20 @@ import { debounceTime } from 'rxjs/operators';
 
 
     NuevaConsulta(consulta: Consulta): void {
+      this.LlamadaAPI.next(true);
         this.cliente.Page(consulta).pipe(
             debounceTime(500),
         ).subscribe( x => {
             this.paginaActual = x;
             this.consultaActual = consulta;
             this.NuevaPaginaisponible.next(this.paginaActual);
-        }, (e) => {
-            this.applog.Falla('', `Error al obtener la página de resulatdos: ${e}`);
-        });
+        }, (error) => {
+          this.handleHTTPError(error, 'pagina-resultados', '');
+        },
+        () => {
+          this.LlamadaAPI.next(false);
+         });
     }
-
 
 
     // --------------------------------------------------------------------------------------------------------------

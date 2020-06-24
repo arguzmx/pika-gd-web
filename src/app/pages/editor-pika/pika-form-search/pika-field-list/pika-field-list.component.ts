@@ -1,12 +1,13 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Propiedad } from './../../../../@pika/metadata/propiedad';
 import { CampoBuscable, CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from './../../model/campo';
 import { ValorLista } from './../../../../@pika/metadata/valor-lista';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { TextpOperador } from './../../../../@pika/consulta/texto-operador';
-import { OperadoresBusqueda } from '../../../../@pika/consulta/operadores-busqueda';
 import { SearchFieldBase } from '../search-fields/search-field-base';
 import { EditorService } from '../../services/editor-service';
+import { Operacion } from '../../../../@pika/consulta';
+import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-pika-field-list',
@@ -16,7 +17,6 @@ import { EditorService } from '../../services/editor-service';
 export class PikaFieldListComponent extends SearchFieldBase  implements  OnInit, 
 CampoBuscable {
 
-  operadores: TextpOperador[] = OperadoresBusqueda.Lista();
   config: Propiedad;
   group: FormGroup;
   list: ValorLista[];
@@ -24,9 +24,11 @@ CampoBuscable {
   ctl2Id: string;
   negCtlId: string;
   opCtlId: string;
+  ops = [Operacion.OP_EQ];
 
-  constructor(editorService: EditorService) {
-    super(editorService);
+  constructor(appLog: AppLogService, ts: TranslateService, editorService: EditorService) {
+    super(ts, appLog, editorService);
+    this.ts = ['ui.no'];
   }
 
 
@@ -51,6 +53,10 @@ CampoBuscable {
   }
 
   ngOnInit(): void {
+
+    this.ObtenerTraducciones();
+    this.ObtenerOperadores(this.ops);
+
     this.filtro.Propiedad = this.config.Id;
     this.filtro.Id = this.config.Id;
 
