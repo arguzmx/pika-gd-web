@@ -3,4 +3,5 @@ export const EndpointDictionary: { [type: string]: string } = {
   unidadorganizacional: 'org/unidadorganizacional',
   rol: 'org/rol',
   direccionpostal: 'org/direccionpostal',
+  propiedadesusuario: 'seguridad/usuarios',
 };

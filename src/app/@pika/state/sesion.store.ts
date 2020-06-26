@@ -43,6 +43,11 @@ export function createInitialState(): SesionState {
           icon: 'map-outline',
           children: [
             {
+              title: 'Usuarios',
+              link: '/pages/editor/',
+              queryParams: {tipo: 'propiedadesusuario'},
+            },
+            {
               title: 'Dominios',
               link: '/pages/editor/',
               queryParams: {tipo: 'dominio'},

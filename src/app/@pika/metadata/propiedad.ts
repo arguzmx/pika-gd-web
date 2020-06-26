@@ -9,6 +9,7 @@ import { AtributoListaValores } from './atributo-valorlista';
 export interface Propiedad {
     Id: string;
     Nombre: string;
+    NombreI18n?: string;
     TipoDatoId: string;
     ValorDefault?: string;
     IndiceOrdenamiento: number;

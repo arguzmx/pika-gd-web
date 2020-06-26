@@ -64,7 +64,7 @@ export class PikaApiService <T, U> {
     consulta.FiltroConsulta.forEach((f) => {
       qs =
         qs +
-        `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}}&f[${index}][v]=${f.ValorString}}`;
+        `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}}&f[${index}][v]=${f.ValorString}`;
       index++;
     });
 
