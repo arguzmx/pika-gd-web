@@ -314,8 +314,21 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
     // ------------------------------------------------------
 
     EstableceMetadatos(metadatos: MetadataInfo): void {
+      // Ontiene las traducciones para los encabezados y los asigna a las propeidaes
+      // antes de establcerlas en el observable
+      this.ts.get('entidades.propiedades.' + this.entidad).pipe(first())
+      .subscribe( r => {
         this.metadatos = metadatos;
+        this.metadatos.Propiedades.forEach( p => {
+          if (r[p.Nombre]) {
+            p.NombreI18n = r[p.Nombre];
+          } else {
+            p.NombreI18n = p.Nombre;
+          }
+        });
         this.MetdatosDisponibles.next(this.metadatos);
+      });
+
     }
 
 
@@ -336,6 +349,7 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
              Visible: t.Visible,
              Alternable: t.Alternable,
              Tipo: c.TipoDatoId,
+             NombreI18n: c.NombreI18n,
           });
         }
 

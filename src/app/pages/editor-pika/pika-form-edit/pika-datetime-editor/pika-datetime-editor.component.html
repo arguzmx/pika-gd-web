@@ -1,6 +1,6 @@
 <div class="col-lg-6 col-md-6 col-sm-12">
     <div class="form-group" [formGroup]="group">
-        <label [for]="config.Id" class="label">&nbsp;{{config.Nombre}}</label>
+        <label [for]="config.Id" class="label">&nbsp;{{config.NombreI18n}}</label>
 
         <span *ngIf="isDateTime">
             <input type="text" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" #src1 nbInput fieldSize="tiny"

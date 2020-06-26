@@ -42,7 +42,36 @@
     "entidades": {
         "pagina-resultados": "Página de resultados|Páginas de resultados|la|las",
         "metadatos": "Metadato|Metadatos|el|los",
-        "dominio": "Dominio|Dominios|el|los"
+        "dominio": "Dominio|Dominios|el|los",
+        "propiedades": {
+            "dominio": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "OrigenId": "Origen",
+                "TipoOrigenId": "TipoOrigen",
+                "Eliminada": "Eliminado"
+            },
+            "propiedadesusuario": {
+                "UsuarioId": "Id",
+                "username": "Usuario",
+                "email": "Email",
+                "name": "Nombres",
+                "family_name": "Paterno",
+                "given_name": "Materno",
+                "middle_name": "Iniciales",
+                "nickname": "Alias",
+                "updated_at": "Actualizado",
+                "email_verified": "Email Verificado",
+                "generoid": "Género",
+                "paisid": "Pais",
+                "estadoid": "Estado",
+                "gmt": "Zona horaria",
+                "gmt_offset": "GMT",
+                "Ultimoacceso": "Acceso",
+                "Eliminada": "Eliminado",
+                "Inactiva": "Inactvo"
+            }
+        }
     },
     "editor-pika": {
         "mensajes": {

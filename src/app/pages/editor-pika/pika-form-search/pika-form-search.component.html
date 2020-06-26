@@ -4,7 +4,7 @@
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
       <nb-select fullWidth="true" size="small" [(selected)]="selectedProp">
-        <nb-option *ngFor="let p of Propiedades" [value]="p.Id">{{p.Nombre}}</nb-option>
+        <nb-option *ngFor="let p of Propiedades" [value]="p.Id">{{p.NombreI18n}}</nb-option>
       </nb-select>
     </div>
 </div>

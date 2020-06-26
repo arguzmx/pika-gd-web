@@ -90,12 +90,13 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
       if (columnas[i].Visible)
         this.columns.push({
           key: columnas[i].Id,
-          title: columnas[i].Nombre,
+          title: columnas[i].NombreI18n,
           orderEnabled: columnas[i].Ordenable,
           searchEnabled: columnas[i].Buscable,
           cellTemplate: columnas[i].Tipo === 'bool' ? this.boolTpl : null,
         });
     }
+
     this.refrescarTabla(true);
   }
 
@@ -127,6 +128,11 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
   }
 
   public refrescarTabla(notificar: boolean): void {
+    if (this.columns.length > 4) {
+      this.configuration.horizontalScroll = true;
+     } else {
+      this.configuration.horizontalScroll = false;
+     }
     this.notificar = notificar;
     this.editorService.NuevaConsulta(this.consulta);
   }
@@ -203,7 +209,7 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     .subscribe(
       (response) => {
         if (response) {
-          if (response.ok) { 
+          if (response.ok) {
             this.entidadSeleccionada = null;
             this.editorService.EntidadSeleccionada(this.entidadSeleccionada);
             this.refrescarTabla(false);
@@ -334,8 +340,7 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     this.configuration.tableLayout.borderless = false;
     this.configuration.selectRow = true;
     this.configuration.checkboxes = false;
-    // this.configuration.horizontalScroll = true;
-  }
+}
 
 
   AlternarCheckboxes(): void {
