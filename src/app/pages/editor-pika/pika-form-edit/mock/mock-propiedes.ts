@@ -93,11 +93,12 @@ export class EditorMockProps {
       EsIndice: false,
       ControlHTML: 'textbox',
       TipoDato: null,
-      AtributoTabla: null,
       ValidadorTexto: null,
       ValidadorNumero: null,
       Atributos: [],
-      AccionesCrud: 255,
+      MostrarEnTabla: true,
+      AlternarEnTabla: true,
+      IndiceOrdenamientoTabla: 1,
     };
   }
 }

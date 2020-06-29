@@ -1,10 +1,10 @@
 import { TipoDato } from './tipo-dato';
-import { AtributoTabla } from './atributo-tabla';
 import { ValidadorTexto } from './validador-texto';
 import { ValidadorNumero } from './validador-numero';
 import { AtributoMetadato } from './atributo-metadato';
 import { ValorLista } from './valor-lista';
 import { AtributoListaValores } from './atributo-valorlista';
+import { AtributoVistaUI } from './atributos-vista-ui';
 
 export interface Propiedad {
     Id: string;
@@ -27,13 +27,15 @@ export interface Propiedad {
     EsIndice: boolean;
     ControlHTML: string;
     TipoDato: TipoDato;
-    AtributoTabla?: AtributoTabla;
     ValidadorTexto?: ValidadorTexto;
     ValidadorNumero?: ValidadorNumero;
     Atributos?: AtributoMetadato[];
     AtributoListaValores?: AtributoListaValores;
+    AtributosVistaUI?: AtributoVistaUI[];
     ValoresLista?: ValorLista[];
     OrdenarValoresListaPorNombre?:  boolean;
     Valor?: string;
-    AccionesCrud: number;
+    MostrarEnTabla: boolean;
+    AlternarEnTabla: boolean;
+    IndiceOrdenamientoTabla: number;
 }

@@ -1,3 +1,4 @@
+import { Propiedad } from './../../../@pika/metadata/propiedad';
 import { ValidadorTexto } from './../../../@pika/metadata/validador-texto';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
@@ -256,12 +257,39 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
           }
 
           this.consulta.FiltroConsulta = this.filtros;
-          this.columnasBase = this.editorService.GetColumnasTabla();
+          this.columnasBase = this.GetColumnasTabla();
           this.EstableceColumnas(this.columnasBase);
           this.refrescarTabla(true);
         }
       });
   }
+
+   // Obtiene las columas disponibles para mostrase en la tabla
+   private GetColumnasTabla(): ColumnaTabla[] {
+    const columnas: ColumnaTabla[] = [];
+
+    const Propiedades: Propiedad[] = this.editorService.metadatos.Propiedades
+    .sort((a, b) => (a.IndiceOrdenamientoTabla > b.IndiceOrdenamientoTabla) ? 1 : -1 );
+
+    for (let i = 0; i < Propiedades.length; i++) {
+      const c = this.editorService.metadatos.Propiedades[i];
+
+        if (c.MostrarEnTabla ) {
+          columnas.push({
+            Id: c.Id,
+            Nombre: c.Nombre,
+            Ordenable: c.Ordenable,
+            Buscable: c.Buscable,
+            Visible: c.Visible,
+            Alternable: c.AlternarEnTabla,
+            Tipo: c.TipoDatoId,
+            NombreI18n: c.NombreI18n,
+          });
+        }
+    }
+    return columnas;
+  }
+
 
   // Genra el iltro base para las entidades con eliminación lógica
   private FiltroEliminadas(): FiltroConsulta {

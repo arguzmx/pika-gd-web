@@ -332,46 +332,6 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
     }
 
 
-  // Obtiene las columas disponibles para mostrase en la tabla
-  public GetColumnasTabla(): ColumnaTabla[] {
-    const columnas: ColumnaTabla[] = [];
-    for (let i = 0; i < this.metadatos.Propiedades.length; i++) {
-      const c = this.metadatos.Propiedades[i];
-      const t = c.AtributoTabla;
-
-      if (t) {
-        if (t.Visible || t.Alternable) {
-          columnas.push({
-            Id: c.Id,
-            Nombre: c.Nombre,
-            Ordenable: c.Ordenable,
-            Buscable: c.Buscable,
-             Visible: t.Visible,
-             Alternable: t.Alternable,
-             Tipo: c.TipoDatoId,
-             NombreI18n: c.NombreI18n,
-          });
-        }
-
-      }
-    }
-    return columnas;
-  }
-
-
-  // Otiene los campos que son factibles para realizar búsqueda
-  public GetCamposFlitrables(): Propiedad[] {
-    const columnas: Propiedad[] = [];
-    for (let i = 0; i < this.metadatos.Propiedades.length; i++) {
-      const c = this.metadatos.Propiedades[i];
-      if (c.Buscable) {
-        columnas.push(c);
-      }
-    }
-    return columnas;
-  }
-
-
     // --------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------
 
