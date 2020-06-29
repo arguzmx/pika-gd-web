@@ -12,7 +12,7 @@
   <form [formGroup]="formaDinamica">
     <div class="row">
       <div class="col-lg-12">
-        <ng-container *ngFor="let campo of editorService.metadatos.Propiedades;" 
+        <ng-container *ngFor="let campo of propiedadesActivas;" 
           ngxEditField [config]="campo" [group]="formaDinamica">
         </ng-container>
       </div>

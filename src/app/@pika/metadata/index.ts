@@ -1,5 +1,4 @@
 export * from './atributo-metadato';
-export * from './atributo-tabla';
 export * from './metadata-info';
 export * from './propiedad';
 export * from  './tipo-dato';

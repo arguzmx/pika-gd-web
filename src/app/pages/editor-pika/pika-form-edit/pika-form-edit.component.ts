@@ -1,3 +1,4 @@
+import { AtributoVistaUI } from './../../../@pika/metadata/atributos-vista-ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ComponenteBase } from './../../../@core/comunes/componente-base';
 import { Propiedad } from './../../../@pika/metadata/propiedad';
@@ -9,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { tBoolean, tInt32, tInt64, tDouble, tDate, tDateTime, tTime } from '../../../@pika/metadata';
 import { isDate, parseISO } from 'date-fns';
 import { AppLogService } from '../../../@pika/servicios/app-log/app-log.service';
-import { AccionesCRUD } from '../../../@pika/metadata/acciones-crud';
+import { Acciones } from '../../../@pika/metadata/acciones-crud';
 
 @Component({
   selector: 'ngx-pika-form-edit',
@@ -26,6 +27,7 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
   enLlamadaApi: boolean = false;
   modoEditar: boolean = false;
   entidadEdicion: any = null;
+  propiedadesActivas: Propiedad[] = [];
   private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -59,7 +61,10 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
         .filter((control) => !controls.includes(control))
         .forEach((Id) => {
           const config = this.editorService.metadatos.Propiedades.find((control) => control.Id === Id);
-          this.formaDinamica.addControl( config.Id, this.createControl(config));
+          const controlnuevo = this.createControl(config);
+          if (controlnuevo !== null) {
+            this.formaDinamica.addControl( config.Id, controlnuevo);
+          }
         });
   }
 
@@ -119,13 +124,15 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
     .ObtieneEditarEntidad()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe((entidad) => {
-      this.regenerarForma();
+      this.propiedadesActivas = [];
       if (entidad) {
         this.modoEditar = true;
+        this.regenerarForma();
         this.EstableceValoresEntidad(entidad);
         this.entidadEdicion = entidad;
       } else {
         this.modoEditar = false;
+        this.regenerarForma();
         this.EstableceValoresDefault();
       }
     });
@@ -174,6 +181,7 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
 
     this.editorService.metadatos.Propiedades.forEach( p => {
       const valor =  entidad[p.Id];
+      if (this.formaDinamica.controls[p.Id])
       this.formaDinamica.controls[p.Id].setValue(valor);
     });
 
@@ -231,30 +239,50 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
 
   createControl(p: Propiedad) {
     const validadorres = [];
+    let VistaUI: AtributoVistaUI = null;
 
-    if ( p.AccionesCrud & AccionesCRUD.add ) {
-      if (p.Requerido) {
-        validadorres.push(Validators.required);
+    if (p.AtributosVistaUI.length > 0) {
+      if (this.modoEditar) {
+        VistaUI = p.AtributosVistaUI.filter(x => (x.Accion === Acciones.update) ||
+        (x.Accion === Acciones.addupdate))[0];
+      } else {
+        VistaUI = p.AtributosVistaUI.filter(x => (x.Accion === Acciones.add) ||
+        (x.Accion === Acciones.addupdate))[0];
       }
 
-      if (p.ValidadorTexto) {
-        validadorres.push(Validators.minLength(p.ValidadorTexto.longmin));
-        validadorres.push(Validators.maxLength(p.ValidadorTexto.longmax));
+      if (VistaUI) {
+
+        if (p.Requerido) {
+          validadorres.push(Validators.required);
+        }
+
+        if (p.ValidadorTexto) {
+          validadorres.push(Validators.minLength(p.ValidadorTexto.longmin));
+          validadorres.push(Validators.maxLength(p.ValidadorTexto.longmax));
+        }
+
+        if (p.ValidadorNumero) {
+          validadorres.push(Validators.min(p.ValidadorNumero.min));
+          validadorres.push(Validators.max(p.ValidadorTexto.longmax));
+        }
+
+        let valor =  this.getValor(p.Valor, p);
+        if (!valor) {
+          valor =  this.getValor(p.ValorDefault, p);
+        }
+
+        const pactiva = {...p};
+        pactiva.ControlHTML = VistaUI.Control;
+
+        this.propiedadesActivas.push(pactiva);
+        return this.fb.control({ disabled: false, value: valor }, validadorres);
+
       }
 
-      if (p.ValidadorNumero) {
-        validadorres.push(Validators.min(p.ValidadorNumero.min));
-        validadorres.push(Validators.max(p.ValidadorTexto.longmax));
-      }
     }
 
-    let valor =  this.getValor(p.Valor, p);
-    if (!valor) {
-      valor =  this.getValor(p.ValorDefault, p);
-    }
 
-    return this.fb.control({ disabled: false, value: valor }, validadorres);
-
+    return null;
   }
 
 
