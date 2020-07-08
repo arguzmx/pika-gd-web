@@ -1,5 +1,5 @@
+import { EntidadVinculada } from './../../../@pika/metadata/entidad-vinculada';
 import { Propiedad } from './../../../@pika/metadata/propiedad';
-import { ValidadorTexto } from './../../../@pika/metadata/validador-texto';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
@@ -23,7 +23,8 @@ import { ColumnaTabla } from '../model/columna-tabla';
 import { TablaEventObject } from '../model/tabla-event-object';
 import { ComponenteBase } from '../../../@core/comunes/componente-base';
 import { FILTRO_TARJETA_EDITAR, VerboTarjeta } from '../model/tarjeta-visible';
-import { RouteReuseStrategy } from '@angular/router';
+import { TipoCardinalidad } from '../../../@pika/metadata/entidad-vinculada';
+
 
 @Component({
   selector: 'ngx-pika-table',
@@ -35,8 +36,10 @@ import { RouteReuseStrategy } from '@angular/router';
 export class PikaTableComponent extends ComponenteBase implements OnInit, OnDestroy {
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
+  @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
+  @ViewChild('dialogLinkPicker', { static: true }) dialogLinks: TemplateRef<any>;
 
   private onDestroy$: Subject<void> = new Subject<void>();
 
@@ -44,16 +47,24 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     icon: 'alert-triangle-outline',
     pack: 'eva',
   };
+
+  // Configuración de EasyTables
   public configuration: Config;
+
+  // Datos y columnas para EasyTables en el template
   public data: any;
   public columns: Columns[] = [];
+
   public columnasBase: ColumnaTabla[] = [];
   private tmpcolumnas: ColumnaTabla[] = [];
   private filtros: FiltroConsulta[] = [];
+  private vinculos: EntidadVinculada[] = [];
   private notificar: boolean = false;
   private entidadSeleccionada: any = null;
   public eliminarLogico: boolean = false;
   private dialogComnfirmDelRef: any;
+  private dialogColPickRef: any;
+  private dialogLinkPickRef: any;
 
   public pagination = {
     limit: 10,
@@ -81,30 +92,48 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     private editorService: EditorService,
   ) {
     super(appLog, translator);
-    this.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar'];
+    this.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades'];
   }
 
   // establece la configuración de las columnas de la tabla  a partir de los metadatos recibidos
   private EstableceColumnas(columnas: ColumnaTabla[]): void {
     this.columns = [];
     for (let i = 0; i < columnas.length; i++) {
-      if (columnas[i].Visible)
+      if (columnas[i].Visible) {
+        let template = null;
+        if (columnas[i].Tipo === 'bool') template = this.boolTpl;
+        if (columnas[i].EsLista) template = this.listTpl;
         this.columns.push({
           key: columnas[i].Id,
           title: columnas[i].NombreI18n,
           orderEnabled: columnas[i].Ordenable,
           searchEnabled: columnas[i].Buscable,
-          cellTemplate: columnas[i].Tipo === 'bool' ? this.boolTpl : null,
+          cellTemplate: template,
         });
+      }
     }
-
     this.refrescarTabla(true);
+  }
+
+
+  public EtiquetaDeId(Id: string, EntidadId: string) {
+    const i = this.editorService.metadatos.Propiedades.findIndex(x => x.Id === EntidadId);
+    let e = '';
+    if (i >= 0) {
+      e = this.editorService.metadatos.Propiedades[i].AtributoLista.Entidad;
+      const index = this.editorService.ListaIds.findIndex(x =>  x.Id === Id &&
+        x.Entidad === e );
+      if ( index >= 0 ) {
+          return this.editorService.ListaIds[index].Texto;
+        }
+    }
+    return Id;
   }
 
   // Mustra el selector de columnas
   public MOstrarColumnas(): void {
     this.tmpcolumnas = this.columnasBase.map((obj) => ({ ...obj }));
-    this.dialogService
+    this.dialogColPickRef = this.dialogService
       .open(this.dialogColPicker, { context: '' })
       .onClose.subscribe(() => {
         this.CheckColumnasSeleccionadas();
@@ -194,15 +223,74 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     this.refrescarTabla(false);
   }
 
+
+  linkUnoAVarios(link: EntidadVinculada) {
+      return (link.Cardinalidad === TipoCardinalidad.UnoVarios) ? true : false;
+  }
+
+
+ResetUI(): void {
+  this.data = null;
+  this.columns = [];
+  this.columnasBase = [];
+  this.tmpcolumnas = [];
+  this.filtros = [];
+  this.vinculos = [];
+  this.notificar = false;
+  this.entidadSeleccionada = null;
+  this.eliminarLogico = false;
+
+  this.pagination = {
+    limit: 10,
+    offset: 0,
+    count: -1,
+    sort: '',
+    order: '',
+  };
+
+this.consulta = {
+  indice: 0,
+  tamano: 10,
+  ord_columna: '',
+  ord_direccion: '',
+  recalcular_totales: true,
+  consecutivo: 0,
+  FiltroConsulta: [],
+};
+
+
+}
+
+CerrarDialogos(): void {
+  if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
+  if (this.dialogColPickRef) this.dialogColPickRef.close();
+  if (this.dialogLinkPickRef) this.dialogLinkPickRef.close();
+}
+
+
   ngOnInit(): void {
     this.ConfiguraTabla();
     this.FiltrosListener();
     this.FiltrosListosListener();
     this.ObtieneMetadatosListener();
     this.ObtienePaginaListener();
-    this.ObtenerTraducciones();
     this.ObtieneResultadoAPI();
+    this.ObtenerTraducciones();
+    this.OtieneReset();
   }
+
+  OtieneReset() {
+    this.editorService
+    .ObtieneResetUI()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((reset) => {
+      if (reset) {
+        this.CerrarDialogos();
+        this.ResetUI();
+      }
+    });
+  }
+
 
   ObtieneResultadoAPI(): void {
     this.editorService.ObtieneResultadoAPI()
@@ -243,14 +331,32 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
       });
   }
 
+
+
+  IrALink(link: EntidadVinculada): void {
+    this.CerrarDialogos();
+    this.editorService.Push2Stack(this.editorService.entidad, this.entidadSeleccionada, link);
+  }
+
+  public MostrarLinks(): void {
+    this.dialogLinkPickRef = this.dialogService
+      .open(this.dialogLinks, { context: '' });
+  }
+
   ObtieneMetadatosListener() {
     this.editorService
       .ObtieneMetadatosDisponibles()
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe((validos) => {
-        if (validos) {
-
-          this.eliminarLogico  = (validos.ElminarLogico === true) ? true : false;
+      .subscribe((metadatos) => {
+        if (metadatos) {
+          this.eliminarLogico  = (metadatos.ElminarLogico === true) ? true : false;
+          if (metadatos.EntidadesVinculadas) {
+            metadatos.EntidadesVinculadas.forEach( e => {
+                this.vinculos.push(e);
+                this.ts.push('entidades.' + e.EntidadHijo.toLowerCase());
+            });
+          }
+          this.ObtenerTraducciones();
 
           if (this.eliminarLogico) {
             this.filtros.push(this.FiltroEliminadas());
@@ -274,6 +380,11 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
     for (let i = 0; i < Propiedades.length; i++) {
       const c = this.editorService.metadatos.Propiedades[i];
 
+      let eslista = false;
+      if (c.AtributoLista) {
+        eslista = true;
+      }
+
         if (c.MostrarEnTabla ) {
           columnas.push({
             Id: c.Id,
@@ -284,6 +395,7 @@ export class PikaTableComponent extends ComponenteBase implements OnInit, OnDest
             Alternable: c.AlternarEnTabla,
             Tipo: c.TipoDatoId,
             NombreI18n: c.NombreI18n,
+            EsLista: eslista,
           });
         }
     }

@@ -1,27 +1,46 @@
+import { NavegacionVinculada, EntidadVinculada, TipoCardinalidad } from './../../../@pika/metadata/entidad-vinculada';
+import { SesionQuery } from './../../../@pika/state/sesion.query';
+import { Dictionary } from './../../../@core/comunes/dictionary';
 import { TraduccionEntidad } from './../../../@core/comunes/traduccion-entidad';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
 import { Consulta } from './../../../@pika/consulta/consulta';
-import { ColumnaTabla } from './../model/columna-tabla';
 import { environment } from './../../../../environments/environment.prod';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
-import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { MetadataInfo, Propiedad } from '../../../@pika/metadata';
 import { Paginado } from '../../../@pika/consulta';
-import { debounceTime, first } from 'rxjs/operators';
+import { debounceTime, first, takeUntil, filter } from 'rxjs/operators';
 import { ResultadoAPI, TipoOperacionAPI } from '../../../@pika/pika-api/resultado-api';
 import { TarjetaVisible } from '../model/tarjeta-visible';
-
+import { AtributoLista } from '../../../@pika/metadata/atributo-valorlista';
+import { Evento } from '../../../@pika/metadata/atributo-evento';
+import { TextoDesdeId } from '../../../@pika/metadata/texto-desde-id';
+import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
 
 @Injectable()
     export class EditorService {
+    private onDestroy$: Subject<void> = new Subject<void>();
+
+    private diccionarioMetadatos: Dictionary = new Dictionary();
+
+    private usarPaginadoRelacional: boolean = false;
+
+    // Almacena las propiedades de navegacion
+    private navstack: NavegacionVinculada[] = [];
 
     // Entidad actual recibida vía el ruteo
-    private entidad: string;
+    public entidad: string;
+    public PropCache: Dictionary;
+
+    // Propeidades para navegación vinculada
+    public TipoOrigenId: string = '';
+    public OrigenId: string = '';
+    private isHardReset: boolean = false;
 
     // Filtros de búsqueda disponbiles para el editor actual
     private filtros: FiltroConsulta[] = [];
@@ -32,18 +51,24 @@ import { TarjetaVisible } from '../model/tarjeta-visible';
     public cliente: PikaApiService<any, string>;
 
     public metadatos: MetadataInfo = null;
+    public propiedadesLista: string [] = [];
+
+    public ListaIds: TextoDesdeId[] = [];
 
     // Subjects relacionados con la gestión de configuración de búsueda
     private EliminaFiltroSubject = new BehaviorSubject(null);
     private EliminaTodosFiltrosSubject = new BehaviorSubject(null);
     private FiltrosSubject = new BehaviorSubject([]);
     private FiltrosValidosSubject = new BehaviorSubject(false);
+    private ResetSubject = new BehaviorSubject(false);
 
     // Subject relacionados con la gestion de metadatos
     private MetdatosDisponibles = new BehaviorSubject(null);
 
     // Subject relacionados con llamadas a meetodos de API
     private NuevaPaginaisponible = new BehaviorSubject(null);
+    private NuevaListaDisponible = new BehaviorSubject(null);
+    private EventosDisponibles = new BehaviorSubject(null);
 
     // Subjet para CRUD de API
     private SubjectEditarEntidad = new BehaviorSubject(null);
@@ -59,33 +84,114 @@ import { TarjetaVisible } from '../model/tarjeta-visible';
 
     // Contructor
     constructor(
+      private sesionQuery: SesionQuery,
       private ts: TranslateService,
       private router: Router,
       private route: ActivatedRoute,
       private applog: AppLogService,
       private http: HttpClient) {
-      this.Init();
+      this.InitPropCache();
     }
 
-    // al iniciar
-    Init(): void {
+
+
+  // Llama a la configuración deuna nueva entidad
+  Push2Stack(entidad: string, instancia: any, vinculo: EntidadVinculada): void {
+    this.entidad  = vinculo.EntidadHijo;
+    const item: NavegacionVinculada = new NavegacionVinculada(vinculo, entidad, instancia);
+    this.navstack.push(item);
+    this.InitByName(this.entidad);
+  }
+
+
+  private InitPropCache(): void {
+    this.PropCache = new Dictionary();
+    this.sesionQuery.dominioid$.pipe(takeUntil(this.onDestroy$))
+    .subscribe( d => {
+      this.PropCache.set('DominioId', d);
+    });
+  }
+
+   // Inicia el proceso de configuración para el tipo de entidad
+   private InitByName(entidad: string): void {
+    this.Reset(this.isHardReset);
+    if (this.isHardReset) this.isHardReset = false;
+
+    if (this.diccionarioMetadatos.has(entidad)) {
+      let m: MetadataInfo = JSON.parse(JSON.stringify(this.diccionarioMetadatos.get(entidad)));
+      m = this.ProcesarMetadatos(m);
+      this.EstableceMetadatos(m);
+    } else {
+      this.LlamadaAPI.next(false);
+      this.cliente = new PikaApiService(environment.apiUrl, this.http);
+      this.cliente.GetMetadata(entidad).pipe(first())
+      .subscribe(metadatos => {
+          this.diccionarioMetadatos.set(entidad, metadatos);
+          let m: MetadataInfo = JSON.parse(JSON.stringify(metadatos));
+          m = this.ProcesarMetadatos(m);
+          this.EstableceMetadatos(m);
+      }, (error) => {
+          this.handleHTTPError(error, 'metadatos', '');
+      },
+        () => {
+          this.LlamadaAPI.next(false);
+      });
+    }
+   }
+
+  
+   // Establece las propiedades por defecto de los metadatos
+   private ProcesarMetadatos(m: MetadataInfo): MetadataInfo {
+      this.usarPaginadoRelacional = false;
+      this.entidad = m.Tipo;
+
+      const cachekeys =  Object.keys(this.PropCache.items)
+      for ( let i = 0; i < m.Propiedades.length; i++ ) {
+        if (cachekeys.indexOf(m.Propiedades[i].Id) >= 0 ) {
+          m.Propiedades[i].ValorDefault = this.PropCache.get(m.Propiedades[i].Id);
+        }
+      }
+
+      if (m.PaginadoRelacional && m.PaginadoRelacional === true) {
+          this.usarPaginadoRelacional = true;
+          const n: NavegacionVinculada = this.navstack[this.navstack.length - 1];
+          const Ids = m.Propiedades.filter(x => x.EsIdRegistro === true);
+
+
+          if (Ids.length > 0) {
+           this.OrigenId = n.InstanciaPadre[Ids[0].Id];
+           this.TipoOrigenId = n.EntidadPadre;
+          }
+
+          for ( let i = 0; i < m.Propiedades.length; i++ ) {
+              if (m.Propiedades[i].Id === n.PropiedadHijo) {
+                m.Propiedades[i].ValorDefault = n.InstanciaPadre[n.PropiedadPadre];
+              }
+              if (m.Propiedades[i].Id === 'OrigenId') m.Propiedades[i].ValorDefault = this.OrigenId;
+              if (m.Propiedades[i].Id === 'TipoOrigenId') m.Propiedades[i].ValorDefault = this.TipoOrigenId;
+          }
+      }
+      return m;
+   }
+
+    // al iniciar por ruta
+    public InitByRoute(): void {
+        this.isHardReset = true;
         this.route.queryParams
         .subscribe(
             (params) => {
+              let entidad = '';
               if (params[environment.editorToken]) {
-                this.entidad = params[environment.editorToken];
+                entidad = params[environment.editorToken];
               }
-              if (this.entidad !== '') {
-                this.LlamadaAPI.next(false);
-                this.cliente = new PikaApiService(environment.apiUrl, this.entidad, this.router, this.http);
-                this.cliente.GetMetadata().pipe(first()).subscribe(x => {
-                    this.EstableceMetadatos(x);
-                }, (error) => {
-                    this.handleHTTPError(error, 'metadatos', '');
-                },
-                  () => {
-                    this.LlamadaAPI.next(false);
-                });
+              if (entidad !== '') {
+                const v: EntidadVinculada = {
+                  Cardinalidad : TipoCardinalidad.UnoVarios,
+                  EntidadHijo : entidad,
+                  PropiedadPadre: '',
+                  PropiedadHijo: '',
+                };
+                this.Push2Stack(null, null, v);
               } else {
                 this.applog.FallaT('editor-pika.mensajes.err-entidad-ruta');
               }
@@ -155,11 +261,78 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
 
 }
 
+private Reset(hard: boolean): void {
+  this.PropCache.clear();
+  this.TipoOrigenId = '';
+  this.OrigenId = '';
+  this.entidad = '';
+  this.filtros = [];
+  this.consultaActual = null;
+  this.paginaActual = null;
+  this.metadatos = null;
+  if (hard) {
+    this.navstack = [];
+  }
+
+  this.ResetSubject.next(true);
+}
+
     // --------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------
 
+    // GEstión de listas
+    // ------------------------------------------------------
+    ObtieneNuevasListas(): Observable<AtributoLista> {
+      return this.NuevaListaDisponible.asObservable();
+    }
+
+    SolicitarLista(lista: AtributoLista, consulta: Consulta) {
+      let lid = `list-${lista.Entidad}`;
+      consulta.FiltroConsulta.forEach( f => {
+        lid  = lid + f.Propiedad + '-' + f.Valor;
+      });
+
+      if (this.diccionarioMetadatos.has(lid)) {
+        console.log("Leyendo de cahe   " + lid);
+        lista.Valores = this.diccionarioMetadatos.get(lid);
+        this.NuevaListaDisponible.next(lista);
+        return;
+      }
+
+      // Obtiene de la red si la lista no esta en cache
+      this.cliente.PairList(lista, consulta).pipe(
+         debounceTime(500),
+      ).subscribe( resultado =>  {
+         console.log("Leyendo de red" +  lid);
+         lista.Valores = resultado;
+         this.diccionarioMetadatos.set(lid, resultado);
+         this.NuevaListaDisponible.next(lista);
+      }, (err) => {
+        this.handleHTTPError(err, this.entidad, '');
+        lista.Valores = null;
+        this.NuevaListaDisponible.next(lista);
+      });
+    }
+
+
+    // Eventos interproceso
+    // ---------------------------------------
+    ObtieneEventos(): Observable<Evento> {
+      return this.EventosDisponibles.asObservable();
+    }
+
+    EmiteEvento (evt: Evento): void {
+        this.EventosDisponibles.next(evt);
+    }
+
+
     // Eventos UI
     // ------------------------------------------------------
+
+    ObtieneResetUI(): Observable<boolean> {
+      return this.ResetSubject.asObservable();
+    }
+
     ObtieneTarjetaTraseraVisible(): Observable<TarjetaVisible> {
       return this.TarjetaTraseraVivible.asObservable();
     }
@@ -198,7 +371,7 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
     ActualizarEntidad(Id: string, entidad: any, idoperacion: string): void  {
       this.LlamadaAPI.next(true);
        const nombre = this.ObtenerNombre(entidad);
-       this.cliente.Put(Id, entidad).pipe(
+       this.cliente.Put(Id, entidad, this.entidad).pipe(
          debounceTime(500),
        ).subscribe( resultado =>  {
 
@@ -219,7 +392,7 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
    CreaEntidad(entidad: any, idoperacion: string): void  {
     this.LlamadaAPI.next(true);
      const nombre = this.ObtenerNombre(entidad);
-     this.cliente.Post(entidad).pipe(
+     this.cliente.Post(entidad, this.entidad).pipe(
        debounceTime(500),
      ).subscribe( resultado =>  {
 
@@ -240,7 +413,7 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
 
    EliminarEntidad(Id: string, nombre: string, idoperacion: string): void  {
     this.LlamadaAPI.next(true);
-     this.cliente.Delete([Id]).pipe(
+     this.cliente.Delete([Id], this.entidad).pipe(
        debounceTime(500),
      ).subscribe( resultado =>  {
 
@@ -284,13 +457,75 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
 
 
     NuevaConsulta(consulta: Consulta): void {
-      this.LlamadaAPI.next(true);
-        this.cliente.Page(consulta).pipe(
+
+      if (this.usarPaginadoRelacional) {
+        this.ObtenerPaginaRelacional(consulta);
+      } else {
+        this.ObtenerPagina(consulta);
+      }
+
+    }
+
+    private BuscaTextoDeIdentificadores(pagina: Paginado<any>): void {
+      const metadata: MetadataInfo = this.diccionarioMetadatos.get(this.entidad);
+      const buscar: string [] = [];
+
+      metadata.Propiedades.forEach( p => {
+        if (p.AtributoLista) {
+          let ids = '';
+          // Recorre todos los elementos de la misma propiedad y obtiene
+          // los Ids inexitsnetes en el diccionario
+          pagina.Elementos.forEach( item => {
+            if (this.ListaIds.findIndex(x =>  x.Id === item[p.Id] &&
+              x.Entidad === p.AtributoLista.Entidad ) < 0 ) {
+                if ( item[p.Id] !== null) ids = ids + item[p.Id] + '&';
+              }
+          });
+          // Si hay Ids faltantes los añade a una lista de bpsqueuda
+          if (ids !== '') {
+            buscar.push( p.AtributoLista.Entidad + '|' + ids );
+          }
+        }
+      });
+
+      if (buscar.length > 0) {
+        const tasks$ = [];
+        buscar.forEach( s => {
+            const entidad = s.split('|')[0];
+            const lids =  s.split('|')[1].split('&');
+            tasks$.push( this.cliente.PairListbyId(lids, entidad).first());
+        });
+        Observable.forkJoin(...tasks$).subscribe(results => {
+          let idx = 0;
+          results.forEach(element => {
+            const entidad = buscar[idx].split('|')[0];
+            element.forEach( (item: ValorListaOrdenada) => {
+
+              if (this.ListaIds.findIndex(x =>  x.Id === item.Id &&
+                x.Entidad === entidad ) < 0 )
+              this.ListaIds.push( new TextoDesdeId(entidad, item.Id, item.Texto ));
+            });
+            idx ++;
+          });
+          this.VinculaTextpIdentificadores(pagina);
+         });
+      } else {
+        this.VinculaTextpIdentificadores(pagina);
+      }
+    }
+
+    private VinculaTextpIdentificadores(pagina: Paginado<any>): void {
+      this.paginaActual = pagina;
+      this.NuevaPaginaisponible.next(this.paginaActual);
+    }
+
+    private ObtenerPaginaRelacional (consulta: Consulta) {
+        this.LlamadaAPI.next(true);
+        this.cliente.PageRelated(this.TipoOrigenId, this.OrigenId , consulta, this.entidad).pipe(
             debounceTime(500),
         ).subscribe( x => {
-            this.paginaActual = x;
             this.consultaActual = consulta;
-            this.NuevaPaginaisponible.next(this.paginaActual);
+            this.BuscaTextoDeIdentificadores(x);
         }, (error) => {
           this.handleHTTPError(error, 'pagina-resultados', '');
         },
@@ -299,6 +534,26 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
          });
     }
 
+
+    public TypeAhead(lista: AtributoLista, texto: string): Observable<ValorListaOrdenada[]> {
+      return this.cliente.PairListTypeAhead(lista, texto);
+    }
+
+
+    private ObtenerPagina (consulta: Consulta) {
+      this.LlamadaAPI.next(true);
+      this.cliente.Page(consulta, this.entidad).pipe(
+          debounceTime(500),
+      ).subscribe( x => {
+          this.consultaActual = consulta;
+          this.BuscaTextoDeIdentificadores(x);
+      }, (error) => {
+        this.handleHTTPError(error, 'pagina-resultados', '');
+      },
+      () => {
+        this.LlamadaAPI.next(false);
+       });
+    }
 
     // --------------------------------------------------------------------------------------------------------------
     // --------------------------------------------------------------------------------------------------------------
@@ -399,5 +654,9 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
         this.FiltrosSubject.next(this.filtros);
     }
 
+
+    OnDestry(): void {
+      this.onDestroy$.next();
+    }
 
 }

@@ -9,7 +9,7 @@ import { tTime, tDate, Propiedad } from '../../../../@pika/metadata';
   styleUrls: ['./pika-datetime-editor.component.scss']
 })
 export class PikaDatetimeEditorComponent implements CampoEditable, OnInit {
-
+  isUpdate: boolean;
   config: Propiedad;
   group: FormGroup;
   isDateTime: boolean = true;

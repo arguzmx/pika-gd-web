@@ -141,7 +141,20 @@ export class PikaFormSearchComponent extends ComponenteBase  implements OnInit, 
     this.FiltrosListener();
     this.ObtieneMetadatosListener();
     this.ObtenerTraducciones();
+    this.OtieneReset();
   }
+
+  OtieneReset() {
+    this.editorService
+    .ObtieneResetUI()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((reset) => {
+      if (reset) {
+        this.regenerarForma();
+      }
+    });
+  }
+
 
   // Recibe todos las propiedades disponibles
   ObtieneMetadatosListener() {

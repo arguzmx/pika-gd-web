@@ -4,16 +4,19 @@
             <nb-card-front>
                 <nb-card accent="info" size="large">
                     <nb-card-header>
-                        Demo
+                        {{NombreEntidad}}
                         <button class="single-view-button" nbButton size="small" on-click="refrescarTabla()"
                             nbPopoverPlacement="bottom" [nbPopover]="t['ui.actualizar']" nbPopoverTrigger="hint">
                             <nb-icon icon="refresh" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small"  *ngIf="vincularActivo" on-click="mostrarVinculos()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.propiedades']" nbPopoverTrigger="hint">
+                            <nb-icon icon="list-outline" pack="eva"></nb-icon>
                         </button>
                         <button class="grid-view-button" nbButton size="small" on-click="mostrarCrear()"
                             nbPopoverPlacement="bottom" [nbPopover]="t['ui.crear']" nbPopoverTrigger="hint">
                             <nb-icon icon="plus-outline" pack="eva"></nb-icon>
                         </button>
-                        
                         <button class="grid-view-button" nbButton size="small" *ngIf="editarActivo" on-click="mostrarEditar()"
                             nbPopoverPlacement="bottom" [nbPopover]="t['ui.editar']" nbPopoverTrigger="hint">
                             <nb-icon icon="edit-2-outline" pack="eva"></nb-icon>

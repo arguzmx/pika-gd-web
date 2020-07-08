@@ -12,6 +12,7 @@ import { isDate, parseISO } from 'date-fns';
 import { AppLogService } from '../../../@pika/servicios/app-log/app-log.service';
 import { Acciones } from '../../../@pika/metadata/acciones-crud';
 
+
 @Component({
   selector: 'ngx-pika-form-edit',
   templateUrl: './pika-form-edit.component.html',
@@ -68,7 +69,7 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
         });
   }
 
-
+ 
 
   guardar(): void {
     this.cerrarEditor = true;
@@ -106,6 +107,18 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
       this.formaDinamica.getRawValue(), `add-${this.opindex}` );
   }
 
+  ResetUI(): void {
+    // this.CurrentOpId = '';
+    // this.cerrarEditor = false;
+    // this.enLlamadaApi = false;
+    // this.modoEditar = false;
+    // this.entidadEdicion = null;
+    // this.propiedadesActivas = [];
+    const controls = Object.keys(this.formaDinamica.controls);
+        controls.forEach((control) => {
+          this.formaDinamica.removeControl(control);
+    });
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
@@ -116,14 +129,21 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
     this.formaDinamica = this.createGroup();
     this.ObtieneResultadoCRUD();
     this.ObtieneEntidadEditar();
+    this.FormEvents();
   }
 
+  private FormEvents(): void {
+    this.formaDinamica.valueChanges.subscribe( x => {
+        
+    });
+  }
 
   ObtieneEntidadEditar(): void {
     this.editorService
     .ObtieneEditarEntidad()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe((entidad) => {
+      this.ResetUI();
       this.propiedadesActivas = [];
       if (entidad) {
         this.modoEditar = true;
@@ -165,26 +185,24 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
   }
 
   EstableceValoresDefault(): void {
-
     this.editorService.metadatos.Propiedades.forEach( p => {
-      let valor =  this.getValor(p.Valor, p);
+      let valor = null;
+      valor =  this.getValor(p.Valor, p);
       if (!valor) {
         valor =  this.getValor(p.ValorDefault, p);
       }
-      if (this.formaDinamica.controls[p.Id])
-      this.formaDinamica.controls[p.Id].setValue(valor);
+      if (this.formaDinamica.controls[p.Id]) {
+        this.formaDinamica.controls[p.Id].setValue(valor);
+      }
     });
-
   }
 
   EstableceValoresEntidad(entidad: any): void {
-
     this.editorService.metadatos.Propiedades.forEach( p => {
       const valor =  entidad[p.Id];
       if (this.formaDinamica.controls[p.Id])
       this.formaDinamica.controls[p.Id].setValue(valor);
     });
-
   }
 
 
@@ -259,6 +277,9 @@ export class PikaFormEditComponent extends ComponenteBase  implements OnInit, On
         if (p.ValidadorTexto) {
           validadorres.push(Validators.minLength(p.ValidadorTexto.longmin));
           validadorres.push(Validators.maxLength(p.ValidadorTexto.longmax));
+          if (p.ValidadorTexto.regexp) {
+            validadorres.push(Validators.pattern(p.ValidadorTexto.regexp));
+          }
         }
 
         if (p.ValidadorNumero) {

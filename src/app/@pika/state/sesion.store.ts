@@ -1,3 +1,4 @@
+import { DominioActivo } from './../sesion/dominio-activo';
 import { Sesion } from './sesion';
 import { Injectable } from '@angular/core';
 import { Store, StoreConfig } from '@datorama/akita';
@@ -28,6 +29,7 @@ export function createInitialState(): SesionState {
       Nombre: '',
       isLoggedIn: false,
       uilocale: 'es-MX',
+      Dominios: [],
       Menus: [
         {
           title: 'IoT Dashboard',
@@ -307,6 +309,13 @@ export class SesionStore extends Store<SesionState> {
 
   constructor() {
     super(createInitialState());
+  }
+
+
+  setDominios(dominios: DominioActivo[]) {
+    const sesion = {... this.getValue().sesion};
+    sesion.Dominios = dominios;
+    this.update({ sesion });
   }
 
   setPropiedad(propiedad: PropiedadesSesion, valor: any) {

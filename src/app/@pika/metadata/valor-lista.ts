@@ -1,4 +1,4 @@
-export class ValorLista {
+export class ValorListaOrdenada {
     Id: string;
     Texto: string;
     Indice: number;

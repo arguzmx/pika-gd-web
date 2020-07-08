@@ -2,7 +2,7 @@
     <div class="form-group" [formGroup]="group">
         <label [for]="config.Id" class="label">&nbsp;{{config.NombreI18n}}</label>
         <nb-select size="small" fullWidth="true" hero="true" [formControlName]="config.Id"
-            [id]="config.Id">
+            [id]="config.Id" [selected]="selected" (selectedChange)="onChange($event)">
             <nb-option *ngFor="let item of list" [value]="item.Id">{{item.Texto}}</nb-option>
         </nb-select>
     </div>

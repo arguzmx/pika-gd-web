@@ -18,4 +18,5 @@ export interface CampoBuscable {
 export interface CampoEditable {
   config: Propiedad;
   group: FormGroup;
+  isUpdate: boolean;
 }

@@ -23,16 +23,37 @@
                     </nb-select>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12">
-                <div class="form-group"  [formGroup]="group">
-                    <nb-select (selectedChange)="inputChange($event)"
-                    size="small" fullWidth="true" hero="true" 
-                    [formControlName]="ctl1Id">
-                        <nb-option *ngFor="let item of list" [value]="item.Id">{{item.Texto}}</nb-option>
-                        
-                    </nb-select>
-                </div>
-            </div>
+            <div *ngIf="isTypeAhead; then typeaheadmode else listmode"></div>
+                <ng-template #listmode>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="form-group"  [formGroup]="group">
+                            <nb-select (selectedChange)="inputChange($event)"
+                            size="small" fullWidth="true" hero="true" 
+                            [formControlName]="ctl1Id">
+                                <nb-option *ngFor="let item of list" [value]="item.Id">{{item.Texto}}</nb-option>
+                                
+                            </nb-select>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template #typeaheadmode>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="form-group"  [formGroup]="group">
+                            <ng-select [items]="elementos$ | async"
+                            bindLabel="Texto"
+                            bindValue="Id"
+                            (change)="onTypeaheadChange($event)"
+                            [addTag]="true"
+                            [multiple]="true"
+                            [hideSelected]="true"
+                            [trackByFn]="trackByFn"
+                            [minTermLength]="2"
+                            [loading]="listaLoading"
+                            [typeahead]="listInput$">
+                            </ng-select>
+                        </div>
+                    </div>
+                </ng-template>
         </div>
     </div>
   

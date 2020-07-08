@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./pika-bool-editor.component.scss']
 })
 export class PikaBoolEditorComponent implements CampoEditable, OnInit {
-
+  isUpdate: boolean;
   config: Propiedad;
   group: FormGroup;
   constructor() { }

@@ -10,7 +10,7 @@ import { tDouble, tInt64, tInt32 } from '../../../../@pika/metadata';
   styleUrls: ['./pika-numeric-editor.component.scss']
 })
 export class PikaNumericEditorComponent implements CampoEditable, OnInit {
-
+  isUpdate: boolean;
   config: Propiedad;
   group: FormGroup;
   mask: string = 'separator.4';

@@ -1,3 +1,4 @@
+import { DominioActivo } from './../sesion/dominio-activo';
 import { NbMenuItem } from '@nebular/theme';
 
 export interface Sesion {
@@ -10,5 +11,6 @@ export interface Sesion {
     isLoggedIn: boolean;
     Menus: NbMenuItem[];
     uilocale: string;
+    Dominios: DominioActivo[];
 }
 

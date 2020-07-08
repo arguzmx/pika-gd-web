@@ -1,4 +1,4 @@
-import { PropiedadesSesion } from './../../@pika/state/sesion.store';
+import { PikaSesinService } from './../../@pika/pika-api/pika-sesion-service';
 import { Component, OnDestroy } from '@angular/core';
 import { NbAuthResult, NbAuthService } from '@nebular/auth';
 import { Router } from '@angular/router';
@@ -20,7 +20,8 @@ export class OAuth2CallbackComponent implements OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private authService: NbAuthService, private sessionStore: SesionStore,  private router: Router) {
+  constructor(private authService: NbAuthService, private sesionService: PikaSesinService,
+    private sessionStore: SesionStore,  private router: Router) {
 
     this.authService.authenticate('is4')
       .pipe(takeUntil(this.destroy$))
@@ -28,7 +29,11 @@ export class OAuth2CallbackComponent implements OnDestroy {
         if (authResult.isSuccess() ) {
           const token = authResult.getToken().getPayload().access_token;
           const info = jwt_decode(token);
-          sessionStore.login(info.sub, token);
+
+          this.sessionStore.login(info.sub, token);
+
+          this.sesionService.GetDominios();
+
           if ( authResult.getRedirect()) {
             this.router.navigateByUrl(environment.callbackRoute);
           } else {

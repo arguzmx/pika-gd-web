@@ -24,9 +24,11 @@ import { EditFliedsDirective } from './pika-form-edit/edit-field.directive';
 import { PikaBoolEditorComponent } from './pika-form-edit/pika-bool-editor/pika-bool-editor.component';
 import { PikaDatetimeEditorComponent } from './pika-form-edit/pika-datetime-editor/pika-datetime-editor.component';
 import { PikaHiddenEditorComponent } from './pika-form-edit/pika-hidden-editor/pika-hidden-editor.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   imports: [
+    NgSelectModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     NgxMaskModule.forRoot(),
