@@ -41,4 +41,5 @@ export interface Propiedad {
     AlternarEnTabla: boolean;
     IndiceOrdenamientoTabla: number;
     Contextual: boolean;
+    Etiqueta: boolean;
 }

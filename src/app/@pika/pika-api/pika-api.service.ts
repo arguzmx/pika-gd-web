@@ -8,7 +8,6 @@ import { MetadataInfo } from '../metadata';
 import { retry } from 'rxjs/operators';
 import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
-import { Operaciones } from '../metadata/atributo-evento';
 
 const retryCount: number = 1;
 
@@ -128,7 +127,7 @@ export class PikaApiService <T, U> {
     const endpoint = this.CrearEndpoint(entidad);
     const qs = this.getQueryStringConsulta(consulta);
 
-    return this.http.get<Paginado<T>>(endpoint + `page/${Type}/${Id}` + qs)
+    return this.http.get<Paginado<T>>(endpoint + `page/${Type.toLowerCase()}/${Id}` + qs)
     .pipe(
       retry(retryCount),
     );

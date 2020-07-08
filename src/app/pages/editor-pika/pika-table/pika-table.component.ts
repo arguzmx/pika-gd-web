@@ -335,7 +335,37 @@ CerrarDialogos(): void {
 
   IrALink(link: EntidadVinculada): void {
     this.CerrarDialogos();
-    this.editorService.Push2Stack(this.editorService.entidad, this.entidadSeleccionada, link);
+
+    if (this.entidadSeleccionada) {
+        // this.editorService.Push2Stack(this.editorService.entidad, this.entidadSeleccionada, link);
+        const Id = this.ObtenerId(this.entidadSeleccionada);
+        if (Id) {
+          this.editorService.Push2StackId(this.editorService.entidad,
+            this.entidadSeleccionada.Id, link.EntidadHijo,
+            this.ObtenerNombre(this.entidadSeleccionada) );
+        } else {
+          this.appLog.FallaT('editor-pika.mensajes.err-id-vinculo', null , null);
+        }
+    } else {
+      this.appLog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
+    }
+  }
+
+
+  private ObtenerId(entidad: any): string {
+    if ( !entidad ) return null;
+    const index = this.editorService.metadatos.Propiedades.findIndex( x => x.EsIndice );
+    let Id = '';
+    if ( index >= 0 ) {
+      Id = entidad[this.editorService.metadatos.Propiedades[index].Id];
+    } else {
+      if (entidad.Id) {
+        Id = entidad.Id;
+      } else {
+        Id = null;
+      }
+    }
+    return Id;
   }
 
   public MostrarLinks(): void {
@@ -452,11 +482,18 @@ CerrarDialogos(): void {
     });
   }
 
-     // INtenta obtener le nombre de la entidad para el despliegue
-     private ObtenerNombre(entidad: any): string {
+    // INtenta obtener le nombre de la entidad para el despliegue
+    private ObtenerNombre(entidad: any): string {
+      if ( !entidad ) return '';
       let n: string = '';
-      if (entidad['Nombre']) n = entidad['Nombre'];
-      if ((n === '') && (entidad['Descripcion'])) n = entidad['Descripcion'];
+      const index = this.editorService.metadatos.Propiedades
+      .findIndex(x => x.Etiqueta === true);
+      if (index >= 0) {
+        n = entidad[this.editorService.metadatos.Propiedades[index].Id];
+      } else {
+        if (entidad['Nombre']) n = entidad['Nombre'];
+        if ((n === '') && (entidad['Descripcion'])) n = entidad['Descripcion'];
+      }
       return n;
    }
 
