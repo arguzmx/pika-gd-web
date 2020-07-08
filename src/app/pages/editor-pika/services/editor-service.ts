@@ -1,4 +1,3 @@
-import { NavegacionVinculada, EntidadVinculada, TipoCardinalidad } from './../../../@pika/metadata/entidad-vinculada';
 import { SesionQuery } from './../../../@pika/state/sesion.query';
 import { Dictionary } from './../../../@core/comunes/dictionary';
 import { TraduccionEntidad } from './../../../@core/comunes/traduccion-entidad';
@@ -9,7 +8,7 @@ import { environment } from './../../../../environments/environment.prod';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
 import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { MetadataInfo, Propiedad } from '../../../@pika/metadata';
@@ -28,10 +27,7 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
 
     private diccionarioMetadatos: Dictionary = new Dictionary();
 
-    private usarPaginadoRelacional: boolean = false;
-
-    // Almacena las propiedades de navegacion
-    private navstack: NavegacionVinculada[] = [];
+    public usarPaginadoRelacional: boolean = false;
 
     // Entidad actual recibida vía el ruteo
     public entidad: string;
@@ -40,6 +36,7 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
     // Propeidades para navegación vinculada
     public TipoOrigenId: string = '';
     public OrigenId: string = '';
+    public OrigenNombre: string = '';
     private isHardReset: boolean = false;
 
     // Filtros de búsqueda disponbiles para el editor actual
@@ -53,7 +50,11 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
     public metadatos: MetadataInfo = null;
     public propiedadesLista: string [] = [];
 
+    // Almacena las traudcciones de un nomnre de instancoi para un identificador
     public ListaIds: TextoDesdeId[] = [];
+
+    // Almacena el nombre de una instancia en base a su Id
+    public NombreIds: TextoDesdeId[] = [];
 
     // Subjects relacionados con la gestión de configuración de búsueda
     private EliminaFiltroSubject = new BehaviorSubject(null);
@@ -91,18 +92,23 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
       private applog: AppLogService,
       private http: HttpClient) {
       this.InitPropCache();
+      this.InitByRoute();
     }
 
 
+    Push2StackId(entidadOrigen: string, id: string, entidadDestino: string, nombre: string): void {
 
-  // Llama a la configuración deuna nueva entidad
-  Push2Stack(entidad: string, instancia: any, vinculo: EntidadVinculada): void {
-    this.entidad  = vinculo.EntidadHijo;
-    const item: NavegacionVinculada = new NavegacionVinculada(vinculo, entidad, instancia);
-    this.navstack.push(item);
-    this.InitByName(this.entidad);
+    const index = this.NombreIds.findIndex( x => x.Entidad === entidadOrigen.toLocaleLowerCase()
+    && x.Id === id);
+    if ( index < 0 ){
+      this.NombreIds.push( { Texto: nombre, Id: id, Entidad: entidadOrigen.toLocaleLowerCase() } );
+    } else {
+      this.NombreIds[index].Texto = nombre;
+    }
+
+    // tslint:disable-next-line: max-line-length
+    this.router.navigateByUrl(`/pages/editor?${environment.editorToken}=${entidadDestino}&${environment.editorTokenOrigenId}=${id}&${environment.editorTokenOrigen}=${entidadOrigen}`);
   }
-
 
   private InitPropCache(): void {
     this.PropCache = new Dictionary();
@@ -139,13 +145,13 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
     }
    }
 
-  
+
    // Establece las propiedades por defecto de los metadatos
    private ProcesarMetadatos(m: MetadataInfo): MetadataInfo {
       this.usarPaginadoRelacional = false;
-      this.entidad = m.Tipo;
+      this.entidad = m.Tipo.toLowerCase();
 
-      const cachekeys =  Object.keys(this.PropCache.items)
+      const cachekeys =  Object.keys(this.PropCache.items);
       for ( let i = 0; i < m.Propiedades.length; i++ ) {
         if (cachekeys.indexOf(m.Propiedades[i].Id) >= 0 ) {
           m.Propiedades[i].ValorDefault = this.PropCache.get(m.Propiedades[i].Id);
@@ -154,19 +160,7 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
 
       if (m.PaginadoRelacional && m.PaginadoRelacional === true) {
           this.usarPaginadoRelacional = true;
-          const n: NavegacionVinculada = this.navstack[this.navstack.length - 1];
-          const Ids = m.Propiedades.filter(x => x.EsIdRegistro === true);
-
-
-          if (Ids.length > 0) {
-           this.OrigenId = n.InstanciaPadre[Ids[0].Id];
-           this.TipoOrigenId = n.EntidadPadre;
-          }
-
           for ( let i = 0; i < m.Propiedades.length; i++ ) {
-              if (m.Propiedades[i].Id === n.PropiedadHijo) {
-                m.Propiedades[i].ValorDefault = n.InstanciaPadre[n.PropiedadPadre];
-              }
               if (m.Propiedades[i].Id === 'OrigenId') m.Propiedades[i].ValorDefault = this.OrigenId;
               if (m.Propiedades[i].Id === 'TipoOrigenId') m.Propiedades[i].ValorDefault = this.TipoOrigenId;
           }
@@ -176,22 +170,32 @@ import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
 
     // al iniciar por ruta
     public InitByRoute(): void {
-        this.isHardReset = true;
         this.route.queryParams
         .subscribe(
             (params) => {
-              let entidad = '';
+              this.entidad = '';
+              this.OrigenNombre = '';
               if (params[environment.editorToken]) {
-                entidad = params[environment.editorToken];
+                this.entidad = params[environment.editorToken].toLocaleLowerCase();
+                this.TipoOrigenId  = params[environment.editorTokenOrigen] ?
+                  params[environment.editorTokenOrigen] : null;
+                this.OrigenId = params[environment.editorTokenOrigenId] ?
+                  params[environment.editorTokenOrigenId] : null;
+                if (this.OrigenId && this.TipoOrigenId) {
+                    const index = this.NombreIds
+                    .findIndex(x => x.Entidad === this.TipoOrigenId.toLocaleLowerCase() &&
+                      x.Id === this.OrigenId);
+
+                    if ( index >= 0) {
+                        this.OrigenNombre = this.NombreIds[index].Texto;
+                    }
+                }
+                if (!this.OrigenNombre) {
+                  this.OrigenNombre = '';
+                }
               }
-              if (entidad !== '') {
-                const v: EntidadVinculada = {
-                  Cardinalidad : TipoCardinalidad.UnoVarios,
-                  EntidadHijo : entidad,
-                  PropiedadPadre: '',
-                  PropiedadHijo: '',
-                };
-                this.Push2Stack(null, null, v);
+              if (this.entidad !== '') {
+                this.InitByName(this.entidad);
               } else {
                 this.applog.FallaT('editor-pika.mensajes.err-entidad-ruta');
               }
@@ -263,17 +267,11 @@ private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): v
 
 private Reset(hard: boolean): void {
   this.PropCache.clear();
-  this.TipoOrigenId = '';
-  this.OrigenId = '';
   this.entidad = '';
   this.filtros = [];
   this.consultaActual = null;
   this.paginaActual = null;
   this.metadatos = null;
-  if (hard) {
-    this.navstack = [];
-  }
-
   this.ResetSubject.next(true);
 }
 
@@ -293,7 +291,6 @@ private Reset(hard: boolean): void {
       });
 
       if (this.diccionarioMetadatos.has(lid)) {
-        console.log("Leyendo de cahe   " + lid);
         lista.Valores = this.diccionarioMetadatos.get(lid);
         this.NuevaListaDisponible.next(lista);
         return;
@@ -303,7 +300,6 @@ private Reset(hard: boolean): void {
       this.cliente.PairList(lista, consulta).pipe(
          debounceTime(500),
       ).subscribe( resultado =>  {
-         console.log("Leyendo de red" +  lid);
          lista.Valores = resultado;
          this.diccionarioMetadatos.set(lid, resultado);
          this.NuevaListaDisponible.next(lista);
@@ -571,7 +567,7 @@ private Reset(hard: boolean): void {
     EstableceMetadatos(metadatos: MetadataInfo): void {
       // Ontiene las traducciones para los encabezados y los asigna a las propeidaes
       // antes de establcerlas en el observable
-      this.ts.get('entidades.propiedades.' + this.entidad).pipe(first())
+      this.ts.get('entidades.propiedades.' + this.entidad.toLowerCase()).pipe(first())
       .subscribe( r => {
         this.metadatos = metadatos;
         this.metadatos.Propiedades.forEach( p => {

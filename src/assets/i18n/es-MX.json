@@ -7,6 +7,7 @@
         "cerrar": "Cerrar",
         "eliminar": "Eliminar",
         "guardar": "Guardar",
+        "regresar": "Regresar",
         "guardar-adicionar": "Guardar y añadir",
         "aceptar": "Aceptar",
         "cancelar": "Cancelar",
@@ -54,6 +55,21 @@
                 "TipoOrigenId": "TipoOrigen",
                 "Eliminada": "Eliminado"
             },
+            "direccionpostal" : {
+                "Id": "Id",
+                "Nombre": "Etiqueta",
+                "Calle": "Calle",
+                "NoInterno": "# int",
+                "NoExterno": "# ext",
+                "Colonia": "Colonia",
+                "CP": "CP",
+                "Municipio": "Municipio",
+                "EstadoId": "Estado",
+                "PaisId": "Pais",
+                "TipoOrigenId": "TipoOrigenId",
+                "OrigenId":  "OrigenId",
+                "EsDefault": "Pnricipal"
+                },
             "propiedadesusuario": {
                 "UsuarioId": "Id",
                 "username": "Usuario",
@@ -73,6 +89,15 @@
                 "Ultimoacceso": "Acceso",
                 "Eliminada": "Eliminado",
                 "Inactiva": "Inactvo"
+            },
+            "pais": {
+                "Id": "Id",
+                "Nombre": "Nombre"
+            },
+            "estado": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "PaisId": "PaisId"
             }
         }
     },
@@ -90,6 +115,7 @@
             "warn-sin-filtros-busqueda": "No tiene filtros válidos para la búsqueda" ,
             "warn-filtros-existente": "El filtro ya ha sido añadido previamente",
             "warn-sin-columnas": "Debe seleccionar al menos una columna para el despliegue",
+            "warn-sin-seleccion": "Debe seleccionar un registro para la operación",
             "ok-entidad-add": "El elemento '{{nombre}}' ha sido adicionado satisfactoriamente",
             "ok-entidad-act": "El elemento '{{nombre}}' ha sico actualizado satisfactoriamente",
             "ok-entidad-del": "El elemento '{{nombre}}' ha sico eliminado satisfactoriamente",
@@ -99,6 +125,7 @@
             "err-datos-conflicto": "Los datos para {{prefijo}} {{entidad}} no pueden salvarse, generan duplicados o conflictos",
             "err-datos-erroneos": "Los datos suministrados para {{prefijo}} {{entidad}} no son correctos",
             "err-datos-noexiste": "Los datos para {{prefijo}} {{entidad}} no existen o fueron eliminados",
+            "err-id-vinculo": "No existe identificador de vinculo para la entidad",
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado será permanente y no podrá ser revertido.",
             "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado podrá ser revertido."
         }

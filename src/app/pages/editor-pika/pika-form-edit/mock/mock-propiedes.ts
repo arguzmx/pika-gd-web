@@ -100,6 +100,7 @@ export class EditorMockProps {
       AlternarEnTabla: true,
       IndiceOrdenamientoTabla: 1,
       Contextual: false,
+      Etiqueta: false,
     };
   }
 }

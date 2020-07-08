@@ -11,7 +11,7 @@ import { PikaFormEditComponent } from './pika-form-edit/pika-form-edit.component
 import { AppLogService } from '../../@pika/servicios/app-log/app-log.service';
 import { ComponenteBase } from '../../@core/comunes/componente-base';
 import { TarjetaVisible, FILTRO_TARJETA_EDITAR, VerboTarjeta, FILTRO_TARJETA_BUSCAR } from './model/tarjeta-visible';
-
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'ngx-pika-editor',
@@ -34,10 +34,14 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
   tieneVinculos: boolean = false;
   vincularActivo: boolean = false;
   NombreEntidad: string = '';
+  nombreInstancia: string = '';
+  nombreInstanciaDisponible: boolean = false;
+  mostrarRegresar: boolean = false;
 
     constructor(
       translate: TranslateService,
       appLog: AppLogService,
+      private _location: Location,
       private editorService: EditorService,
       private sesion: SesionQuery,
       private dateTimeAdapter: DateTimeAdapter<any>,
@@ -45,11 +49,15 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
       super(appLog, translate);
       this.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol',
       'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar',
-      'ui.propiedades'];
+      'ui.propiedades', 'ui.regresar'];
     }
 
   ngAfterViewInit(): void {
 
+  }
+
+  regresar() {
+    this._location.back();
   }
 
       borrarFiltros(): void {
@@ -95,7 +103,7 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
   }
 
   ngOnInit(): void {
-    this.editorService.InitByRoute();
+
     this.FiltrosListosListener();
     this.SetLocaleListeter();
     this.ObtenerTraducciones();
@@ -135,6 +143,10 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
         if (metadatos) {
           this.tieneVinculos = (metadatos.EntidadesVinculadas &&
             metadatos.EntidadesVinculadas.length > 0)  ? true : false;
+        this.nombreInstancia = this.editorService.OrigenNombre;
+        this.nombreInstanciaDisponible =  this.nombreInstancia ? true : false;
+
+        this.mostrarRegresar = this.editorService.usarPaginadoRelacional;
 
         this.translate
           .get('entidades.' + metadatos.Tipo.toLowerCase())
