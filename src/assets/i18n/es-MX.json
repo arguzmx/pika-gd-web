@@ -18,7 +18,8 @@
         "actualizar": "Actualizar",
         "borrarfiltros": "Eliminar todos los filtros",
         "filtrarpor": "Filtrar por",
-        "no": "No"
+        "no": "No",
+        "propiedades": "Propiedades"
     },
     "operadores": {
         "f": "Falso",
@@ -40,9 +41,11 @@
         "fulltext": "Texto"
     },
     "entidades": {
-        "pagina-resultados": "Página de resultados|Páginas de resultados|la|las",
-        "metadatos": "Metadato|Metadatos|el|los",
-        "dominio": "Dominio|Dominios|el|los",
+        "pagina-resultados": "Página de resultados|Páginas de resultados|la|las|menu-outline",
+        "metadatos": "Metadato|Metadatos|el|los|bookmark-outline",
+        "dominio": "Dominio|Dominios|el|los|globe-outline",
+        "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|home-outline",
+        "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
         "propiedades": {
             "dominio": {
                 "Id": "Id",

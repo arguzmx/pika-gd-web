@@ -41,7 +41,8 @@
               "node_modules/leaflet/dist/leaflet.css",
               "src/app/@theme/styles/styles.scss",
               "node_modules/ngx-easy-table/style.css",
-              "node_modules/ng-pick-datetime/assets/style/picker.min.css"
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css",
+              "node_modules/@ng-select/ng-select/themes/material.theme.css"
             ],
             "scripts": [
               "node_modules/pace-js/pace.min.js",
@@ -128,7 +129,8 @@
               "node_modules/pace-js/templates/pace-theme-flash.tmpl.css",
               "src/app/@theme/styles/styles.scss",
               "node_modules/ngx-easy-table/style.css",
-              "node_modules/ng-pick-datetime/assets/style/picker.min.css"
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css",
+              "node_modules/@ng-select/ng-select/themes/material.theme.css"
             ],
             "assets": [
               "src/assets",

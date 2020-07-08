@@ -3,7 +3,7 @@ import { PikaTableComponent } from './pika-table/pika-table.component';
 import { Component, OnInit, OnDestroy, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { EditorService } from './services/editor-service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { SesionQuery } from '../../@pika/state/sesion.query';
 import { DateTimeAdapter } from 'ng-pick-datetime';
 import { PikaFormSearchComponent } from './pika-form-search/pika-form-search.component';
@@ -31,6 +31,9 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
   tarjetaTrasera: TarjetaVisible = null;
   contenidoTarjetaTrasera: string = '';
   editarActivo: boolean = false;
+  tieneVinculos: boolean = false;
+  vincularActivo: boolean = false;
+  NombreEntidad: string = '';
 
     constructor(
       translate: TranslateService,
@@ -41,7 +44,8 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
       ) {
       super(appLog, translate);
       this.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol',
-      'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar'];
+      'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar',
+      'ui.propiedades'];
     }
 
   ngAfterViewInit(): void {
@@ -78,6 +82,10 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
     this.tablas.first.EditarEntidadSeleccionada();
   }
 
+  mostrarVinculos(): void {
+    this.tablas.first.MostrarLinks();
+  }
+
   ocultarVistaTrasera() {
     this.editorService.EstableceTarjetaTraseraVisible(null);
   }
@@ -87,22 +95,63 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
   }
 
   ngOnInit(): void {
+    this.editorService.InitByRoute();
     this.FiltrosListosListener();
     this.SetLocaleListeter();
     this.ObtenerTraducciones();
     this.ObtieneTarjetaTraseraVisible();
     this.ObtieneEntidadSeleccionada();
+    this.ObtieneMetadatosListener();
+    this.OtieneReset();
+  }
+
+
+  ResetUI(): void {
+    this.vistaAlterna = false;
+    this.tarjetaTrasera = null;
+    this.contenidoTarjetaTrasera = '';
+    this.editarActivo = false;
+    this.tieneVinculos = false;
+    this.vincularActivo = false;
+    this.NombreEntidad = '';
+  }
+
+  OtieneReset() {
+    this.editorService
+    .ObtieneResetUI()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((reset) => {
+      if (reset) {
+         this.ResetUI();
+      }
+    });
+  }
+
+  ObtieneMetadatosListener() {
+    this.editorService
+      .ObtieneMetadatosDisponibles()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((metadatos) => {
+        if (metadatos) {
+          this.tieneVinculos = (metadatos.EntidadesVinculadas &&
+            metadatos.EntidadesVinculadas.length > 0)  ? true : false;
+
+        this.translate
+          .get('entidades.' + metadatos.Tipo.toLowerCase())
+          .pipe(first())
+          .subscribe((res) => {
+              this.NombreEntidad = this.ObtienePlural(res);
+          });
+        }
+      });
   }
 
   ObtieneEntidadSeleccionada(): void {
     this.editorService.ObtieneEntidadSeleccionada()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( r => {
-      if (r) {
-        this.editarActivo = true;
-      } else {
-        this.editarActivo = false;
-      }
+      this.editarActivo = r ? true : false;
+      this.vincularActivo =  this.editarActivo && this.tieneVinculos;
     });
   }
 
@@ -144,6 +193,7 @@ export class PikaEditorComponent extends ComponenteBase implements OnInit, OnDes
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
+    this.editorService.OnDestry();
   }
 
 

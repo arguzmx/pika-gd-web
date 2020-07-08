@@ -1,3 +1,7 @@
+import { SesionStore, PropiedadesSesion } from './../../../@pika/state/sesion.store';
+import { PreferenciasService } from './../../../@pika/state/preferencias/preferencias-service';
+import { DominioActivo } from './../../../@pika/sesion/dominio-activo';
+import { SesionQuery } from './../../../@pika/state/sesion.query';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 
@@ -6,6 +10,7 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth';
+
 
 @Component({
   selector: 'ngx-header',
@@ -17,6 +22,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
+  dominios: DominioActivo[] = [];
+  currentDominio: any = null;
 
   themes = [
     {
@@ -41,17 +48,32 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
 
-  constructor(private sidebarService: NbSidebarService,
+  constructor(
+              private prefs: PreferenciasService,
+              private sesion: SesionQuery,
+              private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
+              private sesionStore: SesionStore,
+              private servicioPreferencias: PreferenciasService,
               private breakpointService: NbMediaBreakpointsService,
               ) {
   }
 
   ngOnInit() {
+
+    this.currentDominio = this.servicioPreferencias.getDominio();
+
+    if (this.currentDominio){
+      this.changeDominio(this.currentDominio);
+    }
+
+
     this.currentTheme = this.themeService.currentTheme;
+
+    this.inicializaDominio();
 
     this.userService.getUsers()
       .pipe(takeUntil(this.destroy$))
@@ -78,8 +100,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+
+  inicializaDominio(): void {
+    this.sesion.dominios$.pipe(takeUntil(this.destroy$))
+    .subscribe((dominios: DominioActivo[]) => {
+      this.dominios = dominios;
+      if ((this.currentDominio === '') &&
+        this.dominios && dominios.length > 0) {
+        this.changeDominio(this.dominios[0].Id);
+      }
+    });
+  }
+
   changeTheme(themeName: string) {
     this.themeService.changeTheme(themeName);
+  }
+
+  changeDominio(Id: string) {
+    if (Id) {
+      this.currentDominio = Id;
+      this.servicioPreferencias.setDominio(Id);
+      this.sesionStore.setPropiedad(PropiedadesSesion.IdDominio, Id);
+    }
   }
 
   toggleSidebar(): boolean {

@@ -7,4 +7,5 @@ export interface ColumnaTabla {
   Buscable: boolean;
   Tipo: string;
   NombreI18n?: string;
+  EsLista: boolean;
 }

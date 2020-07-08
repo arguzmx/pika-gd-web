@@ -10,7 +10,7 @@ import {
   tInt64,
   tString,
 } from '../../../../@pika/metadata';
-import { ValorLista } from '../../../../@pika/metadata/valor-lista';
+import { ValorListaOrdenada } from '../../../../@pika/metadata/valor-lista';
 
 export class EditorMockProps {
   static GetCampos(): Propiedad[] {
@@ -48,8 +48,8 @@ export class EditorMockProps {
     return Propiedades;
   }
 
-  static vlist(): ValorLista[] {
-    const v: ValorLista[] = [];
+  static vlist(): ValorListaOrdenada[] {
+    const v: ValorListaOrdenada[] = [];
 
     v.push({
       Id: '01',
@@ -99,6 +99,7 @@ export class EditorMockProps {
       MostrarEnTabla: true,
       AlternarEnTabla: true,
       IndiceOrdenamientoTabla: 1,
+      Contextual: false,
     };
   }
 }

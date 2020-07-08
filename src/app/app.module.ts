@@ -1,3 +1,5 @@
+import { PikaSesinService } from './@pika/pika-api/pika-sesion-service';
+import { PikaModule } from './@pika/pika-module';
 import { AppLogService } from './@pika/servicios/app-log/app-log.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,10 +26,14 @@ import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider'
 import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import {NgxLocalStorageModule} from 'ngx-localstorage';
+import { PreferenciasService } from './@pika/state/preferencias/preferencias-service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    PikaModule,
+    NgxLocalStorageModule.forRoot( { prefix: 'PIKA-'} ),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -54,8 +60,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
     environment.production ? [] : AkitaNgDevtools,
   ],
   bootstrap: [AppComponent],
-  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders,
-    { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService],
+  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders, PikaSesinService,
+    { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService, PreferenciasService],
 })
 export class AppModule {
   constructor(

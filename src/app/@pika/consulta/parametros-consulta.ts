@@ -1,4 +1,14 @@
 export class ParametrosConsulta {
+
+    constructor () {
+        this.indice = 0;
+        this.tamano = 10;
+        this.ord_direccion = '';
+        this.ord_columna = '';
+        this.recalcular_totales = true;
+        this.consecutivo = 0;
+    }
+
     // Indice de la página soliicada
     indice: number;
 

@@ -2,9 +2,10 @@ import { TipoDato } from './tipo-dato';
 import { ValidadorTexto } from './validador-texto';
 import { ValidadorNumero } from './validador-numero';
 import { AtributoMetadato } from './atributo-metadato';
-import { ValorLista } from './valor-lista';
-import { AtributoListaValores } from './atributo-valorlista';
+import { ValorListaOrdenada } from './valor-lista';
 import { AtributoVistaUI } from './atributos-vista-ui';
+import { AtributoLista } from './atributo-valorlista';
+import { AtributoEvento } from './atributo-evento';
 
 export interface Propiedad {
     Id: string;
@@ -30,12 +31,14 @@ export interface Propiedad {
     ValidadorTexto?: ValidadorTexto;
     ValidadorNumero?: ValidadorNumero;
     Atributos?: AtributoMetadato[];
-    AtributoListaValores?: AtributoListaValores;
+    AtributoLista?: AtributoLista;
     AtributosVistaUI?: AtributoVistaUI[];
-    ValoresLista?: ValorLista[];
+    AtributosEvento?: AtributoEvento[];
+    ValoresLista?: ValorListaOrdenada[];
     OrdenarValoresListaPorNombre?:  boolean;
     Valor?: string;
     MostrarEnTabla: boolean;
     AlternarEnTabla: boolean;
     IndiceOrdenamientoTabla: number;
+    Contextual: boolean;
 }

@@ -64,8 +64,19 @@ export class SearchFieldsDirective implements CampoBuscable , OnChanges, OnInit 
   }
 
   ngOnInit() {
-    if (components[this.config.TipoDatoId]) {
-      const component = this.resolver.resolveComponentFactory<CampoBuscable>(components[this.config.TipoDatoId]);
+    let component: any = null;
+    if (this.config.AtributoLista) {
+      component = this.resolver.resolveComponentFactory<CampoBuscable>(components['list']);
+    } else {
+      if (components[this.config.TipoDatoId]) {
+        component = this.resolver.resolveComponentFactory<CampoBuscable>(components[this.config.TipoDatoId]);
+      }
+    }
+    this.creaComponente(component);
+  }
+
+  private creaComponente(component: any) {
+    if (component) {
       this.component = this.container.createComponent(component);
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;

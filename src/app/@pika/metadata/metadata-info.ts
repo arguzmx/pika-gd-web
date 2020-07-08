@@ -5,6 +5,8 @@ export class MetadataInfo {
     Tipo: string;
     FullName: string;
     ElminarLogico?: boolean;
+    ColumaEliminarLogico?: string;
+    PaginadoRelacional?: boolean;
     EntidadesVinculadas?: EntidadVinculada[];
     Propiedades: Propiedad[];
 }

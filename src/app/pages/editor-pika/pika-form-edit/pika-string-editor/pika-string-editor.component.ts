@@ -12,9 +12,14 @@ export class PikaStringEditorComponent implements CampoEditable, OnInit {
 
   config: Propiedad;
   group: FormGroup;
+  isUpdate: boolean;
+  isTextArea: boolean = false;
+
   constructor() { }
 
+
   ngOnInit(): void {
+    this.isTextArea = (this.config.ControlHTML === 'textarea');
   }
 
 }

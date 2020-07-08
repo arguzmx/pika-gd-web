@@ -13,7 +13,8 @@ export class PikaHiddenEditorComponent implements CampoEditable, OnInit {
   constructor() { }
   config: Propiedad;
   group: FormGroup;
-
+  isUpdate: boolean;
+  
   ngOnInit(): void {
   }
 

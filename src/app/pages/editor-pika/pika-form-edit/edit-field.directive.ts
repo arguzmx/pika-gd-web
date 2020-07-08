@@ -19,6 +19,7 @@ const components: {[type: string]: Type<CampoEditable>} = {
   datetime: PikaDatetimeEditorComponent,
   select: PikaListEditorComponent,
   hidden: PikaHiddenEditorComponent,
+  textarea: PikaStringEditorComponent,
 };
 
 @Directive({
@@ -32,6 +33,9 @@ export class EditFliedsDirective implements CampoEditable , OnChanges, OnInit {
   @Input()
   group: FormGroup;
 
+  @Input()
+  isUpdate: boolean;
+
   component: ComponentRef<CampoEditable>;
 
   constructor(
@@ -44,6 +48,7 @@ export class EditFliedsDirective implements CampoEditable , OnChanges, OnInit {
     if (this.component) {
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
+      this.component.instance.isUpdate = this.isUpdate;
     }
   }
 
@@ -53,8 +58,8 @@ export class EditFliedsDirective implements CampoEditable , OnChanges, OnInit {
       this.component = this.container.createComponent(component);
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
+      this.component.instance.isUpdate = this.isUpdate;
     }
-
   }
 
 }
