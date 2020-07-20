@@ -1,0 +1,209 @@
+<div class="row">
+    <div class="col-lg-12">
+        <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
+            <nb-card-front>
+                <nb-card accent="info" size="large">
+                    <nb-card-header>
+                        <span>
+                        <button *ngIf="MostrarRegresar" nbButton size="small" on-click="regresar()"
+                        appearance="ghost"	  nbPopoverPlacement="bottom" [nbPopover]="t['ui.regresar']" nbPopoverTrigger="hint">
+                            <nb-icon status="info" icon="undo" pack="eva"></nb-icon>
+                        </button>&nbsp;
+                        </span>
+                        {{NombreEntidad}} 
+                        <span *ngIf="NombreInstanciaDisponible">:&nbsp;
+                            <span class="text-primary">{{NombreInstancia}}</span>
+                        </span>
+
+                        <button class="single-view-button" nbButton size="small" on-click="refrescarTabla()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.actualizar']" nbPopoverTrigger="hint">
+                            <nb-icon icon="refresh" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small"  *ngIf="vincularActivo" on-click="mostrarVinculos()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.propiedades']" nbPopoverTrigger="hint">
+                            <nb-icon icon="list-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrarCrear()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.crear']" nbPopoverTrigger="hint">
+                            <nb-icon icon="plus-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" *ngIf="InstanciaSeleccionada" on-click="mostrarEditar()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.editar']" nbPopoverTrigger="hint">
+                            <nb-icon icon="edit-2-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" *ngIf="InstanciaSeleccionada" on-click="eliminarEntidades()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.eliminar']" nbPopoverTrigger="hint">
+                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrarBuscar()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.buscar']" nbPopoverTrigger="hint">
+                            <nb-icon icon="search-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button class="grid-view-button" nbButton size="small" on-click="mostrarSelectorColumnas()"
+                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.selcol']" nbPopoverTrigger="hint">
+                            <nb-icon icon="grid-outline" pack="eva"></nb-icon>
+                        </button>
+                        <button *ngIf="filtrosActivos" class="grid-view-button" nbButton size="small" on-click="eliminarFiltros()"
+                        nbPopoverPlacement="bottom" [nbPopover]="t['ui.eliminar-filtro']" nbPopoverTrigger="hint">
+                        <nb-icon icon="funnel-outline" status="danger" pack="eva"></nb-icon>
+                    </button>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <ngx-metadata-tabla 
+                                    [config]="config"
+                                    [metadata]="metadata"
+                                    (ConteoRegistros) = "ConteoRegistros($event)"
+                                    (NuevaSeleccion) = "NuevaSeleccion($event)"
+                                    (EditarSeleccion) = "EditarSeleccion($event)"
+                                    >
+                                </ngx-metadata-tabla>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                    <nb-card-footer>
+                            <span class="text-danger">{{totalRegistros}}</span> <span class="text-hint">&nbsp;{{t['ui.total-regitros']}}</span>
+                    </nb-card-footer>
+                </nb-card>
+            </nb-card-front>
+
+            <nb-card-back>
+                <nb-card accent="danger" size="large">
+                    <nb-card-header>
+                        <label>{{EtiequetaTarjetaTrasera}}</label>
+                        <span [ngSwitch]="ContenidoTarjetaTrasera" class="single-view-button">
+                            <span *ngSwitchCase="'buscar'">
+                                <button class="single-view-button" nbButton size="small" on-click="borrarFiltrosBuscador()"
+                                    nbPopoverPlacement="bottom" [nbPopover]="t['ui.borrarfiltros']"
+                                    nbPopoverTrigger="hint">
+                                    <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                                </button>
+                                <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                                    nbPopoverPlacement="bottom" [nbPopover]="t['ui.cerrar']" nbPopoverTrigger="hint">
+                                    <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                                </button>
+                            </span>
+
+                            <span *ngSwitchCase="'editar'">
+                                <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                                    nbPopoverPlacement="bottom" [nbPopover]="t['ui.cerrar']" nbPopoverTrigger="hint">
+                                    <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                                </button>
+                            </span>
+                        </span>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div [ngSwitch]="ContenidoTarjetaTrasera">
+                                    <div *ngSwitchCase="'buscar'">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <ngx-metadata-buscador 
+                                                [config]="config"
+                                                [metadata]="metadata"
+                                                (EventoFiltrar) = "EventoFiltrar($event)"
+                                            ></ngx-metadata-buscador>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngSwitchCase="'editar'">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <ngx-metadata-editor
+                                                [entidad] = "entidad"
+                                                [config]="config"
+                                                [metadata]="metadata"
+                                                (NuevaEntidad) = "NuevaEntidad($event)"
+                                                (CapturaFinalizada) = "CapturaFinalizada($event)"
+                                                (EntidadActualizada) = "EntidadActualizada($event)"
+                                            ></ngx-metadata-editor>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </nb-card-back>
+        </nb-reveal-card>
+    </div>
+</div>
+
+
+<ng-template #dialogConfirmDelete let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>{{t['ui.confirmar']}}</nb-card-header>
+        <nb-card-body>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <div [innerHTML]="data">
+                        </div>        
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <button nbButton (click)="ref.close()">{{t['ui.cerrar']}}</button>
+                        <button nbButton status='danger' (click)="eliminarSeleccionados()">{{t['ui.eliminar']}}</button>
+                    </div>
+                </div>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+
+
+
+<ng-template #dialogLinkPicker let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>{{t['ui.propiedades']}}</nb-card-header>
+        <nb-card-body>
+            <div class="col-lg-12 col-md-12 col-sm-12"  *ngFor="let link of this.vinculos">
+ 
+                <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
+                <ng-template #uno>
+                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.EntidadHijo)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    </button>
+                </ng-template>
+                <ng-template #varios>
+                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.EntidadHijo)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    </button>
+                </ng-template>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <button nbButton size="medium" (click)="ref.close()">{{t['ui.cerrar']}}</button>
+                    </div>
+                </div>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

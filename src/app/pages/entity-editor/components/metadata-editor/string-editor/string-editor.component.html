@@ -1,0 +1,23 @@
+
+<div *ngIf="isTextArea; then textareaBlock else textinputBlock"></div>
+<ng-template #textareaBlock>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="form-group" [formGroup]="group">
+            <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
+            <textarea nbInput fullWidth="true" 
+            [id]="propiedad.Id" [formControlName]="propiedad.Id" class="form-control">
+            </textarea>
+        </div>
+    </div>
+</ng-template>
+<ng-template #textinputBlock>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="form-group" [formGroup]="group">
+            <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
+            <input nbInput type="text" fieldSize="tiny" fullWidth="true" 
+                [id]="propiedad.Id" [formControlName]="propiedad.Id" class="form-control" />
+        </div>
+    </div>
+</ng-template>
+
+

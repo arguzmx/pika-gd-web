@@ -22,4 +22,7 @@ export class FiltroConsulta {
 
   // Valores serializados para la consulta de la API
   ValorString?: string;
+
+  Valido?: boolean;
+
 }

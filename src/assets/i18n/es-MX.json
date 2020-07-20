@@ -11,6 +11,7 @@
         "guardar-adicionar": "Guardar y añadir",
         "aceptar": "Aceptar",
         "cancelar": "Cancelar",
+        "eliminar-filtro": "Eliminar filtros",
         "crear": "Crear",
         "buscar": "Buscar",
         "adicionar": "Adicionar",
@@ -20,7 +21,10 @@
         "borrarfiltros": "Eliminar todos los filtros",
         "filtrarpor": "Filtrar por",
         "no": "No",
-        "propiedades": "Propiedades"
+        "propiedades": "Propiedades",
+        "falso": "Falso",
+        "verdadero": "Verdadero",
+        "total-regitros": "registros encontrados"
     },
     "operadores": {
         "f": "Falso",
@@ -117,8 +121,8 @@
             "warn-sin-columnas": "Debe seleccionar al menos una columna para el despliegue",
             "warn-sin-seleccion": "Debe seleccionar un registro para la operación",
             "ok-entidad-add": "El elemento '{{nombre}}' ha sido adicionado satisfactoriamente",
-            "ok-entidad-act": "El elemento '{{nombre}}' ha sico actualizado satisfactoriamente",
-            "ok-entidad-del": "El elemento '{{nombre}}' ha sico eliminado satisfactoriamente",
+            "ok-entidad-act": "El elemento '{{nombre}}' ha sido actualizado satisfactoriamente",
+            "ok-entidad-del": "El elemento '{{nombre}}' ha sido eliminado satisfactoriamente",
             "err-entidad-act": "Error al actualizar el elemento '{{nombre}}', {{error}} ",
             "err-datos-servidor": "Error al procesar la solicitud para {{prefijo}} {{entidad}}: {{error}} ",
             "err-datos-novalidos": "Algunos datos de la entidad son incorrectos",

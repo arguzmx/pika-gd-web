@@ -13,5 +13,5 @@ export const environment = {
   authUrl: 'http://localhost:4000/',
   apiUrl: 'http://localhost:5000/api/v1.0/',
   editorToken: 'tipo',
-  callbackRoute: '/pages/editor?tipo=unidadorganizacional',
+  callbackRoute: '/pages/tabular?tipo=dominio',
 };

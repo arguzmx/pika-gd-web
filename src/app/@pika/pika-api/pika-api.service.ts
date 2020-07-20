@@ -163,7 +163,7 @@ export class PikaApiService <T, U> {
     );
   }
 
-  Delete(Ids: U[], entidad: string): any {
+  Delete(Ids: U[], entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad);
     let ids: string = '';
     Ids.forEach( x => {
