@@ -1,17 +1,19 @@
-import { AppLogService } from './../../@pika/servicios/app-log/app-log.service';
+import { EntidadesService } from './../services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
-export class ComponenteBase {
-  constructor(
-    public appLog: AppLogService,
-    public translate: TranslateService,
-  ) {}
+import { AppLogService } from '../../../@pika/servicios/app-log/app-log.service';
+
+export class EditorEntidadesBase {
+
+    constructor(public entidades: EntidadesService, public translate: TranslateService,
+      public applog: AppLogService) {}
 
   // Claves para obtener la traducción
   ts: string[];
 
   // Objeto resultante de la traduccion
   t: object;
+
 
   // Obtiene las tradcucciones
   ObtenerTraducciones(): void {
@@ -25,7 +27,7 @@ export class ComponenteBase {
 
   ObtieneSingularT(item: string) {
     try {
-      let texto = this.t[item].toString();
+      let texto = this.t[item.toLocaleLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[0] : texto;
       return texto;
     } catch (error) {
@@ -35,7 +37,7 @@ export class ComponenteBase {
 
   ObtienePluralT(item: string) {
     try {
-      let texto = this.t[item].toString();
+      let texto = this.t[item.toLocaleLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[1] : texto;
       return texto;
     } catch (error) {
@@ -45,7 +47,7 @@ export class ComponenteBase {
 
   ObtieneIconoT(item: string) {
     try {
-      let texto = this.t[item].toString();
+      let texto = this.t[item.toLocaleLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[4] : texto;
       return texto;
     } catch (error) {
@@ -82,5 +84,6 @@ export class ComponenteBase {
       return item;
     }
   }
+
 
 }

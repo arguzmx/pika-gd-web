@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { IsChldrenAuthorizedGuard } from './@core/services/auth-guard/auth-guard.service';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
@@ -53,7 +54,7 @@ export const routes: Routes = [
       .then(m => m.AccesoRoutingModule),
   },
   { path: '', redirectTo: 'forms/layouts', pathMatch: 'full' },
-  { path: '**', redirectTo: 'pages' },
+  { path: '**', redirectTo: environment.callbackRoute },
 ];
 
 const config: ExtraOptions = {

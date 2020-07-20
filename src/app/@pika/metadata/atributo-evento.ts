@@ -21,4 +21,5 @@ export interface  Evento {
     Origen: string;
     Valor: any;
     Evento: Eventos;
+    Transaccion?: string;
 }
