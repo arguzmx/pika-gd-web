@@ -205,6 +205,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
           .subscribe( data => {
             this.data = data.Elementos || [];
             this.configuration.isLoading = false;
+            this.ConteoRegistros.emit(data.ConteoTotal);
             if (notificar) this.NotificarConteo(data.ConteoTotal);
           });
      } else {

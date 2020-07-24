@@ -22,6 +22,9 @@ export class EntidadesService {
   // Almacena las traudcciones de un nombre de instancoi para un identificador
   public ListaIds: TextoDesdeId[] = [];
 
+
+  public InstanciasObjectos: any [] = [];
+
   // CLiente APi PIKA
   public cliente: PikaApiService<any, string>;
 
@@ -45,6 +48,24 @@ export class EntidadesService {
       return v.toString(16);
     });
   }
+
+    // Cache de instancias
+    // ---------------------------------------
+    // ---------------------------------------
+
+    public SetCacheInstanciaEntidad(tipo: string, id: string , entidad: any): void {
+      const key = this.cache.ClaveInstancia(tipo, id);
+      this.cache.set(key, entidad);
+    }
+
+    public GetCacheInstanciaAntidad(tipo: string, id: string): any {
+      const key = this.cache.ClaveInstancia(tipo, id);
+      if (this.cache.has(key)) {
+        return this.cache.get(key);
+      }
+      return null;
+    }
+
 
 
     // Cache de filtros

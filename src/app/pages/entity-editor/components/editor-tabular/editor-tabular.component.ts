@@ -17,6 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Operacion } from '../../../../@pika/consulta';
 import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscador.component';
 import { EntidadVinculada, TipoCardinalidad } from '../../../../@pika/metadata/entidad-vinculada';
+import { Location } from '@angular/common';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -78,9 +79,27 @@ OnDestroy, OnChanges {
 
   public metadata: MetadataInfo;
 
+  // Cosntructor del componente
+  constructor(
+    entidades: EntidadesService,
+    ts: TranslateService,
+    applog: AppLogService,
+    private router: Router,
+    private dialogService: NbDialogService,
+    private location: Location,
+    ) {
+    super(entidades, ts, applog);
+   }
+
+
   private _CerrarDialogos() {
     if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
     if (this.dialogLinkPickRef) this.dialogLinkPickRef.close();
+  }
+
+
+  public regresar() {
+    this.location.back();
   }
 
   private _Reset(): void {
@@ -102,18 +121,6 @@ OnDestroy, OnChanges {
       this.VistaTrasera = false;
       this.MostrarRegresar = false;
   }
-
-  // Cosntructor del componente
-  constructor(
-    entidades: EntidadesService,
-    ts: TranslateService,
-    applog: AppLogService,
-    private router: Router,
-    private dialogService: NbDialogService,
-    ) {
-    super(entidades, ts, applog);
-   }
-
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -163,10 +170,23 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   private ProcesaConfiguracion(): void {
+
+    if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '' ) {
+      this.NombreInstanciaDisponible = false;
+      this.NombreInstancia = '';
+      this.MostrarRegresar = false;
+      const entidad = this.entidades.GetCacheInstanciaAntidad(this.config.OrigenTipo, this.config.OrigenId);
+      if (entidad) {
+        this.NombreInstanciaDisponible = true;
+        this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, entidad);
+        this.MostrarRegresar = true;
+      }
+    }
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLocaleLowerCase();
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
     this.tieneVinculos = this.metadata.EntidadesVinculadas
     && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
+
     this.entidades.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
     if (this.metadata.EntidadesVinculadas) {
       this.metadata.EntidadesVinculadas.forEach( e => {
@@ -224,6 +244,8 @@ private  ProcesaCambiosConfiguracion(): void {
     if (this.entidad) {
         const Id = this.entidades.ObtenerIdEntidad (this.config.TipoEntidad, this.entidad);
         if (Id) {
+
+          this.entidades.SetCacheInstanciaEntidad(this.config.TipoEntidad, Id, this.entidad);
 
           this.tablas.first._Reset();
           this._Reset();

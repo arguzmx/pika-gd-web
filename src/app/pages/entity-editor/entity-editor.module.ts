@@ -16,6 +16,8 @@ import { MetadataEditorComponent } from './components/metadata-editor/metadata-e
 import { EntityEditorComponent } from './entity-editor.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgModule } from '@angular/core';
+import { MatSliderModule } from '@angular/material/slider';
+
 import {
   NbPopoverModule,
   NbInputModule,
@@ -43,6 +45,7 @@ import { CampoBusquedaDirective } from './directives/campo-busqueda.directive';
 import { NumericSearchComponent } from './components/metadata-buscador/numeric-search/numeric-search.component';
 import { StringSearchComponent } from './components/metadata-buscador/string-search/string-search.component';
 import { EditorBootTabularComponent } from './components/editor-boot-tabular/editor-boot-tabular.component';
+import { EditorBootJerarquicoComponent } from './components/editor-boot-jerarquico/editor-boot-jerarquico.component';
 
 @NgModule({
   imports: [
@@ -71,6 +74,7 @@ import { EditorBootTabularComponent } from './components/editor-boot-tabular/edi
     ReactiveFormsModule,
     NbMenuModule,
     RouterModule,
+    MatSliderModule,
   ],
   declarations: [
     EditorJerarquicoComponent,
@@ -93,6 +97,7 @@ import { EditorBootTabularComponent } from './components/editor-boot-tabular/edi
     NumericSearchComponent,
     StringSearchComponent,
     EditorBootTabularComponent,
+    EditorBootJerarquicoComponent,
   ],
 })
 export class EntityEditorModule {}
