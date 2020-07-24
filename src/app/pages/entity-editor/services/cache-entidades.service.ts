@@ -4,6 +4,10 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class CacheEntidadesService {
 
+  public ClaveInstancia(tipo: string, id: string): string {
+    return `instancia-${tipo.toLocaleLowerCase()}-${id.toLocaleLowerCase()}`;
+  }
+
   public ClaveFiltro(id: string): string {
     return `filtro-${id.toLocaleLowerCase()}`;
   }

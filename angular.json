@@ -79,6 +79,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "augury": {
+              "fileReplacements": [
+                {
+                  "replace": "src/main.ts",
+                  "with": "src/main.augury.ts"
+                }
+              ]
             }
           }
         },
@@ -91,6 +99,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ngx-admin-demo:build:production"
+            },
+            "augury": {
+              "browserTarget": "ngx-admin-demo:build:augury"
             }
           }
         },
