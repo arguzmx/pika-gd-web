@@ -16,6 +16,8 @@ import { MetadataEditorComponent } from './components/metadata-editor/metadata-e
 import { EntityEditorComponent } from './entity-editor.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { NgModule } from '@angular/core';
+import { MatSliderModule } from '@angular/material/slider';
+
 import {
   NbPopoverModule,
   NbInputModule,
@@ -72,6 +74,7 @@ import { EditorBootJerarquicoComponent } from './components/editor-boot-jerarqui
     ReactiveFormsModule,
     NbMenuModule,
     RouterModule,
+    MatSliderModule,
   ],
   declarations: [
     EditorJerarquicoComponent,
