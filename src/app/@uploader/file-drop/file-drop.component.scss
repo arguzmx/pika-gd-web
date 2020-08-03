@@ -1,0 +1,15 @@
+.my-drop-zone { border: dotted 3px lightgray; }
+/* Default class applied to drop zones on over */
+.invalid-drag { border: dotted 3px red; }
+.valid-drag { border: dotted 3px green; }
+html, body { height: 80%; }
+.previewIcon{
+  width:70px;height:70px;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+
+.inline-block{
+  display:inline-block;
+  margin:.2em;
+}

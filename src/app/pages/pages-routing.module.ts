@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 // tslint:disable-next-line: max-line-length
 import { EditorBootTabularComponent } from './entity-editor/components/editor-boot-tabular/editor-boot-tabular.component';
+import { HostUploaderComponent } from './host-uploader/host-uploader.component';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -12,6 +13,10 @@ const routes: Routes = [{
     {
       path: 'tabular',
       component: EditorBootTabularComponent,
+    },
+    {
+      path: 'upload',
+      component: HostUploaderComponent,
     },
     {
       path: '',
