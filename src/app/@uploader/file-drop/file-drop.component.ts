@@ -1,17 +1,27 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UploadService } from '../uploader.service';
 
 @Component({
   selector: 'ngx-file-drop',
   templateUrl: './file-drop.component.html',
-  styleUrls: ['./file-drop.component.scss']
+  styleUrls: ['./file-drop.component.scss'],
 })
 export class FileDropComponent implements OnInit {
   @ViewChild('file', { static: false }) file;
-  accept = '*';
-  files: [] = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<FileDropComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public uploadService: UploadService) {
+    this.accept = data.accept;
+    this.maxSize = data.maxSize;
+  }
+
+  accept: string;
+  maxSize: number;
+  files: any[] = [];
   progress: any;
   hasBaseDropZoneOver = false;
   httpEmitter: Subscription;
@@ -21,13 +31,7 @@ export class FileDropComponent implements OnInit {
   validComboDrag: any;
   lastInvalids: any;
   fileDropDisabled: any;
-  maxSize: any;
   baseDropValid: any;
-
-  constructor(
-    public dialogRef: MatDialogRef<FileDropComponent>,
-    public uploadService: UploadService,
-  ) {}
 
   ngOnInit(): void {}
 
@@ -40,7 +44,7 @@ export class FileDropComponent implements OnInit {
 
   uploadFiles() {
     this.progress = this.uploadService.upload(this.files);
-    // console.log(this.progress);
+    console.log(this.progress);
   }
 
   getDate() {

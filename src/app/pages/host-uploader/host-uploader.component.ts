@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./host-uploader.component.scss']
 })
 export class HostUploaderComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit(): void {
