@@ -1,19 +1,30 @@
+
 import { NgModule } from '@angular/core';
-import { UploaderComponent } from './uploader.component';
+import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { UploadService } from './uploader.service';
 import { ngfModule } from 'angular-file';
+import { UploaderComponent } from './uploader.component';
+import { UploadService } from './uploader.service';
 import { FileDropComponent } from './file-drop/file-drop.component';
-import { CommonModule } from '@angular/common';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule } from '@nebular/theme';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
+
 
 @NgModule({
   imports: [
     CommonModule,
+    NbButtonModule,
+    NbIconModule,
+    NbEvaIconsModule,
+    NbProgressBarModule,
+    NbPopoverModule,
     MatButtonModule,
     MatDialogModule,
+    MatBottomSheetModule,
     MatListModule,
     MatProgressBarModule,
     ngfModule,
@@ -23,4 +34,4 @@ import { CommonModule } from '@angular/common';
   entryComponents: [FileDropComponent],
   providers: [UploadService],
 })
-export class UploaderModule { }
+export class UploaderModule {}

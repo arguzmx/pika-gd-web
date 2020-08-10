@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FileDropComponent } from './file-drop/file-drop.component';
 import { UploadService } from './uploader.service';
 
@@ -9,7 +10,8 @@ import { UploadService } from './uploader.service';
   styleUrls: ['./uploader.component.scss'],
 })
 export class UploaderComponent {
-  constructor(public dialog: MatDialog, public uploadService: UploadService) {}
+  // tslint:disable-next-line: max-line-length
+  constructor(public bottomSheet: MatBottomSheet, public dialog: MatDialog, public uploadService: UploadService) {}
   @Input() accept: string;
   @Input() maxSize: number; // bytes . 1024 = 1k . 1048576 = 1mb
 
@@ -17,6 +19,13 @@ export class UploaderComponent {
     const dialogRef = this.dialog.open(FileDropComponent, {
       width: '50%',
       height: '50%',
+      data: { accept: this.accept, maxSize: this.maxSize},
+    });
+  }
+
+  public openUploadSheet() {
+    const bottomSheetRef = this.bottomSheet.open(FileDropComponent, {
+      ariaLabel: 'Elegir archivos',
       data: { accept: this.accept, maxSize: this.maxSize},
     });
   }
