@@ -6,6 +6,9 @@ import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
 import { PagesRoutingModule } from './pages-routing.module';
 import { EntityEditorModule } from './entity-editor/entity-editor.module';
+import { HostUploaderComponent } from './host-uploader/host-uploader.component';
+import { UploaderModule } from '../@uploader/uploader.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
@@ -13,9 +16,11 @@ import { EntityEditorModule } from './entity-editor/entity-editor.module';
     ThemeModule,
     NbMenuModule,
     EntityEditorModule,
+    UploaderModule,
   ],
   declarations: [
     PagesComponent,
+    HostUploaderComponent,
   ],
 })
 export class PagesModule {

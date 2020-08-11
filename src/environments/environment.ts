@@ -14,4 +14,5 @@ export const environment = {
   apiUrl: 'http://localhost:5000/api/v1.0/',
   editorToken: 'tipo',
   callbackRoute: '/pages/tabular?tipo=dominio',
+  uploadUrl: 'http://localhost:5000/api/v1.0/Upload',
 };
