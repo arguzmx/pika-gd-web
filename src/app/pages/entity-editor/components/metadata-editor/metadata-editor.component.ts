@@ -1,3 +1,4 @@
+import { CatalogoVinculado } from './../../../../@pika/metadata/catelogo-vinculado';
 import { MetadataInfo } from './../../../../@pika/metadata/metadata-info';
 import { AppLogService } from './../../../../@pika/servicios/app-log/app-log.service';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
@@ -9,6 +10,7 @@ import {
   SimpleChanges,
   Output,
   EventEmitter,
+  OnDestroy,
 } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { EntidadesService } from '../../services/entidades.service';
@@ -19,6 +21,7 @@ import {
   FormBuilder,
   Validators,
   FormControl,
+  FormArray,
 } from '@angular/forms';
 import {
   Propiedad,
@@ -29,11 +32,16 @@ import {
   tDate,
   tDateTime,
   tTime,
+  tString,
+  tBinaryData,
+  tList,
 } from '../../../../@pika/metadata';
 import { AtributoVistaUI } from '../../../../@pika/metadata/atributos-vista-ui';
 import { Acciones } from '../../../../@pika/metadata/acciones-crud';
 import { isDate, parseISO } from 'date-fns';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import { HTML_PASSWORD_CONFIRM, HTML_HIDDEN, HTML_CHECKBOX_MULTI } from '../../../../@pika/metadata/control-html';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'ngx-metadata-editor',
@@ -41,7 +49,7 @@ import { first } from 'rxjs/operators';
   styleUrls: ['./metadata-editor.component.scss'],
 })
 export class MetadataEditorComponent extends EditorEntidadesBase
-  implements IEditorMetadatos, OnInit, OnChanges {
+  implements IEditorMetadatos, OnInit, OnDestroy, OnChanges {
   // Mantiene la configutación de la entidad obtenida por el ruteo
   @Input() config: ConfiguracionEntidad;
   @Input() metadata: MetadataInfo;
@@ -49,6 +57,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   @Output() NuevaEntidad = new EventEmitter();
   @Output() EntidadActualizada = new EventEmitter();
   @Output() CapturaFinalizada = new EventEmitter();
+  private onDestroy$: Subject<void> = new Subject<void>();
 
   // Forma reactiva host de los componentes
   public formGroup: FormGroup;
@@ -57,6 +66,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   // Propedades activas para directiva
   public propiedadesActivas: Propiedad[] = [];
+  public propiedadesHidden: Propiedad[] = [];
 
   // Almacena las propiedades default del objeto
   public valoresDefault = {};
@@ -71,14 +81,19 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     super(entidades, ts, applog);
     this.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    // this.formGroup.valueChanges.subscribe( x => {
-    //    // console.log(x);
-    // });
+    this.formGroup.valueChanges.subscribe( x => {
+        // console.log(x);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
   }
 
   public _Reset(): void {
     this.modoEditar = false;
     this.propiedadesActivas = [];
+    this.propiedadesHidden = [];
     this.valoresDefault = {};
   }
 
@@ -89,7 +104,15 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   ngOnInit(): void {
     this.ObtenerTraducciones();
     this.CargaTraducciones();
-
+    this.entidades.ObtieneAventosContexto()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( ev => {
+      this.propiedadesActivas.forEach(p => {
+        if (p.IdContextual && (p.IdContextual.toLowerCase() === ev.Origen )) {
+          this.formGroup.get(p.Id).setValue(ev.Valor);
+        }
+      });
+    });
   }
 
   // Se llama desde el template
@@ -99,8 +122,9 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       return;
     }
 
+    const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
     this.entidades
-      .CreaEntidad(this.config.TipoEntidad, this.formGroup.getRawValue())
+      .CreaEntidad(this.config.TipoEntidad, entidadCopiada)
       .pipe(first())
       .subscribe((entidad) => {
         if (entidad) {
@@ -112,6 +136,43 @@ export class MetadataEditorComponent extends EditorEntidadesBase
           }
         }
       });
+  }
+
+// Fija el formato de las propieades en base al tipo
+  private ClonaEntidad(entidad: any): any {
+    this.metadata.Propiedades.forEach( p => {
+        const control = entidad[p.Id];
+        if ( control ) {
+            switch ( p.TipoDatoId ) {
+                case tString:
+                  break;
+                case tDouble:
+                  if (entidad[p.Id] != null) {
+                    entidad[p.Id] = parseFloat(entidad[p.Id]);
+                  }
+                  break;
+                case tBoolean:
+                  break;
+                case tInt64:
+                case tInt32:
+                  if (entidad[p.Id] != null) {
+                    entidad[p.Id] = parseInt(entidad[p.Id], 0);
+                  }
+                  break;
+                case tDateTime:
+                  break;
+                case tDate:
+                  break;
+                case tTime:
+                  break;
+                case tBinaryData:
+                  break;
+                case tList:
+                  break;
+            }
+        }
+    });
+    return entidad;
   }
 
   // Se llama desde el template
@@ -150,6 +211,10 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
     this._Reset();
 
+    if (this.entidad) {
+      this.modoEditar = true;
+    }
+
     if (this.metadata ) {
       this.ObtieneValoresVinculados();
       this.LimpiarForma();
@@ -157,12 +222,13 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     }
 
     if (this.entidad) {
-      this.modoEditar = true;
       this.AsignarValoresForma(this.entidad);
     }
   }
 
+
   private CrearForma(): void {
+
     // Onbtiene la lista de controles exietnets
     const controls = Object.keys(this.formGroup.controls);
 
@@ -184,17 +250,40 @@ export class MetadataEditorComponent extends EditorEntidadesBase
         const config = this.metadata.Propiedades.find(
           (control) => control.Id === Id,
         );
-        const controlnuevo = this.CreateControl(config);
-        if (controlnuevo !== null) {
-          this.formGroup.addControl(config.Id, controlnuevo);
+        const attr = config.AtributosVistaUI.find(x => x.Plataforma === 'web').Control;
+
+        let controlnuevo = null;
+        switch (attr) {
+          case HTML_CHECKBOX_MULTI:
+            const g = this.fb.group( {valores: new FormArray([])});
+            const hidden = this.fb.control({ disabled: false, value: [] });
+            this.formGroup.addControl(config.Id + '-valores',  g );
+            this.formGroup.addControl(config.Id,  hidden );
+            const pactiva = { ...config };
+            pactiva.ControlHTML = HTML_CHECKBOX_MULTI;
+            this.propiedadesActivas.push(pactiva);
+          break;
+
+          default:
+            controlnuevo = this.CreateControl(config, true);
+            if (controlnuevo !== null) {
+              this.formGroup.addControl(config.Id, controlnuevo);
+              if (attr === HTML_PASSWORD_CONFIRM) {
+                    const controladicional = this.CreateControl(config, false);
+                    const validador  = this.CreaCampoOcultoPasswordConfirm();
+                    this.formGroup.addControl(config.Id + 'conf', controladicional);
+                    this.formGroup.addControl(config.Id + 'valid', validador);
+              }
+            }
+            break;
         }
       });
-
       this.AsignarValoresDefault();
   }
 
   private LimpiarForma(): void {
     this.propiedadesActivas = [];
+    this.propiedadesHidden = [];
     if (this.formGroup.controls) {
       const controls = Object.keys(this.formGroup.controls);
       controls.forEach((control) => {
@@ -222,9 +311,11 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   private AsignarValoresForma(entidad: any): void {
     const controls = Object.keys(this.formGroup.controls);
     controls.forEach((control) => {
-      this.formGroup.get(control).setValue(null);
-      if (entidad[control] !== null && entidad[control] !== undefined) {
-        this.formGroup.get(control).setValue(entidad[control]);
+      if (( this.formGroup.get(control) instanceof FormControl )) {
+        this.formGroup.get(control).setValue(null);
+        if (entidad[control] !== null && entidad[control] !== undefined) {
+          this.formGroup.get(control).setValue(entidad[control]);
+        }
       }
     });
   }
@@ -232,6 +323,17 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   // Establece los valores por defecto en el grupo
   private AsignarValoresDefault(): void {
+
+    this.metadata.Propiedades.forEach( p => {
+      if (p.Contextual) {
+         const partes = p.IdContextual.split('.');
+         const valor = this.entidades.GetPropiedadCacheContextual(partes[1], partes[0], '');
+         if (valor != null) {
+          this.formGroup.get(p.Id).setValue(valor);
+         }
+      }
+    });
+
     const controls = Object.keys(this.formGroup.controls);
     controls.forEach((control) => {
       if (this.valoresDefault[control]) {
@@ -280,26 +382,34 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     return null;
   }
 
+
+  private CreaCampoOcultoPasswordConfirm(): FormControl {
+    const validadorres = [];
+    validadorres.push(Validators.minLength(2));
+    return this.fb.control({ disabled: false, value: '' }, validadorres);
+  }
+
   // Crea  un control para la forma dinámica
-  private CreateControl(p: Propiedad): FormControl {
+  private CreateControl(p: Propiedad,  AdicionaPropiedad: boolean): FormControl {
     const validadorres = [];
     let VistaUI: AtributoVistaUI = null;
 
     if (p.AtributosVistaUI.length > 0) {
       if (this.modoEditar) {
         VistaUI = p.AtributosVistaUI.filter(
-          (x) => x.Accion === Acciones.update || x.Accion === Acciones.addupdate,
+          (x) => x.Accion === Acciones.update ||
+          x.Accion === Acciones.addupdate,
         )[0];
       } else {
         VistaUI = p.AtributosVistaUI.filter(
           (x) =>
             x.Accion === Acciones.add ||
-            x.Accion === Acciones.addupdate ||
-            x.Accion === Acciones.update,
+            x.Accion === Acciones.addupdate,
         )[0];
       }
 
       if (VistaUI) {
+
         if (p.Requerido) {
           validadorres.push(Validators.required);
         }
@@ -313,8 +423,11 @@ export class MetadataEditorComponent extends EditorEntidadesBase
         }
 
         if (p.ValidadorNumero) {
+          if (p.ValidadorNumero.UtilizarMin)
           validadorres.push(Validators.min(p.ValidadorNumero.min));
-          validadorres.push(Validators.max(p.ValidadorTexto.longmax));
+
+          if (p.ValidadorNumero.UtilizarMax)
+          validadorres.push(Validators.max(p.ValidadorNumero.max));
         }
 
         let valor = this.GetValor(p.Valor, p);
@@ -322,10 +435,16 @@ export class MetadataEditorComponent extends EditorEntidadesBase
           valor = this.GetValor(p.ValorDefault, p);
         }
 
-        const pactiva = { ...p };
-        pactiva.ControlHTML = VistaUI.Control;
+        if (AdicionaPropiedad) {
+          const pactiva = { ...p };
+          pactiva.ControlHTML = VistaUI.Control;
+          if (pactiva.ControlHTML === HTML_HIDDEN) {
+            this.propiedadesHidden.push(pactiva);
+          } else {
+            this.propiedadesActivas.push(pactiva);
+          }
+        }
 
-        this.propiedadesActivas.push(pactiva);
         return this.fb.control({ disabled: false, value: valor }, validadorres);
       }
     }

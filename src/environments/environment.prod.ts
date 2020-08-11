@@ -4,11 +4,12 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  production: true,
+  production: false,
   authUrl: 'http://localhost:4000/',
   apiUrl: 'http://localhost:5000/api/v1.0/',
   editorToken: 'tipo',
-  editorTokenOrigen: 'sub',
-  editorTokenOrigenId: 'id',
-  callbackRoute: '/',
+  // callbackRoute: '/pages/jerarquia',
+  callbackRoute: '/pages/tabular?tipo=volumen&id=&sub=',
+  cacheActivo: true,
 };
+

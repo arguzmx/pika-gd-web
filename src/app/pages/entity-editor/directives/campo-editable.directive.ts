@@ -1,3 +1,4 @@
+import { PasswordEditorComponent } from './../components/metadata-editor/password-editor/password-editor.component';
 import {
   Directive,
   Input,
@@ -19,6 +20,8 @@ import { NumericEditorComponent } from '../components/metadata-editor/numeric-ed
 import { DatetimeEditorComponent } from '../components/metadata-editor/datetime-editor/datetime-editor.component';
 import { ListEditorComponent } from '../components/metadata-editor/list-editor/list-editor.component';
 import { HiddenEditorComponent } from '../components/metadata-editor/hidden-editor/hidden-editor.component';
+// tslint:disable-next-line: max-line-length
+import { CheckboxGroupEditorComponent } from '../components/metadata-editor/checkbox-group-editor/checkbox-group-editor.component';
 
 const components: { [type: string]: Type<ICampoEditable> } = {
   textbox: StringEditorComponent,
@@ -28,6 +31,8 @@ const components: { [type: string]: Type<ICampoEditable> } = {
   select: ListEditorComponent,
   hidden: HiddenEditorComponent,
   textarea: StringEditorComponent,
+  passconfirm: PasswordEditorComponent,
+  checkboxgroupeditor: CheckboxGroupEditorComponent,
 };
 
 @Directive({

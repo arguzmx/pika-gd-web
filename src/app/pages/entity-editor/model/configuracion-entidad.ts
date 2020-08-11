@@ -1,4 +1,3 @@
-import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 export interface ConfiguracionEntidad {
   // especifica el tipo de entidad en edición
   TipoEntidad: string;

@@ -1,0 +1,21 @@
+<mat-tree #arboldinamico [dataSource]="dataSource" [treeControl]="treeControl">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
+  (click)="SeleccionaNodo(node)" [ngClass]="{ 'background-highlight': selectedNode === node }">
+    <button mat-icon-button disabled></button>
+    {{node.texto}}
+  </mat-tree-node>
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding
+  (click)="SeleccionaNodo(node)" [ngClass]="{ 'background-highlight': selectedNode === node }">
+    <button mat-icon-button
+            [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{node.texto}}
+    <mat-progress-bar *ngIf="node.isLoading"
+                      mode="indeterminate"
+                      class="tree-progress-bar"></mat-progress-bar>
+  </mat-tree-node>
+</mat-tree>
+

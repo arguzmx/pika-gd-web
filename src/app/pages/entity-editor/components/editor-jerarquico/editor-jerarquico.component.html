@@ -1,1 +1,389 @@
-<p>editor-jerarquico works!</p>
+<div class="row">
+  <div class="col-lg-12">
+    <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+      <button
+        *ngIf="MostrarRegresar"
+        mat-icon-button
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.regresar']"
+        nbPopoverTrigger="hint"
+        on-click="regresar()"
+        aria-label="t['ui.regresar']"
+      >
+        <mat-icon color="primary">reply</mat-icon>
+      </button>
+      <span>
+        {{ NombreEntidad }}
+        <span *ngIf="NombreInstanciaDisponible"
+          >:&nbsp;
+          <span class="text-primary">{{ NombreInstancia }}</span>
+        </span>
+      </span>
+      <span class="toolbar-spacer"></span>
+
+      <!-- crear nodo raiz jerarquía -->
+      <button
+        mat-icon-button
+        on-click="mostrarCrearJerarquia(true)"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.raizcrear']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.raizcrear']"
+      >
+        <mat-icon>add_box</mat-icon>
+      </button>
+
+      <!-- editar nodo jerarquía -->
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="mostrarCrearJerarquia(false)"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.nodocrear']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.crear']"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="mostrarEditarT()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.editar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.editar']"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <!-- eliminar nodo jerarquía -->
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="eliminarEntidadesJ()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.eliminar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.eliminar']"
+      >
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+
+      <!-- Separadador -->
+      <mat-icon class="gray-icon">more_vert</mat-icon>
+
+      <!-- crear elemento tabular -->
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="mostrarCrearContenido()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.tabularcrear']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.crear']"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button
+        *ngIf="InstanciaSeleccionadaC"
+        mat-icon-button
+        on-click="mostrarEditarC()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.editar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.editar']"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <!-- eliminar contenido tabuela -->
+      <button
+        *ngIf="InstanciaSeleccionadaC"
+        mat-icon-button
+        on-click="eliminarEntidadesC()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.eliminar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.eliminar']"
+      >
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+
+      <!-- mosrar selector de elementos -->
+      <button
+        *ngIf="vincularActivoC"
+        mat-icon-button
+        on-click="mostrarVinculos()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.propiedades']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.propiedades']"
+      >
+        <mat-icon>link</mat-icon>
+      </button>
+
+      <!-- actualiza  el contenido tabular -->
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="refrescarTabla()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.actualizar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.actualizar']"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+
+      <!-- buscar contenido tabular -->
+      <button
+        *ngIf="InstanciaSeleccionadaJ"
+        mat-icon-button
+        on-click="mostrarBuscar()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.buscar']"
+        nbPopoverTrigger="hint"
+        aria-label="t['ui.buscar']"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <!-- seleccionar columnas contenido tabular -->
+      <button
+        mat-icon-button
+        on-click="mostrarSelectorColumnas()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.selcol']"
+        nbPopoverTrigger="hint"
+        
+        aria-label="t['ui.selcol']"
+      >
+        <mat-icon>view_comfy</mat-icon>
+      </button>
+
+      <!-- eleminar fisltros activos contenido tabular -->
+      <button
+        *ngIf="filtrosActivos"
+        mat-icon-button
+        on-click="eliminarFiltros()"
+        nbPopoverPlacement="bottom"
+        [nbPopover]="t['ui.eliminar-filtro']"
+        nbPopoverTrigger="hint"
+        
+        aria-label="t['ui.eliminar-filtro']"
+      >
+        <mat-icon color="warn">filter_alt</mat-icon>
+      </button>
+    </mat-toolbar>
+  </div>
+  <div class="col-lg-12">
+    <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
+      <nb-card-front>
+        <nb-card accent="info">
+          <nb-card-body>
+            <div class="row">
+              <div class="col-lg-12">
+                <div style="width: 100%; height: 430px;">
+                  <as-split direction="horizontal">
+                    <as-split-area [size]="40">
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <ngx-editor-arbol-entidad
+                            [config]="configJ"
+                            (NodoSeleccionado)="NodoSeleccionado($event)"
+                          ></ngx-editor-arbol-entidad>
+                        </div>
+                      </div>
+                    </as-split-area>
+                    <as-split-area [size]="60">
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="padded">
+                            <ngx-metadata-tabla
+                              [config]="configC"
+                              [metadata]="metadataC"
+                              (ConteoRegistros)="ConteoRegistrosC($event)"
+                              (NuevaSeleccion)="NuevaSeleccionC($event)"
+                              (EditarSeleccion)="EditarSeleccionC($event)"
+                            >
+                            </ngx-metadata-tabla>
+                          </div>
+                        </div>
+                      </div>
+                    </as-split-area>
+                  </as-split>
+                </div>
+              </div>
+            </div>
+          </nb-card-body>
+          <nb-card-footer>
+            <span class="text-danger">{{ totalRegistros }}</span>
+            <span class="text-hint">&nbsp;{{ t["ui.total-regitros"] }}</span>
+          </nb-card-footer>
+        </nb-card>
+      </nb-card-front>
+
+      <nb-card-back>
+        <nb-card accent="danger" size="large">
+          <nb-card-header>
+            <label class="text-primary" >{{ EtiequetaTarjetaTrasera }}</label>
+            <span
+              [ngSwitch]="ContenidoTarjetaTrasera"
+              class="single-view-button"
+            >
+              <span *ngSwitchCase="'buscar'">
+                <button
+                  class="single-view-button"
+                  nbButton
+                  size="small"
+                  on-click="borrarFiltrosBuscador()"
+                  nbPopoverPlacement="bottom"
+                  [nbPopover]="t['ui.borrarfiltros']"
+                  nbPopoverTrigger="hint"
+                >
+                  <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                </button>
+                <button
+                  class="grid-view-button"
+                  nbButton
+                  size="small"
+                  on-click="OcultarTarjetaTrasera()"
+                  nbPopoverPlacement="bottom"
+                  [nbPopover]="t['ui.cerrar']"
+                  nbPopoverTrigger="hint"
+                >
+                  <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                </button>
+              </span>
+
+              <span *ngSwitchCase="'editar'">
+                <button
+                  class="grid-view-button"
+                  nbButton
+                  size="small"
+                  on-click="OcultarTarjetaTrasera()"
+                  nbPopoverPlacement="bottom"
+                  [nbPopover]="t['ui.cerrar']"
+                  nbPopoverTrigger="hint"
+                >
+                  <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                </button>
+              </span>
+            </span>
+          </nb-card-header>
+          <nb-card-body>
+            <div class="row">
+              <div class="col-lg-12">
+                <div [ngSwitch]="ContenidoTarjetaTrasera">
+                  <div *ngSwitchCase="'buscar'">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <ngx-metadata-buscador 
+                            [config]="configC"
+                            [metadata]="metadataC"
+                            (EventoFiltrar) = "EventoFiltrar($event)"
+                          ></ngx-metadata-buscador>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12">
+                        &nbsp;
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngSwitchCase="'editar'">
+                    <div class="row">
+                      <div *ngIf="editandoJerarquica" class="col-lg-12">
+                        <ngx-metadata-editor
+                          [entidad]="entidadJ"
+                          [config]="configJ"
+                          [metadata]="metadataJ"
+                          (NuevaEntidad)="NuevaEntidadJ($event)"
+                          (CapturaFinalizada)="CapturaFinalizadaJ($event)"
+                          (EntidadActualizada)="EntidadActualizadaJ($event)"
+                        ></ngx-metadata-editor>
+                      </div>
+                      <div *ngIf="!editandoJerarquica" class="col-lg-12">
+                        <ngx-metadata-editor
+                          [entidad]="entidadC"
+                          [config]="configC"
+                          [metadata]="metadataC"
+                          (NuevaEntidad)="NuevaEntidadC($event)"
+                          (CapturaFinalizada)="CapturaFinalizadaC($event)"
+                          (EntidadActualizada)="EntidadActualizadaC($event)"
+                        ></ngx-metadata-editor>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </nb-card-back>
+    </nb-reveal-card>
+  </div>
+</div>
+
+<ng-template #dialogConfirmDelete let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>{{ t["ui.confirmar"] }}</nb-card-header>
+    <nb-card-body>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <div [innerHTML]="data"></div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="float-right">
+            <button nbButton (click)="ref.close()">{{ t["ui.cerrar"] }}</button>
+            <button nbButton status="danger" (click)="eliminarSeleccionados()">
+              {{ t["ui.eliminar"] }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #dialogLinkPicker let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>{{t['ui.propiedades']}}</nb-card-header>
+        <nb-card-body>
+            <div class="col-lg-12 col-md-12 col-sm-12"  *ngFor="let link of this.vinculos">
+ 
+                <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
+                <ng-template #uno>
+                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.EntidadHijo)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    </button>
+                </ng-template>
+                <ng-template #varios>
+                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.EntidadHijo)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    </button>
+                </ng-template>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="float-right">
+                        <button nbButton size="medium" (click)="ref.close()">{{t['ui.cerrar']}}</button>
+                    </div>
+                </div>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>
+

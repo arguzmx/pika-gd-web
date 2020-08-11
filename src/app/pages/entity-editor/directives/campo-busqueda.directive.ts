@@ -1,3 +1,4 @@
+import { HiddenSearchComponent } from './../components/metadata-buscador/hidden-search/hidden-search.component';
 import { ListSearchComponent } from './../components/metadata-buscador/list-search/list-search.component';
 import { BoolSearchComponent } from './../components/metadata-buscador/bool-search/bool-search.component';
 import { ConfiguracionEntidad } from './../model/configuracion-entidad';
@@ -22,6 +23,7 @@ const components: {[type: string]: Type<ICampoBuscable>} = {
    date:  DatetimeSearchComponent,
    time:  DatetimeSearchComponent,
    list: ListSearchComponent,
+   hidden: HiddenSearchComponent,
 };
 
 
@@ -78,8 +80,15 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
     if (this.propiedad.AtributoLista) {
       component = this.resolver.resolveComponentFactory<ICampoBuscable>(components['list']);
     } else {
+      let tipocontrol = this.propiedad.TipoDatoId;
       if (components[this.propiedad.TipoDatoId]) {
-        component = this.resolver.resolveComponentFactory<ICampoBuscable>(components[this.propiedad.TipoDatoId]);
+        if (this.propiedad.Contextual) {
+          const v = this.propiedad.AtributosVistaUI.find(x => x.Plataforma === 'web');
+          if (v) {
+            tipocontrol = v.Control;
+          }
+        }
+        component = this.resolver.resolveComponentFactory<ICampoBuscable>(components[tipocontrol]);
       }
     }
     this.creaComponente(component);

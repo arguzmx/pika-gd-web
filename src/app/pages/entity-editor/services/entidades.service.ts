@@ -1,8 +1,10 @@
+import { CatalogoVinculado } from './../../../@pika/metadata/catelogo-vinculado';
+import { Propiedad } from './../../../@pika/metadata/propiedad';
 import { FiltroConsulta } from './../../../@pika/consulta/filtro-consulta';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import { CacheEntidadesService } from './cache-entidades.service';
 import { Injectable } from '@angular/core';
-import { MetadataInfo } from '../../../@pika/metadata';
+import { MetadataInfo, tString } from '../../../@pika/metadata';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { environment } from '../../../../environments/environment.prod';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
@@ -13,9 +15,16 @@ import { AppLogService } from '../../../@pika/servicios/app-log/app-log.service'
 import { TextoDesdeId } from '../model/texto-desde-id';
 import { Consulta, Paginado } from '../../../@pika/consulta';
 import { ValorListaOrdenada } from '../../../@pika/metadata/valor-lista';
-import { Evento } from '../../../@pika/metadata/atributo-evento';
+import { Evento, EventoContexto, EventoArbol } from '../../../@pika/metadata/atributo-evento';
 import { AtributoLista } from '../../../@pika/metadata/atributo-valorlista';
 import { debounceTime, first } from 'rxjs/operators';
+import { SesionQuery } from '../../../@pika/state/sesion.query';
+import { DescriptorNodo } from '../model/descriptor-nodo';
+import { Acciones } from '../../../@pika/metadata/acciones-crud';
+
+export const CONTEXTO = 'CONTEXTO';
+export const SESION = 'SESION';
+export const GLOBAL = 'GLOBAL';
 
 @Injectable()
 export class EntidadesService {
@@ -29,8 +38,12 @@ export class EntidadesService {
   public cliente: PikaApiService<any, string>;
 
   private BusEventos = new BehaviorSubject(null);
+  private BusContexto = new BehaviorSubject(null);
+  private BusArbol = new BehaviorSubject(null);
 
-  constructor(private cache: CacheEntidadesService, private http: HttpClient,
+  constructor(
+    private sesion: SesionQuery,
+    private cache: CacheEntidadesService, private http: HttpClient,
     private ts: TranslateService, private router: Router, private applog: AppLogService) {
       this.Init();
     }
@@ -48,6 +61,118 @@ export class EntidadesService {
       return v.toString(16);
     });
   }
+
+    // Getsion de jerarquias
+    // ---------------------------------------
+    // ---------------------------------------
+    ObtieneEventosArbol(): Observable<EventoArbol> {
+      return this.BusArbol.asObservable();
+    }
+
+    EmiteEventoArbol (evt: EventoArbol): void {
+      this.BusArbol.next(evt);
+    }
+
+
+    public OntieneRaicesHie(HieId: string, tipo: string): Observable<any[]>  {
+      const subject = new AsyncSubject<any>();
+       this.cliente.GetHieRaices(HieId, tipo).pipe(
+         debounceTime(500),
+       ).subscribe( resultado =>  {
+        subject.next(resultado);
+      }, (error) => {
+        this.handleHTTPError(error, tipo, '');
+        subject.next([]);
+       }, () => {
+        subject.complete();
+       } );
+       return subject;
+     }
+
+     public OntieneHijosHie(HieId: string, Id: string, tipo: string): Observable<any[]>  {
+      const subject = new AsyncSubject<any>();
+       this.cliente.GetHieHijos(HieId, Id, tipo).pipe(
+         debounceTime(500),
+       ).subscribe( resultado =>  {
+        subject.next(resultado);
+      }, (error) => {
+        this.handleHTTPError(error, tipo, '');
+        subject.next([]);
+       }, () => {
+        subject.complete();
+       } );
+       return subject;
+     }
+
+
+
+     public ObtieneDescriptorNodo(tipo: string): Observable<DescriptorNodo> {
+      const subject = new AsyncSubject<any>();
+      this.ObtieneMetadatos(tipo).pipe(first())
+      .subscribe( m =>  {
+        const valor: DescriptorNodo = { PropId: null, PropNombre: null, PropIdraiz: '', PropIdPadre: '' };
+
+        m.Propiedades.forEach(p => {
+          if (p.EsIdJerarquia) {
+            valor.PropId = p.Id;
+          }
+          if (p.EsTextoJerarquia) {
+            valor.PropNombre = p.Id;
+          }
+          if (p.EsIdRaizJerarquia) {
+            valor.PropIdraiz = p.Id;
+          }
+          if (p.EsFiltroJerarquia) {
+            valor.PropIdPadre = p.Id;
+          }
+        });
+
+        if ( valor.PropId === null ||
+             valor.PropNombre === null ) return null;
+
+        subject.next(valor);
+      } , (error) => {
+        this.handleHTTPError(error, tipo, '');
+        subject.next(null);
+      } , () => {
+        subject.complete();
+      });
+      return  subject;
+     }
+
+    // Propiedes contextuales
+    // ---------------------------------------
+    // ---------------------------------------
+    public SetCachePropiedadContextual(propiedad: string, origen: string, tranid: string, valor: any): void {
+      const key = this.cache.ClaveValorContextual(origen, propiedad, tranid);
+      this.cache.set(key, valor);
+      this.EmiteEventoContexto( { Origen: key, Valor: valor });
+    }
+
+    public GetPropiedadCacheContextual(propiedad: string, origen: string, tranid: string): any {
+      origen = origen.toUpperCase();
+      switch (origen) {
+        case CONTEXTO:
+          const key = this.cache.ClaveValorContextual(origen, propiedad, tranid);
+          // console.log(key);
+          this.printCache();
+          if (this.cache.has(key)) return this.cache.get(key);
+          break;
+
+        case SESION:
+        case GLOBAL:
+          // console.log(propiedad + " :GS");
+          const valor = this.sesion.sesion()[propiedad];
+          if (valor) return valor;
+          break;
+      }
+      return null;
+    }
+
+    public  printCache(): void {
+      this.cache.print();
+    }
+
 
     // Cache de instancias
     // ---------------------------------------
@@ -200,6 +325,19 @@ export class EntidadesService {
     }
 
 
+      // Eventos interproceso
+    // ---------------------------------------
+    // ---------------------------------------
+
+    ObtieneAventosContexto(): Observable<EventoContexto> {
+      return this.BusContexto.asObservable();
+    }
+
+    EmiteEventoContexto (item: EventoContexto): void {
+      this.BusContexto.next(item);
+    }
+
+
   // Manuejo de listas
   // ---------------------------------------------------------------
   // ---------------------------------------------------------------
@@ -213,7 +351,6 @@ export class EntidadesService {
     consulta.FiltroConsulta.forEach(x =>  query = query + `${x.Propiedad}-${x.Operador}-${x.Valor}` );
     const key = this.cache.ClaveLista(lista.Entidad, query);
     const subject = new AsyncSubject<AtributoLista>();
-
     if (this.cache.has(key)) {
       lista.Valores = this.cache.get(key);
       subject.next(lista);
@@ -233,6 +370,28 @@ export class EntidadesService {
      return subject;
   }
 
+  public ObtieneEntidadUnica(tipoentidad: string, identidad: string ): Observable<any> {
+    const subject = new AsyncSubject<any>();
+
+    const key = this.cache.ClaveEntidad(tipoentidad, identidad);
+
+   if (this.cache.has(key)) {
+    subject.next(this.cache.get(key));
+    subject.complete();
+   } else {
+    this.cliente.Get(identidad, tipoentidad).pipe(first())
+    .subscribe( entidad => {
+      this.cache.set(key, entidad);
+      subject.next(entidad);
+    },
+    (error) => {
+     this.handleHTTPError(error, 'entidad', '');
+     subject.next(null); },
+    () => { subject.complete(); }  );
+   }
+
+    return subject;
+  }
 
   // Obtiene los metadatos de un tipo de  entidad
   public ObtieneMetadatos(tipoentidad: string): Observable<MetadataInfo> {
@@ -265,6 +424,12 @@ export class EntidadesService {
     const subject = new AsyncSubject<MetadataInfo>();
     this.ts.get('entidades.propiedades.' + entidad.toLowerCase()).pipe(first())
     .subscribe( r => {
+
+      const pcatalogo = this.ObtieneCamposCatalogo(metadatos);
+      pcatalogo.forEach( p => {
+        metadatos.Propiedades.push(p);
+      }) ;
+
       metadatos.Propiedades.forEach( p => {
         if (r[p.Nombre]) {
           p.NombreI18n = r[p.Nombre];
@@ -280,6 +445,29 @@ export class EntidadesService {
     } );
     return subject;
   }
+
+// realiza una consulta de pagina relacional
+public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
+
+  const  subject = new AsyncSubject<any>();
+
+  this.cliente.Get(id, tipo).pipe(
+      debounceTime(500), first(),
+  ).subscribe( data => {
+    console.log(data);
+        subject.next(data);
+        subject.complete();
+  }, (error) => {
+    this.handleHTTPError(error, 'pagina-resultados', '');
+    subject.next(null);
+    subject.complete();
+  },
+  () => {
+   });
+
+   return subject;
+}
+
 
 // realiza una consulta de pagina relacional
   public ObtenerPaginaRelacional (TipoOrigen: string, OrigenId: string, Entidad: string,
@@ -335,6 +523,115 @@ export class EntidadesService {
   }
 
 
+  public ObtieneCamposCatalogo(metadata: MetadataInfo): Propiedad[] {
+    const propiedades: Propiedad[] =  [];
+
+    metadata.CatalogosVinculados.forEach( c => {
+      if (metadata.Propiedades
+        .findIndex(x => x.Id === c.PropiedadReceptora) >= 0 ) {
+        return;
+      }
+
+      let indice = 1000;
+      const p: Propiedad = {
+        Id: c.PropiedadReceptora,
+        Nombre: c.PropiedadReceptora,
+        NombreI18n: c.PropiedadReceptora,
+        TipoDatoId: tString,
+        ValorDefault: null,
+        IndiceOrdenamiento: indice,
+        Buscable: false,
+        Ordenable: false,
+        Visible: true,
+        EsIdClaveExterna: false,
+        EsIdRegistro: false,
+        EsIdJerarquia: false,
+        EsTextoJerarquia: false,
+        EsIdRaizJerarquia: false,
+        EsFiltroJerarquia: false,
+        Requerido: false,
+        Autogenerado: false,
+        EsIndice: false,
+        ControlHTML: null,
+        TipoDato: null,
+        ValidadorTexto: null,
+        ValidadorNumero: null,
+        Atributos: null,
+        AtributoLista: {
+          DatosRemotos: true,
+          Entidad: c.EntidadCatalogo,
+          OrdenarAlfabetico: true,
+          Default: '',
+          PropiedadId: c.IdCatalogoMap,
+          TypeAhead: false,
+        },
+        AtributosVistaUI: [{
+          PropiedadId: c.IdCatalogoMap,
+          Control: 'checkboxgroupeditor',
+          Accion: Acciones.addupdate,
+          Plataforma: 'web',
+        }],
+        AtributosEvento: [],
+        ValoresLista: [],
+        OrdenarValoresListaPorNombre:  true,
+        Valor: null,
+        MostrarEnTabla: true,
+        AlternarEnTabla: true,
+        IndiceOrdenamientoTabla: 1000,
+        Contextual: false,
+        IdContextual: '',
+        Etiqueta: false,
+        CatalogoVinculado: true,
+      };
+      propiedades.push(p);
+      indice ++;
+    });
+
+    return propiedades;
+  }
+
+
+
+  private BuscaIdsParaLista(p: Propiedad, pagina: Paginado<any>): string [] {
+    const buscar: string [] = [];
+    let ids = '';
+    // Recorre todos los elementos de la misma propiedad y obtiene
+    // los Ids inexitsnetes en el diccionario
+    pagina.Elementos.forEach( item => {
+      if (this.ListaIds.findIndex(x =>  x.Id === item[p.Id] &&
+        x.Entidad === p.AtributoLista.Entidad ) < 0 ) {
+          if ( item[p.Id] !== null) ids = ids + item[p.Id] + '&';
+        }
+    });
+    // Si hay Ids faltantes los añade a una lista de bpsqueuda
+    if (ids !== '') {
+      buscar.push( p.AtributoLista.Entidad + '|' + ids );
+    }
+    return buscar;
+  }
+
+  private BuscaIdsParaCatalogos(p: Propiedad, pagina: Paginado<any>): string [] {
+    const buscar: string [] = [];
+    let ids = '';
+    // Recorre todos los elementos de la misma propiedad y obtiene
+    // los Ids inexitsnetes en el diccionario
+    pagina.Elementos.forEach( item => {
+      if (this.ListaIds.findIndex(x =>  x.Id === item[p.Id] &&
+        x.Entidad === p.AtributoLista.Entidad ) < 0 ) {
+          if ( item[p.Id] !== null) {
+            item[p.Id].forEach(element => {
+              ids = ids + item[p.Id] + '&';
+            });
+          }
+        }
+    });
+    // Si hay Ids faltantes los añade a una lista de bpsqueuda
+    if (ids !== '') {
+      buscar.push( p.AtributoLista.Entidad + '|' + ids );
+    }
+    return buscar;
+  }
+
   private BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>):
   Observable<boolean> {
     const subject = new AsyncSubject<boolean>();
@@ -343,55 +640,51 @@ export class EntidadesService {
       const metadata: MetadataInfo = this.cache.get(key);
       const buscar: string [] = [];
 
-      metadata.Propiedades.forEach( p => {
-        if (p.AtributoLista) {
-          let ids = '';
-          // Recorre todos los elementos de la misma propiedad y obtiene
-          // los Ids inexitsnetes en el diccionario
-          pagina.Elementos.forEach( item => {
-            if (this.ListaIds.findIndex(x =>  x.Id === item[p.Id] &&
-              x.Entidad === p.AtributoLista.Entidad ) < 0 ) {
-                if ( item[p.Id] !== null) ids = ids + item[p.Id] + '&';
-              }
-          });
-          // Si hay Ids faltantes los añade a una lista de bpsqueuda
-          if (ids !== '') {
-            buscar.push( p.AtributoLista.Entidad + '|' + ids );
+        // Inicia el proes deo busqeda
+        metadata.Propiedades.forEach( p => {
+          // realiza el análisis si la priedad es atributlo de lista
+
+          if (p.CatalogoVinculado) {
+            this.BuscaIdsParaCatalogos(p, pagina).forEach( item => buscar.push(item));
+          } else {
+            if (p.AtributoLista) {
+              this.BuscaIdsParaLista(p, pagina).forEach( item => buscar.push(item));
+            }
           }
-        }
-      });
-
-      if (buscar.length > 0) {
-        // LLama a la API para obtener todos los identiicadores
-        const tasks$ = [];
-        buscar.forEach( s => {
-            const entidad = s.split('|')[0];
-            const lids =  s.split('|')[1].split('&');
-            tasks$.push( this.cliente.PairListbyId(lids, entidad).pipe(first()) );
         });
 
-        // resuelve el observable al finalizar todos los threads
-        forkJoin(...tasks$).subscribe(results => {
-          let idx = 0;
-          results.forEach(element => {
-            const entidad = buscar[idx].split('|')[0];
-            element.forEach( (item: ValorListaOrdenada) => {
-              if (this.ListaIds.findIndex(x =>  x.Id === item.Id &&
-                x.Entidad === entidad ) < 0 )
-              this.ListaIds.push( new TextoDesdeId(entidad, item.Id, item.Texto ));
-            });
-            idx ++;
+        if (buscar.length > 0) {
+          // LLama a la API para obtener todos los identiicadores
+          const tasks$ = [];
+          buscar.forEach( s => {
+              const entidad = s.split('|')[0];
+              const lids =  s.split('|')[1].split('&');
+              tasks$.push( this.cliente.PairListbyId(lids, entidad).pipe(first()) );
           });
+
+          // resuelve el observable al finalizar todos los threads
+          forkJoin(...tasks$).subscribe(results => {
+            let idx = 0;
+            results.forEach(element => {
+              const entidad = buscar[idx].split('|')[0];
+              element.forEach( (item: ValorListaOrdenada) => {
+                if (this.ListaIds.findIndex(x =>  x.Id === item.Id &&
+                  x.Entidad === entidad ) < 0 )
+                this.ListaIds.push( new TextoDesdeId(entidad, item.Id, item.Texto ));
+              });
+              idx ++;
+            });
+            subject.next(true);
+           }, (err) => {
+            subject.next(false);
+           }, () => {
+             subject.complete();
+          });
+        } else {
           subject.next(true);
-         }, (err) => {
-          subject.next(false);
-         }, () => {
-           subject.complete();
-        });
-      } else {
-        subject.next(true);
-        subject.complete();
-      }
+          subject.complete();
+        }
+
     } else {
       subject.next(true);
       subject.complete();
