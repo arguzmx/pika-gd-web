@@ -13,6 +13,8 @@ export const environment = {
   authUrl: 'http://localhost:4000/',
   apiUrl: 'http://localhost:5000/api/v1.0/',
   editorToken: 'tipo',
-  callbackRoute: '/pages/tabular?tipo=dominio',
+  callbackRoute: '/pages/jerarquia',
+  // callbackRoute: '/pages/tabular?tipo=propiedadesusuario',
+  cacheActivo: true,
   uploadUrl: 'http://localhost:5000/api/v1.0/Upload',
 };

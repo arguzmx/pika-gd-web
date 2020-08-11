@@ -3,6 +3,33 @@
 @import '~bootstrap/scss/mixins/breakpoints';
 
 @include nb-install-component() {
+  .mat-toolbar-white {
+    background-color: white;
+  }
+  
+  
+    .toolbar-spacer {
+      flex: 1 1 auto;
+    }
+  
+    .cdk-focused {
+      outline: none;
+      border: 0;
+   }
+  
+   .gray-icon {
+    color:  #CCCCCC;
+  }
+  /* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+  .gray-icon svg {
+    fill: #CCCCCC;
+  }
+  
+    .padded {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
 
   nb-card-header {
     display: flex;

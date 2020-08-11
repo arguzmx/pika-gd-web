@@ -13,6 +13,9 @@
         "cancelar": "Cancelar",
         "eliminar-filtro": "Eliminar filtros",
         "crear": "Crear",
+        "raizcrear": "Crear raíz",
+        "nodocrear": "Crear nodo",
+        "tabularcrear": "Crear contenido",
         "buscar": "Buscar",
         "adicionar": "Adicionar",
         "aplicar": "Aplicar",
@@ -46,9 +49,15 @@
         "fulltext": "Texto"
     },
     "entidades": {
+        "entidad-unica": "Enitdad|Entidades|la|las|menu-outline",
         "pagina-resultados": "Página de resultados|Páginas de resultados|la|las|menu-outline",
         "metadatos": "Metadato|Metadatos|el|los|bookmark-outline",
         "dominio": "Dominio|Dominios|el|los|globe-outline",
+        "rol": "Rol|Roles|el|los|people-outline",
+        "elementoclasificacion": "Configuración clasificación|Configuración clasificación|el|la|book-open-outline",
+        "entradaclasificacion": "Definición clasificación|Definiciones clasificación|el|las|book-open-outline",
+        "cuadroclasificacion": "Cuadro clasificación|Cuadros clasificación|el|los|book-open-outline",
+        "propiedadesusuario": "Usuario|Usuarios|el|los|person-outline",
         "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|home-outline",
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
         "propiedades": {
@@ -58,6 +67,13 @@
                 "OrigenId": "Origen",
                 "TipoOrigenId": "TipoOrigen",
                 "Eliminada": "Eliminado"
+            },
+            "rol": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "Descripcion": "Descripcion",
+                "OrigenId": "Origen",
+                "TipoOrigenId": "TipoOrigen"
             },
             "direccionpostal" : {
                 "Id": "Id",
@@ -77,7 +93,7 @@
             "propiedadesusuario": {
                 "UsuarioId": "Id",
                 "username": "Usuario",
-                "email": "Email",
+                "email": "Correo Electrónico",
                 "name": "Nombres",
                 "family_name": "Paterno",
                 "given_name": "Materno",
@@ -92,7 +108,8 @@
                 "gmt_offset": "GMT",
                 "Ultimoacceso": "Acceso",
                 "Eliminada": "Eliminado",
-                "Inactiva": "Inactvo"
+                "Inactiva": "Inactvo",
+                "password": "Contraseña"
             },
             "pais": {
                 "Id": "Id",
@@ -102,6 +119,16 @@
                 "Id": "Id",
                 "Nombre": "Nombre",
                 "PaisId": "PaisId"
+            },
+            "entradaclasificacion": {
+                "Id": "Id",
+                "Clave": "Clasifiación Archivística",
+                "MesesVigenciTramite": "Años AT",
+                "MesesVigenciConcentracion": "Años AC",
+                "MesesVigenciHistorico": "Años AH",
+                "TipoDisposicionDocumentalId": "Disposición",
+                "Eliminada": "Eliminada",
+                "TipoValoracionDocumentalId": "Valoración"
             }
         }
     },

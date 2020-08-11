@@ -13,6 +13,10 @@
     <label>{{EtiquetaDeId(row[column.key], column.key)}}</label>
 </ng-template>
 
+<!-- Template para columnas con catálogo vinulado -->
+<ng-template  #cataloLinkTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <label>{{EtiquetasDeCatalogo(row[column.key], column.key)}}</label>
+</ng-template>
 
 <!-- Cuadro de dialogo para la selección de columnas-->
 <ng-template #dialogColPicker let-data let-ref="dialogRef">

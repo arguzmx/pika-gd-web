@@ -197,15 +197,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
         this.group.addControl(CTL2_PREFIX + c.Id, this.createControl(c));
       }
 
-      // if (this.maxCampos(c) === 2) {
-      //   n = CTL2_PREFIX + c.Id;
-      //   if (!controls.includes(n)) {
-      //     this.group.addControl(
-      //       CTL2_PREFIX + c.Id,
-      //       this.createControl(c),
-      //     );
-      //   }
-      // }
+
     });
   }
 

@@ -103,6 +103,7 @@ OnDestroy, OnChanges {
   }
 
   private _Reset(): void {
+      if (this.tablas && this.tablas.first) this.tablas.first._Reset();
       this._CerrarDialogos();
       this.InstanciaSeleccionada = false;
       this.metadata = null;
@@ -182,7 +183,7 @@ private  ProcesaCambiosConfiguracion(): void {
         this.MostrarRegresar = true;
       }
     }
-    const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLocaleLowerCase();
+    const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
     this.tieneVinculos = this.metadata.EntidadesVinculadas
     && this.metadata.EntidadesVinculadas.length > 0 ? true : false;

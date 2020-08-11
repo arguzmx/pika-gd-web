@@ -1,11 +1,19 @@
-export type TipoControlHtml =
-  | 'toggle'
-  | 'checkbox'
-  | 'datetime'
-  | 'file'
-  | 'hidden'
-  | 'number'
-  | 'radio'
-  | 'textbox'
-  | 'textarea'
-  | 'select';
+export const  HTML_TOGGLE = 'toggle';
+export const  HTML_CHECKBOX = 'checkbox';
+export const  HTML_CHECKBOX_MULTI = 'checkboxgroupeditor';
+export const  HTML_DATE = 'datetime';
+export const  HTML_TIME = 'datetime';
+export const  HTML_DATETIME = 'datetime';
+export const  HTML_FILE = 'file';
+export const  HTML_HIDDEN = 'hidden';
+export const  HTML_NUMBER = 'number';
+export const  HTML_RADIO = 'radio';
+export const  HTML_TEXT = 'textbox';
+export const  HTML_TEXTAREA = 'textarea';
+export const  HTML_SELECT = 'select';
+export const  HTML_PASSWORD = 'password';
+export const  HTML_PASSWORD_CONFIRM = 'passconfirm';
+export const  HTML_AVATAR = 'avatar';
+export const  HTML_NONE = 'none';
+export const  HTML_LABEL = 'label';
+

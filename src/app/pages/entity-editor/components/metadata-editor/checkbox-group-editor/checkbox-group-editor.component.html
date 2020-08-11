@@ -1,0 +1,13 @@
+<div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
+    <input type="hidden" [formControlName] = "propiedad.Id">
+    <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
+    <div [formGroup]="valgroup">
+        <div class="col-lg-6 col-md-6 col-sm-12" *ngFor="let item of list; let i = index">
+    <span formArrayName="valores" >
+        <nb-checkbox  [checked]="true" (checkedChange)="change($event, item.Id)"
+        [formControlName]="i" 
+        > {{item.Texto}}</nb-checkbox>
+        </span>
+    </div>
+    </div>
+ </div>
