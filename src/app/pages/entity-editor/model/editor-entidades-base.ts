@@ -27,7 +27,7 @@ export class EditorEntidadesBase {
 
   ObtieneSingularT(item: string) {
     try {
-      let texto = this.t[item.toLocaleLowerCase()].toString();
+      let texto = this.t[item.toLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[0] : texto;
       return texto;
     } catch (error) {
@@ -37,7 +37,7 @@ export class EditorEntidadesBase {
 
   ObtienePluralT(item: string) {
     try {
-      let texto = this.t[item.toLocaleLowerCase()].toString();
+      let texto = this.t[item.toLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[1] : texto;
       return texto;
     } catch (error) {
@@ -47,7 +47,7 @@ export class EditorEntidadesBase {
 
   ObtieneIconoT(item: string) {
     try {
-      let texto = this.t[item.toLocaleLowerCase()].toString();
+      let texto = this.t[item.toLowerCase()].toString();
       texto = texto.indexOf('|') > 0 ? texto.split('|')[4] : texto;
       return texto;
     } catch (error) {

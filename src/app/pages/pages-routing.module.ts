@@ -1,3 +1,5 @@
+// tslint:disable-next-line: max-line-length
+import { EditorBootJerarquicoComponent } from './entity-editor/components/editor-boot-jerarquico/editor-boot-jerarquico.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
@@ -17,6 +19,10 @@ const routes: Routes = [{
     {
       path: 'upload',
       component: HostUploaderComponent,
+    },
+    {
+      path: 'jerarquia',
+      component: EditorBootJerarquicoComponent,
     },
     {
       path: '',

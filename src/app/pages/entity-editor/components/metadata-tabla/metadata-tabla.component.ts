@@ -1,3 +1,4 @@
+import { CatalogoVinculado } from './../../../../@pika/metadata/catelogo-vinculado';
 import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input, OnChanges, SimpleChanges,
@@ -10,10 +11,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { FiltroConsulta, Operacion, Consulta } from '../../../../@pika/consulta';
 import { EntidadVinculada } from '../../../../@pika/metadata/entidad-vinculada';
 import { ColumnaTabla } from '../../model/columna-tabla';
-import { Propiedad, MetadataInfo } from '../../../../@pika/metadata';
+import { Propiedad, MetadataInfo, tString } from '../../../../@pika/metadata';
 import { TablaEventObject } from '../../model/tabla-event-object';
 import { AppLogService } from '../../../../@pika/servicios/app-log/app-log.service';
 import { NbDialogService } from '@nebular/theme';
+
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -25,9 +27,11 @@ implements ITablaMetadatos, OnInit, OnChanges {
 
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
+  @ViewChild('cataloLinkTpl', { static: true }) cataloLinkTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
   private dialogColPickRef: any;
+
 
   // Parámetros de configuración
   @Input() config: ConfiguracionEntidad;
@@ -82,6 +86,9 @@ implements ITablaMetadatos, OnInit, OnChanges {
     this.consulta.FiltroConsulta = [];
     this.consulta.ord_columna = '';
     this.consulta.ord_direccion = '';
+    this.pagination.sort = '';
+    this.pagination.order = '';
+    this.pagination.offset = 0;
   }
 
   // Consulta base para el despliegue de datos
@@ -122,7 +129,6 @@ implements ITablaMetadatos, OnInit, OnChanges {
    // Procesamiento del componente
   // --------------------------------------------------------------------
   // --------------------------------------------------------------------
-
   private ProcesaConfiguracion() {
     if (this.metadata) {
       this.eliminarLogico  = (this.metadata.ElminarLogico === true) ? true : false;
@@ -134,24 +140,25 @@ implements ITablaMetadatos, OnInit, OnChanges {
         });
       }
       this.ObtenerTraducciones();
-
       this.consulta.FiltroConsulta = [];
       if (this.eliminarLogico) {
         this.consulta.FiltroConsulta.push(this.FiltroEliminadas());
       }
       this.columnasBase = this.GetColumnasTabla();
       this.EstableceColumnas(this.columnasBase);
-      this.obtenerPaginaDatos(true);
+      this.obtenerPaginaDatos(false);
     }
   }
-      // Genra el iltro base para las entidades con eliminación lógica
-      private FiltroEliminadas(): FiltroConsulta {
+
+  // Genra el iltro base para las entidades con eliminación lógica
+  private FiltroEliminadas(): FiltroConsulta {
         return  {
               Negacion: false, Operador: Operacion.OP_EQ,
               ValorString: 'false', Propiedad: 'Eliminada', Id: 'Eliminada',
               Valor: [true],
             };
   }
+
   private CargaTraducciones(): void {
     this.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades'];
     this.ObtenerTraducciones();
@@ -232,6 +239,9 @@ implements ITablaMetadatos, OnInit, OnChanges {
   }
   // Otiene la etqueta para una celda con un Id
   public EtiquetaDeId(Id: string, EntidadId: string) {
+    // El texto para ls etiqeutas viene desde el servicio de entidades
+     // Y se carga tras el paginado
+    if (this.metadata) {
     const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
     let e = '';
     if (i >= 0) {
@@ -242,9 +252,30 @@ implements ITablaMetadatos, OnInit, OnChanges {
           return this.entidades.ListaIds[index].Texto;
         }
     }
+  }
     return Id;
   }
 
+   // Otiene la etqueta para una celda con un Id
+   public EtiquetasDeCatalogo(Id: string[], EntidadId: string) {
+      // El texto para ls etiqeutas viene desde el servicio de entidades
+     // Y se carga tras el paginado
+    const texto: string[] = [];
+     const v = this.metadata.CatalogosVinculados.find( x => x.PropiedadReceptora === EntidadId);
+    if (v) {
+    Id.forEach( i => {
+      const index = this.entidades.ListaIds.findIndex(x =>  x.Id === i &&
+        x.Entidad === v.EntidadCatalogo );
+        if ( index >= 0 ) {
+          texto.push(this.entidades.ListaIds[index].Texto);
+        } else {
+          texto.push(i);
+        }
+    });
+
+     }
+    return texto;
+  }
 
   // establece la configuración de las columnas de la tabla  a partir de los metadatos recibidos
   private EstableceColumnas(columnas: ColumnaTabla[]): void {
@@ -254,6 +285,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
         let template = null;
         if (columnas[i].Tipo === 'bool') template = this.boolTpl;
         if (columnas[i].EsLista) template = this.listTpl;
+        if (columnas[i].EsCatalogoVinculado) template = this.cataloLinkTpl;
         this.columns.push({
           key: columnas[i].Id,
           title: columnas[i].NombreI18n,
@@ -264,6 +296,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
       }
     }
   }
+
 
   // Obtiene las columas disponibles para mostrase en la tabla
      private GetColumnasTabla(): ColumnaTabla[] {
@@ -290,9 +323,11 @@ implements ITablaMetadatos, OnInit, OnChanges {
               Tipo: c.TipoDatoId,
               NombreI18n: c.NombreI18n,
               EsLista: eslista,
+              EsCatalogoVinculado: c.CatalogoVinculado,
             });
           }
       }
+
       return columnas;
     }
 
@@ -403,7 +438,7 @@ AlternarCheckboxes(): void {
 
 
   public SetSeleccion(i: number): void {
-     const val = { row: i + 1, attr: 'border-left', value: '5px solid #FF1010' };
+     const val = { row: i + 1, attr: 'background-color', value: '#9ECDFF' };
      this.table.apiEvent({
        type: API.setRowStyle,
        value: val,
@@ -411,8 +446,16 @@ AlternarCheckboxes(): void {
  }
 
  public LimpiarSeleccion(): void {
+   const color_par = '#FFFFFF';
+   const color_non = '#f6f7f9';
+   let color: string;
    for (let index = 0; index < this.data.length; index++) {
-     const val = { row: index + 1, attr: 'border-left', value: '1px none #FFFFFF' };
+     if ( ((index + 1) % 2) === 0 ) {
+        color = color_par;
+     } else {
+        color = color_non;
+     }
+     const val = { row: index + 1, attr: 'background-color', value: color };
       this.table.apiEvent({
         type: API.setRowStyle,
         value: val,

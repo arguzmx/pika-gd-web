@@ -163,6 +163,27 @@ export class PikaApiService <T, U> {
     );
   }
 
+  GetHieRaices(IdHie: U, entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) +  'jerarquia/' + IdHie;
+    const headers = new HttpHeaders()
+    .set('content-type', 'application/json');
+    return this.http.get(endpoint , { 'headers': headers })
+    .pipe(
+      retry(retryCount),
+    );
+  }
+
+  GetHieHijos(IdHie: U, Id: U, entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) +  'jerarquia/' + IdHie + '/' + Id  ;
+    const headers = new HttpHeaders()
+    .set('content-type', 'application/json');
+    return this.http.get(endpoint , { 'headers': headers })
+    .pipe(
+      retry(retryCount),
+    );
+  }
+
+
   Delete(Ids: U[], entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad);
     let ids: string = '';

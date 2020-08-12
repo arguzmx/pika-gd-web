@@ -4,4 +4,6 @@ export class ValidadorNumero {
     min: number;
     max: number;
     valordefaulr: number;
+    UtilizarMax: boolean;
+    UtilizarMin: boolean;
 }

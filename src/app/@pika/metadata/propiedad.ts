@@ -21,7 +21,7 @@ export interface Propiedad {
     EsIdRegistro: boolean;
     EsIdJerarquia: boolean;
     EsTextoJerarquia: boolean;
-    EsIdPadreJerarquia: boolean;
+    EsIdRaizJerarquia: boolean;
     EsFiltroJerarquia: boolean;
     Requerido: boolean;
     Autogenerado: boolean;
@@ -36,10 +36,12 @@ export interface Propiedad {
     AtributosEvento?: AtributoEvento[];
     ValoresLista?: ValorListaOrdenada[];
     OrdenarValoresListaPorNombre?:  boolean;
-    Valor?: string;
+    Valor?: any;
     MostrarEnTabla: boolean;
     AlternarEnTabla: boolean;
     IndiceOrdenamientoTabla: number;
     Contextual: boolean;
+    IdContextual?: string;
     Etiqueta: boolean;
+    CatalogoVinculado?: boolean;
 }

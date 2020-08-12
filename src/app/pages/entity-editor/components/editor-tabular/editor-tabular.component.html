@@ -1,53 +1,132 @@
 <div class="row">
     <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+            <button
+              *ngIf="MostrarRegresar"
+              mat-icon-button
+              nbPopoverPlacement="bottom"
+              [nbPopover]="t['ui.regresar']"
+              nbPopoverTrigger="hint"
+              on-click="regresar()"
+              aria-label="t['ui.regresar']"
+            >
+              <mat-icon color="primary">reply</mat-icon>
+            </button>
+            <span>
+                {{NombreEntidad}} 
+                <span *ngIf="NombreInstanciaDisponible">:&nbsp;
+                    <span class="text-primary">{{NombreInstancia}}</span>
+                </span>
+            </span>
+            <span class="toolbar-spacer"></span>
+      
+            <!-- actialziar lista de elemento -->
+            <button
+              mat-icon-button
+              on-click="refrescarTabla()"
+              nbPopoverPlacement="bottom"
+              [nbPopover]="t['ui.actualizar']"
+              nbPopoverTrigger="hint"
+              aria-label="t['ui.actualizar']"
+            >
+              <mat-icon>refresh</mat-icon>
+            </button>
+      
+            <!-- mostrar vínculos del elemento seleccionado -->
+            <button
+              *ngIf="vincularActivo"
+              mat-icon-button
+              on-click="mostrarVinculos()"
+              nbPopoverPlacement="bottom"
+              [nbPopover]="t['ui.propiedades']"
+              nbPopoverTrigger="hint"
+              aria-label="t['ui.propiedades']"
+            >
+              <mat-icon>link</mat-icon>
+            </button>
+
+              <!-- crear un nuevo elemento -->
+              <button
+              mat-icon-button
+              on-click="mostrarCrear()"
+              nbPopoverPlacement="bottom"
+              [nbPopover]="t['ui.crear']"
+              nbPopoverTrigger="hint"
+              aria-label="t['ui.crear']"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+
+            <!-- Edistar el elemento seleccionado -->
+            <button
+            *ngIf="InstanciaSeleccionada"
+                  mat-icon-button
+                  on-click="mostrarEditar()"
+                  nbPopoverPlacement="bottom"
+                  [nbPopover]="t['ui.editar']"
+                  nbPopoverTrigger="hint"
+                  aria-label="t['ui.editar']"
+                >
+                  <mat-icon>edit</mat-icon>
+            </button>
+
+            <!-- Eliminar el elemento seleccionado -->
+            <button
+            *ngIf="InstanciaSeleccionada" 
+                  mat-icon-button
+                  on-click="eliminarEntidades()"
+                  nbPopoverPlacement="bottom"
+                  [nbPopover]="t['ui.eliminar']"
+                  nbPopoverTrigger="hint"
+                  aria-label="t['ui.eliminar']"
+                >
+                  <mat-icon>delete_outline</mat-icon>
+            </button>
+ 
+             <!-- Mostrar búsqueda -->
+             <button
+                   mat-icon-button
+                   on-click="mostrarBuscar()"
+                   nbPopoverPlacement="bottom"
+                   [nbPopover]="t['ui.eliminar']"
+                   nbPopoverTrigger="hint"
+                   aria-label="t['ui.eliminar']"
+                 >
+                   <mat-icon>search</mat-icon>
+             </button>
+
+            <!-- Mostrar selector columnas -->
+            <button
+                mat-icon-button
+                on-click="mostrarSelectorColumnas()"
+                nbPopoverPlacement="bottom"
+                [nbPopover]="t['ui.selcol']"
+                nbPopoverTrigger="hint"
+                aria-label="t['ui.selcol']"
+                >
+                <mat-icon>view_comfy</mat-icon>
+            </button>
+
+            <!-- eleminar fisltros activos contenido tabular -->
+            <button
+                *ngIf="filtrosActivos"
+                mat-icon-button
+                on-click="eliminarFiltros()"
+                nbPopoverPlacement="bottom"
+                [nbPopover]="t['ui.eliminar-filtro']"
+                nbPopoverTrigger="hint"
+                
+                aria-label="t['ui.eliminar-filtro']"
+                >
+            <mat-icon color="warn">filter_alt</mat-icon>
+            </button>
+
+          </mat-toolbar>
+    </div>
+    <div class="col-lg-12">
         <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
             <nb-card-front>
                 <nb-card accent="info" size="large">
-                    <nb-card-header>
-                        <span>
-                        <button *ngIf="MostrarRegresar" nbButton size="small" on-click="regresar()"
-                        appearance="ghost"	  nbPopoverPlacement="bottom" [nbPopover]="t['ui.regresar']" nbPopoverTrigger="hint">
-                            <nb-icon status="info" icon="undo" pack="eva"></nb-icon>
-                        </button>&nbsp;
-                        </span>
-                        {{NombreEntidad}} 
-                        <span *ngIf="NombreInstanciaDisponible">:&nbsp;
-                            <span class="text-primary">{{NombreInstancia}}</span>
-                        </span>
-
-                        <button class="single-view-button" nbButton size="small" on-click="refrescarTabla()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.actualizar']" nbPopoverTrigger="hint">
-                            <nb-icon icon="refresh" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small"  *ngIf="vincularActivo" on-click="mostrarVinculos()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.propiedades']" nbPopoverTrigger="hint">
-                            <nb-icon icon="list-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small" on-click="mostrarCrear()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.crear']" nbPopoverTrigger="hint">
-                            <nb-icon icon="plus-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small" *ngIf="InstanciaSeleccionada" on-click="mostrarEditar()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.editar']" nbPopoverTrigger="hint">
-                            <nb-icon icon="edit-2-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small" *ngIf="InstanciaSeleccionada" on-click="eliminarEntidades()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.eliminar']" nbPopoverTrigger="hint">
-                            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small" on-click="mostrarBuscar()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.buscar']" nbPopoverTrigger="hint">
-                            <nb-icon icon="search-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button class="grid-view-button" nbButton size="small" on-click="mostrarSelectorColumnas()"
-                            nbPopoverPlacement="bottom" [nbPopover]="t['ui.selcol']" nbPopoverTrigger="hint">
-                            <nb-icon icon="grid-outline" pack="eva"></nb-icon>
-                        </button>
-                        <button *ngIf="filtrosActivos" class="grid-view-button" nbButton size="small" on-click="eliminarFiltros()"
-                        nbPopoverPlacement="bottom" [nbPopover]="t['ui.eliminar-filtro']" nbPopoverTrigger="hint">
-                        <nb-icon icon="funnel-outline" status="danger" pack="eva"></nb-icon>
-                    </button>
-                    </nb-card-header>
                     <nb-card-body>
                         <div class="row">
                             <div class="col-lg-12">
@@ -185,13 +264,13 @@
  
                 <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
                 <ng-template #uno>
-                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.Etiqueta)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
                     </button>
                 </ng-template>
                 <ng-template #varios>
-                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.Etiqueta)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
                     </button>
                 </ng-template>
             </div>

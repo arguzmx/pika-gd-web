@@ -28,6 +28,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {NgxLocalStorageModule} from 'ngx-localstorage';
 import { PreferenciasService } from './@pika/state/preferencias/preferencias-service';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -60,7 +61,8 @@ import { PreferenciasService } from './@pika/state/preferencias/preferencias-ser
     environment.production ? [] : AkitaNgDevtools,
   ],
   bootstrap: [AppComponent],
-  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders, PikaSesinService,
+  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders, 
+    PikaSesinService, CookieService,
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService, PreferenciasService],
 })
 export class AppModule {

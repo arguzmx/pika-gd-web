@@ -3,23 +3,42 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest,
     HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
     const HCULTURE: string = 'culture';
-    const HUSUARIOID: string = 'uid';
     const HDOMINIOID: string = 'did';
     const HUNIDADORGID: string = 'tid';
 
 @Injectable()
 export class PikaSessionInterceptor implements HttpInterceptor {
 
+  private IdDominio: string = '';
+  private IdUnidadOrg: string = '';
+  private Token: string = '';
+  private UILocale: string = '';
   constructor(private sesionQuery: SesionQuery) {
-
+      this.SessionChanges();
   }
+
+  private SessionChanges() {
+    this.sesionQuery.sesion$.subscribe(x => {
+      this.IdDominio = x.IdDominio;
+      this.IdUnidadOrg = x.IdUnidadOrganizacional;
+      this.Token = x.token;
+      this.UILocale = x.uilocale;
+    });
+  }
+
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
+
+
+    // if (this.Token === '') { 
+    //   console.log("NO TOKEN");
+    //   return EMPTY; }
 
     const authReq = req.clone({
       headers: this._getPiKaHeaders(req),
@@ -34,12 +53,12 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     for (const key of req.headers.keys()) {
       headerSettings[key] = req.headers.getAll(key);
     }
-    const s = this.sesionQuery.sesion();
-    headerSettings['Authorization'] = 'Bearer ' + s.token;
-    headerSettings[HDOMINIOID] = s.IdDominio;
-    headerSettings[HUSUARIOID] = s.IdUsuario;
-    headerSettings[HUNIDADORGID] = s.IdUnidadOrganizacional;
-    headerSettings[HCULTURE] = s.uilocale;
+
+    headerSettings['Authorization'] = 'Bearer ' + this.Token;
+    headerSettings[HDOMINIOID] = this.IdDominio;
+    headerSettings[HUNIDADORGID] = this.IdUnidadOrg;
+    headerSettings[HCULTURE] = this.UILocale;
+
     const newHeader = new HttpHeaders(headerSettings);
     return newHeader;
   }

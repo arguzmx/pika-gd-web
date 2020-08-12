@@ -1,0 +1,74 @@
+@import '../../@theme/styles//themes';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '~bootstrap/scss/mixins/breakpoints';
+
+@include nb-install-component() {
+
+.mat-toolbar-white {
+  background-color: white;
+}
+
+
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+
+  .cdk-focused {
+    outline: none;
+    border: 0;
+ }
+
+ .gray-icon {
+  color:  #CCCCCC;
+}
+/* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+.gray-icon svg {
+  fill: #CCCCCC;
+}
+
+  .padded {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  nb-card-header {
+    display: flex;
+    align-items: center;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+
+  .single-view-button {
+    ::ng-deep svg {
+        vertical-align: top;
+      }
+
+    @include nb-ltr {
+      margin-left: auto;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    @include nb-rtl {
+      margin-right: auto;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .grid-view-button {
+    ::ng-deep svg {
+      vertical-align: top;
+    }
+
+    @include nb-ltr {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    @include nb-rtl {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+
+}

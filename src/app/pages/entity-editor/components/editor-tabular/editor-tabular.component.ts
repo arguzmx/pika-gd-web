@@ -4,7 +4,9 @@ import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.co
 import { MetadataTablaComponent } from './../metadata-tabla/metadata-tabla.component';
 import { AppLogService } from './../../../../@pika/servicios/app-log/app-log.service';
 import { MetadataInfo } from './../../../../@pika/metadata/metadata-info';
-import { PARAM_ID_ORIGEN, PARAM_TIPO_ORIGEN, PARAM_TIPO } from './../../model/constantes';
+import { PARAM_ID_ORIGEN, PARAM_TIPO_ORIGEN, PARAM_TIPO, 
+  PARAM_TIPO_JERARQUICO, PARAM_TIPO_ARBOL_JERARQUICO, 
+  PARAM_TIPO_CONTENIDO_JERARQUICO, PARAM_ID_JERARQUICO } from './../../model/constantes';
 import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
   TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,7 +18,10 @@ import { EditorEntidadesBase } from '../../model/editor-entidades-base';
 import { TranslateService } from '@ngx-translate/core';
 import { Operacion } from '../../../../@pika/consulta';
 import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscador.component';
-import { EntidadVinculada, TipoCardinalidad } from '../../../../@pika/metadata/entidad-vinculada';
+import { EntidadVinculada,
+  TipoCardinalidad,
+  TipoDespliegueVinculo,
+} from '../../../../@pika/metadata/entidad-vinculada';
 import { Location } from '@angular/common';
 
 const CONTENIDO_BUSCAR = 'buscar';
@@ -103,6 +108,7 @@ OnDestroy, OnChanges {
   }
 
   private _Reset(): void {
+      if (this.tablas && this.tablas.first) this.tablas.first._Reset();
       this._CerrarDialogos();
       this.InstanciaSeleccionada = false;
       this.metadata = null;
@@ -182,7 +188,7 @@ private  ProcesaCambiosConfiguracion(): void {
         this.MostrarRegresar = true;
       }
     }
-    const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLocaleLowerCase();
+    const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
     this.tieneVinculos = this.metadata.EntidadesVinculadas
     && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
@@ -190,8 +196,12 @@ private  ProcesaCambiosConfiguracion(): void {
     this.entidades.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
     if (this.metadata.EntidadesVinculadas) {
       this.metadata.EntidadesVinculadas.forEach( e => {
+          // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
+          e.Etiqueta = e.EntidadHijo.split(',')[0];
           this.vinculos.push(e);
-          this.ts.push('entidades.' + e.EntidadHijo.toLowerCase());
+          e.EntidadHijo.split(',').forEach( entidad => {
+            if (entidad) this.ts.push('entidades.' + entidad.toLowerCase());
+          });
       });
     }
     this.ObtenerTraducciones();
@@ -240,18 +250,28 @@ private  ProcesaCambiosConfiguracion(): void {
 
   IrALink(link: EntidadVinculada): void {
     this.CerrarDialogos();
-
     if (this.entidad) {
         const Id = this.entidades.ObtenerIdEntidad (this.config.TipoEntidad, this.entidad);
         if (Id) {
+          let url = '';
+          switch (link.TipoDespliegue) {
+            case TipoDespliegueVinculo.Tabular:
+              url = this.ObtieneVinculoTabular(link, Id);
+              break;
 
-          this.entidades.SetCacheInstanciaEntidad(this.config.TipoEntidad, Id, this.entidad);
+            case TipoDespliegueVinculo.Jerarquico:
+              url = this.ObtieneVinculoJerarquico(link, Id);
+              break;
+          }
 
-          this.tablas.first._Reset();
-          this._Reset();
-          // tslint:disable-next-line: max-line-length
-          const url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}&${PARAM_TIPO_ORIGEN}=${this.config.TipoEntidad}&${PARAM_ID_ORIGEN}=${Id}`;
-          this.router.navigateByUrl(url);
+          if (url) {
+            this.entidades.SetCacheInstanciaEntidad(this.config.TipoEntidad, Id, this.entidad);
+            this.tablas.first._Reset();
+            this._Reset();
+            this.router.navigateByUrl(url);
+          } else {
+            this.applog.FallaT('editor-pika.mensajes.err-config-vinculo', null , null);
+          }
 
         } else {
           this.applog.FallaT('editor-pika.mensajes.err-id-vinculo', null , null);
@@ -259,6 +279,23 @@ private  ProcesaCambiosConfiguracion(): void {
     } else {
       this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
     }
+  }
+
+
+  private ObtieneVinculoTabular(link: EntidadVinculada, Id: string): string {
+    let url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}`;
+    url = url + `&${PARAM_TIPO_ORIGEN}=${this.config.TipoEntidad}&${PARAM_ID_ORIGEN}=${Id}`;
+    return url;
+  }
+
+  private ObtieneVinculoJerarquico(link: EntidadVinculada, Id: string): string {
+    const entidadArbol = link.EntidadHijo.split(',')[0];
+    const entidadContenido = link.EntidadHijo.split(',')[1];
+    let url = `/pages/jerarquia?${PARAM_TIPO_JERARQUICO}=${this.config.TipoEntidad}`;
+    url = url + `&${PARAM_TIPO_ARBOL_JERARQUICO}=${entidadArbol}`;
+    url = url + `&${PARAM_TIPO_CONTENIDO_JERARQUICO}=${entidadContenido}`;
+    url = url + `&${PARAM_ID_JERARQUICO}=${Id}`;
+    return url;
   }
 
   CerrarDialogos(): void {

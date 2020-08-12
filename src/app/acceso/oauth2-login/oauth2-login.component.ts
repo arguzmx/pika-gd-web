@@ -10,10 +10,9 @@ import { environment } from '../../../environments/environment';
       <nb-layout-column>
         <nb-card>
           <nb-card-body>
-            <p>Current User Authenticated: {{ !!token }}</p>
-            <p>Current User Token: {{ token|json }}</p>
-            <button nbButton status="success" *ngIf="!token" (click)="login()">Sign In with Google</button>
-            <button nbButton status="warning" *ngIf="token" (click)="logout()">Sign Out</button>
+           <img src='../../assets/images/logo_pika.png'/>
+            <button nbButton status="success" *ngIf="!token" (click)="login()">Ingresar a PIKA</button>
+            <button nbButton status="warning" *ngIf="token" (click)="logout()">Finalizar sesión</button>
           </nb-card-body>
         </nb-card>
       </nb-layout-column>
@@ -37,7 +36,7 @@ export class OAuth2LoginComponent implements OnDestroy {
         } else {
 
           if (!environment.production) {
-            this.login();
+            //this.login();
           }
 
         }

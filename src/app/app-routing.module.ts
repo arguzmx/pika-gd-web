@@ -13,6 +13,11 @@ import {
 
 export const routes: Routes = [
   {
+    path: 'ui',
+    loadChildren: () => import('./ui/ui.module')
+      .then(m => m.UiModule),
+  },
+  {
     canActivateChild: [ IsChldrenAuthorizedGuard ],
     path: 'pages',
     loadChildren: () => import('./pages/pages.module')
