@@ -114,10 +114,6 @@ export const NB_CORE_PROVIDERS = [
   ...NbAuthModule.forRoot({
 
     strategies: [
-      NbDummyAuthStrategy.setup({
-        name: 'email',
-        delay: 3000,
-      }),
       NbOAuth2AuthStrategy.setup({
         name: 'is4',
         clientId: 'api-pika-gd-angular',

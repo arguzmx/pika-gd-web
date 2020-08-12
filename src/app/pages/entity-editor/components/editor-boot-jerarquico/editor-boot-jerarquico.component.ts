@@ -1,9 +1,9 @@
 import { ConfiguracionEntidad } from './../../model/configuracion-entidad';
-import { PARAM_ID_ORIGEN } from './../../model/constantes';
+import { PARAM_TIPO_JERARQUICO, PARAM_TIPO_ARBOL_JERARQUICO,
+  PARAM_ID_JERARQUICO, PARAM_TIPO_CONTENIDO_JERARQUICO } from './../../model/constantes';
 import { EntidadesService, CONTEXTO } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PARAM_TIPO, PARAM_TIPO_ORIGEN } from '../../model/constantes';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
@@ -37,19 +37,18 @@ export class EditorBootJerarquicoComponent implements  OnInit, OnDestroy {
     .subscribe((params) => {
       this.config = {
         ConfiguracionJerarquia : {
-              TipoEntidad: 'ElementoClasificacion',
-              OrigenTipo: 'CuadroClasificacion',
-              OrigenId: 'id',
+              OrigenTipo:  params[PARAM_TIPO_JERARQUICO] || '',
+              TipoEntidad: params[PARAM_TIPO_ARBOL_JERARQUICO] || '',
+              OrigenId: params[PARAM_ID_JERARQUICO] || '',
               TransactionId: this.entidades.NewGuid(),
         },
         ConfiguracionContenido : {
-          TipoEntidad: 'EntradaClasificacion',
+          TipoEntidad: params[PARAM_TIPO_CONTENIDO_JERARQUICO] || '',
           OrigenTipo: '',
           OrigenId: '',
           TransactionId: this.entidades.NewGuid(),
         },
       };
-
     this.entidades
       .SetCachePropiedadContextual('PadreId', CONTEXTO, '', null);
      this.EstablecePropiedadContextual(this.config.ConfiguracionJerarquia);

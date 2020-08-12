@@ -157,6 +157,7 @@
             "err-datos-erroneos": "Los datos suministrados para {{prefijo}} {{entidad}} no son correctos",
             "err-datos-noexiste": "Los datos para {{prefijo}} {{entidad}} no existen o fueron eliminados",
             "err-id-vinculo": "No existe identificador de vinculo para la entidad",
+            "err-config-vinculo": "La configuración del vínculo no es válida",
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado será permanente y no podrá ser revertido.",
             "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado podrá ser revertido."
         }

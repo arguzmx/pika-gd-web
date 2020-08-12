@@ -454,7 +454,6 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
   this.cliente.Get(id, tipo).pipe(
       debounceTime(500), first(),
   ).subscribe( data => {
-    console.log(data);
         subject.next(data);
         subject.complete();
   }, (error) => {
@@ -697,17 +696,12 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
   // Proces alos errores de API
   private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
     if (error instanceof  HttpResponseBase) {
-
       if (error.status === 401) {
         this.router.navigate(['/acceso/login']);
       } else {
         this.MuestraErrorHttp(error, modulo, nombreEntidad);
       }
-
-    } else {
-
-    }
-
+    } 
   }
 
 private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): void {

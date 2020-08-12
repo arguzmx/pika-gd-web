@@ -79,12 +79,7 @@ export function createInitialState(): SesionState {
               title: 'Cuadros de clasificación',
               link: '/pages/tabular/',
               queryParams: {tipo: 'cuadroclasificacion'},
-            },
-            {
-              title: 'Editor Cuadros',
-              link: '/pages/jerarquia/',
-              queryParams: {tipo: 'ElementoClasificacion', id: '', sub: ''},
-            },
+            }
           ],
         },
       ],

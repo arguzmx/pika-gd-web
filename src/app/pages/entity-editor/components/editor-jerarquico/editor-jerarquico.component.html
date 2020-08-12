@@ -356,34 +356,34 @@
   </nb-card>
 </ng-template>
 
-<ng-template #dialogLinkPicker let-data let-ref="dialogRef">
-    <nb-card>
-        <nb-card-header>{{t['ui.propiedades']}}</nb-card-header>
-        <nb-card-body>
-            <div class="col-lg-12 col-md-12 col-sm-12"  *ngFor="let link of this.vinculos">
- 
-                <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
-                <ng-template #uno>
-                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
-                    </button>
-                </ng-template>
-                <ng-template #varios>
-                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
-                    </button>
-                </ng-template>
-            </div>
-        </nb-card-body>
-        <nb-card-footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="float-right">
-                        <button nbButton size="medium" (click)="ref.close()">{{t['ui.cerrar']}}</button>
-                    </div>
-                </div>
-            </div>
-        </nb-card-footer>
-    </nb-card>
-</ng-template>
 
+<ng-template #dialogLinkPicker let-data let-ref="dialogRef">
+  <nb-card>
+      <nb-card-header>{{t['ui.propiedades']}}</nb-card-header>
+      <nb-card-body>
+          <div class="col-lg-12 col-md-12 col-sm-12"  *ngFor="let link of this.vinculos">
+
+              <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
+              <ng-template #uno>
+                  <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.Etiqueta)}}
+                      <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+                  </button>
+              </ng-template>
+              <ng-template #varios>
+                  <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.Etiqueta)}}
+                      <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+                  </button>
+              </ng-template>
+          </div>
+      </nb-card-body>
+      <nb-card-footer>
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="float-right">
+                      <button nbButton size="medium" (click)="ref.close()">{{t['ui.cerrar']}}</button>
+                  </div>
+              </div>
+          </div>
+      </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -146,7 +146,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
       }
       this.columnasBase = this.GetColumnasTabla();
       this.EstableceColumnas(this.columnasBase);
-      this.obtenerPaginaDatos(true);
+      this.obtenerPaginaDatos(false);
     }
   }
 

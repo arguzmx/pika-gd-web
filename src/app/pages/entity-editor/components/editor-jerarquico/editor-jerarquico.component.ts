@@ -19,6 +19,7 @@ import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscado
 import {
   EntidadVinculada,
   TipoCardinalidad,
+  TipoDespliegueVinculo,
 } from '../../../../@pika/metadata/entidad-vinculada';
 import { MetadataInfo } from '../../../../@pika/metadata';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,6 +32,10 @@ import {
   PARAM_TIPO,
   PARAM_TIPO_ORIGEN,
   PARAM_ID_ORIGEN,
+  PARAM_TIPO_JERARQUICO,
+  PARAM_TIPO_ARBOL_JERARQUICO,
+  PARAM_TIPO_CONTENIDO_JERARQUICO,
+  PARAM_ID_JERARQUICO,
 } from '../../model/constantes';
 import { EditorEntidadesBase } from '../../model/editor-entidades-base';
 import { Location } from '@angular/common';
@@ -125,9 +130,6 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   // Metadatos para la entidad padre vinculada
   public metadataLink: MetadataInfo;
-
-  // Entidad padre vinculada
-  public entidadLink: any;
 
   public editandoJerarquica: boolean = true;
 
@@ -281,7 +283,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
         );
         this.MostrarRegresar = true;
       } else {
-
+        // Si la entidad no existe obtiene los metadatos
         this.entidades
           .ObtieneMetadatos(this.configJ.OrigenTipo)
           .pipe(first())
@@ -294,12 +296,16 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
               )
               .pipe(first())
               .subscribe((e) => {
-                this.entidadLink = e;
-                this.NombreInstanciaDisponible = true;
-                this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
-                  this.configJ.OrigenTipo,
-                  this.entidadLink,
-                );
+                // Y posteriormente una instancia en base al ID 
+                // para establecer los títulos
+                if (e) {
+                  this.NombreInstanciaDisponible = true;
+                  this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
+                    this.configJ.OrigenTipo,
+                    e,
+                  );
+                  this.MostrarRegresar = true;
+                }
               });
           });
       }
@@ -331,12 +337,18 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     const KeyNombreEntidadC = ('entidades.' + this.configC.TipoEntidad).toLowerCase();
     this.ts.push(KeyNombreEntidadC);
     this.ts.push(KeyNombreEntidadJ);
-    if (this.metadataJ.EntidadesVinculadas) {
-      this.metadataJ.EntidadesVinculadas.forEach((e) => {
-        this.vinculos.push(e);
-        this.ts.push('entidades.' + e.EntidadHijo.toLowerCase());
+
+    if (this.metadataC.EntidadesVinculadas) {
+      this.metadataC.EntidadesVinculadas.forEach( e => {
+          // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
+          e.Etiqueta = e.EntidadHijo.split(',')[0];
+          this.vinculos.push(e);
+          e.EntidadHijo.split(',').forEach( entidad => {
+            if (entidad) this.ts.push('entidades.' + entidad.toLowerCase());
+          });
       });
     }
+
     this.ObtenerTraducciones();
     this.translate
       .get([KeyNombreEntidadJ])
@@ -451,35 +463,55 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     return link.Cardinalidad === TipoCardinalidad.UnoVarios ? true : false;
   }
 
+ 
   IrALink(link: EntidadVinculada): void {
     this.CerrarDialogos();
     if (this.entidadC) {
-      const Id = this.entidades.ObtenerIdEntidad(
-        this.configC.TipoEntidad,
-        this.entidadC,
-      );
-      if (Id) {
-        this.entidades.SetCacheInstanciaEntidad(
-          this.configC.TipoEntidad,
-          Id,
-          this.entidadC,
-        );
+        const Id = this.entidades.ObtenerIdEntidad (this.configC.TipoEntidad, this.entidadC);
+        if (Id) {
+          let url = '';
+          switch (link.TipoDespliegue) {
+            case TipoDespliegueVinculo.Tabular:
+              url = this.ObtieneVinculoTabular(link, Id);
+              break;
 
-        this.tablas.first._Reset();
-        this._Reset();
-        // tslint:disable-next-line: max-line-length
-        const url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}&${PARAM_TIPO_ORIGEN}=${this.configC.TipoEntidad}&${PARAM_ID_ORIGEN}=${Id}`;
-        this.router.navigateByUrl(url);
-      } else {
-        this.applog.FallaT('editor-pika.mensajes.err-id-vinculo', null, null);
-      }
+            case TipoDespliegueVinculo.Jerarquico:
+              url = this.ObtieneVinculoJerarquico(link, Id);
+              break;
+          }
+
+          if (url) {
+            this.entidades.SetCacheInstanciaEntidad(this.configC.TipoEntidad, Id, this.entidadC);
+            this.tablas.first._Reset();
+            this._Reset();
+            this.router.navigateByUrl(url);
+          } else {
+            this.applog.FallaT('editor-pika.mensajes.err-config-vinculo', null , null);
+          }
+
+        } else {
+          this.applog.FallaT('editor-pika.mensajes.err-id-vinculo', null , null);
+        }
     } else {
-      this.applog.AdvertenciaT(
-        'editor-pika.mensajes.warn-sin-seleccion',
-        null,
-        null,
-      );
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
     }
+  }
+
+
+  private ObtieneVinculoTabular(link: EntidadVinculada, Id: string): string {
+    let url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}`;
+    url = url + `&${PARAM_TIPO_ORIGEN}=${this.configC.TipoEntidad}&${PARAM_ID_ORIGEN}=${Id}`;
+    return url;
+  }
+
+  private ObtieneVinculoJerarquico(link: EntidadVinculada, Id: string): string {
+    const entidadArbol = link.EntidadHijo.split(',')[0];
+    const entidadContenido = link.EntidadHijo.split(',')[1];
+    let url = `/pages/jerarquia?${PARAM_TIPO_JERARQUICO}=${this.configC.TipoEntidad}`;
+    url = url + `&${PARAM_TIPO_ARBOL_JERARQUICO}=${entidadArbol}`;
+    url = url + `&${PARAM_TIPO_CONTENIDO_JERARQUICO}=${entidadContenido}`;
+    url = url + `&${PARAM_ID_JERARQUICO}=${Id}`;
+    return url;
   }
 
   CerrarDialogos(): void {}

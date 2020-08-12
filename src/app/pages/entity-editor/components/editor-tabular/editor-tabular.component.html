@@ -264,13 +264,13 @@
  
                 <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
                 <ng-template #uno>
-                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="IrALink(link)" >{{ObtieneSingularT('entidades.' + link.Etiqueta)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
                     </button>
                 </ng-template>
                 <ng-template #varios>
-                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.EntidadHijo)}}
-                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.EntidadHijo)"></nb-icon>
+                    <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{ObtienePluralT('entidades.' + link.Etiqueta)}}
+                        <nb-icon status="primary" [icon]="ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
                     </button>
                 </ng-template>
             </div>
