@@ -15,5 +15,5 @@ export const environment = {
   editorToken: 'tipo',
   callbackRoute: '/pages/tabular?tipo=cuadroclasificacion',
   cacheActivo: true,
-  uploadUrl: 'http://localhost:5000/api/v1.0/Upload',
+  uploadUrl: 'http://localhost:5000/api/v1.0/Upload/ContenidoFiltrado',
 };

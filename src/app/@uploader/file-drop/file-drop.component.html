@@ -14,11 +14,12 @@
                     </button>
                 </div>
                 <div class="col-5 justify-content-center">
-                    <nb-progress-bar *ngIf="">
-                    </nb-progress-bar> 
+                    <div class="progress">
+                        <!-- [ngStyle]="{ 'width': progress + '%' }" -->
+                        <div class="progress-bar" role="progressbar"></div>
+                    </div>
                 </div>
                 <div class="col-md justify-content-end">
-                    <!-- <button mat-raised-button (click)="uploadFiles()" [disabled]="!files.length">Enviar</button> -->
                     <button class="single-view-button" nbButton size="small" on-click="uploadFiles()"
                         [disabled]="!files.length" nbPopoverPlacement="bottom" nbPopover="Enviar"
                         nbPopoverTrigger="hint">
@@ -34,10 +35,6 @@
                         <nb-icon icon="trash-outline" pack="eva"></nb-icon>
                     </button>
                 </div>
-            </div>
-            <br>
-            <div class="row">
-
             </div>
             <br>
             <div class="row justify-content-around">
@@ -62,45 +59,23 @@
                                 </div>
                                 <div class="col-3">
                                     <!-- {{ item.size/1024/1024 | number:'.2' }} MB -->
-                                    <mat-progress-bar *ngIf="progress" mode="determinate"
-                                        [value]="progress[item.name].progress | async"></mat-progress-bar>
+                                    <!-- <mat-progress-bar *ngIf="progress" mode="determinate"
+                                        [value]="progress[item.name].progress | async"></mat-progress-bar> -->
 
                                     <nb-progress-bar *ngIf="progress" [value]="progress[item.name].progress | async">
-                                    </nb-progress-bar> 
+                                    </nb-progress-bar>
                                 </div>
                             </div>
                             <mat-divider inset="true"></mat-divider>
                             <br>
                         </div>
                     </div>
+                    <div class="row justify-content-end">
+                        <p>{{ files.length }} archivos seleccionados</p>
+                    </div>
                 </div>
                 <br>
             </div>
-            <div class="row justify-content-end">
-                <p>{{ files.length }} archivos seleccionados</p>
-            </div>
-            <!-- <div>
-                    <ng-container *ngIf="lastFileAt">
-                        <p>
-                            <strong>Last file(s) selected At:</strong> {{ lastFileAt | date : 'longTime' }}
-                        </p>
-                    </ng-container>
-                    <ng-container *ngIf="progress==100">
-                        <i class="glyphicon glyphicon-ok"></i>
-                        &nbsp;Upload Complete
-                    </ng-container>
-                    <button type="button" class="btn btn-success btn-s" (click)="uploadFiles()"
-                        [disabled]="!files.length">
-                        <span class="glyphicon glyphicon-upload"></span> Upload all
-                    </button>
-                    <button type="button" class="btn btn-warning btn-s" (click)="cancel()" [disabled]="!httpEmitter">
-                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-                    </button>
-                    <button type="button" class="btn btn-danger btn-s" (click)="files.length=0"
-                        [disabled]="!files.length">
-                        <span class="glyphicon glyphicon-trash"></span> Remove all
-                    </button>
-                </div> -->
         </div>
     </div>
 </div>
