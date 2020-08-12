@@ -5,7 +5,7 @@ import {
   HttpEventType,
   HttpResponse,
 } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 const url = environment.uploadUrl;
@@ -28,6 +28,7 @@ export class UploadService {
         reportProgress: true,
         responseType: 'text',
       });
+
       const progress = new Subject<number>();
       this.http.request(req).subscribe((event) => {
         if (event.type === HttpEventType.UploadProgress) {

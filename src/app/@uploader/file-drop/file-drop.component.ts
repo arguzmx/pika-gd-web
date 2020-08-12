@@ -1,20 +1,18 @@
-import { Component, OnInit, ViewChild, Inject } from "@angular/core";
-import { Subscription } from "rxjs";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { UploadService } from "../uploader.service";
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { UploadService } from '../uploader.service';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
-} from "@angular/material/bottom-sheet";
-import { forkJoin } from "rxjs";
+} from '@angular/material/bottom-sheet';
+import { forkJoin, Subscription } from 'rxjs';
 
 @Component({
-  selector: "ngx-file-drop",
-  templateUrl: "./file-drop.component.html",
-  styleUrls: ["./file-drop.component.scss"],
+  selector: 'ngx-file-drop',
+  templateUrl: './file-drop.component.html',
+  styleUrls: ['./file-drop.component.scss'],
 })
 export class FileDropComponent implements OnInit {
-  @ViewChild("file", { static: false }) file;
+  @ViewChild('file', { static: false }) file;
 
   constructor(
     public uploadService: UploadService,
@@ -57,7 +55,7 @@ export class FileDropComponent implements OnInit {
 
   uploadFiles() {
     this.progress = this.uploadService.upload(this.files);
-
+    console.log(this.progress);
     // tslint:disable-next-line: forin
     for (const key in this.progress) {
       this.progress[key].progress.subscribe((val) => console.log(val));
