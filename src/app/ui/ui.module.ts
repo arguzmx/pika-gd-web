@@ -57,9 +57,13 @@ import { NgxMaskModule } from 'ngx-mask';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DemoComponent } from './demo/demo.component';
+import { HostVisorComponent } from '../@visor-imagenes/components/host-visor/host-visor.component';
+
 
 @NgModule({
   imports: [
+    HostVisorComponent,
     UIRoutingModule,
     CommonModule,
     AngularSplitModule.forRoot(),
@@ -137,6 +141,7 @@ import { RouterModule } from '@angular/router';
   declarations: [
     UIRootComponent,
     UiComponent,
+    DemoComponent,
   ],
 })
 export class UiModule { }
