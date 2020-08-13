@@ -2,6 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { UIRootComponent } from './ui-root-component';
 import { UiComponent } from './ui/ui.component';
+import { DemoComponent } from './demo/demo.component';
 
 
 const routes: Routes = [{
@@ -12,6 +13,10 @@ const routes: Routes = [{
     {
       path: 'uix',
       component: UiComponent,
+    },
+    {
+      path: 'demo',
+      component: DemoComponent,
     },
   ],
 }];
