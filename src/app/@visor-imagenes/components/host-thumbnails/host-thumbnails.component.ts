@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 
 @Component({
-  selector: 'ngx-thumbnail',
-  templateUrl: './thumbnail.component.html',
-  styleUrls: ['./thumbnail.component.scss']
+  selector: 'ngx-host-thumbnails',
+  templateUrl: './host-thumbnails.component.html',
+  styleUrls: ['./host-thumbnails.component.scss']
 })
-export class ThumbnailComponent implements OnInit {
+export class HostThumbnailsComponent implements OnInit {
 
   constructor(private servicioVisor: VisorImagenesService) { }
 

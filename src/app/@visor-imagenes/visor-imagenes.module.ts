@@ -70,7 +70,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { AngularSplitModule } from 'angular-split';
-
+import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumbnails.component';
 
 @NgModule({
   imports: [
@@ -143,9 +143,9 @@ import { AngularSplitModule } from 'angular-split';
     RouterModule,
     MatSliderModule,
   ],
-  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent],
-  exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent],
+  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
+  exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
 })
 export class VisorImagenesModule { }
 
-export {HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent}
+

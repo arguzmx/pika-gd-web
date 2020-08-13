@@ -58,12 +58,11 @@ import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DemoComponent } from './demo/demo.component';
-import { HostVisorComponent } from '../@visor-imagenes/components/host-visor/host-visor.component';
-
+import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module'
 
 @NgModule({
   imports: [
-    HostVisorComponent,
+    VisorImagenesModule,
     UIRoutingModule,
     CommonModule,
     AngularSplitModule.forRoot(),

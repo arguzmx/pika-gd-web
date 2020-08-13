@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { VisorImagenesService } from '../../services/visor-imagenes.service';
 
 @Component({
   selector: 'ngx-pie-visor',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PieVisorComponent implements OnInit {
 
-  constructor() { }
+  constructor(private servicioVisor: VisorImagenesService) { }
 
   ngOnInit(): void {
   }

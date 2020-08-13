@@ -1,0 +1,83 @@
+{
+    "Nombre": "Documento de ejemplo",
+    "Paginas": [
+        {
+            "Id": "id-001", "Nombre": "pagina-001", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-001.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-001.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 1, "Rotacion": 0
+        },
+        {
+            "Id": "id-pdf", "Nombre": "pagina-pdf", "Extension": ".PDF", "EsImagen": false,
+            "Url": "http://localhost/assets/demo-documento/id-pdf.pdf",
+            "UrlThumbnail": "",
+            "TamanoBytes": 250, "Alto": null, "Ancho": null, "Indice": 20, "Rotacion": null
+        },
+        {
+            "Id": "id-002", "Nombre": "pagina-002", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-002.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-002.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 2, "Rotacion": 0
+        },
+        {
+            "Id": "id-003", "Nombre": "pagina-003", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-003.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-003.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 3, "Rotacion": 0
+        },
+        {
+            "Id": "id-004", "Nombre": "pagina-004", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-004.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-004.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 4, "Rotacion": 0
+        },
+        {
+            "Id": "id-005", "Nombre": "pagina-005", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-005.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-005.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 5, "Rotacion": 0
+        },
+        {
+            "Id": "id-006", "Nombre": "pagina-006", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-006.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-006.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 6, "Rotacion": 0
+        },
+        {
+            "Id": "id-007", "Nombre": "pagina-007", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-007.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-007.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 7, "Rotacion": 0
+        },
+        {
+            "Id": "id-008", "Nombre": "pagina-008", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-008.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-008.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 8, "Rotacion": 0
+        },
+        {
+            "Id": "id-009", "Nombre": "pagina-009", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-009.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-009.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 9, "Rotacion": 0
+        },
+        {
+            "Id": "id-010", "Nombre": "pagina-010", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-010.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-010.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 10, "Rotacion": 0
+        },
+        {
+            "Id": "id-011", "Nombre": "pagina-011", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-011.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-011.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 11, "Rotacion": 0
+        },
+        {
+            "Id": "id-012", "Nombre": "pagina-012", "Extension": ".JPG", "EsImagen": true,
+            "Url": "http://localhost/assets/demo-documento/img-012.jpg",
+            "UrlThumbnail": "http://localhost/assets/demo-documento/thumbnails/thumb-img-012.jpg",
+            "TamanoBytes": 250, "Alto": 1754, "Ancho": 1240, "Indice": 0, "Rotacion": 0
+        }
+    ]
+}
