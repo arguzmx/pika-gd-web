@@ -457,7 +457,7 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
         subject.next(data);
         subject.complete();
   }, (error) => {
-    this.handleHTTPError(error, 'pagina-resultados', '');
+    // this.handleHTTPError(error, 'pagina-resultados', '');
     subject.next(null);
     subject.complete();
   },

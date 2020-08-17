@@ -12,6 +12,9 @@ export const EndpointDictionary: { [type: string]: string } = {
   volumen: 'contenido/volumen',
   puntomontaje: 'contenido/puntomontaje',
   tipogestores: 'contenido/tipogestores',
+  gestorlocalconfig: 'contenido/gestorlocalconfig',
+  gestorsmbconfig: 'contenido/gestorsmbconfig',
+  gestorazureconfig: 'contenido/gestorazureconfig',
   cuadroclasificacion: 'gd/cuadroclasificacion',
   entradaclasificacion: 'gd/entradaclasificacion',
   elementoclasificacion: 'gd/elementoclasificacion',
@@ -19,4 +22,5 @@ export const EndpointDictionary: { [type: string]: string } = {
   tipodisposiciondocumental: 'gd/tipodisposiciondocumental',
   tipovaloraciondocumental: 'gd/tipovaloraciondocumental',
   valoracionentradaclasificacion: 'gd/valoracionentradaclasificacion',
+  tipoarchivo: 'gd/tipoarchivo',
 };

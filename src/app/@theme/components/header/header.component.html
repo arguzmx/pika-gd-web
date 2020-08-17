@@ -3,15 +3,20 @@
     <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
+    <nb-actions>
+       <nb-action class="always-on" icon="home"
+       on-click="selectorOrganiacion()"
+       ></nb-action>
+    </nb-actions>
+   
     <a class="logo" href="#" (click)="navigateHome()">{{ 'titulo-sitio' | translate }}</a>
-    <nb-select  [selected]="currentDominio"  (selectedChange)="changeDominio($event)" status="primary" appearance="outline">
+    <nb-select  [selected]="currentDominio"  status="primary" appearance="outline">
       <nb-option *ngFor="let d of dominios" [value]="d.Id"> {{ d.Nombre }}</nb-option>
     </nb-select> 
   </div>
 </div>
 <div class="header-container">
   <nb-actions size="small">
-
     <nb-action class="control-item">
       <nb-search type="rotate-layout"></nb-search>
     </nb-action>

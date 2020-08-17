@@ -82,7 +82,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges.subscribe( x => {
-        // console.log(x);
+        console.log(x);
     });
   }
 
@@ -98,6 +98,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     this.ProcesaConfiguracion();
   }
 
@@ -211,11 +212,14 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
     this._Reset();
 
+    console.log(this.entidad);
+    console.log(this.metadata);
     if (this.entidad) {
       this.modoEditar = true;
     }
 
     if (this.metadata ) {
+      console.log(this.metadata);
       this.ObtieneValoresVinculados();
       this.LimpiarForma();
       this.CrearForma();

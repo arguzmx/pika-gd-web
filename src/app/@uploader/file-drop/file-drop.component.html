@@ -10,7 +10,7 @@
                 <div class="col-md justify-content-start">
                     <button ngfSelect nbButton multiple="1" type="file" [(files)]="files" [accept]="accept"
                         [maxSize]="maxSize" [(lastInvalids)]="lastInvalids" (filesChange)="lastFileAt=getDate();">
-                        Elegir...
+                        {{t['ui.elegir-ellipsis']}}
                     </button>
                 </div>
                 <div class="col-5 justify-content-center">
@@ -21,17 +21,20 @@
                 </div>
                 <div class="col-md justify-content-end">
                     <button class="single-view-button" nbButton size="small" on-click="uploadFiles()"
-                        [disabled]="!files.length" nbPopoverPlacement="bottom" nbPopover="Enviar"
-                        nbPopoverTrigger="hint">
+                        [disabled]="!files.length" 
+                        [nbTooltip]="t['ui.enviar']" nbTooltipPlacement="bottom"
+                        >
                         <nb-icon icon="upload-outline" pack="eva"></nb-icon>
                     </button>
                     <button class="grid-view-button" nbButton size="small" [disabled]="!httpEmitter" on-click="cancel()"
-                        nbPopoverPlacement="bottom" nbPopover="Cancelar" nbPopoverTrigger="hint">
+                        [nbTooltip]="t['ui.cancelar']" nbTooltipPlacement="bottom"
+                        >
                         <nb-icon icon="slash-outline" pack="eva"></nb-icon>
                     </button>
                     <button class="grid-view-button" nbButton size="small" on-click="files.length=0"
-                        [disabled]="!files.length" nbPopoverPlacement="bottom" nbPopover="Eliminar todo"
-                        nbPopoverTrigger="hint">
+                        [disabled]="!files.length" 
+                        [nbTooltip]="t['ui.eliminar-todo']" nbTooltipPlacement="bottom"
+                        >
                         <nb-icon icon="trash-outline" pack="eva"></nb-icon>
                     </button>
                 </div>

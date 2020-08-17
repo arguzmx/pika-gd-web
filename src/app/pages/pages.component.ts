@@ -6,6 +6,7 @@ import { SesionQuery } from '../@pika/state/sesion.query';
   styleUrls: ['pages.component.scss'],
   template: `
     <ngx-one-column-layout>
+      <ngx-org-selector></ngx-org-selector>
       <nb-menu [items]='menu'></nb-menu>
       <router-outlet></router-outlet>
     </ngx-one-column-layout>

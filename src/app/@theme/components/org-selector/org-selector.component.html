@@ -1,0 +1,42 @@
+<span></span>
+<ng-template #dialogOrg let-data let-ref="dialogRef">
+    <nb-card>
+      <nb-card-header>{{ t["ui.confirmar"] }}</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+                <label>Dominios</label>
+                <nb-select #dominio (selectedChange)="dominioChange($event)" [selected]="IdDominio"
+                size="small" fullWidth="true" hero="true" >
+                    <nb-option *ngFor="let d of dominios" [value]="d.Id">{{d.Nombre}}</nb-option>
+                </nb-select>
+            </div>
+          </div>
+ 
+          <div class="col-lg-12">
+            <div class="form-group">
+                <label>Unidades</label>
+                <nb-select #unidad (selectedChange)="unidadoChange($event)" [selected]="IdUnidadOrg"
+                size="small" fullWidth="true" hero="true" >
+                    <nb-option *ngFor="let u of unidades" [value]="u.Id">{{u.Nombre}}</nb-option>
+                </nb-select>
+            </div>
+          </div>
+ 
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="float-right">
+              <button nbButton (click)="ref.close()">{{ t["ui.cerrar"] }}</button>
+              <button nbButton status="danger" (click)="CambiarOrg()">
+                {{ t["ui.aplicar"] }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </ng-template>

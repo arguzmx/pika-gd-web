@@ -6,6 +6,7 @@
         "editar": "Editar",
         "cerrar": "Cerrar",
         "eliminar": "Eliminar",
+        "eliminar-todo": "Eliminar todo",
         "guardar": "Guardar",
         "regresar": "Regresar",
         "guardar-adicionar": "Guardar y añadir",
@@ -27,7 +28,14 @@
         "propiedades": "Propiedades",
         "falso": "Falso",
         "verdadero": "Verdadero",
-        "total-regitros": "registros encontrados"
+        "total-regitros": "registros encontrados",
+        "selec-org": "Seleccionar espacio de trabajo",
+        "enviar": "Enviar",
+        "elegir-ellipsis": "Elegir ..."
+    },
+    "mensajes": {
+        "no-org": "No hay informaión pra seleccionar una organización",
+        "salvar-ok": "La información ha sido almacenada"
     },
     "operadores": {
         "f": "Falso",
@@ -49,17 +57,20 @@
         "fulltext": "Texto"
     },
     "entidades": {
-        "entidad-unica": "Enitdad|Entidades|la|las|menu-outline",
+        "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",
+        "entidad-unica": "Entidad|Entidades|la|las|menu-outline",
         "pagina-resultados": "Página de resultados|Páginas de resultados|la|las|menu-outline",
         "metadatos": "Metadato|Metadatos|el|los|bookmark-outline",
         "dominio": "Dominio|Dominios|el|los|globe-outline",
         "rol": "Rol|Roles|el|los|people-outline",
+        "volumen": "Volumen|Volumenes|el|los|save-outline",
         "elementoclasificacion": "Configuración clasificación|Configuración clasificación|el|la|book-open-outline",
         "entradaclasificacion": "Definición clasificación|Definiciones clasificación|el|las|book-open-outline",
         "cuadroclasificacion": "Cuadro clasificación|Cuadros clasificación|el|los|book-open-outline",
         "propiedadesusuario": "Usuario|Usuarios|el|los|person-outline",
         "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|home-outline",
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
+        "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|map-outline",
         "propiedades": {
             "dominio": {
                 "Id": "Id",
@@ -129,6 +140,26 @@
                 "TipoDisposicionDocumentalId": "Disposición",
                 "Eliminada": "Eliminada",
                 "TipoValoracionDocumentalId": "Valoración"
+            },
+            "volumen": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "TipoGestorESId": "Tipo",
+                "TamanoMaximo": "Limite",
+                "Activo": "Activo",
+                "EscrituraHabilitada": "Escritura",
+                "Eliminada": "Eliminado",
+                "ConsecutivoVolumen": "Consecutivo",
+                "CanidadPartes": "Partes",
+                "CanidadElementos": "Elementos",
+                "Tamano": "Tamaño actual",
+                "ConfiguracionValida": "Configurado",
+                "TipoOrigenId": "TipoOrigenId",
+                "OrigenId": "OrigenId"
+            },
+            "tipoarchivo": {
+                "Id": "Id",
+                "Nombre": "Nombre"
             }
         }
     },

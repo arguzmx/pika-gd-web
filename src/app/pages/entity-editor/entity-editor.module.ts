@@ -32,6 +32,7 @@ import {
   NbFormFieldModule,
   NbToggleModule,
   NbMenuModule,
+  NbTooltipModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -168,6 +169,7 @@ import { HiddenSearchComponent } from './components/metadata-buscador/hidden-sea
     NbMenuModule,
     RouterModule,
     MatSliderModule,
+    NbTooltipModule,
   ],
   declarations: [
     EditorJerarquicoComponent,

@@ -53,6 +53,9 @@
   }
 
   @include media-breakpoint-down(sm) {
+    .always-on {
+      padding: 0;
+    }
     .control-item {
       display: none;
     }

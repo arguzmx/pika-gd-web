@@ -5,6 +5,8 @@ import {
   MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material/bottom-sheet';
 import { forkJoin, Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-file-drop',
@@ -15,6 +17,7 @@ export class FileDropComponent implements OnInit {
   @ViewChild('file', { static: false }) file;
 
   constructor(
+    private translate: TranslateService,
     public uploadService: UploadService,
     public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
@@ -44,7 +47,32 @@ export class FileDropComponent implements OnInit {
   uploading = false;
   //#endregion
 
-  ngOnInit(): void {}
+  // Claves para obtener la traducción
+  ts: string[];
+
+  // Objeto resultante de la traduccion
+  t: object;
+
+
+  ngOnInit(): void {
+    this.CargaTraducciones();
+  }
+
+
+  private CargaTraducciones() {
+    this.ts = ['ui.enviar', 'ui.cancelar', 'ui.eliminar-todo', 'ui.elegir-ellipsis'];
+    this.ObtenerTraducciones();
+   }
+
+  // Obtiene las tradcucciones
+  ObtenerTraducciones(): void {
+    this.translate
+      .get(this.ts)
+      .pipe(first())
+      .subscribe((res) => {
+        this.t = res;
+      });
+  }
 
   cancel() {
     this.progress = 0;
@@ -55,7 +83,6 @@ export class FileDropComponent implements OnInit {
 
   uploadFiles() {
     this.progress = this.uploadService.upload(this.files);
-    console.log(this.progress);
     // tslint:disable-next-line: forin
     for (const key in this.progress) {
       this.progress[key].progress.subscribe((val) => console.log(val));

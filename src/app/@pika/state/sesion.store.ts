@@ -76,10 +76,15 @@ export function createInitialState(): SesionState {
           icon: 'archive-outline',
           children: [
             {
+              title: 'Catálogo tipo archivo',
+              link: '/pages/tabular/',
+              queryParams: {tipo: 'tipoarchivo'},
+            },
+            {
               title: 'Cuadros de clasificación',
               link: '/pages/tabular/',
               queryParams: {tipo: 'cuadroclasificacion'},
-            }
+            },
           ],
         },
       ],

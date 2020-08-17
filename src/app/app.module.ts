@@ -61,7 +61,7 @@ import { CookieService } from 'ngx-cookie-service';
     environment.production ? [] : AkitaNgDevtools,
   ],
   bootstrap: [AppComponent],
-  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders, 
+  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders,
     PikaSesinService, CookieService,
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService, PreferenciasService],
 })
