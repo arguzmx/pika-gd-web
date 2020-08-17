@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { retry, first } from 'rxjs/operators';
 import { SesionStore } from '../state/sesion.store';
+import { Observable } from 'rxjs';
 
 const retryCount: number = 1;
 
@@ -19,22 +20,17 @@ export class PikaSesinService {
 
     constructor(
       private log: AppLogService,
-      private storeSesion: SesionStore,
       private http: HttpClient,
     ) {
         this.SesionEndpoint = environment.apiUrl.replace(/\/$/, '') + '/'  + 'usuario/perfil/';
     }
 
-    GetDominios(): void {
-        this.http.get<DominioActivo[]>(this.SesionEndpoint + 'dominios')
-        .pipe(
-          retry(retryCount),
-          first(),
-        ).subscribe( dominios => {
-            this.storeSesion.setDominios(dominios);
-        }, (err) => {
-            this.log.Advertencia('', err);
-        });
+    public GetDominios(): Observable<DominioActivo[]> {
+       return this.http.get<DominioActivo[]>(this.SesionEndpoint + 'dominios')
+       .pipe(
+        retry(retryCount),
+        first(),
+      );
     }
 
 }

@@ -1,10 +1,12 @@
+import { AppBusStore, PropiedadesBus } from './../../../@pika/state/app-bus/app-bus-store';
+import { PikaSesinService } from './../../../@pika/pika-api/pika-sesion-service';
 import { SesionStore, PropiedadesSesion } from './../../../@pika/state/sesion.store';
 import { PreferenciasService } from './../../../@pika/state/preferencias/preferencias-service';
 import { DominioActivo } from './../../../@pika/sesion/dominio-activo';
 import { SesionQuery } from './../../../@pika/state/sesion.query';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
-
+import { Component, OnDestroy, OnInit, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, 
+  NbThemeService } from '@nebular/theme';
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
@@ -18,7 +20,6 @@ import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth'
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
@@ -49,7 +50,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
 
   constructor(
-              private prefs: PreferenciasService,
+              private appBusStore: AppBusStore,
               private sesion: SesionQuery,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
@@ -62,18 +63,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
               ) {
   }
 
+
+
   ngOnInit() {
-
-    this.currentDominio = this.servicioPreferencias.getDominio();
-
-    if (this.currentDominio){
-      this.changeDominio(this.currentDominio);
-    }
-
+    // this.currentDominio = this.servicioPreferencias.getDominio();
+    // if (this.currentDominio){
+    //   this.changeDominio(this.currentDominio);
+    // }
+    // this.inicializaDominio();
 
     this.currentTheme = this.themeService.currentTheme;
-
-    this.inicializaDominio();
 
     this.userService.getUsers()
       .pipe(takeUntil(this.destroy$))
@@ -107,7 +106,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.dominios = dominios;
       if ((this.currentDominio === '') &&
         this.dominios && dominios.length > 0) {
-        this.changeDominio(this.dominios[0].Id);
+        // this.changeDominio(this.dominios[0].Id);
       }
     });
   }
@@ -116,13 +115,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.themeService.changeTheme(themeName);
   }
 
-  changeDominio(Id: string) {
-    if (Id) {
-      this.currentDominio = Id;
-      this.servicioPreferencias.setDominio(Id);
-      this.sesionStore.setPropiedad(PropiedadesSesion.IdDominio, Id);
-    }
-  }
 
   toggleSidebar(): boolean {
     this.sidebarService.toggle(true, 'menu-sidebar');
@@ -135,4 +127,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.menuService.navigateHome();
     return false;
   }
+
+  selectorOrganiacion(): void {
+    this.appBusStore.setPropiedadAppBus(PropiedadesBus.CambiarOrganizacion, true);
+  }
+
+
 }

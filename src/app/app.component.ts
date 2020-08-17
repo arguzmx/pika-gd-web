@@ -1,3 +1,4 @@
+import { first } from 'rxjs/operators';
 /**
  * @license
  * Copyright Akveo. All Rights Reserved.
@@ -8,15 +9,18 @@ import { AnalyticsService } from './@core/utils/analytics.service';
 import { SeoService } from './@core/utils/seo.service';
 import { TranslateService } from '@ngx-translate/core';
 
+
 @Component({
   selector: 'ngx-app',
   template: '<router-outlet></router-outlet>',
 })
 export class AppComponent implements OnInit {
-
-  constructor(public translate: TranslateService,
-    private analytics: AnalyticsService, private seoService: SeoService) {
-      translate.addLangs(['es-MX']);
+  constructor(
+    public translate: TranslateService,
+    private analytics: AnalyticsService,
+    private seoService: SeoService,
+  ) {
+    translate.addLangs(['es-MX']);
     translate.setDefaultLang('es-MX');
   }
 
@@ -24,4 +28,5 @@ export class AppComponent implements OnInit {
     this.analytics.trackPageViews();
     this.seoService.trackCanonicalChanges();
   }
+
 }

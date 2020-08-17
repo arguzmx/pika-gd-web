@@ -8,10 +8,10 @@ import { PARAM_ID_ORIGEN, PARAM_TIPO_ORIGEN, PARAM_TIPO,
   PARAM_TIPO_JERARQUICO, PARAM_TIPO_ARBOL_JERARQUICO, 
   PARAM_TIPO_CONTENIDO_JERARQUICO, PARAM_ID_JERARQUICO } from './../../model/constantes';
 import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
-  TemplateRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { EntidadesService } from '../../services/entidades.service';
-import { Subject } from 'rxjs';
+import { EntidadesService, CONTEXTO } from '../../services/entidades.service';
+import { Subject, forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { EditorEntidadesBase } from '../../model/editor-entidades-base';
@@ -45,6 +45,7 @@ OnDestroy, OnChanges {
   private dialogLinkPickRef: any;
 
   @Input() config: ConfiguracionEntidad;
+  configTmp: ConfiguracionEntidad;
 
   // Nombre del tipo de entidad en edición
   public NombreEntidad: string = '';
@@ -80,9 +81,14 @@ OnDestroy, OnChanges {
 
   /// Entidad seleccioanda desde la tabla
   public entidad: any = null;
+  public entidadTmp: any = null;
 
 
   public metadata: MetadataInfo;
+  public metadataTmp: MetadataInfo;
+
+  // Determina si la entida den edición es una entidad vinculada
+  public EditandoVinculada = false;
 
   // Cosntructor del componente
   constructor(
@@ -111,8 +117,11 @@ OnDestroy, OnChanges {
       if (this.tablas && this.tablas.first) this.tablas.first._Reset();
       this._CerrarDialogos();
       this.InstanciaSeleccionada = false;
+      this.configTmp = null;
       this.metadata = null;
+      this.metadataTmp = null;
       this.entidad = null;
+      this.entidadTmp = null;
       this.totalRegistros = 0;
       this.filtrosActivos = false;
       this.EliminarLogico = false;
@@ -249,38 +258,70 @@ private  ProcesaCambiosConfiguracion(): void {
 
 
   IrALink(link: EntidadVinculada): void {
-    this.CerrarDialogos();
     if (this.entidad) {
-        const Id = this.entidades.ObtenerIdEntidad (this.config.TipoEntidad, this.entidad);
-        if (Id) {
-          let url = '';
+      this.CerrarDialogos();
+      if (link.HijoDinamico) {
           switch (link.TipoDespliegue) {
-            case TipoDespliegueVinculo.Tabular:
-              url = this.ObtieneVinculoTabular(link, Id);
-              break;
-
-            case TipoDespliegueVinculo.Jerarquico:
-              url = this.ObtieneVinculoJerarquico(link, Id);
+            case TipoDespliegueVinculo.EntidadUnica:
+              this.SeguirLinkEntidadUnica(link);
               break;
           }
-
-          if (url) {
-            this.entidades.SetCacheInstanciaEntidad(this.config.TipoEntidad, Id, this.entidad);
-            this.tablas.first._Reset();
-            this._Reset();
-            this.router.navigateByUrl(url);
-          } else {
-            this.applog.FallaT('editor-pika.mensajes.err-config-vinculo', null , null);
-          }
-
-        } else {
-          this.applog.FallaT('editor-pika.mensajes.err-id-vinculo', null , null);
-        }
+      } else {
+        this.SegirLink(link);
+      }
     } else {
       this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
     }
   }
 
+
+  private SeguirLinkEntidadUnica(link: EntidadVinculada) {
+    const Id = this.entidades.ObtenerIdEntidad (this.config.TipoEntidad, this.entidad);
+    const valor = this.entidad[link.EntidadHijo];
+    const tipoentidad = link.DiccionarioEntidadesVinculadas.find( x => x.Id === valor);
+    if (tipoentidad) {
+      const metadatos = this.entidades.ObtieneMetadatos(tipoentidad.Enidad).pipe(first());
+      const instancia = this.entidades.ObtenerEntidadUnica(tipoentidad.Enidad, Id);
+      forkJoin([metadatos, instancia]).subscribe( resultados => {
+        this.entidades
+        .SetCachePropiedadContextual(link.PropiedadHijo, CONTEXTO, '', Id);
+        this.configTmp = {TipoEntidad: tipoentidad.Enidad, OrigenTipo: '', OrigenId: '', TransactionId: '123' };
+        this.metadataTmp = resultados[0];
+        this.entidadTmp = resultados[1] ;
+        this.EditandoVinculada = true;
+        this.MostrarTarjetaTrasera('editar');
+      } );
+    }
+  }
+
+
+  private SegirLink(link: EntidadVinculada) {
+      const Id = this.entidades.ObtenerIdEntidad (this.config.TipoEntidad, this.entidad);
+      if (Id) {
+        let url = '';
+        switch (link.TipoDespliegue) {
+          case TipoDespliegueVinculo.Tabular:
+            url = this.ObtieneVinculoTabular(link, Id);
+            break;
+
+          case TipoDespliegueVinculo.Jerarquico:
+            url = this.ObtieneVinculoJerarquico(link, Id);
+            break;
+        }
+
+        if (url) {
+          this.entidades.SetCacheInstanciaEntidad(this.config.TipoEntidad, Id, this.entidad);
+          this.tablas.first._Reset();
+          this._Reset();
+          this.router.navigateByUrl(url);
+        } else {
+          this.applog.FallaT('editor-pika.mensajes.err-config-vinculo', null , null);
+        }
+
+      } else {
+        this.applog.FallaT('editor-pika.mensajes.err-id-vinculo', null , null);
+      }
+  }
 
   private ObtieneVinculoTabular(link: EntidadVinculada, Id: string): string {
     let url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}`;
@@ -299,10 +340,12 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   CerrarDialogos(): void {
-
+    if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
+    if (this.dialogLinkPickRef) this.dialogLinkPickRef.close();
   }
 
   public mostrarCrear(): void {
+    this.EditandoVinculada = false;
     this.InstanciaSeleccionada = false;
     this.entidad = null;
     this.MostrarTarjetaTrasera('editar');
@@ -325,6 +368,7 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   public mostrarEditar(): void {
+    this.EditandoVinculada = false;
       if (this.InstanciaSeleccionada) {
         this.MostrarTarjetaTrasera('editar');
       } else {

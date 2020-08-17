@@ -1,3 +1,4 @@
+import { DominioActivo } from './../../sesion/dominio-activo';
 import { IPreferencias } from './i-preferencias';
 import { PreferenciasStore } from './preferencias-store'
 import {LocalStorageService} from 'ngx-localstorage';
@@ -17,14 +18,21 @@ export class PreferenciasService {
             this.init();
     }
 
-    setDominio(dominio: string) {
-      this.store.update({ preferencias: { Dominio: dominio} });
+    setOrganizacion(dominio: string, unidad: string) {
+      const prefs = { ...this.store.getValue().preferencias};
+      prefs.Dominio = dominio;
+      prefs.UnidadOrganizacional = unidad;
+      this.store.update({ preferencias: prefs });
       this.UpdatePrefs();
     }
 
-    getDominio(): string {
+    getORganizacion(): IPreferencias {
         const p: IPreferencias = this.localStorage.get(PREF_STORAGE_NAME);
-        return p ? (p.Dominio ? p.Dominio : '') : '';
+        if (p) {
+            return p;
+        } else {
+            return {Dominio: '', UnidadOrganizacional: '' };
+        }
     }
 
     private UpdatePrefs(): void {

@@ -22,4 +22,6 @@ export class SesionQuery extends Query<SesionState> {
 
   public dominios$ = this.select(({ sesion }) => sesion.Dominios);
 
+  public dominios = this.getValue().sesion.Dominios;
+
 }

@@ -12,6 +12,8 @@ import {
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
+  NbTooltipModule,
+  NbCardModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -40,6 +42,7 @@ import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { TranslateModule } from '@ngx-translate/core';
+import { OrgSelectorComponent } from './components/org-selector/org-selector.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -55,6 +58,8 @@ const NB_MODULES = [
   NbIconModule,
   TranslateModule,
   NbEvaIconsModule,
+  NbTooltipModule,
+  NbCardModule,
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -65,6 +70,7 @@ const COMPONENTS = [
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
   EmptyLayoutComponent,
+  OrgSelectorComponent,
 ];
 const PIPES = [
   CapitalizePipe,
@@ -77,7 +83,7 @@ const PIPES = [
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
-  declarations: [...COMPONENTS, ...PIPES],
+  declarations: [...COMPONENTS, ...PIPES, OrgSelectorComponent],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {

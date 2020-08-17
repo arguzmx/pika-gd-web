@@ -10,6 +10,7 @@ export function createInitialStatePreferencias(): PreferenciasState {
     return {
         preferencias: {
             Dominio: '',
+            UnidadOrganizacional: '',
         },
     };
 }

@@ -13,7 +13,7 @@ export const environment = {
   authUrl: 'http://localhost:4000/',
   apiUrl: 'http://localhost:5000/api/v1.0/',
   editorToken: 'tipo',
-  callbackRoute: '/pages/tabular?tipo=cuadroclasificacion',
+  callbackRoute: '/pages/tabular?tipo=volumen&id=&sub=',
   cacheActivo: true,
   uploadUrl: 'http://localhost:5000/api/v1.0/Upload/ContenidoFiltrado',
 };

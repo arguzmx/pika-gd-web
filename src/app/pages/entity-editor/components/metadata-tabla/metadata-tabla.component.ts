@@ -1,4 +1,3 @@
-import { CatalogoVinculado } from './../../../../@pika/metadata/catelogo-vinculado';
 import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input, OnChanges, SimpleChanges,
@@ -210,21 +209,36 @@ implements ITablaMetadatos, OnInit, OnChanges {
           this.config.OrigenId, this.config.TipoEntidad, this.consulta)
           .pipe(first())
           .subscribe( data => {
-            this.data = data.Elementos || [];
-            this.configuration.isLoading = false;
-            this.ConteoRegistros.emit(data.ConteoTotal);
-            if (notificar) this.NotificarConteo(data.ConteoTotal);
+            if (data) {
+              this.data = data.Elementos || [];
+              this.configuration.isLoading = false;
+              this.ConteoRegistros.emit(data.ConteoTotal);
+              if (notificar) this.NotificarConteo(data.ConteoTotal);
+            } else {
+              this.ConteoRegistros.emit(0);
+              this.NotificarErrorDatos(data.ConteoTotal);
+            }
           });
      } else {
       this.entidades.ObtenerPagina( this.config.TipoEntidad, this.consulta)
       .pipe(first())
       .subscribe( data => {
-          this.data = data.Elementos  || [];
-          this.configuration.isLoading = false;
-          this.ConteoRegistros.emit(data.ConteoTotal);
-          if (notificar) this.NotificarConteo(data.ConteoTotal);
+          if (data) {
+            this.data = data.Elementos  || [];
+            this.configuration.isLoading = false;
+            this.ConteoRegistros.emit(data.ConteoTotal);
+            if (notificar) this.NotificarConteo(data.ConteoTotal);
+          } else {
+            this.ConteoRegistros.emit(0);
+            this.NotificarErrorDatos(data.ConteoTotal);
+          }
         });
      }
+  }
+
+  private NotificarErrorDatos(cantidad: number): void {
+    this.applog.FallaT('editor-pika.mensajes.err-pagina-datos', null,
+    {cantidad: 0});
   }
 
   private NotificarConteo(cantidad: number): void {

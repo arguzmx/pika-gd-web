@@ -4,7 +4,12 @@ export enum TipoCardinalidad {
 }
 
 export enum TipoDespliegueVinculo {
-   Tabular = 1, Jerarquico = 2, GrupoCheckbox = 10, ListaMultiple = 20,
+   Tabular = 1, Jerarquico = 2, EntidadUnica = 3, GrupoCheckbox = 10, ListaMultiple = 20,
+}
+
+export interface DiccionarioEntidadVinculada {
+  Id: string;
+  Enidad: string;
 }
 
 export interface EntidadVinculada {
@@ -14,27 +19,6 @@ export interface EntidadVinculada {
   PropiedadHijo: string;
   TipoDespliegue: TipoDespliegueVinculo;
   Etiqueta: string;
-}
-
-export class NavegacionVinculada implements EntidadVinculada {
-
-  constructor(vinculo: EntidadVinculada, EntidadPadre: string, InstanciaPadre: any) {
-    this.Cardinalidad = vinculo.Cardinalidad;
-    this.EntidadHijo = vinculo.EntidadHijo;
-    this.PropiedadPadre = vinculo.PropiedadPadre;
-    this.PropiedadHijo = vinculo.PropiedadHijo;
-    this.InstanciaPadre = InstanciaPadre;
-    this.EntidadPadre = EntidadPadre;
-    this.TipoDespliegue = vinculo.TipoDespliegue;
-    this.Etiqueta = vinculo.Etiqueta;
-    }
-
-  Cardinalidad: TipoCardinalidad;
-  EntidadHijo: string;
-  PropiedadPadre: string;
-  PropiedadHijo: string;
-  InstanciaPadre: any;
-  EntidadPadre: string;
-  TipoDespliegue: TipoDespliegueVinculo;
-  Etiqueta:  string;
+  HijoDinamico: boolean;
+  DiccionarioEntidadesVinculadas: DiccionarioEntidadVinculada[];
 }

@@ -10,7 +10,7 @@ import { UploaderComponent } from './uploader.component';
 import { UploadService } from './uploader.service';
 import { FileDropComponent } from './file-drop/file-drop.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule } from '@nebular/theme';
+import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule, NbTooltipModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 
 
@@ -28,6 +28,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     MatListModule,
     MatProgressBarModule,
     ngfModule,
+    NbTooltipModule,
   ],
   declarations: [UploaderComponent, FileDropComponent],
   exports: [UploaderComponent],

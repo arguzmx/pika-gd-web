@@ -10,12 +10,12 @@
 
 <!-- Template para columnas ID -->
 <ng-template #listTpl let-row let-rowIndex="rowIndex" let-column="column">
-    <label>{{EtiquetaDeId(row[column.key], column.key)}}</label>
+    <span>{{EtiquetaDeId(row[column.key], column.key)}}</span>
 </ng-template>
 
 <!-- Template para columnas con catálogo vinulado -->
 <ng-template  #cataloLinkTpl let-row let-rowIndex="rowIndex" let-column="column">
-    <label>{{EtiquetasDeCatalogo(row[column.key], column.key)}}</label>
+    <span >{{EtiquetasDeCatalogo(row[column.key], column.key)}}</span>
 </ng-template>
 
 <!-- Cuadro de dialogo para la selección de columnas-->

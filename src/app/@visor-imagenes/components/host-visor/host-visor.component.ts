@@ -22,7 +22,6 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.servicioVisor.ObtieneDocumento('EjmeploId')
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( doc =>  {
-        console.log(doc);
         this.documento = doc;
         this.Titulo = doc.Nombre;
     });

@@ -5,6 +5,8 @@ import { NbAuthService, NbAuthSimpleToken, NbTokenService } from '@nebular/auth'
 import { SesionStore } from '../../../@pika/state/sesion.store';
 import { CookieService } from 'ngx-cookie-service';
 import * as jwt_decode from 'jwt-decode';
+import { PikaSesinService } from '../../../@pika/pika-api/pika-sesion-service';
+import { first } from 'rxjs/operators';
 
 
 @Injectable()
@@ -28,7 +30,8 @@ export class IsAuthorizedGuard implements CanActivate {
 @Injectable()
 export class IsChldrenAuthorizedGuard implements CanActivate, CanActivateChild {
     constructor(private auth: NbAuthService, private token: NbTokenService,
-      private session: SesionStore, private cookies: CookieService,
+      private session: SesionStore, private cookies: CookieService, 
+      private sessionService: PikaSesinService, private storeSesion: SesionStore,
        private router: Router) { }
 
 
@@ -60,6 +63,13 @@ export class IsChldrenAuthorizedGuard implements CanActivate, CanActivateChild {
     } else {
       const info = jwt_decode(t.getValue());
       this.session.login(info.sub, t.getValue());
+      this.sessionService.GetDominios().pipe(
+        first(),
+      ).subscribe( dominios => {
+          this.storeSesion.setDominios(dominios);
+      }, (err) => {
+          console.log(err);
+      });
     }
     return authenticated;
   }

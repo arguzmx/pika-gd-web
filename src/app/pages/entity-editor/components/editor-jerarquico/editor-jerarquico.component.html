@@ -4,9 +4,7 @@
       <button
         *ngIf="MostrarRegresar"
         mat-icon-button
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.regresar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.regresar']" nbTooltipPlacement="bottom"
         on-click="regresar()"
         aria-label="t['ui.regresar']"
       >
@@ -25,9 +23,7 @@
       <button
         mat-icon-button
         on-click="mostrarCrearJerarquia(true)"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.raizcrear']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.raizcrear']" nbTooltipPlacement="bottom"
         aria-label="t['ui.raizcrear']"
       >
         <mat-icon>add_box</mat-icon>
@@ -38,9 +34,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarCrearJerarquia(false)"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.nodocrear']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.nodocrear']" nbTooltipPlacement="bottom"
         aria-label="t['ui.crear']"
       >
         <mat-icon>add</mat-icon>
@@ -50,9 +44,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarEditarT()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.editar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.editar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.editar']"
       >
         <mat-icon>edit</mat-icon>
@@ -63,9 +55,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="eliminarEntidadesJ()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.eliminar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.eliminar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.eliminar']"
       >
         <mat-icon>delete_outline</mat-icon>
@@ -79,9 +69,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarCrearContenido()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.tabularcrear']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.tabularcrear']" nbTooltipPlacement="bottom"
         aria-label="t['ui.crear']"
       >
         <mat-icon>add</mat-icon>
@@ -91,9 +79,7 @@
         *ngIf="InstanciaSeleccionadaC"
         mat-icon-button
         on-click="mostrarEditarC()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.editar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.editar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.editar']"
       >
         <mat-icon>edit</mat-icon>
@@ -104,9 +90,7 @@
         *ngIf="InstanciaSeleccionadaC"
         mat-icon-button
         on-click="eliminarEntidadesC()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.eliminar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.eliminar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.eliminar']"
       >
         <mat-icon>delete_outline</mat-icon>
@@ -117,9 +101,7 @@
         *ngIf="vincularActivoC"
         mat-icon-button
         on-click="mostrarVinculos()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.propiedades']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.propiedades']" nbTooltipPlacement="bottom"
         aria-label="t['ui.propiedades']"
       >
         <mat-icon>link</mat-icon>
@@ -130,9 +112,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="refrescarTabla()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.actualizar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.actualizar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.actualizar']"
       >
         <mat-icon>refresh</mat-icon>
@@ -143,9 +123,7 @@
         *ngIf="InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarBuscar()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.buscar']"
-        nbPopoverTrigger="hint"
+        [nbTooltip]="t['ui.buscar']" nbTooltipPlacement="bottom"
         aria-label="t['ui.buscar']"
       >
         <mat-icon>search</mat-icon>
@@ -155,10 +133,7 @@
       <button
         mat-icon-button
         on-click="mostrarSelectorColumnas()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.selcol']"
-        nbPopoverTrigger="hint"
-        
+        [nbTooltip]="t['ui.selcol']" nbTooltipPlacement="bottom"
         aria-label="t['ui.selcol']"
       >
         <mat-icon>view_comfy</mat-icon>
@@ -169,10 +144,7 @@
         *ngIf="filtrosActivos"
         mat-icon-button
         on-click="eliminarFiltros()"
-        nbPopoverPlacement="bottom"
-        [nbPopover]="t['ui.eliminar-filtro']"
-        nbPopoverTrigger="hint"
-        
+        [nbTooltip]="t['ui.eliminar-filtro']" nbTooltipPlacement="bottom"
         aria-label="t['ui.eliminar-filtro']"
       >
         <mat-icon color="warn">filter_alt</mat-icon>
@@ -240,9 +212,7 @@
                   nbButton
                   size="small"
                   on-click="borrarFiltrosBuscador()"
-                  nbPopoverPlacement="bottom"
-                  [nbPopover]="t['ui.borrarfiltros']"
-                  nbPopoverTrigger="hint"
+                  [nbTooltip]="t['ui.borrarfiltros']" nbTooltipPlacement="bottom"
                 >
                   <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
                 </button>
@@ -251,9 +221,7 @@
                   nbButton
                   size="small"
                   on-click="OcultarTarjetaTrasera()"
-                  nbPopoverPlacement="bottom"
-                  [nbPopover]="t['ui.cerrar']"
-                  nbPopoverTrigger="hint"
+                  [nbTooltip]="t['ui.cerrar']" nbTooltipPlacement="bottom"
                 >
                   <nb-icon icon="close-outline" pack="eva"></nb-icon>
                 </button>
@@ -265,9 +233,7 @@
                   nbButton
                   size="small"
                   on-click="OcultarTarjetaTrasera()"
-                  nbPopoverPlacement="bottom"
-                  [nbPopover]="t['ui.cerrar']"
-                  nbPopoverTrigger="hint"
+                  [nbTooltip]="t['ui.cerrar']" nbTooltipPlacement="bottom"
                 >
                   <nb-icon icon="close-outline" pack="eva"></nb-icon>
                 </button>
