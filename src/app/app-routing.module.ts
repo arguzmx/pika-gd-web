@@ -53,11 +53,6 @@ export const routes: Routes = [
       },
     ],
   },
-  {
-    path: 'acceso',
-    loadChildren: () => import('./acceso/acceso-routing.module')
-      .then(m => m.AccesoRoutingModule),
-  },
   { path: '', redirectTo: 'forms/layouts', pathMatch: 'full' },
   { path: '**', redirectTo: environment.callbackRoute },
 ];

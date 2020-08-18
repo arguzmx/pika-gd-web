@@ -1,4 +1,4 @@
-import { PikaSesinService } from './@pika/pika-api/pika-sesion-service';
+import { PikaSesionService } from './@pika/pika-api/pika-sesion-service';
 import { PikaModule } from './@pika/pika-module';
 import { AppLogService } from './@pika/servicios/app-log/app-log.service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,7 +19,7 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { CommonModule } from '@angular/common';
-import { IsAuthorizedGuard, IsChldrenAuthorizedGuard } from './@core/services/auth-guard/auth-guard.service';
+import { IsChldrenAuthorizedGuard } from './@core/services/auth-guard/auth-guard.service';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { environment } from '../environments/environment';
 import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider';
@@ -27,8 +27,10 @@ import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {NgxLocalStorageModule} from 'ngx-localstorage';
-import { PreferenciasService } from './@pika/state/preferencias/preferencias-service';
 import { CookieService } from 'ngx-cookie-service';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { AcesoModule } from './@acceso/aceso.module';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -53,17 +55,23 @@ import { CookieService } from 'ngx-cookie-service';
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
+    AcesoModule.forRoot(),
     NbChatModule.forRoot({
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     environment.production ? [] : AkitaNgDevtools,
+    OAuthModule.forRoot(),
   ],
   bootstrap: [AppComponent],
-  providers: [IsAuthorizedGuard, IsChldrenAuthorizedGuard, httpInterceptorProviders,
-    PikaSesinService, CookieService,
-    { provide: NbTokenStorage, useClass: NbTokenLocalStorage }, AppLogService, PreferenciasService],
+  providers: [
+    IsChldrenAuthorizedGuard,
+    httpInterceptorProviders,
+    PikaSesionService, CookieService,
+    { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
+    AppLogService,
+  ],
 })
 export class AppModule {
   constructor(

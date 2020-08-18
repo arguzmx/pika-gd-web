@@ -1,4 +1,4 @@
 export interface IPreferencias {
-    Dominio: string;
-    UnidadOrganizacional: string;
+    Dominio?: string;
+    UnidadOrganizacional?: string;
 }

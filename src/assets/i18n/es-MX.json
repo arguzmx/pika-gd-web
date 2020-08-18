@@ -1,6 +1,7 @@
 {
     "titulo-sitio": "PIKA-GD",
     "ui": {
+        "ubicacion-org": "Ubicación",
         "modulo": "Módulo",
         "confirmar": "Confirmar operación",
         "editar": "Editar",

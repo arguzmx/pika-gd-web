@@ -14,9 +14,8 @@ import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { SesionQuery } from '../../../@pika/state/sesion.query';
-import { PikaSesinService } from '../../../@pika/pika-api/pika-sesion-service';
+import { PikaSesionService } from '../../../@pika/pika-api/pika-sesion-service';
 import { UnidadOrganizacionalActiva } from '../../../@pika/sesion/unidad-organizacional-activa';
-import { PreferenciasService } from '../../../@pika/state/preferencias/preferencias-service';
 
 @Component({
   selector: 'ngx-org-selector',
@@ -45,8 +44,7 @@ export class OrgSelectorComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private dialogService: NbDialogService,
     private sessionStore: SesionStore,
-    private pikaSessionService: PikaSesinService,
-    private prefs: PreferenciasService,
+    private pikaSessionService: PikaSesionService,
     private sessionQuery: SesionQuery,
     private applog: AppLogService,
     private appBus: AppBusQuery,
@@ -101,7 +99,7 @@ export class OrgSelectorComponent implements OnInit, OnDestroy {
     const s = this.sessionQuery.getValue().sesion;
     if (s.Dominios.length > 0) {
 
-      const prefs  = this.prefs.getORganizacion();
+      const prefs  = this.sessionQuery.preferencias;
       this.dominios  = s.Dominios;
 
       // Verifica y asigna un dominio en las preferencias
@@ -139,7 +137,7 @@ export class OrgSelectorComponent implements OnInit, OnDestroy {
   }
 
   CambiarOrg() {
-    this.prefs.setOrganizacion(this.datosOrg.Dominio, this.datosOrg.UnidadOrganizacional);
+    this.sessionStore.setOrganizacion(this.datosOrg.Dominio, this.datosOrg.UnidadOrganizacional);
     this.dialogOrgRef.close();
     this.applog.ExitoT('mensajes.salvar-ok', null, null);
   }

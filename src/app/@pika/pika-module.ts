@@ -1,4 +1,4 @@
-import { PikaSesinService } from './pika-api/pika-sesion-service';
+import { PikaSesionService } from './pika-api/pika-sesion-service';
 import { PikaApiService } from './pika-api/pika-api.service';
 import { NgModule } from '@angular/core';
 
@@ -6,6 +6,6 @@ import { NgModule } from '@angular/core';
   declarations: [],
   imports: [],
   exports: [],
-  providers: [PikaApiService, PikaSesinService]
+  providers: [PikaApiService, PikaSesionService]
 })
 export class PikaModule {}

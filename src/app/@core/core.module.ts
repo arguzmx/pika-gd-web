@@ -113,37 +113,7 @@ export const NB_CORE_PROVIDERS = [
   ...DATA_SERVICES,
   ...NbAuthModule.forRoot({
 
-    strategies: [
-      NbOAuth2AuthStrategy.setup({
-        name: 'is4',
-        clientId: 'api-pika-gd-angular',
-        clientSecret: '',
-        baseEndpoint: environment.authUrl,
-        clientAuthMethod: NbOAuth2ClientAuthMethod.NONE,
-        redirect:  {
-          success: '/',
-          failure: null,
-        },
-        authorize:  {
-          endpoint: 'connect/authorize',
-          redirectUri: originUrl + 'acceso/callback',
-          responseType: NbOAuth2ResponseType.CODE,
-          requireValidToken: true,
-          scope: 'openid profile pika-gd',
-        },
-        token: {
-          endpoint: 'connect/token',
-          grantType: NbOAuth2GrantType.AUTHORIZATION_CODE,
-          class: NbAuthOAuth2Token,
-          redirectUri: originUrl + 'acceso/callback',
-        },
-        refresh: {
-          endpoint: 'connect/token',
-          grantType: NbOAuth2GrantType.REFRESH_TOKEN,
-        },
-      }),
-
-    ],
+    strategies: [],
     forms: {
       login: {
         socialLinks: socialLinks,

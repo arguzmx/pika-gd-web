@@ -322,8 +322,7 @@ export class DynamicDataSource implements DataSource<DynamicFlatNode> {
         }
     },
     (err) => {
-        // tslint:disable-next-line: no-console
-        console.log(err);
+        console.error(err);
     },
     () => {
         node.isLoading = false;
