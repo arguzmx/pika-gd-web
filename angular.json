@@ -23,6 +23,7 @@
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",
+              "src/silent-refresh.html",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -149,6 +150,7 @@
               "src/assets",
               "src/favicon.ico",
               "src/favicon.png",
+              "src/silent-refresh.html",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",

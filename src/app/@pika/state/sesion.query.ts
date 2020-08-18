@@ -14,6 +14,8 @@ export class SesionQuery extends Query<SesionState> {
 
   public sesion$ = this.select(({ sesion }) => sesion);
 
+  public preferencias$ = this.select(({  preferencias }) => preferencias);
+
   public menus$ = this.select(({ sesion }) => sesion.Menus);
 
   public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
@@ -22,6 +24,11 @@ export class SesionQuery extends Query<SesionState> {
 
   public dominios$ = this.select(({ sesion }) => sesion.Dominios);
 
-  public dominios = this.getValue().sesion.Dominios;
+  get dominios() {
+    return this.getValue().sesion.Dominios;
+  }
+  get preferencias() {
+    return this.getValue().preferencias;
+  }
 
 }

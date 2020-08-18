@@ -15,7 +15,6 @@ export class UIRootComponent implements OnInit {
 
   menu = [];
   constructor(private sesion: SesionQuery) {
-
   }
   ngOnInit(): void {
     this.sesion.menus$.subscribe( (menu) => {

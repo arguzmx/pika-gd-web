@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest,
     HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EMPTY } from 'rxjs';
 
     const HCULTURE: string = 'culture';
     const HDOMINIOID: string = 'did';
@@ -24,8 +23,8 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     this.sesionQuery.sesion$.subscribe(x => {
       this.IdDominio = x.IdDominio;
       this.IdUnidadOrg = x.IdUnidadOrganizacional;
-      this.Token = x.token;
       this.UILocale = x.uilocale;
+      this.Token = x.token;
     });
   }
 
@@ -34,11 +33,6 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
-
-
-    // if (this.Token === '') { 
-    //   console.log("NO TOKEN");
-    //   return EMPTY; }
 
     const authReq = req.clone({
       headers: this._getPiKaHeaders(req),
@@ -58,7 +52,6 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     headerSettings[HDOMINIOID] = this.IdDominio;
     headerSettings[HUNIDADORGID] = this.IdUnidadOrg;
     headerSettings[HCULTURE] = this.UILocale;
-
     const newHeader = new HttpHeaders(headerSettings);
     return newHeader;
   }

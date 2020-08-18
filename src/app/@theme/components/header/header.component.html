@@ -10,9 +10,6 @@
     </nb-actions>
    
     <a class="logo" href="#" (click)="navigateHome()">{{ 'titulo-sitio' | translate }}</a>
-    <nb-select  [selected]="currentDominio"  status="primary" appearance="outline">
-      <nb-option *ngFor="let d of dominios" [value]="d.Id"> {{ d.Nombre }}</nb-option>
-    </nb-select> 
   </div>
 </div>
 <div class="header-container">

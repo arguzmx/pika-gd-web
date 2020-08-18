@@ -697,7 +697,7 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
   private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
     if (error instanceof  HttpResponseBase) {
       if (error.status === 401) {
-        this.router.navigate(['/acceso/login']);
+        //this.router.navigate(['/acceso/login']);
       } else {
         this.MuestraErrorHttp(error, modulo, nombreEntidad);
       }

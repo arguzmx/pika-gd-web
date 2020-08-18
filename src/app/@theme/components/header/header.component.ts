@@ -1,11 +1,6 @@
 import { AppBusStore, PropiedadesBus } from './../../../@pika/state/app-bus/app-bus-store';
-import { PikaSesinService } from './../../../@pika/pika-api/pika-sesion-service';
-import { SesionStore, PropiedadesSesion } from './../../../@pika/state/sesion.store';
-import { PreferenciasService } from './../../../@pika/state/preferencias/preferencias-service';
-import { DominioActivo } from './../../../@pika/sesion/dominio-activo';
-import { SesionQuery } from './../../../@pika/state/sesion.query';
-import { Component, OnDestroy, OnInit, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, 
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NbMediaBreakpointsService, NbMenuService, NbSidebarService,
   NbThemeService } from '@nebular/theme';
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
@@ -23,8 +18,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
-  dominios: DominioActivo[] = [];
-  currentDominio: any = null;
 
   themes = [
     {
@@ -51,14 +44,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
               private appBusStore: AppBusStore,
-              private sesion: SesionQuery,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
-              private sesionStore: SesionStore,
-              private servicioPreferencias: PreferenciasService,
               private breakpointService: NbMediaBreakpointsService,
               ) {
   }
@@ -97,18 +87,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-
-  inicializaDominio(): void {
-    this.sesion.dominios$.pipe(takeUntil(this.destroy$))
-    .subscribe((dominios: DominioActivo[]) => {
-      this.dominios = dominios;
-      if ((this.currentDominio === '') &&
-        this.dominios && dominios.length > 0) {
-        // this.changeDominio(this.dominios[0].Id);
-      }
-    });
   }
 
   changeTheme(themeName: string) {

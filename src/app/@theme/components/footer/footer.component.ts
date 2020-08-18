@@ -1,19 +1,79 @@
-import { Component } from '@angular/core';
+import { takeWhile, takeUntil, first } from 'rxjs/operators';
+import { SesionQuery } from './../../../@pika/state/sesion.query';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { Component, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-footer',
   styleUrls: ['./footer.component.scss'],
-  template: `
-    <span class="created-by">
-      Created with ♥ by <b><a href="https://akveo.page.link/8V2f" target="_blank">Akveo</a></b> 2019
-    </span>
-    <div class="socials">
-      <a href="#" target="_blank" class="ion ion-social-github"></a>
-      <a href="#" target="_blank" class="ion ion-social-facebook"></a>
-      <a href="#" target="_blank" class="ion ion-social-twitter"></a>
-      <a href="#" target="_blank" class="ion ion-social-linkedin"></a>
-    </div>
-  `,
+  templateUrl: 'footer.component.html',
+
 })
-export class FooterComponent {
+export class FooterComponent implements OnDestroy {
+  private onDestroy$ = new Subject<any>();
+  // Claves para obtener la traducción
+  ts: string[];
+  // Objeto resultante de la traduccion
+  t: object;
+
+  // Etiquetas de organización
+  etiquetaDominio: string = '';
+  etiquetaUO: string = '';
+
+  constructor(
+    private translate: TranslateService,
+    private  sesionQ: SesionQuery) {
+    this.CargaTraducciones();
+    this.CambiosSesion();
+  }
+
+  // VErifica los cambios en las propieades de sesión
+  private CambiosSesion() {
+    this.sesionQ.preferencias$.pipe(takeUntil(this.onDestroy$))
+    .subscribe((p) => {
+      this.ActualizaFooter();
+    });
+
+    this.sesionQ.dominios$.pipe(takeUntil(this.onDestroy$))
+    .subscribe((ds) => {
+      this.ActualizaFooter();
+    });
+  }
+
+  private ActualizaFooter() {
+    this.etiquetaDominio = '';
+    this.etiquetaUO = '';
+    const p = this.sesionQ.preferencias;
+
+    if (p.Dominio) {
+      const d = this.sesionQ.dominios.find( x => x.Id === p.Dominio);
+      if (d) {
+        this.etiquetaDominio = d.Nombre;
+        const u = d.UnidadesOrganizacionales.find( x => x.Id === p.UnidadOrganizacional);
+        this.etiquetaUO = u ? u.Nombre : '';
+      }
+    }
+  }
+
+  private CargaTraducciones() {
+    this.ts = ['ui.ubicacion-org'];
+    this.ObtenerTraducciones();
+  }
+
+  // Obtiene las tradcucciones
+  ObtenerTraducciones(): void {
+    this.translate
+      .get(this.ts)
+      .pipe(first())
+      .subscribe((res) => {
+        this.t = res;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
 }
