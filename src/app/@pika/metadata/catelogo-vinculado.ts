@@ -1,7 +1,4 @@
-export enum TipoDespliegueVinculo {
-    Tabular = 1, Jerarquico = 2, GrupoCheckbox = 10, ListaMultiple = 20,
-}
-
+import { TipoDespliegueVinculo } from './entidad-vinculada';
 
 export interface CatalogoVinculado {
       EntidadCatalogo: string;
