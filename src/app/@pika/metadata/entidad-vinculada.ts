@@ -4,8 +4,9 @@ export enum TipoCardinalidad {
 }
 
 export enum TipoDespliegueVinculo {
-   Tabular = 1, Jerarquico = 2, EntidadUnica = 3, GrupoCheckbox = 10, ListaMultiple = 20,
+  Tabular = 1, Jerarquico = 2, EntidadUnica = 3, GrupoCheckbox = 10, ListaMultiple = 20,
 }
+
 
 export interface DiccionarioEntidadVinculada {
   Id: string;
