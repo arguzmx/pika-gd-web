@@ -7,6 +7,7 @@ import { Store, StoreConfig } from '@datorama/akita';
 import { NbMenuItem } from '@nebular/theme';
 import { LocalStorageService } from 'ngx-localstorage';
 import { IPreferencias } from './preferencias/i-preferencias';
+import { MenuService, menus } from '../servicios/servicio-menu/menu-service';
 
 export interface SesionState {
   sesion: Sesion | null;
@@ -23,6 +24,7 @@ export enum PropiedadesSesion {
   token = 'token',
   Nombre = 'Nombre',
   isLoggedIn = 'isLoggedIn',
+  Menus = 'Menus',
 }
 
 
@@ -39,64 +41,7 @@ export function createInitialState(): SesionState {
       isLoggedIn: false,
       uilocale: 'es-MX',
       Dominios: [],
-      Menus: [
-        {
-          title: 'Home',
-          icon: 'home-outline',
-          link: '/pages/iot-dashboard',
-        },
-        {
-          title: 'OPCIONES',
-          group: true,
-        },
-        {
-          title: 'Configuración global',
-          icon: 'map-outline',
-          children: [
-            {
-              title: 'Dominios',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'dominio', id: '', sub: '' },
-            },
-            {
-              title: 'Unidades organizacionales',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'unidadorganizacional' },
-            },
-            {
-              title: 'Roles',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'rol' },
-            },
-            {
-              title: 'Volumenes',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'volumen', id: '', sub: '' },
-            },
-            {
-              title: 'Usuarios',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'propiedadesusuario' },
-            },
-          ],
-        },
-        {
-          title: 'Gestión documental',
-          icon: 'archive-outline',
-          children: [
-            {
-              title: 'Catálogo tipo archivo',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'tipoarchivo' },
-            },
-            {
-              title: 'Cuadros de clasificación',
-              link: '/pages/tabular/',
-              queryParams: { tipo: 'cuadroclasificacion' },
-            },
-          ],
-        },
-      ],
+      Menus: menus,
     },
     preferencias: { Dominio: '', UnidadOrganizacional: ''}
   };
@@ -121,7 +66,8 @@ export class SesionStore extends Store<SesionState> {
     }
   }
 
-  constructor(private auth: AuthService,
+  constructor(
+    private auth: AuthService,
     private localStorage: LocalStorageService,
     private service: PikaSesionService) {
     super(createInitialState());

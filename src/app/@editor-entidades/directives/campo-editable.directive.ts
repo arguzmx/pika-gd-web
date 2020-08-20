@@ -28,6 +28,8 @@ const components: { [type: string]: Type<ICampoEditable> } = {
   toggle: BoolEditorComponent,
   number: NumericEditorComponent,
   datetime: DatetimeEditorComponent,
+  date: DatetimeEditorComponent,
+  time: DatetimeEditorComponent,
   select: ListEditorComponent,
   hidden: HiddenEditorComponent,
   textarea: StringEditorComponent,

@@ -2,15 +2,18 @@ import { AtributoLista } from '../../../../@pika/pika-module';
 import { MetadataEditorBase } from './../../../model/metadata-editor-base';
 import { EntidadesService } from './../../../services/entidades.service';
 import { ICampoEditable } from './../../../model/i-campo-editable';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { Propiedad } from '../../../../@pika/pika-module';
 import { FormGroup } from '@angular/forms';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject, pipe } from 'rxjs';
-import { takeUntil, first } from 'rxjs/operators';
+import { Subject, pipe, Observable, of } from 'rxjs';
+import { takeUntil, first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
 import { Operaciones, Evento } from '../../../../@pika/pika-module';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+
 
 @Component({
   selector: 'ngx-list-editor',
@@ -19,6 +22,9 @@ import { Operaciones, Evento } from '../../../../@pika/pika-module';
 })
 export class ListEditorComponent extends MetadataEditorBase
   implements ICampoEditable, OnInit, OnDestroy {
+    @ViewChild('ngSelect')
+    ngSelect: MatSelect;
+
   private readonly destroy$ = new Subject<void>();
   propiedad: Propiedad;
   congiguracion: ConfiguracionEntidad;
@@ -28,11 +34,22 @@ export class ListEditorComponent extends MetadataEditorBase
   list: ValorListaOrdenada[];
   selected: any = null;
 
+
+  ops = [Operacion.OP_EQ];
+  isTypeAhead:  boolean  = false;
+
+  elementos: ValorListaOrdenada[] = [];
+  elementos$: Observable<ValorListaOrdenada[]>;
+  listaLoading: boolean = false;
+  selectedItems: ValorListaOrdenada[] = [];
+  listInput$ = new Subject<string>();
+
   @ViewChild('lista') Lista: any;
 
   constructor(entidades: EntidadesService) {
     super(entidades);
   }
+ 
 
 
   // Escucha por eventos de la transacción
@@ -122,32 +139,75 @@ export class ListEditorComponent extends MetadataEditorBase
     this.destroy$.complete();
   }
 
+  private getTypeAhead() {
+    this.listInput$.pipe(
+        distinctUntilChanged(),
+        tap(() => this.listaLoading = true),
+        switchMap( term => this.entidades.TypeAhead(this.propiedad.AtributoLista, term)
+        .pipe(
+          catchError(() => of([])), // empty list on error
+          tap(() => this.listaLoading = false),
+        )),
+    ).subscribe( items => {
+      this.elementos = items;
+    }) ;
+  }
+
+  onTypeaheadChange($event: ValorListaOrdenada) {
+    const newval = $event ? $event.Id : null;
+    this.EmiteEventoCambio(this.propiedad.Id, newval, this.congiguracion.TransactionId);
+    this.group.get(this.propiedad.Id).patchValue(newval);
+  }
+
+ 
+
   ngOnInit(): void {
 
-    this.ListenerEventos();
 
+    this.ListenerEventos();
+    let aheadval = '';
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {
         this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
+         aheadval = this.propiedad.AtributoLista.Default;
       }
 
-      const precargar = !this.TieneEventos();
-      // sólo precarga los datos si no dependen de otra entidad
-      if (precargar && this.propiedad.AtributoLista.DatosRemotos) {
-        this.ObtieneLista(
-          this.propiedad.AtributoLista,
-          new Consulta());
-      }
+      if (this.propiedad.AtributoLista.DatosRemotos) {
+          // Los datos e obhtienen desde el servidor
 
-    } else {
-      if (this.propiedad.OrdenarValoresListaPorNombre) {
-        this.list = this.Sort('Texto');
+          const tieneEventos = this.propiedad.AtributosEvento  &&
+          (this.propiedad.AtributosEvento.length  > 0);
+
+          if ( this.propiedad.AtributoLista.TypeAhead || tieneEventos) {
+
+            if (aheadval) {
+              this.entidades.ValoresLista([aheadval ],
+              this.propiedad.AtributoLista.Entidad ).subscribe( items => {
+                this.elementos = items;
+                this.ngSelect.toggle();
+              });
+            }
+
+            // Los dato se obtienen medainete TypeAhead
+            this.isTypeAhead = true;
+            this.getTypeAhead();
+
+          } else {
+            // Los datos se obtienen em una sola llamada
+            this.ObtieneLista(this.propiedad.AtributoLista,
+                  new Consulta());
+          }
       } else {
-        this.list = this.Sort('Indice');
+        if (this.propiedad.OrdenarValoresListaPorNombre) {
+          this.list = this.Sort('Texto');
+        } else {
+          this.list = this.Sort('Indice');
+        }
       }
-    }
 
-  }
+    }
+ 
+}
 
   private TieneEventos(): boolean {
     let eventos = false;
@@ -170,4 +230,10 @@ export class ListEditorComponent extends MetadataEditorBase
       return 0;
     });
   }
+
+  trackByFn(item: ValorListaOrdenada) {
+    if (item) return item.Id;
+    return '';
+  }
+
 }

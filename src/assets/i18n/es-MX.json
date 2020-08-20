@@ -72,6 +72,8 @@
         "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|home-outline",
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
         "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|map-outline",
+        "archivo":"Archivo|Archivo|el|los|archive-outline",
+        "activo": "Activo|Activos|el|los|book-outline",
         "propiedades": {
             "dominio": {
                 "Id": "Id",
@@ -161,6 +163,36 @@
             "tipoarchivo": {
                 "Id": "Id",
                 "Nombre": "Nombre"
+            },
+            "archivo": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "Eliminada": "Eliminado",
+                "TipoArchivoId": "Tipo",
+                "TipoOrigenId": "TipoOrigenId",
+                "OrigenId": "OrigenId"
+            },
+            "activo": {
+                "Id": "Id",
+                "Nombre": "Expediente",
+                "Eliminada": "Eliminado",
+                "ArchivoOrigenId": "Orígen",
+                "EntradaClasificacionId": "Clave",
+                "TipoOrigenId": "TipoOrigenId",
+                "FechaApertura": "Apertura",
+                "FechaCierre": "Cierre",
+                "Asunto": "Asunto",
+                "CodigoOptico": "Código Barras",
+                "CodigoElectronico": "RFID",
+                "EsElectronio": "Electronio",
+                "Reservado": "Reservado",
+                "Confidencial": "Confidencial",
+                "ArchivoId": "Actual",
+                "EnPrestamo": "Prestado",
+                "Ampliado": "Ampliado",
+                "FechaRetencionAT": "Retención AT",
+                "FechaRetencionAC": "Retención AC",
+                "OrigenId": "OrigenId"
             }
         }
     },

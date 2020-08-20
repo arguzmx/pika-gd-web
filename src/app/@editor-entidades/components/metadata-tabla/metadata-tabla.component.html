@@ -8,6 +8,11 @@
     <nb-checkbox [checked]="row[column.key]" [disabled]="true"></nb-checkbox>
 </ng-template>
 
+<!-- Tmplate para despliegue de fechas-->
+<ng-template #fechaTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <span >{{EtiquetasFecha(row[column.key], column.key)}}</span>
+</ng-template>
+
 <!-- Template para columnas ID -->
 <ng-template #listTpl let-row let-rowIndex="rowIndex" let-column="column">
     <span>{{EtiquetaDeId(row[column.key], column.key)}}</span>

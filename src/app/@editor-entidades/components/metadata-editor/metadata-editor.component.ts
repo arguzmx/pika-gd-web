@@ -89,7 +89,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges.subscribe( x => {
-      // console.log(x);
+       console.log(x);
     });
   }
 

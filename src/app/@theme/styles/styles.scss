@@ -34,6 +34,27 @@
   [nbInput].status-basic.ng-invalid {
     border-left: 5px solid #a94442; /* red */
   } 
+  
+  .status-basic.ng-invalid {
+    border-left: 5px solid #a94442; /* red */
+  } 
+
+  .ng-select .ng-select-container .ng-value-container {
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    padding: 0;
+    border-top: 0.35em solid transparent;
+  }
+
+  .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper {
+    align-self: flex-end;
+    bottom: 20px;
+  }
+
+  .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper {
+    align-self: flex-end;
+    bottom: 23px;
+  }
 
 };
 
