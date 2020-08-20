@@ -1,8 +1,8 @@
 export const  HTML_TOGGLE = 'toggle';
 export const  HTML_CHECKBOX = 'checkbox';
 export const  HTML_CHECKBOX_MULTI = 'checkboxgroupeditor';
-export const  HTML_DATE = 'datetime';
-export const  HTML_TIME = 'datetime';
+export const  HTML_DATE = 'date';
+export const  HTML_TIME = 'time';
 export const  HTML_DATETIME = 'datetime';
 export const  HTML_FILE = 'file';
 export const  HTML_HIDDEN = 'hidden';

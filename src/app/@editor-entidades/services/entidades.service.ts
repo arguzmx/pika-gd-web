@@ -338,9 +338,16 @@ export class EntidadesService {
     }
 
 
+
+
   // Manuejo de listas
   // ---------------------------------------------------------------
   // ---------------------------------------------------------------
+
+  public ValoresLista(ids: string[], entidad: string) {
+    return this.cliente.PairListbyId(ids, entidad);
+  }
+
   public TypeAhead(lista: AtributoLista, texto: string): Observable<ValorListaOrdenada[]> {
     return this.cliente.PairListTypeAhead(lista, texto);
   }
@@ -594,7 +601,8 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
   private BuscaIdsParaLista(p: Propiedad, pagina: Paginado<any>): string [] {
     const buscar: string [] = [];
     let ids = '';
-    // Recorre todos los elementos de la misma propiedad y obtiene
+    if (pagina && pagina.Elementos) {
+  // Recorre todos los elementos de la misma propiedad y obtiene
     // los Ids inexitsnetes en el diccionario
     pagina.Elementos.forEach( item => {
       if (this.ListaIds.findIndex(x =>  x.Id === item[p.Id] &&
@@ -605,6 +613,7 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
     // Si hay Ids faltantes los añade a una lista de bpsqueuda
     if (ids !== '') {
       buscar.push( p.AtributoLista.Entidad + '|' + ids );
+    }
     }
     return buscar;
   }

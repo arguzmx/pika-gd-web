@@ -23,4 +23,6 @@ export const EndpointDictionary: { [type: string]: string } = {
   tipovaloraciondocumental: 'gd/tipovaloraciondocumental',
   valoracionentradaclasificacion: 'gd/valoracionentradaclasificacion',
   tipoarchivo: 'gd/tipoarchivo',
+  archivo: 'gd/archivo',
+  activo: 'gd/activo',
 };

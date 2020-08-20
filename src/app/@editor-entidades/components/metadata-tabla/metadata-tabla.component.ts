@@ -7,7 +7,7 @@ import { ITablaMetadatos } from '../../model/i-tabla-metadatos';
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
 import { EntidadesService } from '../../services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
-import { FiltroConsulta, Operacion, Consulta } from '../../../@pika/pika-module';
+import { FiltroConsulta, Operacion, Consulta, HTML_DATE, HTML_DATETIME, HTML_TIME } from '../../../@pika/pika-module';
 import { EntidadVinculada } from '../../../@pika/pika-module';
 import { ColumnaTabla } from '../../model/columna-tabla';
 import { Propiedad, MetadataInfo } from '../../../@pika/pika-module';
@@ -16,6 +16,7 @@ import { AppLogService } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
+import { format } from 'date-fns';
 
 
 @Component({
@@ -29,6 +30,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
   @ViewChild('cataloLinkTpl', { static: true }) cataloLinkTpl: TemplateRef<any>;
+  @ViewChild('fechaTpl', { static: true }) fechaTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
   private dialogColPickRef: any;
@@ -273,6 +275,29 @@ implements ITablaMetadatos, OnInit, OnChanges {
     return Id;
   }
 
+  public EtiquetasFecha(f: Date, EntidadId: string) {
+    const p = this.metadata.Propiedades.find( x => x.Id === EntidadId );
+    const c = p.AtributosVistaUI.find(x =>  x.Plataforma === 'web');
+    let texto = '';
+    const fecha = new Date(f);
+
+    if (fecha) {
+      switch (c.Control) {
+        case  HTML_DATE:
+          texto = format(fecha, 'yyyy-MM-dd');
+          break;
+          case  HTML_DATETIME:
+            texto = format(fecha, 'yyyy-MM-dd HH:mm:ss');
+            break;
+            case  HTML_TIME:
+              texto = format(fecha, 'HH:mm:ss');
+            break;
+      }
+    }
+
+    return texto;
+  }
+
    // Otiene la etqueta para una celda con un Id
    public EtiquetasDeCatalogo(Id: string[], EntidadId: string) {
       // El texto para ls etiqeutas viene desde el servicio de entidades
@@ -300,6 +325,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
     for (let i = 0; i < columnas.length; i++) {
       if (columnas[i].Visible) {
         let template = null;
+        if (columnas[i].EsFecha) template = this.fechaTpl;
         if (columnas[i].Tipo === 'bool') template = this.boolTpl;
         if (columnas[i].EsLista) template = this.listTpl;
         if (columnas[i].EsCatalogoVinculado) template = this.cataloLinkTpl;
@@ -326,6 +352,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
         const c = this.metadata.Propiedades[i];
 
         let eslista = false;
+        const esFecha = ['date', 'datetime', 'time'].indexOf(c.TipoDatoId) < 0 ? false : true;
         if (c.AtributoLista) {
           eslista = true;
         }
@@ -341,6 +368,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
               NombreI18n: c.NombreI18n,
               EsLista: eslista,
               EsCatalogoVinculado: c.CatalogoVinculado,
+              EsFecha: esFecha,
             });
           }
       }

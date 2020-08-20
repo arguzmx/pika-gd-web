@@ -8,5 +8,6 @@ export interface ColumnaTabla {
   Tipo: string;
   NombreI18n?: string;
   EsLista: boolean;
+  EsFecha: boolean;
   EsCatalogoVinculado: boolean;
 }
