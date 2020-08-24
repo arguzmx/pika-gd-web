@@ -1,0 +1,13 @@
+nb-card {
+    /**
+     * This is the max-width value of the Bootstrap giant modal
+     * Using it here ensures the modal will properly adjust it's width to the content
+     */
+    max-width: 800px;
+    /**
+     * This is the height value of NbComponentSize 'giant'
+     * By setting max-height of the modal card to this value, we ensure the modal will properly adjust it's height
+     * to the content
+     */
+    max-height: 44.25rem;
+  }

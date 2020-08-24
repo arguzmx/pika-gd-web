@@ -25,4 +25,5 @@ export const EndpointDictionary: { [type: string]: string } = {
   tipoarchivo: 'gd/tipoarchivo',
   archivo: 'gd/archivo',
   activo: 'gd/activo',
+  ampliacion: 'gd/ampliacion',
 };

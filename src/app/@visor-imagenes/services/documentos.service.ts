@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { Pagina } from './../model/pagina';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Documento } from '../model/documento';
@@ -12,5 +13,7 @@ export class DocumentosService implements IDocumentoService {
   public ObtieneDocumento(documentoId: string ): Observable<Documento> {
       return this.http.get<Documento>('http://localhost/assets/demo-documento/documento.json');
   }
+
+
 
 }

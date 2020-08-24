@@ -28,10 +28,12 @@
     <nb-card>
         <nb-card-header>{{T.t['ui.selcol']}}</nb-card-header>
         <nb-card-body>
-            <div class="col-lg-6 col-md-6 col-sm-12"  *ngFor="let col of this.columnasBase">
+            <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12"  *ngFor="let col of this.columnasBase">
                 <nb-checkbox *ngIf="col.Alternable"  (checkedChange)="AlternarColumna(col.Id, $event)"  
                 [checked]="col.Visible">{{ col.NombreI18n }}</nb-checkbox>
             </div>
+        </div>
         </nb-card-body>
         <nb-card-footer>
             <div class="row">

@@ -15,6 +15,7 @@ import {
   PARAM_TIPO_ARBOL_JERARQUICO,
   PARAM_TIPO_CONTENIDO_JERARQUICO,
   PARAM_ID_JERARQUICO,
+  PARAM_ID_ORIGEN,
 } from './constantes';
 import { ViewChildren, QueryList } from '@angular/core';
 import { MetadataTablaComponent } from '../components/metadata-tabla/metadata-tabla.component';
@@ -164,7 +165,7 @@ export class EditorEntidadesBase {
     let url = `/pages/tabular?${PARAM_TIPO}=${link.EntidadHijo}`;
     url =
       url +
-      `&${PARAM_TIPO_ORIGEN}=${config.TipoEntidad}&${PARAM_TIPO_ORIGEN}=${Id}`;
+      `&${PARAM_TIPO_ORIGEN}=${config.TipoEntidad}&${PARAM_ID_ORIGEN}=${Id}`;
     return url;
   }
 

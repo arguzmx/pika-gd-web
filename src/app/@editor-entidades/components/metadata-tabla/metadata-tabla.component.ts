@@ -1,3 +1,4 @@
+import { EntidadesService } from './../../services/entidades.service';
 import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input, OnChanges, SimpleChanges,
@@ -5,7 +6,6 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges,
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { ITablaMetadatos } from '../../model/i-tabla-metadatos';
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
-import { EntidadesService } from '../../services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FiltroConsulta, Operacion, Consulta, HTML_DATE, HTML_DATETIME, HTML_TIME } from '../../../@pika/pika-module';
 import { EntidadVinculada } from '../../../@pika/pika-module';
@@ -276,12 +276,14 @@ implements ITablaMetadatos, OnInit, OnChanges {
   }
 
   public EtiquetasFecha(f: Date, EntidadId: string) {
+    if (!this.metadata) return '';
+
     const p = this.metadata.Propiedades.find( x => x.Id === EntidadId );
     const c = p.AtributosVistaUI.find(x =>  x.Plataforma === 'web');
     let texto = '';
-    const fecha = new Date(f);
 
-    if (fecha) {
+    if (f) {
+      const fecha = new Date(f);
       switch (c.Control) {
         case  HTML_DATE:
           texto = format(fecha, 'yyyy-MM-dd');

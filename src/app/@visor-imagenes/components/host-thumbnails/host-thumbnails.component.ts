@@ -1,3 +1,4 @@
+import { Pagina } from './../../model/pagina';
 import { Component, OnInit } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 
@@ -8,9 +9,16 @@ import { VisorImagenesService } from '../../services/visor-imagenes.service';
 })
 export class HostThumbnailsComponent implements OnInit {
 
+  seleccioandas: Pagina[] = [];
+
   constructor(private servicioVisor: VisorImagenesService) { }
 
   ngOnInit(): void {
+  }
+
+  // ejemplo de como llamar a los camios para las páginas seleccioandas
+  public NuevaSeleccion() {
+    this.servicioVisor.EstablecePaginasSeleccionadas(this.seleccioandas);
   }
 
 }
