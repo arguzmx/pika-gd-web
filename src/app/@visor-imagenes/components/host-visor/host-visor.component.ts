@@ -15,8 +15,9 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
   private onDestroy$: Subject<void> = new Subject<void>();
   public documento: Documento;
   public Titulo: string = '';
+
   constructor(private servicioVisor: VisorImagenesService) { }
- 
+
 
   ngAfterViewInit(): void {
     this.servicioVisor.ObtieneDocumento('EjmeploId')
@@ -33,6 +34,16 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
+  }
+
+
+  // Ejemplo de como se obtienen los cambios en las páginas seleccinadas
+  private ObtieneCambiosPaginasSeleccioandas() {
+    this.servicioVisor.ObtienePaginasSeleccionadas()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( paginas => {
+        console.log(paginas);
+    });
   }
 
 }

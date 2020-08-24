@@ -19,30 +19,24 @@ export class DatetimeEditorComponent implements ICampoEditable, OnInit {
   propiedad: Propiedad;
   congiguracion: ConfiguracionEntidad;
   group: FormGroup;
-  isDateTime: boolean = false;
-  isDate: boolean = false;
-  isTime: boolean = false;
-
+ 
+  format: string = '';
   constructor() {}
 
   ngOnInit(): void {
     const webcontrol = this.propiedad.AtributosVistaUI.find(
       (x) => x.Plataforma === 'web',
     );
-    this.isDate = true;
     if (webcontrol) {
       switch (webcontrol.Control) {
         case HTML_DATE:
+          this.format = 'calendar';
           break;
         case HTML_TIME:
-          this.isDateTime = false;
-          this.isDate = false;
-          this.isTime = true;
+          this.format = 'timer';
           break;
         case HTML_DATETIME:
-          this.isDateTime = true;
-          this.isDate = false;
-          this.isTime = false;
+          this.format = 'both';
           break;
       }
     }

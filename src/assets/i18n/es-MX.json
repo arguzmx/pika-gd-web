@@ -73,7 +73,8 @@
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
         "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|map-outline",
         "archivo":"Archivo|Archivo|el|los|archive-outline",
-        "activo": "Activo|Activos|el|los|book-outline",
+        "activo": "Activo acerco|Activos acervo|el|los|book-outline",
+        "ampliacion": "Ampliación|Ampliaciones|la|las|clock-outline",
         "propiedades": {
             "dominio": {
                 "Id": "Id",
@@ -179,8 +180,8 @@
                 "ArchivoOrigenId": "Orígen",
                 "EntradaClasificacionId": "Clave",
                 "TipoOrigenId": "TipoOrigenId",
-                "FechaApertura": "Apertura",
-                "FechaCierre": "Cierre",
+                "FechaApertura": "Fecha apertura",
+                "FechaCierre": "Fecha cierre",
                 "Asunto": "Asunto",
                 "CodigoOptico": "Código Barras",
                 "CodigoElectronico": "RFID",
@@ -190,9 +191,21 @@
                 "ArchivoId": "Actual",
                 "EnPrestamo": "Prestado",
                 "Ampliado": "Ampliado",
-                "FechaRetencionAT": "Retención AT",
-                "FechaRetencionAC": "Retención AC",
+                "FechaRetencionAT": "Fecha retención AT",
+                "FechaRetencionAC": "Fecha retención AC",
                 "OrigenId": "OrigenId"
+            },
+            "ampliacion": {
+                "Id": "Id",
+                "TipoAmpliacionId": "Tipo",
+                "FechaFija": "Fija en fechas",
+                "Vigente": "Vigente",
+                "Inicio": "Fecha inicio",
+                "Fin": "Fecha final",
+                "FundamentoLegal": "Fundamento",
+                "Anos":"Años",
+                "Meses":"Meses",
+                "Dias":"Días"
             }
         }
     },

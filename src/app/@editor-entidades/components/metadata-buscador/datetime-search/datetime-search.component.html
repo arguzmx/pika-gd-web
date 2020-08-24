@@ -25,34 +25,7 @@
                 </div>
             </div>
             <div class="col-lg-3 col-md-12 col-sm-12">
-
-                <nb-form-field *ngIf="isDateTime">    
-                    <div  class="form-group"  [formGroup]="group">
-                        <input type="text" (dateTimeInput) = "fecha1()"
-                        [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" #src1
-                        nbInput fieldSize="tiny" fullWidth="true" 
-                        [formControlName]="ctl1Id"  
-                        class="form-control"
-                             />
-                    </div>
-                    <owl-date-time [pickerType]="'both'" #dt1 ></owl-date-time>
-                    <nb-icon *ngIf="isBetween" nbSuffix status="danger" icon="link" pack="eva"></nb-icon>                    
-
-                    <nb-form-field *ngIf="isBetween">  
-                        <div  class="form-group"  [formGroup]="group">
-
-                            <input type="text" (dateTimeInput) = "fecha2()"
-                            [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
-                            nbInput fieldSize="tiny" fullWidth="true" 
-                            [formControlName]="ctl2Id"  
-                            class="form-control"
-                                 />
-                        <owl-date-time  [pickerType]="'both'" #dt2></owl-date-time>
-                        </div>                    
-                    </nb-form-field> 
-                </nb-form-field>
-
-                <nb-form-field *ngIf="isDate">    
+                <nb-form-field >    
                     <div  class="form-group"  [formGroup]="group">
                         <input type="text" (dateTimeInput) = "fecha1()"
                         [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
@@ -61,7 +34,7 @@
                         class="form-control"
                              />
                     </div>
-                    <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+                    <owl-date-time [pickerType]="format" #dt1></owl-date-time>
                     <nb-icon *ngIf="isBetween" nbSuffix status="danger" icon="link" pack="eva"></nb-icon>                    
 
                     <nb-form-field *ngIf="isBetween">  
@@ -73,38 +46,12 @@
                             [formControlName]="ctl2Id"  
                             class="form-control"
                                  />
-                        <owl-date-time  [pickerType]="'calendar'" #dt2></owl-date-time>
+                        <owl-date-time  [pickerType]="format" #dt2></owl-date-time>
                         </div>                    
                     </nb-form-field> 
                 </nb-form-field>
 
-                <nb-form-field *ngIf="isTime">    
-                    <div  class="form-group"  [formGroup]="group">
-                        <input type="text" (dateTimeInput) = "fecha1()"
-                        [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1"
-                        nbInput fieldSize="tiny" fullWidth="true" 
-                        [formControlName]="ctl1Id"  
-                        class="form-control"
-                             />
-                    </div>
-                    <owl-date-time [pickerType]="'timer'" #dt1></owl-date-time>
-                    <nb-icon *ngIf="isBetween" nbSuffix status="danger" icon="link" pack="eva"></nb-icon>                    
-
-                    <nb-form-field *ngIf="isBetween">  
-                        <div  class="form-group"  [formGroup]="group">
-                            
-                            <input type="text" (dateTimeInput) = "fecha2()"
-                            [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
-                            nbInput fieldSize="tiny" fullWidth="true" 
-                            [formControlName]="propiedad.ctl2Id"  
-                            class="form-control"
-                                 />
-                        <owl-date-time  [pickerType]="'timer'" #dt2></owl-date-time>
-                        </div>                    
-                    </nb-form-field> 
-
-
-                </nb-form-field>
+               
             </div>
         </div>
     </div>

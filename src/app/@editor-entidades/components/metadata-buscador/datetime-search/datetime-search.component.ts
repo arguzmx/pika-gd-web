@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
-import { tDate, tTime } from '../../../../@pika/pika-module';
+import { HTML_DATE, HTML_TIME, HTML_DATETIME } from '../../../../@pika/pika-module';
 import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { EntidadesService } from '../../../services/entidades.service';
@@ -22,9 +22,7 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
   @ViewChild('dt2') date2: any;
   public T: Traductor;
   isBetween: boolean = false;
-  isDateTime: boolean = true;
-  isDate: boolean = false;
-  isTime: boolean = false;
+  format: string = '';
   ops = [Operacion.OP_EQ, Operacion.OP_BETWEN, Operacion.OP_GT, Operacion.OP_GTE,
     Operacion.OP_LT, Operacion.OP_LTE];
 
@@ -65,11 +63,11 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
     this.EstadoFiltro.emit(this.filtro);
   }
 
-  fecha1(event) {
+  fecha1() {
     if (this.date1._selected) this.inputChange(this.date1._selected);
   }
 
-  fecha2(event) {
+  fecha2() {
     if (this.date2._selected) this.input2Change(this.date2._selected);
   }
 
@@ -90,18 +88,23 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
     this.ctl1Id = CTL1_PREFIX + this.propiedad.Id;
     this.ctl2Id = CTL2_PREFIX + this.propiedad.Id;
 
-    switch (this.propiedad.TipoDatoId ) {
-      case tDate:
-        this.isDateTime = false;
-        this.isDate = true;
-        break;
 
-      case tTime:
-        this.isDateTime = false;
-        this.isTime = true;
-        break;
+    const webcontrol = this.propiedad.AtributosVistaUI.find(
+      (x) => x.Plataforma === 'web',
+    );
+    if (webcontrol) {
+      switch (webcontrol.Control) {
+        case HTML_DATE:
+          this.format = 'calendar';
+          break;
+        case HTML_TIME:
+          this.format = 'timer';
+          break;
+        case HTML_DATETIME:
+          this.format = 'both';
+          break;
+      }
     }
-
     this.EstableceFltroDefault();
   }
 

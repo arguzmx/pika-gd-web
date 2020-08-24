@@ -11,7 +11,23 @@ export const menus = [
       group: true,
     },
     {
-      title: 'Configuración global',
+      title: 'Gestión documental',
+      icon: 'archive-outline',
+      children: [
+        {
+          title: 'Cuadros de clasificación',
+          link: '/pages/tabular/',
+          queryParams: { tipo: 'cuadroclasificacion' },
+        },
+        {
+          title: 'Administrador del acervo',
+          link: '/pages/tabular/',
+          queryParams: { tipo: 'activo' },
+        },
+      ],
+    },
+    {
+      title: 'Configuración organización',
       icon: 'map-outline',
       children: [
         {
@@ -23,6 +39,11 @@ export const menus = [
           title: 'Unidades organizacionales',
           link: '/pages/tabular/',
           queryParams: { tipo: 'unidadorganizacional' },
+        },
+        {
+          title: 'Archivos',
+          link: '/pages/tabular/',
+          queryParams: { tipo: 'archivo' },
         },
         {
           title: 'Roles',
@@ -42,28 +63,13 @@ export const menus = [
       ],
     },
     {
-      title: 'Gestión documental',
-      icon: 'archive-outline',
+      title: 'Configuración sistema',
+      icon: 'settings-2-outline',
       children: [
         {
           title: 'Catálogo tipo archivo',
           link: '/pages/tabular/',
           queryParams: { tipo: 'tipoarchivo' },
-        },
-        {
-            title: 'Archivos',
-            link: '/pages/tabular/',
-            queryParams: { tipo: 'archivo' },
-          },
-        {
-          title: 'Cuadros de clasificación',
-          link: '/pages/tabular/',
-          queryParams: { tipo: 'cuadroclasificacion' },
-        },
-        {
-          title: 'Administrador de activos',
-          link: '/pages/tabular/',
-          queryParams: { tipo: 'activo' },
         },
       ],
     },
