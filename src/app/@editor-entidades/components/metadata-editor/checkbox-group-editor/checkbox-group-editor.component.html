@@ -1,3 +1,4 @@
+<div *ngIf="!oculto" >
 <div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
     <input type="hidden" [formControlName] = "propiedad.Id">
     <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
@@ -11,3 +12,4 @@
     </div>
     </div>
  </div>
+</div>

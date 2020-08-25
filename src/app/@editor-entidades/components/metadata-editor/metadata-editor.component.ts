@@ -1,5 +1,5 @@
 import { Traductor } from './../../services/traductor';
-import { MetadataInfo } from '../../../@pika/pika-module';
+import { MetadataInfo, Evento, Eventos } from '../../../@pika/pika-module';
 import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
@@ -74,7 +74,9 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   // Almacena las propiedades default del objeto
   public valoresDefault = {};
 
-    public T: Traductor;
+  public T: Traductor;
+
+  public propiedadesEvento: string[] = [];
 
   // Cosntructor del componente
   constructor(
@@ -88,8 +90,21 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    this.formGroup.valueChanges.subscribe( x => {
-       console.log(x);
+    this.formGroup.valueChanges.subscribe( campos => {
+       console.log(campos);
+       if (this.metadata) {
+        for (const [key, value] of Object.entries(campos)) {
+          if (this.propiedadesEvento.indexOf(key) >= 0 ) {
+            const ev:  Evento = {
+              Origen: key,
+              Valor: value,
+              Evento: Eventos.AlCambiar,
+              Transaccion: this.config.TransactionId,
+            };
+            this.entidades.EmiteEvento(ev );
+          }
+        }
+       }
     });
   }
 
@@ -179,7 +194,14 @@ export class MetadataEditorComponent extends EditorEntidadesBase
             }
         }
     });
-    return entidad;
+
+    const entidadcopia = {};
+    for (const [key, value] of Object.entries(entidad)) {
+      if (value !== null) {
+        entidadcopia[key] = value;
+      }
+    }
+    return entidadcopia;
   }
 
   // Se llama desde el template
@@ -223,6 +245,15 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     }
 
     if (this.metadata ) {
+      this.metadata.Propiedades.forEach( p => {
+        if (p.AtributosEvento && p.AtributosEvento.length > 0){
+            p.AtributosEvento.forEach( ev => {
+              if (this.propiedadesEvento.indexOf(ev.Entidad) < 0) {
+                this.propiedadesEvento.push(ev.Entidad);
+              }
+            });
+        }
+     });
       this.ObtieneValoresVinculados();
       this.LimpiarForma();
       this.CrearForma();

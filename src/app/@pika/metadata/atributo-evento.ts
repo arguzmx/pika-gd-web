@@ -5,7 +5,7 @@ export enum Eventos
 
 export enum Operaciones
 {
-    Actualizar = 1,
+    Actualizar = 1, Mostrar = 10,
 }
 
 export interface AtributoEvento {

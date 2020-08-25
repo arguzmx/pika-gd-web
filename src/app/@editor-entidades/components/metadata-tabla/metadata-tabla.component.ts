@@ -72,8 +72,10 @@ implements ITablaMetadatos, OnInit, OnChanges {
   };
 
   private _CerrarDialogos() {
-    if (this.dialogColPickRef) this.dialogColPickRef.close();
+    console.log(this.dialogColPickRef);
+    if (this.dialogColPickRef && !this.dialogColPickRef.closed) this.dialogColPickRef.close();
   }
+  
   public _Reset(): void {
     this._CerrarDialogos();
     this.entidadseleccionada = null;
@@ -279,24 +281,24 @@ implements ITablaMetadatos, OnInit, OnChanges {
     if (!this.metadata) return '';
 
     const p = this.metadata.Propiedades.find( x => x.Id === EntidadId );
-    const c = p.AtributosVistaUI.find(x =>  x.Plataforma === 'web');
     let texto = '';
-
-    if (f) {
-      const fecha = new Date(f);
-      switch (c.Control) {
-        case  HTML_DATE:
-          texto = format(fecha, 'yyyy-MM-dd');
-          break;
-          case  HTML_DATETIME:
-            texto = format(fecha, 'yyyy-MM-dd HH:mm:ss');
+    if (p) {
+      const c = p.AtributosVistaUI.find(x =>  x.Plataforma === 'web');
+      if (f) {
+        const fecha = new Date(f);
+        switch (c.Control) {
+          case  HTML_DATE:
+            texto = format(fecha, 'yyyy-MM-dd');
             break;
-            case  HTML_TIME:
-              texto = format(fecha, 'HH:mm:ss');
-            break;
+            case  HTML_DATETIME:
+              texto = format(fecha, 'yyyy-MM-dd HH:mm:ss');
+              break;
+              case  HTML_TIME:
+                texto = format(fecha, 'HH:mm:ss');
+              break;
+        }
       }
     }
-
     return texto;
   }
 

@@ -1,11 +1,8 @@
+import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject } from 'rxjs';
-import { MetadataEditorBase } from '../../../model/metadata-editor-base';
 import { EntidadesService } from '../../../services/entidades.service';
 import { first } from 'rxjs/operators';
 import { Evento } from '../../../../@pika/pika-module';
@@ -18,13 +15,9 @@ import { AtributoLista } from '../../../../@pika/pika-module';
   templateUrl: './checkbox-group-editor.component.html',
   styleUrls: ['./checkbox-group-editor.component.scss'],
 })
-export class CheckboxGroupEditorComponent  extends MetadataEditorBase
+export class CheckboxGroupEditorComponent
+extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  propiedad: Propiedad;
-  congiguracion: ConfiguracionEntidad;
-  group: FormGroup;
-  isUpdate: boolean;
 
   valgroup: FormGroup;
   valoresOriginales: any[];
@@ -92,11 +85,11 @@ implements ICampoEditable, OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroy();
   }
 
   ngOnInit(): void {
+    // this.hookEscuchaEventos();
     this.valoresOriginales = this.group.get(this.propiedad.Id).value;
     this.valgroup = this.group.get(this.propiedad.Id + '-valores') as FormGroup;
     if (this.propiedad.AtributoLista) {

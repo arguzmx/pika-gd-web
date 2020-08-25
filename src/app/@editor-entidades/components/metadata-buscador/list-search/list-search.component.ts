@@ -80,7 +80,7 @@ ICampoBuscable {
 
           // Si existe un valor default lo selecciona y emite el evento de cambio
           if (lista.Default) {
-            this.group.get(this.propiedad.Id).patchValue(lista.Default);
+            if (this.group.get(this.propiedad.Id)) this.group.get(this.propiedad.Id).patchValue(lista.Default);
           }
         }
       }
@@ -132,9 +132,11 @@ ICampoBuscable {
     );
   }
 
-  onTypeaheadChange($event: ValorListaOrdenada) {
-    this.setValorString($event[0].Id);
-    this.inputChange($event[0].Id);
+  onTypeaheadChange($event: ValorListaOrdenada[]) {
+    if ($event.length > 0) {
+      this.setValorString($event[0].Id);
+      this.inputChange($event[0].Id);
+    }
   }
 
   ngOnInit(): void {

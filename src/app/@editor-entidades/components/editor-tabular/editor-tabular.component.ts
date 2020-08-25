@@ -341,7 +341,7 @@ private  ProcesaCambiosConfiguracion(): void {
           cache.push(f);
         }
     });
-    this.filtrosActivos = (conteoFiltrosDefault !== defaults.length);
+    this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.entidades.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;
     this.tablas.first.obtenerPaginaDatos(true);
