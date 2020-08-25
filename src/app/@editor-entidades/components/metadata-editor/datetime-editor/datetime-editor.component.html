@@ -1,6 +1,8 @@
+<div *ngIf="!oculto" >
 <div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
     <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
         <input type="text" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" #src1 nbInput fieldSize="medium"
             fullWidth="true" [formControlName]="propiedad.Id" class="form-control" />
         <owl-date-time [pickerType]="format" #dt1></owl-date-time>
+</div>
 </div>

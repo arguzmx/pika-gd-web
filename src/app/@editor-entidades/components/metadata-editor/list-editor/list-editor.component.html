@@ -1,3 +1,4 @@
+<div *ngIf="!oculto" >
 <div *ngIf="isTypeAhead; then typeaheadmode else listmode"></div>
 <ng-template #listmode>
 <div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
@@ -27,3 +28,4 @@
 
     </div>
 </ng-template>
+</div>

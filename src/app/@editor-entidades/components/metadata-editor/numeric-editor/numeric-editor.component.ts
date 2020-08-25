@@ -1,26 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
+import { EntidadesService } from './../../../services/entidades.service';
+import { EditorCampo } from './../editor-campo';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
-import { Propiedad, tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
+import { tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
 
 @Component({
   selector: 'ngx-numeric-editor',
   templateUrl: './numeric-editor.component.html',
-  styleUrls: ['./numeric-editor.component.scss']
+  styleUrls: ['./numeric-editor.component.scss'],
 })
-export class NumericEditorComponent implements ICampoEditable, OnInit {
+export class NumericEditorComponent
+extends EditorCampo
+implements ICampoEditable, OnInit, OnDestroy {
 
   mask: string = 'separator.4';
   negativos: boolean = true;
 
-  constructor() { }
-  propiedad: Propiedad;
-  group: FormGroup;
-  isUpdate: boolean;
-  congiguracion: ConfiguracionEntidad;
+  constructor(entidades: EntidadesService) {
+    super(entidades);
+   }
+
+ngOnDestroy(): void {
+    this.destroy();
+}
 
 ngOnInit(): void {
+  this.hookEscuchaEventos();
     switch (this.propiedad.TipoDatoId) {
       case tDouble:
         this.mask = 'separator.4';

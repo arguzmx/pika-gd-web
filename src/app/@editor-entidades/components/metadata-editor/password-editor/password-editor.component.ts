@@ -1,26 +1,26 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { EntidadesService } from './../../../services/entidades.service';
+import { EditorCampo } from './../editor-campo';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
 
 @Component({
   selector: 'ngx-password-editor',
   templateUrl: './password-editor.component.html',
   styleUrls: ['./password-editor.component.scss']
 })
-export class PasswordEditorComponent implements ICampoEditable, OnInit {
+export class PasswordEditorComponent
+extends EditorCampo
+implements ICampoEditable, OnInit, OnDestroy {
   @ViewChild('validfield') validfield: any;
 
-  propiedad: Propiedad;
-  congiguracion: ConfiguracionEntidad;
-  group: FormGroup;
-  isUpdate: boolean;
   isConfirm: boolean = false;
   propConfName: string = '';
   propValidName: string = '';
   match: boolean = false;
-  constructor() { }
+
+  constructor(entidades: EntidadesService) {
+    super(entidades);
+  }
 
   private texto1: string = '';
   private texto2: string = '';
@@ -47,7 +47,12 @@ export class PasswordEditorComponent implements ICampoEditable, OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy();
+  }
+
   ngOnInit(): void {
+    this.hookEscuchaEventos();
     this.isConfirm = (this.propiedad.ControlHTML === 'passconfirm');
     this.propConfName = this.propiedad.Id + 'conf';
     this.propValidName = this.propiedad.Id + 'valid';

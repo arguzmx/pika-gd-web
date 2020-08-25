@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
+import { EntidadesService } from './../../../services/entidades.service';
+import { EditorCampo } from './../editor-campo';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 
 
@@ -10,15 +9,20 @@ import { ICampoEditable } from '../../../model/i-campo-editable';
   templateUrl: './hidden-editor.component.html',
   styleUrls: ['./hidden-editor.component.scss']
 })
-export class HiddenEditorComponent implements ICampoEditable, OnInit {
+export class HiddenEditorComponent
+extends EditorCampo
+implements ICampoEditable, OnInit, OnDestroy {
 
-  constructor() { }
-  propiedad: Propiedad;
-  group: FormGroup;
-  isUpdate: boolean;
-  congiguracion: ConfiguracionEntidad;
+  constructor(e: EntidadesService) {
+    super(e);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy();
+}
 
   ngOnInit(): void {
+    this.hookEscuchaEventos();
   }
 
 }

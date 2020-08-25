@@ -1,18 +1,14 @@
-import { AtributoLista } from '../../../../@pika/pika-module';
-import { MetadataEditorBase } from './../../../model/metadata-editor-base';
+import { EditorCampo } from './../editor-campo';
+import { AtributoLista, AtributoEvento, Evento } from '../../../../@pika/pika-module';
 import { EntidadesService } from './../../../services/entidades.service';
 import { ICampoEditable } from './../../../model/i-campo-editable';
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject, pipe, Observable, of } from 'rxjs';
-import { takeUntil, first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
+import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
-import { Operaciones, Evento } from '../../../../@pika/pika-module';
 import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
+
 
 
 @Component({
@@ -20,16 +16,12 @@ import { MatOption } from '@angular/material/core';
   templateUrl: './list-editor.component.html',
   styleUrls: ['./list-editor.component.scss'],
 })
-export class ListEditorComponent extends MetadataEditorBase
+export class ListEditorComponent extends EditorCampo
   implements ICampoEditable, OnInit, OnDestroy {
     @ViewChild('ngSelect')
     ngSelect: MatSelect;
 
-  private readonly destroy$ = new Subject<void>();
-  propiedad: Propiedad;
-  congiguracion: ConfiguracionEntidad;
-  group: FormGroup;
-  isUpdate: boolean;
+
 
   list: ValorListaOrdenada[];
   selected: any = null;
@@ -50,56 +42,33 @@ export class ListEditorComponent extends MetadataEditorBase
     super(entidades);
   }
  
-
-
-  // Escucha por eventos de la transacción
-  ListenerEventos(): void {
-    this.entidades
-      .ObtieneEventos()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((r) => {
-
-        if (r && r.Transaccion === this.congiguracion.TransactionId) {
-          // Sólo se procesan eventos de otros controles
-          if (r.Origen !== this.propiedad.Id) {
-            if (this.propiedad.AtributosEvento) {
-              this.propiedad.AtributosEvento.forEach((att) => {
-                if (att.Entidad === r.Origen && att.Evento === r.Evento) {
-                  switch (att.Operacion) {
-                    case Operaciones.Actualizar:
-                      this.ActualizarLista(r);
-                      break;
-                  }
-                }
-              });
-            }
-          }
-        }
-      });
-  }
-
-  ActualizarLista(evt: Evento) {
-    this.EmiteEventoCambio(this.propiedad.Id, '', this.congiguracion.TransactionId);
+  eventoActualizar(ev: Evento, a: AtributoEvento) {
+     this.EmiteEventoCambio(this.propiedad.Id, '', this.congiguracion.TransactionId);
 
     const consulta = new Consulta();
     const f = new FiltroConsulta();
     f.Operador = Operacion.OP_EQ;
-    f.Propiedad = evt.Origen;
-    f.Valor = [ evt.Valor ];
-    f.ValorString = evt.Valor;
+    f.Propiedad = ev.Origen;
+    f.Valor = [ ev.Valor ];
+    f.ValorString = ev.Valor;
 
     this.list = [];
     this.selected = null;
 
-    if (this.Lista) {
-      this.Lista.reset();
+    if (this.isTypeAhead) {
+
+    } else {
+      if (this.Lista) {
+        this.Lista.reset();
+      }
+      consulta.FiltroConsulta.push(f);
+      this.ObtieneLista(
+        this.propiedad.AtributoLista,
+        consulta,
+      );
     }
-    consulta.FiltroConsulta.push(f);
-    this.ObtieneLista(
-      this.propiedad.AtributoLista,
-      consulta,
-    );
   }
+
 
   // Otiene la lista de alores disponibles para la entidad
   private ObtieneLista(atributo: AtributoLista, consulta: Consulta) {
@@ -135,8 +104,7 @@ export class ListEditorComponent extends MetadataEditorBase
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+   this.destroy();
   }
 
   private getTypeAhead() {
@@ -163,13 +131,13 @@ export class ListEditorComponent extends MetadataEditorBase
 
   ngOnInit(): void {
 
+    this.hookEscuchaEventos();
 
-    this.ListenerEventos();
     let aheadval = '';
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {
         this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
-         aheadval = this.propiedad.AtributoLista.Default;
+        aheadval = this.propiedad.AtributoLista.Default;
       }
 
       if (this.propiedad.AtributoLista.DatosRemotos) {
@@ -178,7 +146,8 @@ export class ListEditorComponent extends MetadataEditorBase
           const tieneEventos = this.propiedad.AtributosEvento  &&
           (this.propiedad.AtributosEvento.length  > 0);
 
-          if ( this.propiedad.AtributoLista.TypeAhead || tieneEventos) {
+          if (this.propiedad.AtributoLista.TypeAhead) {
+            this.isTypeAhead = true;
 
             if (aheadval) {
               this.entidades.ValoresLista([aheadval ],
@@ -187,16 +156,17 @@ export class ListEditorComponent extends MetadataEditorBase
                 this.ngSelect.toggle();
               });
             }
-
             // Los dato se obtienen medainete TypeAhead
-            this.isTypeAhead = true;
             this.getTypeAhead();
-
-          } else {
-            // Los datos se obtienen em una sola llamada
-            this.ObtieneLista(this.propiedad.AtributoLista,
-                  new Consulta());
           }
+
+          if ( !tieneEventos && !this.isTypeAhead) {
+            // Los datos se obtienen em una sola llamada cuando no 
+            // dependen de un evento y no es typeahead
+            this.ObtieneLista(this.propiedad.AtributoLista,
+              new Consulta());
+          }
+
       } else {
         if (this.propiedad.OrdenarValoresListaPorNombre) {
           this.list = this.Sort('Texto');

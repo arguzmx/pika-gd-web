@@ -1,29 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { EntidadesService } from './../../../services/entidades.service';
+import { EditorCampo } from './../editor-campo';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import {
-  Propiedad,
   HTML_DATE,
   HTML_TIME,
   HTML_DATETIME,
 } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
 
 @Component({
   selector: 'ngx-datetime-editor',
   templateUrl: './datetime-editor.component.html',
   styleUrls: ['./datetime-editor.component.scss'],
 })
-export class DatetimeEditorComponent implements ICampoEditable, OnInit {
-  isUpdate: boolean;
-  propiedad: Propiedad;
-  congiguracion: ConfiguracionEntidad;
-  group: FormGroup;
- 
+export class DatetimeEditorComponent
+extends EditorCampo
+implements ICampoEditable, OnInit, OnDestroy {
+
   format: string = '';
-  constructor() {}
+  constructor(e: EntidadesService) {
+    super(e);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy();
+  }
+
 
   ngOnInit(): void {
+    this.hookEscuchaEventos();
     const webcontrol = this.propiedad.AtributosVistaUI.find(
       (x) => x.Plataforma === 'web',
     );

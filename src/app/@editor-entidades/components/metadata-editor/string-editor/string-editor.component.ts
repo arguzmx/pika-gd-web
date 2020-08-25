@@ -1,27 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { EntidadesService } from './../../../services/entidades.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
+import { EditorCampo } from '../editor-campo';
 
 @Component({
   selector: 'ngx-string-editor',
   templateUrl: './string-editor.component.html',
   styleUrls: ['./string-editor.component.scss']
 })
-export class StringEditorComponent implements ICampoEditable, OnInit {
+export class StringEditorComponent
+extends EditorCampo
+implements ICampoEditable, OnInit, OnDestroy {
 
-  propiedad: Propiedad;
-  congiguracion: ConfiguracionEntidad;
-  group: FormGroup;
-  isUpdate: boolean;
   isTextArea: boolean = false;
 
-  constructor() { }
+  constructor(entidades: EntidadesService) {
+    super(entidades);
+  }
 
-
+  ngOnDestroy(): void {
+      this.destroy();
+  }
 
   ngOnInit(): void {
+    this.hookEscuchaEventos();
     this.isTextArea = (this.propiedad.ControlHTML === 'textarea');
   }
 
