@@ -1,1 +1,8 @@
-<p>thumbnail works!</p>
+<div>
+    <img class="imgDefault" [id]="pagina.Id"
+    [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada}"
+        *ngIf="pagina.EsImagen; else elseBlock" [src]="pagina.UrlThumbnail" on-click="SeleccionaThumbnails($event);">
+    <ng-template #elseBlock>
+        <!-- <p> {{pagina.Id}} </p> -->
+    </ng-template>
+</div>

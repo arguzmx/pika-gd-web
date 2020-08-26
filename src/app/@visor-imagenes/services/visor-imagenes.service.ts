@@ -7,8 +7,14 @@ import { Pagina } from '../model/pagina';
 
 @Injectable()
 export class VisorImagenesService {
+
   private subjectPaginasSeleccionadas  = new BehaviorSubject<Pagina[]>([]);
-  
+  private subjectPaginaVisible  = new BehaviorSubject<Pagina>(null);
+
+  thumbActivo:  Pagina = null;
+  thumbSeleccionados: Pagina[] = [];
+
+
   constructor(private docService: DocumentosService) { }
 
   public ObtieneDocumento(DocumentoId: string): Observable<Documento> {
@@ -17,6 +23,7 @@ export class VisorImagenesService {
       this.docService.ObtieneDocumento(DocumentoId)
       .pipe(first()) // pipe(first()) obtiene SOLO el primer elemento que devuelva un observable
       .subscribe(documento => {
+        documento.Paginas.sort((a , b) => a.Indice - b.Indice);
         subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
       },
       (error) => {
@@ -36,12 +43,39 @@ export class VisorImagenesService {
 
   // Administración de páginas seleccionasas
   // --------------------------------------------------------------
-  public EstablecePaginasSeleccionadas(paginas: Pagina[]) {
-    this.subjectPaginasSeleccionadas.next(paginas);
+
+
+  public SeleccionShift(p: Pagina) {
+    
   }
 
+  public EstablecerPaginaActiva(p: Pagina) {
+      this.thumbActivo = p;
+      this.subjectPaginaVisible.next(this.thumbActivo);
+  }
+
+
+  public AdicionarPaginaSeleccion(p: Pagina) {
+    if (!(this.thumbSeleccionados.find( x => x.Id === p.Id ))) {
+      this.thumbSeleccionados.push(p);
+      this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+    }
+  }
+
+  public EliminarSeleccion() {
+    this.thumbSeleccionados = [];
+    this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+  }
+
+
+  /// -----------------------------------------------------
   ObtienePaginasSeleccionadas(): Observable<Pagina[]> {
     return this.subjectPaginasSeleccionadas.asObservable();
+  }
+
+
+  ObtienePaginaVisible(): Observable<Pagina> {
+    return this.subjectPaginaVisible.asObservable();
   }
 
   // --------------------------------------------------------------

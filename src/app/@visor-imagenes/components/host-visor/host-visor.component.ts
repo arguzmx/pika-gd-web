@@ -4,6 +4,7 @@ import { VisorImagenesService } from './../../services/visor-imagenes.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NbLayoutRulerService, NbMediaBreakpointsService, NbThemeService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-host-visor',
@@ -16,7 +17,8 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
   public documento: Documento;
   public Titulo: string = '';
 
-  constructor(private servicioVisor: VisorImagenesService) { }
+  constructor(private servicioVisor: VisorImagenesService,
+    private themeService: NbThemeService) { }
 
 
   ngAfterViewInit(): void {
@@ -29,6 +31,7 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+
   }
 
   ngOnDestroy(): void {
@@ -37,7 +40,7 @@ export class HostVisorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  // Ejemplo de como se obtienen los cambios en las páginas seleccinadas
+  // Ejemplo de como se obtienen los cambios en las p�ginas seleccinadas
   private ObtieneCambiosPaginasSeleccioandas() {
     this.servicioVisor.ObtienePaginasSeleccionadas()
     .pipe(takeUntil(this.onDestroy$))
