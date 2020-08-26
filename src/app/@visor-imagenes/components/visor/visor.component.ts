@@ -1,20 +1,44 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  OnDestroy,
+} from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Documento } from '../../model/documento';
 import { fabric } from 'fabric';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Pagina } from '../../model/pagina';
 
 @Component({
   selector: 'ngx-visor',
   templateUrl: './visor.component.html',
-  styleUrls: ['./visor.component.scss']
+  styleUrls: ['./visor.component.scss'],
 })
-export class VisorComponent implements OnInit, OnChanges {
+export class VisorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() documento: Documento;
   canvas: any;
+  paginaVisible: Pagina = null;
 
-  constructor(private servicioVisor: VisorImagenesService) { }
+  private onDestroy$: Subject<void> = new Subject<void>();
+
+  constructor(private servicioVisor: VisorImagenesService) {}
+
+  ngOnInit(): void {
+    this.IniciaCanvas();
+    this.EscuchaCambiosPagina();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // console.log(changes);
     for (const propiedad in changes) {
       if (changes.hasOwnProperty(propiedad)) {
         switch (propiedad) {
@@ -26,26 +50,76 @@ export class VisorComponent implements OnInit, OnChanges {
     }
   }
 
-  private ProcesaDocumento() {
-      // console.log(this.documento);
-  }
-
-  ngOnInit(): void {
+  private IniciaCanvas() {
     this.canvas = new fabric.Canvas('canvas');
-    this.canvas.add(new fabric.IText('Hello World !'));
+    // ====== zoom ======
+    this.canvas.on('mouse:wheel', (opt) => {
+      const evt = opt.e;
+      if (evt.altKey === true) {
+        const delta = opt.e.deltaY;
+        let zoom = this.canvas.getZoom();
+        zoom *= 0.999 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+        opt.e.preventDefault();
+        opt.e.stopPropagation();
+      }
+    });
+    // ===================
+    // ====== paneo ======
+    this.canvas.on('mouse:down', function(opt) {
+      const evt = opt.e;
+      if (evt.altKey === true) {
+        this.isDragging = true;
+        this.selection = false;
+        this.lastPosX = evt.clientX;
+        this.lastPosY = evt.clientY;
+      }
+    });
 
-    // create a rectangle object
-const rect = new fabric.Rect({
-  left: 100,
-  top: 100,
-  fill: 'red',
-  width: 150,
-  height: 150,
-});
+    this.canvas.on('mouse:move', function(opt) {
+      if (this.isDragging) {
+        const e = opt.e;
+        const vpt = this.viewportTransform;
+        vpt[4] += e.clientX - this.lastPosX;
+        vpt[5] += e.clientY - this.lastPosY;
+        this.requestRenderAll();
+        this.lastPosX = e.clientX;
+        this.lastPosY = e.clientY;
+      }
+    });
 
-// "add" rectangle onto canvas
-this.canvas.add(rect);
+    this.canvas.on('mouse:up', function(opt) {
+      this.setViewportTransform(this.viewportTransform);
+      this.isDragging = false;
+      this.selection = true;
+    });
 
+    // ==================
   }
 
+  private EscuchaCambiosPagina() {
+    this.servicioVisor
+      .ObtienePaginaVisible()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((p) => {
+        this.paginaVisible = p;
+        this.MuestraPaginaVisible();
+      });
+  }
+
+  private MuestraPaginaVisible() {
+    if (this.paginaVisible !== null && this.canvas !== null)
+
+    fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
+      this.canvas.clear();
+      this.canvas.add(img);
+      this.canvas.setDimensions({width: img.width, height: img.height});
+    });
+  }
+
+  private ProcesaDocumento() {
+    // console.log(this.documento);
+  }
 }

@@ -6,6 +6,7 @@ import { VisorComponent } from './components/visor/visor.component';
 import { PieVisorComponent } from './components/pie-visor/pie-visor.component';
 
 import {
+  NbTooltipModule,
   NbPopoverModule,
   NbInputModule,
   NbCardModule,
@@ -20,6 +21,7 @@ import {
   NbFormFieldModule,
   NbToggleModule,
   NbMenuModule,
+  NbLayoutRulerService,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -120,6 +122,7 @@ import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumb
     PortalModule,
     ScrollingModule,
     NgSelectModule,
+    NbTooltipModule,
     NbPopoverModule,
     NbToggleModule,
     NbInputModule,

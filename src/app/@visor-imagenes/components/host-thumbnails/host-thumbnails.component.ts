@@ -1,24 +1,43 @@
 import { Pagina } from './../../model/pagina';
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
+import { Documento } from '../../model/documento';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-host-thumbnails',
   templateUrl: './host-thumbnails.component.html',
-  styleUrls: ['./host-thumbnails.component.scss']
+  styleUrls: ['./host-thumbnails.component.scss'],
 })
-export class HostThumbnailsComponent implements OnInit {
-
-  seleccioandas: Pagina[] = [];
-
-  constructor(private servicioVisor: VisorImagenesService) { }
+export class HostThumbnailsComponent implements OnInit, OnChanges {
+  @Input() documento: Documento;
+  constructor(private servicioVisor: VisorImagenesService) {}
 
   ngOnInit(): void {
+    this.documento = { Nombre: '', Paginas: [] };
   }
 
-  // ejemplo de como llamar a los camios para las páginas seleccioandas
-  public NuevaSeleccion() {
-    this.servicioVisor.EstablecePaginasSeleccionadas(this.seleccioandas);
+  ngOnChanges(changes: SimpleChanges): void {
+    // console.log(changes);
+    for (const propiedad in changes) {
+      if (changes.hasOwnProperty(propiedad)) {
+        switch (propiedad) {
+          case 'documento':
+            this.ProcesaDocumento();
+            break;
+        }
+      }
+    }
   }
 
+
+  private ProcesaDocumento() {
+    // console.log(this.documento);
+  }
 }
