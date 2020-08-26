@@ -39,7 +39,7 @@ import {
 import { AtributoVistaUI } from '../../../@pika/pika-module';
 import { Acciones } from '../../../@pika/pika-module';
 import { isDate, parseISO } from 'date-fns';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { HTML_PASSWORD_CONFIRM,
   HTML_HIDDEN,
   HTML_CHECKBOX_MULTI } from '../../../@pika/pika-module';
@@ -78,6 +78,9 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   public propiedadesEvento: string[] = [];
 
+
+  private formaCreada: boolean = false;
+
   // Cosntructor del componente
   constructor(
     entidades: EntidadesService,
@@ -90,21 +93,23 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    this.formGroup.valueChanges.subscribe( campos => {
-       console.log(campos);
-       if (this.metadata) {
-        for (const [key, value] of Object.entries(campos)) {
-          if (this.propiedadesEvento.indexOf(key) >= 0 ) {
-            const ev:  Evento = {
-              Origen: key,
-              Valor: value,
-              Evento: Eventos.AlCambiar,
-              Transaccion: this.config.TransactionId,
-            };
-            this.entidades.EmiteEvento(ev );
-          }
-        }
-       }
+    this.formGroup.valueChanges
+    .subscribe( campos => {
+       
+      //  if (this.formaCreada) {
+      //    console.log(campos);
+      //   for (const [key, value] of Object.entries(campos)) {
+      //     if (this.propiedadesEvento.indexOf(key) >= 0 ) {
+      //       const ev:  Evento = {
+      //         Origen: key,
+      //         Valor: value,
+      //         Evento: Eventos.AlCambiar,
+      //         Transaccion: this.config.TransactionId,
+      //       };
+      //       this.entidades.EmiteEvento(ev );
+      //     }
+      //   }
+      //  }
     });
   }
 
@@ -254,6 +259,11 @@ export class MetadataEditorComponent extends EditorEntidadesBase
             });
         }
      });
+
+     this.metadata.Propiedades.forEach( p => {
+          p.EmitirCambiosValor = (this.propiedadesEvento.indexOf( p.Id) >= 0);
+     });
+
       this.ObtieneValoresVinculados();
       this.LimpiarForma();
       this.CrearForma();
@@ -267,6 +277,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   private CrearForma(): void {
 
+    this.formaCreada = false;
     // Onbtiene la lista de controles exietnets
     const controls = Object.keys(this.formGroup.controls);
 
@@ -317,6 +328,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
         }
       });
       this.AsignarValoresDefault();
+      this.formaCreada = true;
   }
 
   private LimpiarForma(): void {

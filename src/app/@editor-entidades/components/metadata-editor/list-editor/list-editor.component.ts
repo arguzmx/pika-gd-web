@@ -31,7 +31,6 @@ export class ListEditorComponent extends EditorCampo
   isTypeAhead:  boolean  = false;
 
   elementos: ValorListaOrdenada[] = [];
-  elementos$: Observable<ValorListaOrdenada[]>;
   listaLoading: boolean = false;
   selectedItems: ValorListaOrdenada[] = [];
   listInput$ = new Subject<string>();
@@ -41,10 +40,17 @@ export class ListEditorComponent extends EditorCampo
   constructor(entidades: EntidadesService) {
     super(entidades);
   }
- 
-  eventoActualizar(ev: Evento, a: AtributoEvento) {
-     this.EmiteEventoCambio(this.propiedad.Id, '', this.congiguracion.TransactionId);
 
+
+  private eventoCambiarValor(valor: any) {
+    if (this.propiedad.EmitirCambiosValor) {
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+    }
+  }
+
+  eventoActualizar(ev: Evento, a: AtributoEvento) {
+
+    this.eventoCambiarValor('');
     const consulta = new Consulta();
     const f = new FiltroConsulta();
     f.Operador = Operacion.OP_EQ;
@@ -56,7 +62,7 @@ export class ListEditorComponent extends EditorCampo
     this.selected = null;
 
     if (this.isTypeAhead) {
-
+      this.elementos = [];
     } else {
       if (this.Lista) {
         this.Lista.reset();
@@ -92,7 +98,7 @@ export class ListEditorComponent extends EditorCampo
           if (atributo.Default) {
             this.group.get(this.propiedad.Id).patchValue(atributo.Default);
             this.selected = atributo.Default;
-            this.EmiteEventoCambio(this.propiedad.Id, atributo.Default, this.congiguracion.TransactionId);
+            this.eventoCambiarValor(atributo.Default);
           }
         }
       }
@@ -100,7 +106,7 @@ export class ListEditorComponent extends EditorCampo
   }
 
   onChange(value) {
-    this.EmiteEventoCambio(this.propiedad.Id, value, this.congiguracion.TransactionId);
+    this.eventoCambiarValor(value);
   }
 
   ngOnDestroy(): void {
@@ -108,7 +114,8 @@ export class ListEditorComponent extends EditorCampo
   }
 
   private getTypeAhead() {
-    this.listInput$.pipe(
+    this.listInput$
+    .pipe(
         distinctUntilChanged(),
         tap(() => this.listaLoading = true),
         switchMap( term => this.entidades.TypeAhead(this.propiedad.AtributoLista, term)
@@ -123,11 +130,10 @@ export class ListEditorComponent extends EditorCampo
 
   onTypeaheadChange($event: ValorListaOrdenada) {
     const newval = $event ? $event.Id : null;
-    this.EmiteEventoCambio(this.propiedad.Id, newval, this.congiguracion.TransactionId);
+    this.eventoCambiarValor(newval);
     this.group.get(this.propiedad.Id).patchValue(newval);
   }
 
- 
 
   ngOnInit(): void {
 
@@ -148,16 +154,17 @@ export class ListEditorComponent extends EditorCampo
 
           if (this.propiedad.AtributoLista.TypeAhead) {
             this.isTypeAhead = true;
+            // Los dato se obtienen medainete TypeAhead
+            this.getTypeAhead();
 
-            if (aheadval) {
+            // Carga la lista de valores si es un update
+            if (this.isUpdate && aheadval) {
               this.entidades.ValoresLista([aheadval ],
               this.propiedad.AtributoLista.Entidad ).subscribe( items => {
                 this.elementos = items;
                 this.ngSelect.toggle();
               });
             }
-            // Los dato se obtienen medainete TypeAhead
-            this.getTypeAhead();
           }
 
           if ( !tieneEventos && !this.isTypeAhead) {
@@ -176,18 +183,7 @@ export class ListEditorComponent extends EditorCampo
       }
 
     }
- 
 }
-
-  private TieneEventos(): boolean {
-    let eventos = false;
-    if (this.propiedad.AtributosEvento) {
-      if (this.propiedad.AtributosEvento.length > 0) {
-        eventos = true;
-      }
-    }
-    return eventos;
-  }
 
   Sort(by: string) {
     return this.propiedad.ValoresLista.sort((obj1, obj2) => {

@@ -27,7 +27,6 @@ export class EditorCampo {
             this.entidades.ObtieneEventos()
             .pipe(takeUntil(this.onDestroy$))
             .subscribe( ev => {
-                console.warn(ev);
                 if (ev && ev.Transaccion === this.congiguracion.TransactionId) {
                     // el evento esta en la misma transacción de UI
                     switch (ev.Evento) {
@@ -37,9 +36,7 @@ export class EditorCampo {
                     }
                 }
             });
-        } else {
-            console.warn('Sin eventos para ' + this.propiedad.Id);
-        }
+        } 
     }
 
     EmiteEventoCambio(Id: string, Valor:  any, Transaccion: string ) {

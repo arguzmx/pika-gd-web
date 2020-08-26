@@ -92,6 +92,17 @@
         <mat-icon>view_comfy</mat-icon>
       </button>
 
+        <!-- Mostrar reportes -->
+        <button
+        *ngIf="tieneReportes"
+        mat-icon-button
+        on-click="mostrarReportes()"
+        [nbTooltip]="T.t['ui.reportes']" nbTooltipPlacement="bottom"
+        aria-label="T.t['ui.reportes']"
+      >
+        <mat-icon>insert_chart_outlined</mat-icon>
+      </button>
+
       <!-- eleminar fisltros activos contenido tabular -->
       <button
         *ngIf="filtrosActivos"
@@ -303,6 +314,43 @@
             ></nb-icon>
           </button>
         </ng-template>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="float-right">
+            <button nbButton size="medium" (click)="ref.close()">
+              {{ T.t["ui.cerrar"] }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
+
+<ng-template #dialogReportPicker let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>{{ T.t["ui.reportes"] }}</nb-card-header>
+    <nb-card-body>
+      <div
+        class="col-lg-12 col-md-12 col-sm-12"
+        *ngFor="let reporte of this.metadata.Reportes"
+      >
+          <button
+            nbButton
+            shape="semi-round"
+            size="large"
+            fullWidth="true"
+            (click)="EjecutarIrReporte(reporte)"
+          >
+            {{ reporte.Nombre }}
+            <nb-icon
+              status="primary"
+              icon="file-text-outline"
+            ></nb-icon>
+          </button>
       </div>
     </nb-card-body>
     <nb-card-footer>

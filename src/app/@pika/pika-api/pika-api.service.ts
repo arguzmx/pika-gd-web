@@ -1,3 +1,4 @@
+import { IProveedorReporte } from './../metadata/iproveedor-reporte';
 import { FiltroConsulta } from './../consulta/filtro-consulta';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -183,6 +184,31 @@ export class PikaApiService <T, U> {
     );
   }
 
+
+  GetReport(entidad: string, reporte: IProveedorReporte, filename?: string) {
+
+    let endpoint = this.CrearEndpoint(entidad) + reporte.Url;
+    const headers = new HttpHeaders();
+    reporte.Parametros.forEach(p => {
+      endpoint = endpoint.replace(`{${p.Id}}`, p['Valor']);
+    } );
+    this.http.get(endpoint, {headers, responseType: 'blob' as 'json'}).subscribe(
+        (response: any) =>{
+            const dataType = response.type;
+            const binaryData = [];
+            binaryData.push(response);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+            if (filename)
+                downloadLink.setAttribute('download', filename );
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        },
+        (err) => {
+          console.warn(err);
+        }
+    );
+}
 
   Delete(Ids: U[], entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad);

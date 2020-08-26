@@ -18,6 +18,12 @@ implements ICampoEditable, OnInit, OnDestroy {
     super(entidades);
   }
 
+  cambiovalor(evento){
+    if (this.propiedad.EmitirCambiosValor) {
+      this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.congiguracion.TransactionId );
+    }
+  }
+
   ngOnDestroy(): void {
       this.destroy();
   }

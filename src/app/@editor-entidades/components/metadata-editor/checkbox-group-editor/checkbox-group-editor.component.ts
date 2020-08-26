@@ -31,9 +31,14 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
 
-
+  private eventoCambiarValor(valor: any) {
+    console.log(valor);
+    if (this.propiedad.EmitirCambiosValor) {
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+    }
+  }
   ActualizarLista(evt: Evento) {
-    this.EmiteEventoCambio(this.propiedad.Id, '', this.congiguracion.TransactionId);
+    this.eventoCambiarValor('');
 
     const consulta = new Consulta();
     const f = new FiltroConsulta();
@@ -126,6 +131,7 @@ implements ICampoEditable, OnInit, OnDestroy {
       }
     }
     this.group.get(this.propiedad.Id).setValue(arr);
+    this.eventoCambiarValor(arr);
   }
 
   Sort(by: string) {

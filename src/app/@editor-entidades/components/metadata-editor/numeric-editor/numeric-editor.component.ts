@@ -24,6 +24,12 @@ ngOnDestroy(): void {
     this.destroy();
 }
 
+cambiovalor(evento) {
+  if (this.propiedad.EmitirCambiosValor) {
+    this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.congiguracion.TransactionId );
+  }
+}
+
 ngOnInit(): void {
   this.hookEscuchaEventos();
     switch (this.propiedad.TipoDatoId) {

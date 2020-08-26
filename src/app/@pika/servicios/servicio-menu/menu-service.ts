@@ -20,7 +20,7 @@ export const menus = [
           queryParams: { tipo: 'cuadroclasificacion' },
         },
         {
-          title: 'Administrador del acervo',
+          title: 'Inventario de expedientes',
           link: '/pages/tabular/',
           queryParams: { tipo: 'activo' },
         },

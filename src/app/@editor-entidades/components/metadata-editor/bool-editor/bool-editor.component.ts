@@ -23,6 +23,11 @@ implements ICampoEditable, OnInit, OnDestroy {
     this.destroy();
   }
 
+  cambiovalor(valor){
+    if (this.propiedad.EmitirCambiosValor) {
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+    }
+  }
 
   ngOnInit(): void {
     this.hookEscuchaEventos();
