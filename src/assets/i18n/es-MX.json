@@ -32,7 +32,8 @@
         "total-regitros": "registros encontrados",
         "selec-org": "Seleccionar espacio de trabajo",
         "enviar": "Enviar",
-        "elegir-ellipsis": "Elegir ..."
+        "elegir-ellipsis": "Elegir ...",
+        "reportes": "Reportes"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",

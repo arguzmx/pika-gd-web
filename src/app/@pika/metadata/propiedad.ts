@@ -44,4 +44,5 @@ export interface Propiedad {
     IdContextual?: string;
     Etiqueta: boolean;
     CatalogoVinculado?: boolean;
+    EmitirCambiosValor?: boolean;
 }

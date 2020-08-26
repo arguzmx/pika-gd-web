@@ -21,6 +21,7 @@ import { SesionQuery } from '../../@pika/pika-module';
 import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
+import { IProveedorReporte } from '../../@pika/metadata/iproveedor-reporte';
 
 export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
@@ -701,6 +702,10 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
     return subject;
   }
 
+
+public GetReport(entidad: string, reporte: IProveedorReporte, filename?: string) {
+  this.cliente.GetReport(entidad, reporte, filename);
+}
 
   // Proces alos errores de API
   private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {

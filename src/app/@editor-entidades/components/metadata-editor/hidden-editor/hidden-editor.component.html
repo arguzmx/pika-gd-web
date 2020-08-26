@@ -1,3 +1,3 @@
 <div class="form-group" [formGroup]="group">
-    <input type="hidden" [formControlName]="propiedad.Id" />
+    <input type="hidden" (input)="cambiovalor($event)" [formControlName]="propiedad.Id" />
 </div>

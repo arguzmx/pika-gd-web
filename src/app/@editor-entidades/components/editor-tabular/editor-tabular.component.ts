@@ -1,3 +1,5 @@
+import { CONTEXTO } from './../../services/entidades.service';
+import { IProveedorReporte } from './../../../@pika/metadata/iproveedor-reporte';
 import { FiltroConsulta } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
@@ -38,10 +40,13 @@ OnDestroy, OnChanges {
   @ViewChildren(MetadataBuscadorComponent) buscadorMetadatos: QueryList<MetadataBuscadorComponent>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
   @ViewChild('dialogLinkPicker', { static: true }) dialogLinks: TemplateRef<any>;
+  @ViewChild('dialogReportPicker', { static: true }) dialogReportPicker: TemplateRef<any>;
+
   @ViewChildren(MetadataTablaComponent) tablas: QueryList<MetadataTablaComponent>;
 
   private dialogComnfirmDelRef: any;
   private dialogLinkPickRef: any;
+  private dialogReportPickerRef: any;
 
   @Input() config: ConfiguracionEntidad;
 
@@ -85,6 +90,7 @@ OnDestroy, OnChanges {
 
   public T: Traductor;
 
+  public tieneReportes: boolean = false;
 
   // Cosntructor del componente
   constructor(
@@ -113,6 +119,7 @@ OnDestroy, OnChanges {
   public _Reset(): void {
       if (this.tablas && this.tablas.first) this.tablas.first._Reset();
       this._CerrarDialogos();
+      this.tieneReportes = false;
       this.InstanciaSeleccionada = false;
       this.configTmp = null;
       this.metadata = null;
@@ -147,7 +154,7 @@ OnDestroy, OnChanges {
   }
 
    private CargaTraducciones() {
-    this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol',
+    this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes',
     'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar',
     'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
     this.T.ObtenerTraducciones();
@@ -195,9 +202,13 @@ private  ProcesaCambiosConfiguracion(): void {
       }
     }
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
+
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
+
     this.tieneVinculos = this.metadata.EntidadesVinculadas
     && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
+
+    this.tieneReportes = (this.metadata.Reportes && this.metadata.Reportes.length > 0);
 
     this.entidades.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
     if (this.metadata.EntidadesVinculadas) {
@@ -380,5 +391,37 @@ private  ProcesaCambiosConfiguracion(): void {
         };
   }
 
+  mostrarReportes() {
+
+    if (this.entidad) {
+      this.dialogReportPickerRef = this.dialogService
+      .open(this.dialogReportPicker, { context: '' });
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
+    }
+ 
+  }
+
+  EjecutarIrReporte(reporte: IProveedorReporte) {
+    this.dialogReportPickerRef.close();
+
+    const parametros = reporte.Parametros;
+    parametros.forEach(p => {
+      if (p.Contextual) {
+        const partes = p.IdContextual.split('.');
+        switch(partes[0].toUpperCase())
+        { 
+          case CONTEXTO:
+            p['Valor'] = this.entidad[partes[1]];
+            break;
+        }
+
+      }
+    });
+
+  const nombre =  this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) + '.xlsx';
+
+    this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
+  }
 
 }

@@ -1,3 +1,4 @@
+import { IProveedorReporte } from './iproveedor-reporte';
 import { Propiedad } from './propiedad';
 import { EntidadVinculada } from './entidad-vinculada';
 import { CatalogoVinculado } from './catelogo-vinculado';
@@ -11,4 +12,5 @@ export class MetadataInfo {
     EntidadesVinculadas?: EntidadVinculada[];
     CatalogosVinculados: CatalogoVinculado [];
     Propiedades: Propiedad[];
+    Reportes?:  IProveedorReporte[];
 }
