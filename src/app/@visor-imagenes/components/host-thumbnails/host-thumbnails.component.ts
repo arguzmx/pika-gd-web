@@ -1,4 +1,3 @@
-import { Pagina } from './../../model/pagina';
 import {
   Component,
   OnInit,
@@ -8,7 +7,6 @@ import {
 } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Documento } from '../../model/documento';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-host-thumbnails',

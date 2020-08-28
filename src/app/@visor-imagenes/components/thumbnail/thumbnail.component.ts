@@ -1,9 +1,14 @@
-import { Component, OnInit, Input, ViewChild, Inject, OnDestroy, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  HostListener,
+} from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Pagina } from '../../model/pagina';
 import { takeUntil, first, take } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { ThrowStmt } from '@angular/compiler';
 
 export enum KEY_CODE {
   SHIFT = 16,
@@ -16,7 +21,6 @@ export enum KEY_CODE {
 })
 export class ThumbnailComponent implements OnInit, OnDestroy {
   @Input() pagina: Pagina;
-  seleccionadas: Pagina[] = [];
   paginaVisible: boolean = false;
   paginaSeleccionada: boolean = false;
   seleccionShift: boolean = false;
@@ -26,7 +30,8 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   constructor(private servicioVisor: VisorImagenesService) {}
 
   ngOnInit(): void {
-    this.escuhaPaginaActiva();
+    this.EscuchaPaginaActiva();
+    this.EscuchaPaginaSeleccion();
   }
 
   ngOnDestroy(): void {
@@ -35,23 +40,44 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   }
 
   // Este funcion se llama al dar click en el thumbnail
-  SeleccionaThumbnails() {
+  SeleccionaThumbnails(event) {
     if (!this.seleccionShift && !this.seleccionCtrl) {
-      this.EstablecePaginaVisible();
+      this.EstablecePaginaActiva();
     } else {
       this.NuevaSeleccion();
     }
   }
 
-  EstablecePaginaVisible() {
+  EstablecePaginaActiva() {
+    this.servicioVisor.EliminarSeleccion();
     this.servicioVisor.EstablecerPaginaActiva(this.pagina);
+    this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
   }
 
-
-  escuhaPaginaActiva() {
-    this.servicioVisor.ObtienePaginaVisible().subscribe( p =>  {
-      this.paginaVisible = (p && this.pagina.Id === p.Id);
+  EscuchaPaginaActiva() {
+    this.servicioVisor.ObtienePaginaVisible()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((p) => {
+      this.paginaVisible = p && this.pagina.Id === p.Id;
     });
+  }
+
+  NuevaSeleccion() {
+    if (this.seleccionCtrl) {
+      this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
+    }
+    if (this.seleccionShift) {
+      this.servicioVisor.SeleccionShift(this.pagina);
+    }
+  }
+  
+  EscuchaPaginaSeleccion() {
+    this.servicioVisor
+      .ObtienePaginasSeleccionadas()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((pags) => {
+        this.paginaSeleccionada = pags.includes(this.pagina);
+      });
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -65,17 +91,4 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     if (event.keyCode === KEY_CODE.SHIFT) this.seleccionShift = false;
     if (event.keyCode === KEY_CODE.CTRL) this.seleccionCtrl = false;
   }
-
-
-  NuevaSeleccion() {
-    if (this.seleccionCtrl) {
-      this.SeleccionaPaginasCtrl();
-    }
-    if (this.seleccionShift) {
-      this.SeleccionaPaginasShift();
-    }
-  }
-private SeleccionaPaginasCtrl(){}
-private SeleccionaPaginasShift(){}
-
 }
