@@ -40,12 +40,11 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   }
 
   // Este funcion se llama al dar click en el thumbnail
-  SeleccionaThumbnails(event) {
-    if (!this.seleccionShift && !this.seleccionCtrl) {
+  SeleccionaThumbnails() {
+    if (!this.seleccionShift && !this.seleccionCtrl)
       this.EstablecePaginaActiva();
-    } else {
-      this.NuevaSeleccion();
-    }
+    else
+      this.EstabeleceSeleccion();
   }
 
   EstablecePaginaActiva() {
@@ -62,15 +61,11 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     });
   }
 
-  NuevaSeleccion() {
-    if (this.seleccionCtrl) {
-      this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
-    }
-    if (this.seleccionShift) {
-      this.servicioVisor.SeleccionShift(this.pagina);
-    }
+  EstabeleceSeleccion() {
+    if (this.seleccionCtrl) this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
+    if (this.seleccionShift) this.servicioVisor.SeleccionShift(this.pagina);
   }
-  
+
   EscuchaPaginaSeleccion() {
     this.servicioVisor
       .ObtienePaginasSeleccionadas()
@@ -79,6 +74,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
         this.paginaSeleccionada = pags.includes(this.pagina);
       });
   }
+
 
   @HostListener('window:keydown', ['$event'])
   ActivaSeleccionMultiple(event: KeyboardEvent) {

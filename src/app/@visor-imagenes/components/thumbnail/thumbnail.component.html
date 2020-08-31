@@ -2,7 +2,7 @@
     <img class="imgDefault" [id]="pagina.Id"
     [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
                 'imgVisible,imgSeleccionada' : paginaVisible && paginaSeleccionada}"
-        *ngIf="pagina.EsImagen; else elseBlock" [src]="pagina.UrlThumbnail" on-click="SeleccionaThumbnails($event);">
+        *ngIf="pagina.EsImagen; else elseBlock" [src]="pagina.UrlThumbnail" on-click="SeleccionaThumbnails();">
     <ng-template #elseBlock>
         <!-- <p> {{pagina.Id}} </p> -->
     </ng-template>

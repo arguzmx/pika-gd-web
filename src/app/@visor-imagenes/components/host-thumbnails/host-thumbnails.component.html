@@ -2,7 +2,7 @@
     <p>{{documento.Nombre}}</p>
     <div class="row">
         <cdk-virtual-scroll-viewport [itemSize]="documento.Paginas.length">
-            <div class="row">
+            <div class="row" id="contenedorThumbnails">
                 <span *cdkVirtualFor="let p of documento.Paginas; let i=index;">
                     <ngx-thumbnail [pagina]="p"></ngx-thumbnail>
                 </span>

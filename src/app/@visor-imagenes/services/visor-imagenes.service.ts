@@ -29,6 +29,15 @@ export class VisorImagenesService {
       .subscribe(
         (documento) => {
           this.documento = documento;
+
+          // ********** prueba ***********
+          const aux1 = documento.Paginas;
+          for(let i = 0; i <= 2; i++){
+            documento.Paginas.push(...aux1);
+          }
+          console.log(documento.Paginas.length);
+          // ********** prueba ***********
+
           documento.Paginas.sort((a, b) => a.Indice - b.Indice);
           subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
         },
@@ -46,7 +55,7 @@ export class VisorImagenesService {
     return subject;
   }
 
-  // Administración de páginas seleccionasas
+  // Administración de páginas seleccionadas
   // --------------------------------------------------------------
 
   public SeleccionShift(p: Pagina) {
