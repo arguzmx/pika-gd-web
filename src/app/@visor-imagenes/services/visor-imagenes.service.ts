@@ -32,9 +32,9 @@ export class VisorImagenesService {
 
           // ********** prueba ***********
           const aux1 = documento.Paginas;
-          for(let i = 0; i <= 2; i++){
-            documento.Paginas.push(...aux1);
-          }
+          // for(let i = 0; i <= 2; i++){
+          //   documento.Paginas.push(...aux1);
+          // }
           console.log(documento.Paginas.length);
           // ********** prueba ***********
 

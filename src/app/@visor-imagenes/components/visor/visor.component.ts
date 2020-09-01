@@ -100,7 +100,7 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     zoom *= 0.999 ** -100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
-    this.canvas.zoomToPoint({ x: 500, y: 900 }, zoom);
+    this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
   }
@@ -109,7 +109,7 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     zoom *= 0.999 ** 100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
-    this.canvas.zoomToPoint({ x: 500, y: 900 }, zoom);
+    this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
   }
@@ -129,6 +129,7 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
 
     fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
       this.canvas.clear();
+      console.log(this.paginaVisible.Url);
       this.canvas.add(img);
       this.canvas.setDimensions({width: img.width, height: img.height});
     }, {selectable: false});

@@ -1,8 +1,18 @@
-#canvas{
+
+.divContenedor{
     position: relative;
+
 }
 
 .btnZoomGroup{
-    position: sticky;
-    top: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 2%;
+    left: 2%;
+}
+
+
+
+#canvas{
+    position: absolute;
 }
