@@ -1,18 +1,23 @@
 
 .divContenedor{
     position: relative;
-
 }
 
 .btnZoomGroup{
-    position: absolute;
+    position: fixed;
     z-index: 1;
-    top: 2%;
-    left: 2%;
+    padding-left: 0.5%;
+    padding-top: 5%;
+    opacity: 0;
+    transition: opacity 250ms ease-in-out;
 }
 
+.zoomVisible{
+    opacity: 0.9;
+}
 
-
-#canvas{
-    position: absolute;
+.loadingCard{
+    position: sticky;
+    top: 20%;
+    z-index: 5;
 }

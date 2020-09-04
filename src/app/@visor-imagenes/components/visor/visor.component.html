@@ -1,5 +1,5 @@
-<div class="divContenedor">
-    <div class="btn-group-vertical btnZoomGroup">
+<div class="divContenedor" (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false">
+    <div class="btn-group-vertical btnZoomGroup" [ngClass]="{'zoomVisible': muestraZoom}">
         <button class="btn btn-primary" on-click="ZoomIn($event)">
             <nb-icon icon="plus"></nb-icon>
         </button>
@@ -7,7 +7,9 @@
             <nb-icon icon="minus"></nb-icon>
         </button>
     </div>
-
+    <nb-card class="loadingCard" [ngStyle]="{'display': loading ? 'flex' : 'none' }">
+        <nb-card-body  [nbSpinner]="true" nbSpinnerSize="large" nbSpinnerStatus="info" nbSpinnerMessage="Cargando imagen..."></nb-card-body>
+    </nb-card>
     <canvas id="canvas" width="500" height="500">
     </canvas>
 </div>

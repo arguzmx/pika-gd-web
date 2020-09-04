@@ -3,24 +3,10 @@
     <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
       <span>{{Titulo}}</span>
       <span class="example-spacer"></span>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>add</mat-icon>
-      </button>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>playlist_add</mat-icon>
-      </button>
-      <mat-icon class="gray-icon">more_vert</mat-icon>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>delete_outline</mat-icon>
-      </button>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>search</mat-icon>
-      </button>
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon color="warn">filter_alt</mat-icon>
-      </button>
+      <ngx-header-visor></ngx-header-visor>
     </mat-toolbar>
   </div>
+  
   <div class="col-lg-12">
     <nb-reveal-card [showToggleButton]="false">
       <nb-card-front>
@@ -39,11 +25,10 @@
                     </as-split-area>
                     <as-split-area [size]="60">
                       <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-lg-12 col-md-12 col-sm-12" style="position: relative;">
                           <div class="padded">
                             <ngx-visor [documento]="documento"></ngx-visor>
                           </div>
-
                         </div>
                       </div>
                     </as-split-area>
