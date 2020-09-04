@@ -21,7 +21,7 @@
 }
 
 img:hover {
-    @include mat-elevation(8, rgba(0, 140, 186, 0.5), 0.5)
+    @include mat-elevation(8, rgba(0, 140, 186, 0.5), 0.8);
 }
 
 @keyframes floating {

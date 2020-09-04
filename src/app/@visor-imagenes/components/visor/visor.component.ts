@@ -52,30 +52,26 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
 
   private IniciaCanvas() {
     this.canvas = new fabric.Canvas('canvas');
+    const canvas = this.canvas;
     // ====== zoom ======
-    this.canvas.on('mouse:wheel', (opt) => {
-      const evt = opt.e;
-      if (evt.altKey === true) {
-        const delta = opt.e.deltaY;
-        let zoom = this.canvas.getZoom();
-        zoom *= 0.999 ** delta;
-        if (zoom > 20) zoom = 20;
-        if (zoom < 0.01) zoom = 0.01;
-        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-        opt.e.preventDefault();
-        opt.e.stopPropagation();
-      }
+    this.canvas.on('mouse:wheel', function (opt) {
+      const delta = opt.e.deltaY;
+      let zoom = canvas.getZoom();
+      zoom *= 0.999 ** delta;
+      if (zoom > 20) zoom = 20;
+      if (zoom < 0.01) zoom = 0.01;
+      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      opt.e.preventDefault();
+      opt.e.stopPropagation();
     });
     // ===================
     // ====== paneo ======
     this.canvas.on('mouse:down', function(opt) {
       const evt = opt.e;
-      if (evt.altKey === true) {
-        this.isDragging = true;
-        this.selection = false;
-        this.lastPosX = evt.clientX;
-        this.lastPosY = evt.clientY;
-      }
+      this.isDragging = true;
+      this.selection = false;
+      this.lastPosX = evt.clientX;
+      this.lastPosY = evt.clientY;
     });
 
     this.canvas.on('mouse:move', function(opt) {
@@ -99,6 +95,25 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     // ==================
   }
 
+  ZoomIn(event){
+    let zoom = this.canvas.getZoom();
+    zoom *= 0.999 ** -100;
+    if (zoom > 20) zoom = 20;
+    if (zoom < 0.01) zoom = 0.01;
+    this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  ZoomOut(event){
+    let zoom = this.canvas.getZoom();
+    zoom *= 0.999 ** 100;
+    if (zoom > 20) zoom = 20;
+    if (zoom < 0.01) zoom = 0.01;
+    this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   private EscuchaCambiosPagina() {
     this.servicioVisor
       .ObtienePaginaVisible()
@@ -114,10 +129,13 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
 
     fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
       this.canvas.clear();
+      console.log(this.paginaVisible.Url);
       this.canvas.add(img);
       this.canvas.setDimensions({width: img.width, height: img.height});
-    });
+    }, {selectable: false});
   }
+
+
 
   private ProcesaDocumento() {
     // console.log(this.documento);
