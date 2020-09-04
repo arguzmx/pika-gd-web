@@ -3,20 +3,21 @@ import { Injectable } from '@angular/core';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
 import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
-import { Pagina } from '../model/pagina';
+import { Pagina, OperacionHeader } from '../model/pagina';
 import { resolve } from 'dns';
 
 @Injectable()
 export class VisorImagenesService {
   private subjectPaginasSeleccionadas = new BehaviorSubject<Pagina[]>([]);
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
+  private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
 
   documento: Documento = null;
-  inicioSeleccion: Pagina = null;
-  finSeleccion: Pagina = null;
 
   thumbActivo: Pagina = null;
   thumbSeleccionados: Pagina[] = [];
+  inicioSeleccion: Pagina = null;
+  finSeleccion: Pagina = null;
 
   constructor(private docService: DocumentosService) {}
 
@@ -29,15 +30,6 @@ export class VisorImagenesService {
       .subscribe(
         (documento) => {
           this.documento = documento;
-
-          // ********** prueba ***********
-          const aux1 = documento.Paginas;
-          // for(let i = 0; i <= 2; i++){
-          //   documento.Paginas.push(...aux1);
-          // }
-          console.log(documento.Paginas.length);
-          // ********** prueba ***********
-
           documento.Paginas.sort((a, b) => a.Indice - b.Indice);
           subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
         },
@@ -57,6 +49,14 @@ export class VisorImagenesService {
 
   // Administración de páginas seleccionadas
   // --------------------------------------------------------------
+  public EstablecerPaginaActiva(p: Pagina) {
+    this.thumbActivo = p;
+    this.subjectPaginaVisible.next(this.thumbActivo);
+  }
+
+  public EstableceOperacionHeader(opHeader: OperacionHeader) {
+    this.subjectOperacionHeader.next(opHeader);
+  }
 
   public SeleccionShift(p: Pagina) {
     if (!this.inicioSeleccion) this.inicioSeleccion = this.documento.Paginas[0];
@@ -66,11 +66,6 @@ export class VisorImagenesService {
         x.Indice <= this.inicioSeleccion.Indice && x.Indice >= this.finSeleccion.Indice);
 
       this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
-  }
-
-  public EstablecerPaginaActiva(p: Pagina) {
-    this.thumbActivo = p;
-    this.subjectPaginaVisible.next(this.thumbActivo);
   }
 
   public AdicionarPaginaSeleccion(p: Pagina) {
@@ -95,6 +90,10 @@ export class VisorImagenesService {
 
   ObtienePaginaVisible(): Observable<Pagina> {
     return this.subjectPaginaVisible.asObservable();
+  }
+
+  ObtieneOperacionHeader(): Observable<OperacionHeader> {
+    return this.subjectOperacionHeader.asObservable();
   }
 
   // --------------------------------------------------------------
