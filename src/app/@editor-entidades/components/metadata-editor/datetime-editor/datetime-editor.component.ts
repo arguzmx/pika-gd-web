@@ -29,7 +29,6 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   cambiovalor(){
-    console.log(this.date1._selected);
     if (this.date1._selected) {
       if (this.propiedad.EmitirCambiosValor) {
         this.EmiteEventoCambio(this.propiedad.Id, this.date1._selected, this.congiguracion.TransactionId );

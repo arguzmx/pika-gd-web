@@ -94,8 +94,6 @@ import { DatetimeEditorComponent } from './components/metadata-editor/datetime-e
 import { DatetimeSearchComponent } from './components/metadata-buscador/datetime-search/datetime-search.component';
 import { ListSearchComponent } from './components/metadata-buscador/list-search/list-search.component';
 
-
-
 @NgModule({
   imports: [
     AngularSplitModule.forRoot(),

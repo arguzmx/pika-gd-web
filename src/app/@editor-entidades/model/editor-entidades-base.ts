@@ -16,9 +16,8 @@ import {
   PARAM_TIPO_CONTENIDO_JERARQUICO,
   PARAM_ID_JERARQUICO,
   PARAM_ID_ORIGEN,
+  PARAM_TIPO_DESPLIEGUE,
 } from './constantes';
-import { ViewChildren, QueryList } from '@angular/core';
-import { MetadataTablaComponent } from '../components/metadata-tabla/metadata-tabla.component';
 import { Router } from '@angular/router';
 
 export class EditorEntidadesBase {
@@ -93,12 +92,17 @@ export class EditorEntidadesBase {
           url = this.ObtieneVinculoTabular(link, Id, config);
           break;
 
+        case TipoDespliegueVinculo.Membresia:
+          url = this.ObtieneVinculoTabular(link, Id, config);
+          break;
+
         case TipoDespliegueVinculo.Jerarquico:
           url = this.ObtieneVinculoJerarquico(link, Id, config);
           break;
       }
 
       if (url) {
+        url = url + `&${PARAM_TIPO_DESPLIEGUE}=${link.TipoDespliegue}`;
         this.entidades.SetCacheInstanciaEntidad(
           config.TipoEntidad,
           Id,
@@ -147,7 +151,8 @@ export class EditorEntidadesBase {
           TipoEntidad: tipoentidad.Enidad,
           OrigenTipo: '',
           OrigenId: '',
-          TransactionId: '123',
+          TransactionId: this.entidades.NewGuid(),
+          TipoDespliegue: TipoDespliegueVinculo.EntidadUnica,
         };
         this.metadataTmp = resultados[0];
         this.entidadTmp = resultados[1];

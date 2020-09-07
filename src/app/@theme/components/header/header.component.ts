@@ -1,4 +1,3 @@
-import { AppBusStore, PropiedadesBus } from './../../../@pika/state/app-bus/app-bus-store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService,
   NbThemeService } from '@nebular/theme';
@@ -7,6 +6,7 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth';
+import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
 
 
 @Component({

@@ -1,6 +1,5 @@
 import { CONTEXTO } from './../../services/entidades.service';
-import { IProveedorReporte } from './../../../@pika/metadata/iproveedor-reporte';
-import { FiltroConsulta } from '../../../@pika/pika-module';
+import { FiltroConsulta, IProveedorReporte, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { AppLogService } from '../../../@pika/pika-module';
@@ -50,6 +49,8 @@ OnDestroy, OnChanges {
 
   @Input() config: ConfiguracionEntidad;
 
+  // Deternima si es factible la edición
+  public editarDisponible: boolean = false;
 
   // Nombre del tipo de entidad en edición
   public NombreEntidad: string = '';
@@ -121,6 +122,7 @@ OnDestroy, OnChanges {
       this._CerrarDialogos();
       this.tieneReportes = false;
       this.InstanciaSeleccionada = false;
+      this.editarDisponible = false;
       this.configTmp = null;
       this.metadata = null;
       this.metadataTmp = null;
@@ -155,7 +157,7 @@ OnDestroy, OnChanges {
 
    private CargaTraducciones() {
     this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes',
-    'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar',
+    'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
     'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
     this.T.ObtenerTraducciones();
    }
@@ -199,6 +201,31 @@ private  ProcesaCambiosConfiguracion(): void {
         this.NombreInstanciaDisponible = true;
         this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, entidad);
         this.MostrarRegresar = true;
+      } else {
+        // Si la entidad no existe obtiene los metadatos
+        this.entidades
+          .ObtieneMetadatos(this.config.OrigenTipo)
+          .pipe(first())
+          .subscribe((m) => {
+            this.entidades
+              .ObtieneEntidadUnica(
+                this.config.OrigenTipo,
+                this.config.OrigenId,
+              )
+              .pipe(first())
+              .subscribe((e) => {
+                // Y posteriormente una instancia en base al ID
+                // para establecer los títulos
+                if (e) {
+                  this.NombreInstanciaDisponible = true;
+                  this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
+                    this.config.OrigenTipo,
+                    e,
+                  );
+                  this.MostrarRegresar = true;
+                }
+              });
+          });
       }
     }
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
@@ -211,6 +238,8 @@ private  ProcesaCambiosConfiguracion(): void {
     this.tieneReportes = (this.metadata.Reportes && this.metadata.Reportes.length > 0);
 
     this.entidades.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
+
+    // Establece entidades vinculadas
     if (this.metadata.EntidadesVinculadas) {
       this.metadata.EntidadesVinculadas.forEach( e => {
           // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
@@ -221,6 +250,7 @@ private  ProcesaCambiosConfiguracion(): void {
           });
       });
     }
+
     this.T.ObtenerTraducciones();
     this.T.translate.get([ KeyNombreEntidad ]).pipe(first())
     .subscribe( t => {
@@ -238,7 +268,10 @@ private  ProcesaCambiosConfiguracion(): void {
   public NuevaSeleccion(entidad: any) {
     this.entidad = entidad;
     this.InstanciaSeleccionada = entidad !== null ? true : false;
-    this.vincularActivo = this.InstanciaSeleccionada && this.tieneVinculos;
+    this.editarDisponible = this.InstanciaSeleccionada &&
+    (this.config.TipoDespliegue.toString() !== TipoDespliegueVinculo.Membresia.toString());
+
+    this.vincularActivo = (this.InstanciaSeleccionada && this.tieneVinculos);
   }
 
   public EntidadActualizada(entidad: any) {
@@ -268,7 +301,6 @@ private  ProcesaCambiosConfiguracion(): void {
   public EjecutarIrALink(link: EntidadVinculada) {
     this.IrALink(link, this.entidad, this.config);
   }
-
 
   CerrarDialogos(): void {
     if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
@@ -318,8 +350,10 @@ private  ProcesaCambiosConfiguracion(): void {
   public ConfirmarEliminarEntidades(): void {
     const msg = this.metadata.ElminarLogico ?
       'editor-pika.mensajes.warn-crud-eliminar-logico' : 'editor-pika.mensajes.warn-crud-eliminar';
+      let nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
+       nombre = (nombre === '') ? this.T.t['ui.elementoseleccionado'] : '\'' + nombre + '\'';
       this.T.translate.get(msg, { nombre:
-        this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) })
+        nombre})
         .pipe(first())
       .subscribe( m =>  {
         this.dialogComnfirmDelRef = this.dialogService
@@ -332,10 +366,31 @@ private  ProcesaCambiosConfiguracion(): void {
     this.dialogComnfirmDelRef.close();
     const Id  = this.entidades.ObtenerIdEntidad(this.config.TipoEntidad, this.entidad);
     const nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
-    this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
-    .pipe(first()).subscribe( resultado => {
-        if (resultado) this.tablas.first.obtenerPaginaDatos(false);
-    });
+
+    switch (this.config.TipoDespliegue.toString()) {
+      case TipoDespliegueVinculo.Membresia.toString():
+        this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
+        .subscribe( m => {
+          const vinculo = m.EntidadesVinculadas.find(x =>
+            x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()
+            && x.TipoDespliegue === TipoDespliegueVinculo.Membresia);
+
+          this.entidades.EliminarEntidadMiembros(this.config.TipoEntidad,
+            this.entidad[vinculo.PropiedadHijo], [
+            this.entidad[vinculo.PropiedadIdMiembro]]).pipe(first())
+            .subscribe( resultado => {
+              if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+            });
+        });
+        break;
+
+        default:
+          this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
+          .pipe(first()).subscribe( resultado => {
+              if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+          });
+          break;
+    }
   }
 
   public EventoFiltrar(filtros: FiltroConsulta[]) {

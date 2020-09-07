@@ -31,6 +31,7 @@ const components: { [type: string]: Type<ICampoEditable> } = {
   date: DatetimeEditorComponent,
   time: DatetimeEditorComponent,
   select: ListEditorComponent,
+  selectmulti: ListEditorComponent,
   hidden: HiddenEditorComponent,
   textarea: StringEditorComponent,
   passconfirm: PasswordEditorComponent,

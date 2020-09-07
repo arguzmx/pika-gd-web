@@ -1,5 +1,6 @@
+import { PLATAFORMA_WEB } from './../../../../@pika/metadata/atributos-vista-ui';
 import { EditorCampo } from './../editor-campo';
-import { AtributoLista, AtributoEvento, Evento } from '../../../../@pika/pika-module';
+import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../../../@pika/pika-module';
 import { EntidadesService } from './../../../services/entidades.service';
 import { ICampoEditable } from './../../../model/i-campo-editable';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
@@ -136,9 +137,7 @@ export class ListEditorComponent extends EditorCampo
 
 
   ngOnInit(): void {
-
     this.hookEscuchaEventos();
-
     let aheadval = '';
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {

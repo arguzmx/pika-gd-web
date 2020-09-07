@@ -33,7 +33,8 @@
         "selec-org": "Seleccionar espacio de trabajo",
         "enviar": "Enviar",
         "elegir-ellipsis": "Elegir ...",
-        "reportes": "Reportes"
+        "reportes": "Reportes",
+        "elementoseleccionado": "la selección"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -70,6 +71,7 @@
         "entradaclasificacion": "Definición clasificación|Definiciones clasificación|el|las|book-open-outline",
         "cuadroclasificacion": "Cuadro clasificación|Cuadros clasificación|el|los|book-open-outline",
         "propiedadesusuario": "Usuario|Usuarios|el|los|person-outline",
+        "usuariosrol": "Usuario del rol|Usuarios del rol|el|los|person-outline",
         "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|home-outline",
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|map-outline",
         "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|map-outline",
@@ -207,6 +209,10 @@
                 "Anos":"Años",
                 "Meses":"Meses",
                 "Dias":"Días"
+            },
+            "usuariosrol": {
+                "RolId": "Id del rol",
+                "ApplicationUserId": "Usuario"
             }
         }
     },
@@ -225,9 +231,9 @@
             "warn-filtros-existente": "El filtro ya ha sido añadido previamente",
             "warn-sin-columnas": "Debe seleccionar al menos una columna para el despliegue",
             "warn-sin-seleccion": "Debe seleccionar un registro para la operación",
-            "ok-entidad-add": "El elemento '{{nombre}}' ha sido adicionado satisfactoriamente",
-            "ok-entidad-act": "El elemento '{{nombre}}' ha sido actualizado satisfactoriamente",
-            "ok-entidad-del": "El elemento '{{nombre}}' ha sido eliminado satisfactoriamente",
+            "ok-entidad-add": "El elemento {{nombre}} ha sido adicionado satisfactoriamente",
+            "ok-entidad-act": "El elemento {{nombre}} ha sido actualizado satisfactoriamente",
+            "ok-entidad-del": "El elemento {{nombre}} ha sido eliminado satisfactoriamente",
             "err-entidad-act": "Error al actualizar el elemento '{{nombre}}', {{error}} ",
             "err-datos-servidor": "Error al procesar la solicitud para {{prefijo}} {{entidad}}: {{error}} ",
             "err-datos-novalidos": "Algunos datos de la entidad son incorrectos",
@@ -236,8 +242,8 @@
             "err-datos-noexiste": "Los datos para {{prefijo}} {{entidad}} no existen o fueron eliminados",
             "err-id-vinculo": "No existe identificador de vinculo para la entidad",
             "err-config-vinculo": "La configuración del vínculo no es válida",
-            "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado será permanente y no podrá ser revertido.",
-            "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar '{{nombre}}'?</b></div><br>El borrado podrá ser revertido."
+            "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado será permanente y no podrá ser revertido.",
+            "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido."
         }
     }
 }

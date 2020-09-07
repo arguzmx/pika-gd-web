@@ -1,3 +1,5 @@
+import { TipoDespliegueVinculo } from '../../@pika/pika-module';
+
 export interface ConfiguracionEntidad {
   // especifica el tipo de entidad en edición
   TipoEntidad: string;
@@ -10,4 +12,7 @@ export interface ConfiguracionEntidad {
 
   // Identificadr unico para controlar el contexto de ejecución
   TransactionId: string;
+
+  // Tipo de despliegue a implementar
+  TipoDespliegue: TipoDespliegueVinculo;
 }

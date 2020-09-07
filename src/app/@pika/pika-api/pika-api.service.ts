@@ -52,6 +52,31 @@ export class PikaApiService <T, U> {
     );
   }
 
+  PostMiembros(idPadre: string, idMiembros: string[], entidad: string) {
+    const endpoint = this.CrearEndpoint(entidad) + idPadre;
+    const headers = new HttpHeaders()
+    .set('content-type', 'application/json');
+    return this.http.post(endpoint, idMiembros, { 'headers': headers })
+    .pipe(
+      retry(retryCount),
+    );
+  }
+
+  DeleteMiembros(idPadre: string, idMiembros: string[], entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + idPadre + '/';
+    let ids: string = '';
+    idMiembros.forEach( x => {
+      ids = ids + x + ',';
+    });
+
+    const headers = new HttpHeaders()
+    .set('content-type', 'application/json');
+    return this.http.delete(endpoint + ids, { 'headers': headers })
+    .pipe(
+      retry(retryCount),
+    );
+  }
+
   Put(Id: string, entity: T, entidad: string) {
     const endpoint = this.CrearEndpoint(entidad);
     const headers = new HttpHeaders()

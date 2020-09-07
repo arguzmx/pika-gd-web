@@ -17,6 +17,7 @@
             [items]="elementos"
             bindLabel="Texto"
             bindValue="Id"
+            [multiple] = "multiple"
             (change)="onTypeaheadChange($event)"
             [addTag]="true"
             [multiple]="false"

@@ -1,6 +1,6 @@
-import { AppLogService } from './../../@pika/servicios/app-log/app-log.service';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
+import { AppLogService } from '../../@pika/pika-module';
 export class ComponenteBase {
   constructor(
     public appLog: AppLogService,
