@@ -22,6 +22,7 @@ import {
   NbToggleModule,
   NbMenuModule,
   NbLayoutRulerService,
+  NbSpinnerModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -73,6 +74,7 @@ import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { AngularSplitModule } from 'angular-split';
 import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumbnails.component';
+import { HeaderVisorComponent } from './components/header-visor/header-visor.component';
 
 @NgModule({
   imports: [
@@ -122,6 +124,7 @@ import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumb
     PortalModule,
     ScrollingModule,
     NgSelectModule,
+    NbSpinnerModule,
     NbTooltipModule,
     NbPopoverModule,
     NbToggleModule,
@@ -146,7 +149,7 @@ import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumb
     RouterModule,
     MatSliderModule,
   ],
-  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
+  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
 })
 export class VisorImagenesModule { }

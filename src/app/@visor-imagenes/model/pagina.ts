@@ -11,3 +11,11 @@ export interface Pagina {
     Ancho?: number;
     Rotacion?: number;
 }
+
+export enum OperacionHeader {
+    GIRAR_DER = 0,
+    GIRAR_IZQ = 1,
+    GIRAR_180 = 2,
+    REFLEJO_HOR = 3,
+    REFLEJO_VER = 4,
+}
