@@ -39,7 +39,7 @@ import {
 import { AtributoVistaUI } from '../../../@pika/pika-module';
 import { Acciones } from '../../../@pika/pika-module';
 import { isDate, parseISO } from 'date-fns';
-import { first, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { HTML_PASSWORD_CONFIRM,
   HTML_HIDDEN,
   HTML_CHECKBOX_MULTI } from '../../../@pika/pika-module';
@@ -95,7 +95,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges
     .subscribe( campos => {
-      // console.log(campos);
+       console.log(campos);
     });
   }
 
@@ -383,7 +383,9 @@ export class MetadataEditorComponent extends EditorEntidadesBase
          const partes = p.IdContextual.split('.');
          const valor = this.entidades.GetPropiedadCacheContextual(partes[1], partes[0], '');
          if (valor != null) {
+           if(this.formGroup.get(p.Id)) {
           this.formGroup.get(p.Id).setValue(valor);
+           }
          }
       }
     });
@@ -396,7 +398,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     });
   }
 
-  // Ontiene el valor default para una propiedad
+  // Obtiene el valor default para una propiedad
   private GetValor(Valor: string, p: Propiedad): any {
     if (Valor && Valor !== '') {
       switch (p.TipoDatoId) {
