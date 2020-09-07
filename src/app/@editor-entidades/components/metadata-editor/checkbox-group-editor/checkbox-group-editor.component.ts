@@ -32,7 +32,6 @@ implements ICampoEditable, OnInit, OnDestroy {
 
 
   private eventoCambiarValor(valor: any) {
-    console.log(valor);
     if (this.propiedad.EmitirCambiosValor) {
       this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
     }

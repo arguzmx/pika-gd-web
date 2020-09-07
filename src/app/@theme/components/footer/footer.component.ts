@@ -1,9 +1,8 @@
-import { takeWhile, takeUntil, first } from 'rxjs/operators';
-import { SesionQuery } from './../../../@pika/state/sesion.query';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { takeUntil, first } from 'rxjs/operators';
 import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { SesionQuery } from '../../../@pika/pika-module';
 
 @Component({
   selector: 'ngx-footer',

@@ -1,4 +1,4 @@
-import { Propiedad } from '../../@pika/pika-module';
+import { Propiedad, IProveedorReporte } from '../../@pika/pika-module';
 import { FiltroConsulta } from '../../@pika/pika-module';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import { CacheEntidadesService } from './cache-entidades.service';
@@ -21,7 +21,6 @@ import { SesionQuery } from '../../@pika/pika-module';
 import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
-import { IProveedorReporte } from '../../@pika/metadata/iproveedor-reporte';
 
 export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
@@ -305,6 +304,41 @@ export class EntidadesService {
      }, (error) => {
       this.handleHTTPError(error, tipo, '');
       subject.next(null);
+     }, () => {
+      subject.complete();
+     } );
+
+     return subject;
+   }
+
+
+   CreaEntidadMiembro(tipo: string, idPadre: string, idMiembros: string[]): Observable<any>  {
+    const subject = new AsyncSubject<any>();
+     this.cliente.PostMiembros(idPadre, idMiembros, tipo).pipe(
+       debounceTime(500),
+     ).subscribe( resultado =>  {
+      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-add', null, { nombre: ''});
+      subject.next(resultado);
+     }, (error) => {
+      this.handleHTTPError(error, tipo, '');
+      subject.next(null);
+     }, () => {
+      subject.complete();
+     } );
+
+     return subject;
+   }
+
+   public EliminarEntidadMiembros(tipo: string, idPadre: string, idMiembros: string[]): Observable<boolean>  {
+    const subject = new AsyncSubject<any>();
+     this.cliente.DeleteMiembros(idPadre, idMiembros, tipo).pipe(
+       debounceTime(500),
+     ).subscribe( resultado =>  {
+      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-del', null, { nombre: ''});
+      subject.next(true);
+    }, (error) => {
+      this.handleHTTPError(error, tipo, '');
+      subject.next(false);
      }, () => {
       subject.complete();
      } );

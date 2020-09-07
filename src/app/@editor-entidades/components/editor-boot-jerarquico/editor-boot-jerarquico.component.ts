@@ -1,6 +1,6 @@
 import { ConfiguracionEntidad } from './../../model/configuracion-entidad';
 import { PARAM_TIPO_JERARQUICO, PARAM_TIPO_ARBOL_JERARQUICO,
-  PARAM_ID_JERARQUICO, PARAM_TIPO_CONTENIDO_JERARQUICO } from './../../model/constantes';
+  PARAM_ID_JERARQUICO, PARAM_TIPO_CONTENIDO_JERARQUICO, PARAM_TIPO_DESPLIEGUE } from './../../model/constantes';
 import { EntidadesService, CONTEXTO } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -41,12 +41,14 @@ export class EditorBootJerarquicoComponent implements  OnInit, OnDestroy {
               TipoEntidad: params[PARAM_TIPO_ARBOL_JERARQUICO] || '',
               OrigenId: params[PARAM_ID_JERARQUICO] || '',
               TransactionId: this.entidades.NewGuid(),
+              TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
         },
         ConfiguracionContenido : {
           TipoEntidad: params[PARAM_TIPO_CONTENIDO_JERARQUICO] || '',
           OrigenTipo: '',
           OrigenId: '',
           TransactionId: this.entidades.NewGuid(),
+          TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
         },
       };
     this.entidades

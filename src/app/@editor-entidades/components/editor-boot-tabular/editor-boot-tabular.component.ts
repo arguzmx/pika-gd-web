@@ -1,4 +1,5 @@
-import { PARAM_ID_ORIGEN } from './../../model/constantes';
+import { TipoDespliegueVinculo } from './../../../@pika/metadata/entidad-vinculada';
+import { PARAM_ID_ORIGEN, PARAM_TIPO_DESPLIEGUE } from './../../model/constantes';
 import { EntidadesService } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -29,6 +30,7 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
         TipoEntidad: params[PARAM_TIPO] || '',
         OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
         OrigenId: params[PARAM_ID_ORIGEN] || '',
+        TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
         TransactionId: this.entidades.NewGuid(),
       };
     });

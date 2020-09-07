@@ -1,7 +1,4 @@
-import { Eventos } from '../../@pika/pika-module';
-
-export enum EventosArbol
-{
+export enum EventosArbol {
     CrearRaiz = 1, CrearHijo = 2, ActualizarTextoNodo = 3, EliminarNodo = 4,
 }
 

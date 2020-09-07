@@ -65,7 +65,10 @@ export const menus = [
     {
       title: 'Configuración sistema',
       icon: 'settings-2-outline',
-      children: [
+      children: [{
+        title: 'Permisos',
+        link: '/pages/permisos',
+      },
         {
           title: 'Catálogo tipo archivo',
           link: '/pages/tabular/',

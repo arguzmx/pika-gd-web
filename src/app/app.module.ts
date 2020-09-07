@@ -1,6 +1,4 @@
-import { PikaSesionService } from './@pika/pika-api/pika-sesion-service';
-import { PikaModule } from './@pika/pika-module';
-import { AppLogService } from './@pika/servicios/app-log/app-log.service';
+import { PikaModule, AppLogService, PikaSesionService, httpInterceptorProviders } from './@pika/pika-module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -22,7 +20,6 @@ import { CommonModule } from '@angular/common';
 import { IsChldrenAuthorizedGuard } from './@core/services/auth-guard/auth-guard.service';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { environment } from '../environments/environment';
-import { httpInterceptorProviders } from './@pika/pika-api/interceptor-provider';
 import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';

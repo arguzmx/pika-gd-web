@@ -1,0 +1,5 @@
+<p>{{aplicacion.Nombre}}</p>
+
+<div *ngFor="let m of aplicacion.Modulos; let i = index">
+    <ngx-permisos-modulo [modulo]="m"></ngx-permisos-modulo>
+</div>

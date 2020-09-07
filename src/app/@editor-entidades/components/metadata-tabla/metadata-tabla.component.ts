@@ -72,10 +72,9 @@ implements ITablaMetadatos, OnInit, OnChanges {
   };
 
   private _CerrarDialogos() {
-    console.log(this.dialogColPickRef);
     if (this.dialogColPickRef && !this.dialogColPickRef.closed) this.dialogColPickRef.close();
   }
-  
+
   public _Reset(): void {
     this._CerrarDialogos();
     this.entidadseleccionada = null;

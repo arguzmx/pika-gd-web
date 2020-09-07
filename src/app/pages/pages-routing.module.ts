@@ -5,6 +5,7 @@ import { PagesComponent } from './pages.component';
 // tslint:disable-next-line: max-line-length
 import { HostUploaderComponent } from './host-uploader/host-uploader.component';
 import { EditorBootTabularComponent, EditorBootJerarquicoComponent } from '../@editor-entidades/editor-entidades.module';
+import { PermisosHostComponent, PermisosModuloComponent } from '../@gestor-permisos/gestor-permisos.module';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -16,6 +17,10 @@ const routes: Routes = [{
     {
       path: 'jerarquia',
       component: EditorBootJerarquicoComponent,
+    },
+    {
+      path: 'permisos',
+      component: PermisosHostComponent,
     },
     {
       path: 'upload',

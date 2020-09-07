@@ -14,6 +14,5 @@ export * from './validador-numero';
 export * from './atributo-metadato';
 export * from './validador-texto';
 export * from './valor-lista';
-
-
+export * from './iproveedor-reporte';
 

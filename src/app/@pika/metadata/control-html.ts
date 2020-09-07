@@ -11,6 +11,7 @@ export const  HTML_RADIO = 'radio';
 export const  HTML_TEXT = 'textbox';
 export const  HTML_TEXTAREA = 'textarea';
 export const  HTML_SELECT = 'select';
+export const  HTML_SELECT_MULTI = 'selectmulti';
 export const  HTML_PASSWORD = 'password';
 export const  HTML_PASSWORD_CONFIRM = 'passconfirm';
 export const  HTML_AVATAR = 'avatar';

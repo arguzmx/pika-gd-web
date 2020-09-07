@@ -1,7 +1,3 @@
-import { DominioActivo } from './../../../@pika/sesion/dominio-activo';
-import { AppLogService } from './../../../@pika/servicios/app-log/app-log.service';
-import { SesionStore } from './../../../@pika/state/sesion.store';
-import { AppBusQuery } from './../../../@pika/state/app-bus/app-bus-query';
 import {
   Component,
   OnInit,
@@ -13,9 +9,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { SesionQuery } from '../../../@pika/state/sesion.query';
-import { PikaSesionService } from '../../../@pika/pika-api/pika-sesion-service';
-import { UnidadOrganizacionalActiva } from '../../../@pika/sesion/unidad-organizacional-activa';
+import { DominioActivo, SesionStore,
+  AppLogService, AppBusQuery, PikaSesionService, 
+  SesionQuery, UnidadOrganizacionalActiva } from '../../../@pika/pika-module';
+
 
 @Component({
   selector: 'ngx-org-selector',

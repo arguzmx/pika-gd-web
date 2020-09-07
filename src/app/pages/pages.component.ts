@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SesionQuery } from '../@pika/state/sesion.query';
+import { SesionQuery } from '../@pika/pika-module';
 
 @Component({
   selector: 'ngx-pages',

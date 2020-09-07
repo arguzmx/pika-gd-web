@@ -1,5 +1,5 @@
 import { Traductor } from './../../services/traductor';
-import { MetadataInfo, Evento, Eventos } from '../../../@pika/pika-module';
+import { MetadataInfo, Evento, Eventos, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
@@ -95,21 +95,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges
     .subscribe( campos => {
-       
-      //  if (this.formaCreada) {
-      //    console.log(campos);
-      //   for (const [key, value] of Object.entries(campos)) {
-      //     if (this.propiedadesEvento.indexOf(key) >= 0 ) {
-      //       const ev:  Evento = {
-      //         Origen: key,
-      //         Valor: value,
-      //         Evento: Eventos.AlCambiar,
-      //         Transaccion: this.config.TransactionId,
-      //       };
-      //       this.entidades.EmiteEvento(ev );
-      //     }
-      //   }
-      //  }
+      // console.log(campos);
     });
   }
 
@@ -150,19 +136,45 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     }
 
     const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
-    this.entidades
-      .CreaEntidad(this.config.TipoEntidad, entidadCopiada)
-      .pipe(first())
-      .subscribe((entidad) => {
-        if (entidad) {
-          this.NuevaEntidad.emit(entidad);
-          if (cerrar) {
-            this.CapturaFinalizada.emit();
-          } else {
-            this.LimpiarForma();
-          }
-        }
-      });
+
+    switch (this.config.TipoDespliegue.toString()) {
+      case TipoDespliegueVinculo.Membresia.toString():
+        this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
+        .subscribe( m => {
+          const vinculo = m.EntidadesVinculadas.find(x =>
+                 x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()
+                 && x.TipoDespliegue === TipoDespliegueVinculo.Membresia);
+
+          this.entidades.CreaEntidadMiembro(this.config.TipoEntidad,
+            entidadCopiada[vinculo.PropiedadHijo], [
+            entidadCopiada[vinculo.PropiedadIdMiembro]]).pipe(first())
+            .subscribe( hecho => {
+              if (cerrar) {
+                this.NuevaEntidad.emit(null);
+                this.CapturaFinalizada.emit();
+              } else {
+                this.LimpiarForma();
+              }
+            });
+        });
+        break;
+
+        default:
+          this.entidades
+          .CreaEntidad(this.config.TipoEntidad, entidadCopiada)
+          .pipe(first())
+          .subscribe((entidad) => {
+            if (entidad) {
+              this.NuevaEntidad.emit(entidad);
+              if (cerrar) {
+                this.CapturaFinalizada.emit();
+              } else {
+                this.LimpiarForma();
+              }
+            }
+          });
+          break;
+    }
   }
 
 // Fija el formato de las propieades en base al tipo
@@ -242,7 +254,6 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   // --------------------------------------------------------------------
 
   private ProcesaConfiguracion() {
-
     this._Reset();
 
     if (this.entidad) {
@@ -332,14 +343,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   }
 
   private LimpiarForma(): void {
-    this.propiedadesActivas = [];
-    this.propiedadesHidden = [];
-    if (this.formGroup.controls) {
-      const controls = Object.keys(this.formGroup.controls);
-      controls.forEach((control) => {
-        this.formGroup.removeControl(control);
-      });
-    }
+   this.AsignarValoresDefault();
   }
 
 

@@ -52,7 +52,7 @@
 
       <!-- Edistar el elemento seleccionado -->
       <button
-        *ngIf="InstanciaSeleccionada"
+        *ngIf="editarDisponible"
         mat-icon-button
         on-click="mostrarEditar()"
         [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
