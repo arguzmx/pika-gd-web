@@ -277,6 +277,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
   }
 
   public EtiquetasFecha(f: Date, EntidadId: string) {
+
     if (!this.metadata) return '';
 
     const p = this.metadata.Propiedades.find( x => x.Id === EntidadId );
