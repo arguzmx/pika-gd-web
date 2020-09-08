@@ -10,7 +10,7 @@ export interface ICampoBuscable {
   ctl2Id: string;
   negCtlId: string;
   opCtlId: string;
-
+  lateral: boolean;
   // Eventos del campo editable
   EstadoFiltro: any;
   EliminarFiltro: any;

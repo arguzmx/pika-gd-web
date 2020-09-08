@@ -20,6 +20,7 @@ export class BuscadorEntidadesBase {
   ctl2Id: string;
   negCtlId: string;
   opCtlId: string;
+  lateral: boolean;
 
   VALID_COLOR: string = 'success';
   INVALID_COLOR: string = 'basic';

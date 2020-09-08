@@ -42,6 +42,9 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
   propiedad: Propiedad;
 
   @Input()
+  lateral: boolean;
+
+  @Input()
   config: ConfiguracionEntidad;
 
   @Input()
@@ -72,6 +75,7 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
       this.component.instance.propiedad = this.propiedad;
+      this.component.instance.lateral = this.lateral;
     }
   }
 
@@ -97,6 +101,7 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
   private creaComponente(component: any) {
     if (component) {
       this.component = this.container.createComponent(component);
+      this.component.instance.lateral = this.lateral;
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
       this.component.instance.propiedad = this.propiedad;

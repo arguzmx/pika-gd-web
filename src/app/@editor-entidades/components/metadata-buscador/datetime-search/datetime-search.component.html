@@ -1,20 +1,26 @@
 <div class="align-top">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="form-inline">
-            <div class="col-lg-5 col-md-12 col-sm-12">
+            <div 
+            [ngClass] = "{'col-lg-5 col-md-12 col-sm-12': !lateral, 'col-sm-12': lateral}"
+            >
                 <div class="form-group">
                     <nb-icon icon="close" status="basic"  (click)="closeFilter()" ></nb-icon>
                     <nb-icon [icon]="validIcon" [status]="validstatus"></nb-icon>
                     <label  class="subtitle">&nbsp;{{propiedad.NombreI18n}}</label>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-3 col-sm-6">
+            <div 
+            [ngClass] = "{'col-lg-2 col-md-3 col-sm-6': !lateral, 'col-sm-6': lateral}"
+            >
                 <div class="form-group" [formGroup]="group">
                     <nb-checkbox [formControlName]="negCtlId"  (checkedChange)="checkChange($event)"
                      class="subtitle">{{T.t['ui.no']}}</nb-checkbox>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-9 col-sm-6">
+            <div 
+            [ngClass] = "{'col-lg-2 col-md-9 col-sm-6': !lateral, 'col-sm-6': lateral}"
+            >
                 <div class="form-group" [formGroup]="group">
                     <nb-select 
                     size="small" fullWidth="true" hero="true" 
@@ -24,7 +30,9 @@
                     </nb-select>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-12 col-sm-12">
+            <div 
+            [ngClass] = "{'col-lg-3 col-md-12 col-sm-12': !lateral, 'col-sm-12': lateral}"
+            >
                 <nb-form-field >    
                     <div  class="form-group"  [formGroup]="group">
                         <input type="text" (dateTimeInput) = "fecha1()"

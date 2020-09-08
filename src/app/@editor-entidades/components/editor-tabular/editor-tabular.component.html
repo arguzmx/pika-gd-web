@@ -73,15 +73,22 @@
       </button>
 
       <!-- Mostrar búsqueda -->
-      <button
+      <button *ngIf="!busquedaLateral"
         mat-icon-button
         on-click="mostrarBuscar()"
         [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.eliminar']"
+        aria-label="T.t['ui.buscar']"
       >
         <mat-icon>search</mat-icon>
       </button>
-
+      <button
+        mat-icon-button
+        on-click="mostrarBuscarLateral()"
+        [nbTooltip]="T.t['ui.busqueda-lateral']" nbTooltipPlacement="bottom"
+        aria-label="T.t['ui.busqueda-lateral']"
+      >
+        <mat-icon>vertical_split</mat-icon>
+      </button>
       <!-- Mostrar selector columnas -->
       <button
         mat-icon-button
@@ -121,16 +128,27 @@
         <nb-card accent="info" size="large">
           <nb-card-body>
             <div class="row">
-              <div class="col-lg-12">
+             
+              <div [ngClass]="{'col-lg-8': busquedaLateral, 'col-lg-12': !busquedaLateral}">
                 <ngx-metadata-tabla
-                  [config]="config"
-                  [metadata]="metadata"
-                  (ConteoRegistros)="ConteoRegistros($event)"
-                  (NuevaSeleccion)="NuevaSeleccion($event)"
-                  (EditarSeleccion)="EditarSeleccion($event)"
-                >
-                </ngx-metadata-tabla>
-              </div>
+                [config]="config"
+                [metadata]="metadata"
+                (ConteoRegistros)="ConteoRegistros($event)"
+                (NuevaSeleccion)="NuevaSeleccion($event)"
+                (EditarSeleccion)="EditarSeleccion($event)"
+              >
+              </ngx-metadata-tabla>
+            </div>
+            <div *ngIf="busquedaLateral" class="col-lg-4">
+              <div class = "barralateral" [ngStyle]="{'height': alturaComponente}" >
+              <ngx-metadata-buscador
+                [lateral]="true"
+                [config]="config"
+                [metadata]="metadata"
+                (EventoFiltrar)="EventoFiltrar($event)"
+              ></ngx-metadata-buscador>
+            </div>
+            </div>
             </div>
           </nb-card-body>
           <nb-card-footer>
@@ -190,6 +208,7 @@
                     <div class="row">
                       <div class="col-lg-12">
                         <ngx-metadata-buscador
+                          [lateral]="false"
                           [config]="config"
                           [metadata]="metadata"
                           (EventoFiltrar)="EventoFiltrar($event)"

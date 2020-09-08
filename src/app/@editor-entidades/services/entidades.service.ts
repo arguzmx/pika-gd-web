@@ -1,3 +1,4 @@
+import { Eventos } from './../../@pika/metadata/atributo-evento';
 import { Propiedad, IProveedorReporte } from '../../@pika/pika-module';
 import { FiltroConsulta } from '../../@pika/pika-module';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
@@ -26,6 +27,11 @@ export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
 export const GLOBAL = 'GLOBAL';
 
+export enum EventosFiltrado  {
+ Ninguno, EliminarFiltros,
+}
+
+
 @Injectable()
 export class EntidadesService {
   // Almacena las traudcciones de un nombre de instancoi para un identificador
@@ -40,6 +46,7 @@ export class EntidadesService {
   private BusEventos = new BehaviorSubject(null);
   private BusContexto = new BehaviorSubject(null);
   private BusArbol = new BehaviorSubject(null);
+  private BusFiltros = new BehaviorSubject<EventosFiltrado>(EventosFiltrado.Ninguno);
 
   constructor(
     private sesion: SesionQuery,
@@ -346,6 +353,17 @@ export class EntidadesService {
      return subject;
    }
 
+  // Eventos filtros
+    // ---------------------------------------
+    // ---------------------------------------
+
+    ObtieneEventosFiltros(): Observable<EventosFiltrado> {
+      return this.BusFiltros.asObservable();
+    }
+
+    EmiteEventoFiltros (ev: EventosFiltrado): void {
+      this.BusFiltros.next(ev);
+    }
 
     // Eventos interproceso
     // ---------------------------------------
