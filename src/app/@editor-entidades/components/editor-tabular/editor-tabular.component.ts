@@ -1,11 +1,11 @@
-import { CONTEXTO } from './../../services/entidades.service';
+import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { AppLogService } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
-  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { EntidadesService } from '../../services/entidades.service';
 import { Subject } from 'rxjs';
@@ -49,6 +49,13 @@ OnDestroy, OnChanges {
 
   @Input() config: ConfiguracionEntidad;
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.setAlturaPanelLateral(event.target.innerHeight);
+  }
+
+  public alturaComponente = '500px';
+
   // Deternima si es factible la edición
   public editarDisponible: boolean = false;
 
@@ -89,6 +96,8 @@ OnDestroy, OnChanges {
 
   public metadata: MetadataInfo;
 
+  public busquedaLateral: boolean = false;
+
   public T: Traductor;
 
   public tieneReportes: boolean = false;
@@ -104,8 +113,15 @@ OnDestroy, OnChanges {
     ) {
     super(entidades, applog, router);
     this.T  = new Traductor(ts);
+    this.setAlturaPanelLateral(window.innerHeight);
   }
 
+  private setAlturaPanelLateral(altura: number) {
+    let h = parseInt(altura.toString(), 0) - 250;
+    h = h < 0 ? 200 : h;
+    const a = `${h}px`;
+    this.alturaComponente = a;
+  }
 
   private _CerrarDialogos() {
     if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
@@ -117,9 +133,19 @@ OnDestroy, OnChanges {
     this.location.back();
   }
 
+  public mostrarBuscarLateral() {
+    this.busquedaLateral = !this.busquedaLateral;
+    if (this.busquedaLateral) {
+
+    } else {
+      this.OcultarTarjetaTrasera();
+    }
+  }
+
   public _Reset(): void {
       if (this.tablas && this.tablas.first) this.tablas.first._Reset();
       this._CerrarDialogos();
+      this.busquedaLateral = false;
       this.tieneReportes = false;
       this.InstanciaSeleccionada = false;
       this.editarDisponible = false;
@@ -156,7 +182,7 @@ OnDestroy, OnChanges {
   }
 
    private CargaTraducciones() {
-    this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes',
+    this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes', 'ui.busqueda-lateral',
     'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
     'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
     this.T.ObtenerTraducciones();
@@ -413,13 +439,16 @@ private  ProcesaCambiosConfiguracion(): void {
     this.tablas.first.obtenerPaginaDatos(true);
   }
 
-
   public ConteoRegistros(total: number): void {
       this.totalRegistros = total;
   }
 
   public mostrarBuscar(): void {
-    this.MostrarTarjetaTrasera('buscar');
+    if (this.busquedaLateral) {
+
+    } else {
+      this.MostrarTarjetaTrasera('buscar');
+    }
   }
 
   public mostrarSelectorColumnas(): void {
@@ -431,6 +460,7 @@ private  ProcesaCambiosConfiguracion(): void {
     this.filtrosActivos = false;
     this.entidades.SetCacheFiltros(this.config.TransactionId, cache);
     this.tablas.first.obtenerPaginaDatos(true);
+    this.entidades.EmiteEventoFiltros(EventosFiltrado.EliminarFiltros);
   }
 
 

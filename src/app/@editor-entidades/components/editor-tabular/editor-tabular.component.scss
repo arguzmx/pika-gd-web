@@ -3,11 +3,20 @@
 @import '~bootstrap/scss/mixins/breakpoints';
 
 @include nb-install-component() {
+  
   .mat-toolbar-white {
     background-color: white;
   }
-  
-  
+
+  .barralateral {
+    border-left-style: outset;
+    border-left-width: 5px;
+    border-left-color: lightgray;
+    padding: 10px; 
+    overflow-y: auto; 
+    overflow-x: hidden;
+  }
+
     .toolbar-spacer {
       flex: 1 1 auto;
     }

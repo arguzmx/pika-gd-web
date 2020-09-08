@@ -1,3 +1,5 @@
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Propiedad } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
@@ -10,9 +12,10 @@ import {
   Input,
   Output,
   EventEmitter,
+  OnDestroy,
 } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
-import { EntidadesService } from '../../services/entidades.service';
+import { EntidadesService, EventosFiltrado } from '../../services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IBuscadorMetadatos } from '../../model/i-buscador-metadatos';
 import {
@@ -38,10 +41,13 @@ import { Traductor } from '../../services/traductor';
   styleUrls: ['./metadata-buscador.component.scss'],
 })
 export class MetadataBuscadorComponent extends EditorEntidadesBase
-  implements IBuscadorMetadatos, OnInit {
+  implements IBuscadorMetadatos, OnInit, OnDestroy {
+
+  private onDestroy$ = new Subject();
   // Mantiene la configutación de la entidad obtenida por el ruteo
   @Input() config: ConfiguracionEntidad;
   @Input() metadata: MetadataInfo;
+  @Input() lateral: boolean;
   @Output() EventoFiltrar = new EventEmitter();
 
   // Porpieades válidas para el filtrado
@@ -75,6 +81,12 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
     this.group = this.fb.group({});
+    this.EventosFiltrado();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   public _Reset() {
@@ -103,11 +115,24 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     }
   }
 
+  private EventosFiltrado() {
+    this.entidades.ObtieneEventosFiltros().pipe(
+      takeUntil(this.onDestroy$)
+    )
+    .subscribe(ev => {
+        switch(ev){
+          case EventosFiltrado.EliminarFiltros:
+            this.borrarFiltrosBuscador();
+            break;
+        }
+    });
+  }
 
   borrarFiltrosBuscador(): void {
     const fs = this.entidades.GetCacheFiltros(this.config.TransactionId);
+    this._EliminarTodosFiltros();
     fs.forEach( f => {
-      this._EliminarFiltro(f);
+      this._addFiltro(f.Id, null);
     });
   }
 
@@ -234,6 +259,21 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
 
   EliminarFiltro(filtro: FiltroConsulta) {
     this._EliminarFiltro(filtro);
+  }
+
+
+  private _EliminarTodosFiltros() {
+    this.propiedadesFiltro.forEach(
+      p => {
+        this.group.removeControl(CTL1_PREFIX + p.Id);
+        this.group.removeControl(CTL_NEG_PREFIX + p.Id);
+        this.group.removeControl(CTL_OP_PREFIX + p.Id);
+        if (this.maxCampos(p) === 2) {
+          this.group.removeControl(CTL2_PREFIX + p.Id);
+        }
+      }
+    );
+    this.propiedadesFiltro = [];
   }
 
   private _EliminarFiltro(filtro: FiltroConsulta) {

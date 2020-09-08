@@ -2,7 +2,7 @@ import { EntidadesService } from './../../services/entidades.service';
 import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input, OnChanges, SimpleChanges,
-  ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
+  ViewChild, TemplateRef, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { ITablaMetadatos } from '../../model/i-tabla-metadatos';
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
@@ -107,7 +107,8 @@ implements ITablaMetadatos, OnInit, OnChanges {
   };
 
   public T: Traductor;
-  constructor(entidades: EntidadesService, translate: TranslateService,
+  constructor(private cdr: ChangeDetectorRef,
+    entidades: EntidadesService, translate: TranslateService,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
     super(entidades, applog, router);
     this.T = new Traductor(translate);
