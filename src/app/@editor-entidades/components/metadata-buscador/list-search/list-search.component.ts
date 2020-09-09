@@ -93,7 +93,6 @@ ICampoBuscable {
     if (this.propiedad.AtributoLista) {
       if (this.propiedad.AtributoLista.DatosRemotos) {
         // Los datos e obhtienen desde el servidor
-
         const tieneEventos = this.propiedad.AtributosEvento  &&
         (this.propiedad.AtributosEvento.length  > 0);
 
@@ -110,6 +109,16 @@ ICampoBuscable {
 
       } else {
         this.isTypeAhead = false;
+        // Añade los valores del CSV en el caso de que existan
+        if (this.propiedad.AtributoLista.ValoresCSV) {
+          let indice: number = 0;
+          this.propiedad.AtributoLista.ValoresCSV.split(',').forEach( v => {
+            this.propiedad.ValoresLista.push({Id: v, Texto: v, Indice: indice});
+            indice ++;
+          });
+          this.propiedad.OrdenarValoresListaPorNombre = false;
+        }
+
         // Losa Vienen incluidos en el objeto
         if (this.propiedad.OrdenarValoresListaPorNombre) {
           this.list = this.Sort('Texto');

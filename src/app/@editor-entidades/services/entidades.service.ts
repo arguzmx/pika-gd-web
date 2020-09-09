@@ -708,7 +708,7 @@ public ObtenerEntidadUnica (tipo: string, id: string): Observable<any> {
           if (p.CatalogoVinculado) {
             this.BuscaIdsParaCatalogos(p, pagina).forEach( item => buscar.push(item));
           } else {
-            if (p.AtributoLista) {
+            if (p.AtributoLista && p.AtributoLista.DatosRemotos && p.AtributoLista.Entidad !== '') {
               this.BuscaIdsParaLista(p, pagina).forEach( item => buscar.push(item));
             }
           }

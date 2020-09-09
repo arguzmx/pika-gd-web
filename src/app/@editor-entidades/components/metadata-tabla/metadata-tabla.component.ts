@@ -356,28 +356,29 @@ implements ITablaMetadatos, OnInit, OnChanges {
       for (let i = 0; i < Propiedades.length; i++) {
         const c = this.metadata.Propiedades[i];
 
-        let eslista = false;
-        const esFecha = ['date', 'datetime', 'time'].indexOf(c.TipoDatoId) < 0 ? false : true;
-        if (c.AtributoLista) {
-          eslista = true;
-        }
-          if (c.MostrarEnTabla ) {
-            columnas.push({
-              Id: c.Id,
-              Nombre: c.Nombre,
-              Ordenable: c.Ordenable,
-              Buscable: c.Buscable,
-              Visible: c.Visible,
-              Alternable: c.AlternarEnTabla,
-              Tipo: c.TipoDatoId,
-              NombreI18n: c.NombreI18n,
-              EsLista: eslista,
-              EsCatalogoVinculado: c.CatalogoVinculado,
-              EsFecha: esFecha,
-            });
+        if (c.MostrarEnTabla) {
+          let eslista = false;
+          const esFecha = ['date', 'datetime', 'time'].indexOf(c.TipoDatoId) < 0 ? false : true;
+          if (c.AtributoLista && c.AtributoLista.DatosRemotos && c.AtributoLista.Entidad !== '') {
+            eslista = true;
           }
+            if (c.MostrarEnTabla ) {
+              columnas.push({
+                Id: c.Id,
+                Nombre: c.Nombre,
+                Ordenable: c.Ordenable,
+                Buscable: c.Buscable,
+                Visible: c.Visible,
+                Alternable: c.AlternarEnTabla,
+                Tipo: c.TipoDatoId,
+                NombreI18n: c.NombreI18n,
+                EsLista: eslista,
+                EsCatalogoVinculado: c.CatalogoVinculado,
+                EsFecha: esFecha,
+              });
+            }
+        }
       }
-
       return columnas;
     }
 

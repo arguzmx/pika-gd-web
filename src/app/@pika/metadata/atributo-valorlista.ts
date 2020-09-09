@@ -6,5 +6,6 @@ export class AtributoLista {
     TypeAhead: boolean;
     OrdenarAlfabetico: boolean;
     Default: string;
+    ValoresCSV?: string;
     Valores?: ValorListaOrdenada[];
 }
