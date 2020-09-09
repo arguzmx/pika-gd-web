@@ -198,7 +198,8 @@
                 "Ampliado": "Ampliado",
                 "FechaRetencionAT": "Fecha retención AT",
                 "FechaRetencionAC": "Fecha retención AC",
-                "OrigenId": "OrigenId"
+                "OrigenId": "OrigenId",
+                "Vencidos": "Dias para vencer"
             },
             "ampliacion": {
                 "Id": "Id",
