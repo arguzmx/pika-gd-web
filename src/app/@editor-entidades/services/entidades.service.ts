@@ -117,6 +117,7 @@ export class EntidadesService {
       const subject = new AsyncSubject<any>();
       this.ObtieneMetadatos(tipo).pipe(first())
       .subscribe( m =>  {
+
         const valor: DescriptorNodo = { PropId: null, PropNombre: null, PropIdraiz: '', PropIdPadre: '' };
 
         m.Propiedades.forEach(p => {
@@ -137,7 +138,8 @@ export class EntidadesService {
         if ( valor.PropId === null ||
              valor.PropNombre === null ) return null;
 
-        subject.next(valor);
+             subject.next(valor);
+
       } , (error) => {
         this.handleHTTPError(error, tipo, '');
         subject.next(null);

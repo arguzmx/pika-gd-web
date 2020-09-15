@@ -1,4 +1,4 @@
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, Output, EventEmitter, OnChanges,
   SimpleChanges, Input, OnDestroy,  ViewChild, AfterViewInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
@@ -13,6 +13,7 @@ import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { DynamicDatabase, DynamicFlatNode, DynamicDataSource } from './dynamic-database';
 import { MatTree } from '@angular/material/tree';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 
 
@@ -25,7 +26,7 @@ import { Router } from '@angular/router';
 export class EditorArbolEntidadComponent extends EditorEntidadesBase
   implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @ViewChild('arboldinamico') arbol: MatTree<DynamicFlatNode> ;
-
+    private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private database: DynamicDatabase,
@@ -35,19 +36,34 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
     super(entidades, applog, router);
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new DynamicDataSource(this.treeControl, database );
+    this.escuchaCambiosArbol();
   }
+
+  escuchaCambiosArbol() {
+    this.dataSource.dataChange
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( nodos => {
+      if (nodos.length > 0) {
+        this.mostrarArbol = true;
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
     this.dataSource._tree = this.arbol;
   }
+
   ngOnDestroy(): void {
     this.database.destroy();
     this.dataSource.destroy();
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
 
   treeControl: FlatTreeControl<DynamicFlatNode>;
 
   dataSource: DynamicDataSource;
-
+  mostrarArbol: boolean = false;
   getLevel = (node: DynamicFlatNode) => node.level;
 
   isExpandable = (node: DynamicFlatNode) => node.expandable;
@@ -64,11 +80,6 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
   validametadata: boolean = false;
   nodos: NodoJerarquico[] = [];
   idJerarquia: string = '';
-
-
-
-
-
 
   public _Reset() {
     this.descriptor = null;
@@ -89,11 +100,6 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
       }
     }
   }
-
-
-
-
-
 
   public ProcesaConfiguracion(): void {
     this.entidades.ObtieneDescriptorNodo(this.config.TipoEntidad).pipe(first())
@@ -130,6 +136,7 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
         this.descriptor).pipe(first())
         .subscribe(ok => {
           this.dataSource.data = this.database.initialData();
+          if (this.dataSource.data.length > 0) this.mostrarArbol = true;
         });
     }
   }

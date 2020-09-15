@@ -265,7 +265,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
     if (this.metadata) {
     const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
     let e = '';
-    if (i >= 0) {
+    if (i >= 0 && this.metadata.Propiedades[i].AtributoLista.Entidad) {
       e = this.metadata.Propiedades[i].AtributoLista.Entidad;
       const index = this.entidades.ListaIds.findIndex(x =>  x.Id === Id &&
         x.Entidad === e );

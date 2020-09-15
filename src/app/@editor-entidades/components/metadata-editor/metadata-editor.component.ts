@@ -95,7 +95,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges
     .subscribe( campos => {
-       // console.log(campos);
+      //  console.log(campos);
     });
   }
 
