@@ -27,6 +27,16 @@ export const menus = [
       ],
     },
     {
+      title: 'Contenido',
+      icon: 'attach-outline',
+      children: [
+        {
+          title: 'Repositorios',
+          link: '/pages/tabular/',
+          queryParams: { tipo: 'puntomontaje', id: '', sub: '' },
+        },
+      ]},
+    {
       title: 'Configuración organización',
       icon: 'map-outline',
       children: [

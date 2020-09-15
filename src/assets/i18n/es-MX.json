@@ -68,6 +68,9 @@
         "dominio": "Dominio|Dominios|el|los|globe-outline",
         "rol": "Rol|Roles|el|los|people-outline",
         "volumen": "Volumen|Volumenes|el|los|save-outline",
+        "puntomontaje": "Repositorio|Repositorios|el|los|cube-outline",
+        "carpeta": "Contenido|Contenidos|el|los|cube-outline",
+        "elemento": "Contenido|Contenidos|el|los|cube-outline",
         "elementoclasificacion": "Configuración clasificación|Configuración clasificación|el|la|book-open-outline",
         "entradaclasificacion": "Definición clasificación|Definiciones clasificación|el|las|book-open-outline",
         "cuadroclasificacion": "Cuadro clasificación|Cuadros clasificación|el|los|book-open-outline",
@@ -164,6 +167,38 @@
                 "ConfiguracionValida": "Configurado",
                 "TipoOrigenId": "TipoOrigenId",
                 "OrigenId": "OrigenId"
+            },
+            "puntomontaje": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "Eliminada": "Eliminado",
+                "VolumenDefaultId": "Volumen Default",
+                "TipoOrigenId": "TipoOrigenId",
+                "OrigenId": "OrigenId",
+                "CreadorId": "Creador",
+                "FechaCreacion": "Fecha creación"
+            },
+            "carpeta": {
+                "PuntoMontajeId": "Repositorio",
+                "Id": "Id",
+                "CreadorId": "Creador",
+                "FechaCreacion": "Fecha creación",
+                "Nombre": "Nombre",
+                "Eliminada": "Eliminado",
+                "CarpetaPadreId": "Padre",
+                "PermisoId": "Permiso",
+                "EsRaiz": "Raiz"
+            },
+            "elemento": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "CreadorId": "Creador",
+                "FechaCreacion": "Fecha creación",
+                "PuntoMontajeId": "Repositorio",
+                "VolumenId": "Volumen",
+                "CarpetaId": "Carpeta",
+                "PermisoId": "Permiso",
+                "Versionado": "Versionado"
             },
             "tipoarchivo": {
                 "Id": "Id",
