@@ -1,5 +1,102 @@
-<b>Copiar modelo de panel de la UI básica</b>
+<div class="row">
+    <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+            <div class="col-3">
+                <span>Administrador de Permisos</span>
+            </div>
+            <div class="col-4 row">
+                <!-- <nb-select [(selected)]="entidadSeleccionadaId" (selectedChange)="ActualizaPermisosEntidad($event)"
+                    shape="round" size="small" status="info" class="block">
+                    <nb-option-group title="Roles">
+                        <nb-option *ngFor="let r of roles" [value]="r.Id">
+                            {{r.Nombre}}
+                        </nb-option>
+                    </nb-option-group>
+                    <nb-select>
+                        <nb-autocomplete>
+                            <nb-option-group title="Usuarios">
+                                <input type="text" />
+                            </nb-option-group>
+                        </nb-autocomplete>
+                    </nb-select>
+                </nb-select> -->
 
-<div *ngFor="let app of aplicaciones; let i = index">
-    <ngx-permisos-aplicacion [aplicacion]="app"></ngx-permisos-aplicacion>
+
+                <input nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios" 
+                    (keyup)="ObtieneUsuarios($event.target.value)"
+                    [nbAutocomplete]="auto"  [value]="textoEntidadSeleccionada"/>
+                <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event)" 
+                    >
+                    <nb-option-group title="Roles">
+                        <nb-option *ngFor="let r of roles" [value]="r.Id">
+                            {{r.Nombre}}
+                        </nb-option>
+                    </nb-option-group>
+                    <nb-option-group title="Usuarios">
+                        <nb-option *ngFor="let u of usuarios" [value]="u.Id">
+                            {{u.Texto}}
+                        </nb-option>
+                    </nb-option-group>
+                </nb-autocomplete>
+
+            </div>
+            <div class="col-5 d-flex justify-content-end">
+                <button mat-icon-button nbTooltip="Guardar" on-click="GuardaPermisos()">
+                    <mat-icon>save</mat-icon>
+                </button>
+                <button mat-icon-button nbTooltip="Establecer todos" on-click="MarcaTodos()">
+                    <mat-icon>check_box</mat-icon>
+                </button>
+                <button mat-icon-button nbTooltip="Borrar todos" on-click="DesmarcaTodos()">
+                    <mat-icon>check_box_outline_blank</mat-icon>
+                </button>
+            </div>
+        </mat-toolbar>
+    </div>
+
+    <div class="col-lg-12">
+        <nb-reveal-card [showToggleButton]="false">
+            <nb-card-front>
+                <nb-card accent="info" size="large">
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form [formGroup]="formPermisosEntidad">
+                                    <div *ngFor="let app of aplicaciones; let i = index">
+                                        <ngx-permisos-aplicacion [aplicacion]="app"
+                                            [entidadSeleccionadaId]="entidadSeleccionadaId">
+                                        </ngx-permisos-aplicacion>
+                                        <br>
+                                        <mat-divider [inset]="true"></mat-divider>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                    <nb-card-footer>
+                    </nb-card-footer>
+                </nb-card>
+            </nb-card-front>
+
+            <nb-card-back>
+                <nb-card accent="danger" size="large">
+                    <nb-card-header>
+                        <label>Atras</label>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </nb-card-body>
+                </nb-card>
+            </nb-card-back>
+        </nb-reveal-card>
+    </div>
 </div>
