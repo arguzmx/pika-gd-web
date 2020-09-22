@@ -51,7 +51,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NbTooltipModule, NbPopoverModule, NbToggleModule, NbInputModule,
 NbCardModule, NbButtonModule, NbActionsModule, NbUserModule, NbCheckboxModule,
 NbRadioModule, NbFormFieldModule, NbIconModule, NbDatepickerModule,
-NbSelectModule, NbMenuModule } from '@nebular/theme';
+NbSelectModule, NbMenuModule, NbAutocompleteModule } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { ThemeModule } from '../@theme/theme.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -107,6 +107,7 @@ import { RouterModule } from '@angular/router';
     PortalModule,
     ScrollingModule,
     NgSelectModule,
+    NbAutocompleteModule,
     NbTooltipModule,
     NbPopoverModule,
     NbToggleModule,

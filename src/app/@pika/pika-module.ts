@@ -30,7 +30,8 @@ import { SesionQuery, AppBusStore, PropiedadesBus, SesionStore, AppBusQuery } fr
 import { TraduccionEntidad } from './comunes/index';
 import { DominioActivo, UnidadOrganizacionalActiva } from './sesion';
 import { httpInterceptorProviders } from './pika-api/interceptor-provider';
-import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo } from './seguridad';
+import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo,
+        TraduccionAplicacionModulo, Rol } from './seguridad';
 
 @NgModule({
   imports: [],
@@ -51,5 +52,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
-  LinkVista, ParametroLinkVista,
-   };
+  LinkVista, ParametroLinkVista, Rol,
+};
