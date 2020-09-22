@@ -169,6 +169,8 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
       this.textoEntidadSeleccionada = this.usuarios.find(x => x.Id === this.entidadSeleccionadaId).Texto.split(' ')[0];
     }
     if (evt) evt.target.value = this.textoEntidadSeleccionada;
+
+    this.focusInput = false;
   }
 
   FocusInputEntidad(evt) {

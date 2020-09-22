@@ -28,6 +28,7 @@
                     <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios"
                         (keyup)="ObtieneUsuarios($event.target.value)"
                         (focusout)="EstableceTextoEntidad($event)"
+                        (focus)='focusInput = true'
                         [nbAutocomplete]="auto" [value]="textoEntidadSeleccionada" />
                     <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus()">
                         <nb-icon icon="close-outline"></nb-icon>
