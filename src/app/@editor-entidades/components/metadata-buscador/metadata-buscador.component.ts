@@ -34,6 +34,9 @@ import {
 } from '../../model/constantes';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+
+
 
 @Component({
   selector: 'ngx-metadata-buscador',
@@ -76,8 +79,9 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     applog: AppLogService,
     router: Router,
     private fb: FormBuilder,
+    diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
     this.group = this.fb.group({});

@@ -27,6 +27,9 @@ import {NgxLocalStorageModule} from 'ngx-localstorage';
 import { CookieService } from 'ngx-cookie-service';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { AcesoModule } from './@acceso/aceso.module';
+import { DiccionarioNavegacion } from './@editor-entidades/editor-entidades.module';
+import { PIKADiccionarioNavegacion } from './@core/data/diccionario-vistas';
+
 
 
 @NgModule({
@@ -65,7 +68,8 @@ import { AcesoModule } from './@acceso/aceso.module';
   providers: [
     IsChldrenAuthorizedGuard,
     httpInterceptorProviders,
-    PikaSesionService, CookieService,
+    PikaSesionService, CookieService, 
+    { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion} ,
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
     AppLogService,
   ],

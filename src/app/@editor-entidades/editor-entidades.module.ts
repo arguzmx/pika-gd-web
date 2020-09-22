@@ -93,6 +93,7 @@ import { ListEditorComponent } from './components/metadata-editor/list-editor/li
 import { DatetimeEditorComponent } from './components/metadata-editor/datetime-editor/datetime-editor.component';
 import { DatetimeSearchComponent } from './components/metadata-buscador/datetime-search/datetime-search.component';
 import { ListSearchComponent } from './components/metadata-buscador/list-search/list-search.component';
+import { IDiccionarioNavegacion, DiccionarioNavegacion } from './model/i-diccionario-navegacion';
 
 @NgModule({
   imports: [
@@ -199,4 +200,5 @@ import { ListSearchComponent } from './components/metadata-buscador/list-search/
  class EditorEntidadesModule { }
 
  export { EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
-  EditorBootTabularComponent, EditorBootJerarquicoComponent };
+  EditorBootTabularComponent, EditorBootJerarquicoComponent,
+  IDiccionarioNavegacion, DiccionarioNavegacion};

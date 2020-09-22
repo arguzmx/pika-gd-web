@@ -14,6 +14,8 @@ import { DynamicDatabase, DynamicFlatNode, DynamicDataSource } from './dynamic-d
 import { MatTree } from '@angular/material/tree';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+
 
 
 
@@ -32,8 +34,10 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
     private database: DynamicDatabase,
     entidades: EntidadesService,
     router: Router,
-    applog: AppLogService) {
-    super(entidades, applog, router);
+    applog: AppLogService,
+    diccionarioNavegacion: DiccionarioNavegacion,
+    ) {
+    super(entidades, applog, router, diccionarioNavegacion);
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new DynamicDataSource(this.treeControl, database );
     this.escuchaCambiosArbol();

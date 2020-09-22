@@ -6,6 +6,7 @@ import { EntidadesService } from '../../services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IVisorMetadatos } from '../../model/i-visor-metadatos';
 import { Router } from '@angular/router';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 
 @Component({
   selector: 'ngx-metadata-visor',
@@ -21,8 +22,9 @@ implements IVisorMetadatos, OnInit {
   // Cosntructor del componente
   constructor(entidades: EntidadesService,
     ts: TranslateService, applog: AppLogService,
+    diccionarioNavegacion: DiccionarioNavegacion,
     router: Router) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
   }
 
 

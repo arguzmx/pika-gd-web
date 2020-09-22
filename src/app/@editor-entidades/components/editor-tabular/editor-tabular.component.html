@@ -18,6 +18,18 @@
         </span>
       </span>
       <span class="toolbar-spacer"></span>
+      <button 
+      *ngFor="let link of botonesLinkVista"
+      mat-icon-button
+      on-click="navegarVista(link)"
+      [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom"
+      aria-label="tituloNavegarLista(link)"
+    >
+      <mat-icon>{{link.Icono}}</mat-icon>
+    </button>
+
+    <!-- Separadador -->
+    <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
 
       <!-- actialziar lista de elemento -->
       <button

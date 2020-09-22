@@ -4,7 +4,7 @@ import {
   AppLogService,
   EntidadVinculada,
   TipoDespliegueVinculo,
-  MetadataInfo,
+  MetadataInfo, LinkVista,
 } from '../../@pika/pika-module';
 import { forkJoin } from 'rxjs';
 import { ConfiguracionEntidad } from './configuracion-entidad';
@@ -19,20 +19,26 @@ import {
   PARAM_TIPO_DESPLIEGUE,
 } from './constantes';
 import { Router } from '@angular/router';
+import { Traductor } from '../services/traductor';
+import { DiccionarioNavegacion } from './i-diccionario-navegacion';
 
 export class EditorEntidadesBase {
   // Propiedades para la edición indivicual en una entidad vinculada
   public configTmp: ConfiguracionEntidad;
   public metadataTmp: MetadataInfo;
   public entidadTmp: any = null;
+  public T: Traductor;
   // Determina si la entida den edición es una entidad vinculada
   public EditandoVinculada = false;
 
+  public botonesLinkVista: LinkVista[] = [];
+  public tieneBotonesVista: boolean = false;
 
   constructor(
     public entidades: EntidadesService,
     public applog: AppLogService,
     public router: Router,
+    public diccionarioNavegacion: DiccionarioNavegacion,
   ) {}
 
   // Gestion de vínculose
@@ -186,6 +192,38 @@ export class EditorEntidadesBase {
     url = url + `&${PARAM_TIPO_CONTENIDO_JERARQUICO}=${entidadContenido}`;
     url = url + `&${PARAM_ID_JERARQUICO}=${Id}`;
     return url;
+  }
+
+  public navegarVista(link: LinkVista) {
+    this.procesaNavegarVista(link);
+  }
+
+  // Este medodo debe sobrescribirse en el control cliente
+  public procesaNavegarVista(link: LinkVista) {
+    throw new Error('El método procesaNavegarVista se encuentra sin implementarse');
+  }
+
+  public ejecutaNavegarVista(link: LinkVista, entidad: any, metadata: MetadataInfo) {
+      const parametros = {};
+      metadata.Propiedades.forEach( p => {
+        if (p.ParametroLinkVista) {
+          parametros[p.Id] = entidad[p.Id];
+        }
+      });
+      const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
+      if (url) {
+        this.router.navigate([url], { queryParams: parametros});
+      } else {
+        this.applog.FallaT(
+          'editor-pika.mensajes.err-config-vinculo',
+          null,
+          null,
+        );
+      }
+  }
+
+  public tituloNavegarLista(link: LinkVista) {
+    return this.T.t[`vistas.${link.Vista}`];
   }
 
 }

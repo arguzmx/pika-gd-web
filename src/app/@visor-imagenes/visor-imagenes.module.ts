@@ -75,6 +75,7 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import { AngularSplitModule } from 'angular-split';
 import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumbnails.component';
 import { HeaderVisorComponent } from './components/header-visor/header-visor.component';
+import { UploaderModule } from '../@uploader/uploader.module';
 
 @NgModule({
   imports: [
@@ -148,8 +149,10 @@ import { HeaderVisorComponent } from './components/header-visor/header-visor.com
     NbMenuModule,
     RouterModule,
     MatSliderModule,
+    UploaderModule,
   ],
-  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent],
+  declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
+    PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
 })
 export class VisorImagenesModule { }

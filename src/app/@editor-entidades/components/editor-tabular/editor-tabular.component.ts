@@ -21,6 +21,7 @@ import { EntidadVinculada,
 import { Location } from '@angular/common';
 import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -98,8 +99,6 @@ OnDestroy, OnChanges {
 
   public busquedaLateral: boolean = false;
 
-  public T: Traductor;
-
   public tieneReportes: boolean = false;
 
   // Cosntructor del componente
@@ -110,8 +109,9 @@ OnDestroy, OnChanges {
     router: Router,
     private dialogService: NbDialogService,
     private location: Location,
+    diccionarioNavegacion: DiccionarioNavegacion,
     ) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
     this.T  = new Traductor(ts);
     this.setAlturaPanelLateral(window.innerHeight);
   }
@@ -277,7 +277,17 @@ private  ProcesaCambiosConfiguracion(): void {
       });
     }
 
+    if (this.metadata.VistasVinculadas) {
+      this.metadata.VistasVinculadas.forEach( link => {
+          this.T.ts.push(`vistas.${link.Vista}`);
+      });
+      this.tieneBotonesVista = this.metadata.VistasVinculadas.length > 0;
+    }
+
     this.T.ObtenerTraducciones();
+
+    this.botonesLinkVista = this.metadata.VistasVinculadas ?? [];
+
     this.T.translate.get([ KeyNombreEntidad ]).pipe(first())
     .subscribe( t => {
         this.NombreEntidad = this.T.ObtienePlural(t[KeyNombreEntidad]);

@@ -7,12 +7,15 @@ import {
 } from '@angular/common/http';
 import { Subject, Observable, Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { IUploadConfig } from './model/i-upload-config';
 
 const url = environment.uploadUrl;
 
 @Injectable()
 export class UploadService {
   constructor(private http: HttpClient) {}
+
+  public config: IUploadConfig;
 
   public upload(
     files: any[] = [],
@@ -22,6 +25,9 @@ export class UploadService {
 
     for (const file of files) {
       const formData: FormData = new FormData();
+      formData.append('VolumenId', this.config.VolumenId);
+      formData.append('PuntoMontajeId', this.config.PuntoMontajeId);
+      formData.append('ElementoId', this.config.ElementoId);
       formData.append('file', file, file.name);
 
       const req = new HttpRequest('POST', url, formData, {

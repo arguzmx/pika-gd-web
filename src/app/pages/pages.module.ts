@@ -7,9 +7,12 @@ import { HostUploaderComponent } from './host-uploader/host-uploader.component';
 import { UploaderModule } from '../@uploader/uploader.module';
 import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module'
 import { GestorPermisosModule } from '../@gestor-permisos/gestor-permisos.module';
+import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
+import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module';
 
 @NgModule({
   imports: [
+    VisorImagenesModule,
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,
@@ -20,6 +23,7 @@ import { GestorPermisosModule } from '../@gestor-permisos/gestor-permisos.module
   declarations: [
     PagesComponent,
     HostUploaderComponent,
+    HostVisorContenidoComponent,
   ],
 })
 export class PagesModule {
