@@ -96,8 +96,6 @@ export class PermisosService {
 
   public ObtenerPermisos(tipo: string, id: string): Observable<PermisoAplicacion[]> {
     const permisosSubject = new AsyncSubject<PermisoAplicacion[]>();
-    // tipo = tipo === 'usuario' ? 'U' : 'R' || tipo === 'rol' ? 'R' : 'U';
-    console.log(tipo);
     const url = this.CrearEndpoint('sistema/seguridad/permisos/' + tipo + '/' + id);
     this.http
       .get<PermisoAplicacion[]>(url)

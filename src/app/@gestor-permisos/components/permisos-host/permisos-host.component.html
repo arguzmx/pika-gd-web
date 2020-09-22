@@ -4,7 +4,7 @@
             <div class="col-3">
                 <span>Administrador de Permisos</span>
             </div>
-            <div class="col-4 row">
+            <div class="col-4">
                 <!-- <nb-select [(selected)]="entidadSeleccionadaId" (selectedChange)="ActualizaPermisosEntidad($event)"
                     shape="round" size="small" status="info" class="block">
                     <nb-option-group title="Roles">
@@ -20,13 +20,20 @@
                         </nb-autocomplete>
                     </nb-select>
                 </nb-select> -->
-
-
-                <input nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios" 
-                    (keyup)="ObtieneUsuarios($event.target.value)"
-                    [nbAutocomplete]="auto"  [value]="textoEntidadSeleccionada"/>
-                <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event)" 
-                    >
+                <nb-form-field>
+                    <button nbPrefix nbButton ghost 
+                    (click)="focusInput=!focusInput; focusInput ? inputEntidad.focus() : inputEntidad.focusOut() ">
+                        <nb-icon [icon]="!focusInput ? 'chevron-down-outline' : 'chevron-up-outline'"></nb-icon>
+                    </button>
+                    <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios"
+                        (keyup)="ObtieneUsuarios($event.target.value)"
+                        (focusout)="EstableceTextoEntidad($event)"
+                        [nbAutocomplete]="auto" [value]="textoEntidadSeleccionada" />
+                    <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus()">
+                        <nb-icon icon="close-outline"></nb-icon>
+                    </button>
+                </nb-form-field>
+                <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event)">
                     <nb-option-group title="Roles">
                         <nb-option *ngFor="let r of roles" [value]="r.Id">
                             {{r.Nombre}}

@@ -25,6 +25,7 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
   entidadSeleccionadaId: string = '';
   textoEntidadSeleccionada: string = '';
 
+  focusInput: boolean = false;
   limpiarPermisosApp: boolean = false; // **
   formPermisosEntidad = new FormGroup({});
 
@@ -72,21 +73,6 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
     });
   }
 
-  ActualizaPermisosEntidad(entidadId) {
-    const rol = this.roles.find( x => x.Id === entidadId);
-    if (rol) {
-      this.tipoEntidadSeleccionada = TipoEntidadEnum.rol;
-      this.textoEntidadSeleccionada = rol.Nombre;
-    }else {
-      this.tipoEntidadSeleccionada = TipoEntidadEnum.usuario;
-      this.textoEntidadSeleccionada = this.usuarios.find(x => x.Id === entidadId).Texto.split(' ')[0];
-    }
-
-    this.entidadSeleccionadaId = entidadId;
-    // this.limpiarPermisosApp = true; // **
-    this.ObtienePermisosEntidad();
-  }
-
   GuardaPermisos() {
     this.servicioPermisos.GuardaPermisos();
   }
@@ -115,6 +101,12 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
     this.servicioPermisos.EstablecePermisosModulo(this.permisosUI);
   }
 
+  ActualizaPermisosEntidad(entidadId) {
+    this.entidadSeleccionadaId = entidadId;
+    this.EstableceTextoEntidad();
+    // this.limpiarPermisosApp = true; // **
+    this.ObtienePermisosEntidad();
+  }
 
   // -> ObtienePermisosEntidad()
   //    -> CreaPermisosModulo()
@@ -167,5 +159,22 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
     }
   }
 
+  EstableceTextoEntidad(evt?) {
+    const rol = this.roles.find( x => x.Id === this.entidadSeleccionadaId);
+    if (rol) {
+      this.tipoEntidadSeleccionada = TipoEntidadEnum.rol;
+      this.textoEntidadSeleccionada = rol.Nombre;
+    }else {
+      this.tipoEntidadSeleccionada = TipoEntidadEnum.usuario;
+      this.textoEntidadSeleccionada = this.usuarios.find(x => x.Id === this.entidadSeleccionadaId).Texto.split(' ')[0];
+    }
+    if (evt) evt.target.value = this.textoEntidadSeleccionada;
+  }
+
+  FocusInputEntidad(evt) {
+    this.focusInput = !this.focusInput;
+  }
+
+  FocusoutInputEntidad(evt) {}
 
 }
