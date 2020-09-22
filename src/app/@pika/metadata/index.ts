@@ -15,4 +15,5 @@ export * from './atributo-metadato';
 export * from './validador-texto';
 export * from './valor-lista';
 export * from './iproveedor-reporte';
+export * from './link-vista';
 

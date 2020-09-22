@@ -45,6 +45,7 @@ import { HTML_PASSWORD_CONFIRM,
   HTML_CHECKBOX_MULTI } from '../../../@pika/pika-module';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 
 @Component({
   selector: 'ngx-metadata-editor',
@@ -87,9 +88,10 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
+    diccionarioNavegacion: DiccionarioNavegacion,
     private fb: FormBuilder,
   ) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();

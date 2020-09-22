@@ -17,6 +17,7 @@ import { NbDialogService } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
 import { format } from 'date-fns';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 
 
 @Component({
@@ -108,9 +109,10 @@ implements ITablaMetadatos, OnInit, OnChanges {
 
   public T: Traductor;
   constructor(private cdr: ChangeDetectorRef,
-    entidades: EntidadesService, translate: TranslateService,
+    entidades: EntidadesService, translate: TranslateService, 
+    diccionarioNavegacion: DiccionarioNavegacion,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(translate);
   }
 
@@ -512,5 +514,9 @@ AlternarCheckboxes(): void {
         value: val,
       });
    }
+  }
+
+  public elementoSeleccionado(): any {
+    return this.entidadseleccionada;
   }
 }

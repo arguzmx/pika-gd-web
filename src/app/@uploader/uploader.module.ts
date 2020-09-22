@@ -12,6 +12,7 @@ import { FileDropComponent } from './file-drop/file-drop.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule, NbTooltipModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { IUploadConfig } from './model/i-upload-config';
 
 
 @NgModule({
@@ -35,4 +36,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
   entryComponents: [FileDropComponent],
   providers: [UploadService],
 })
-export class UploaderModule {}
+class UploaderModule {}
+
+export { UploaderModule, IUploadConfig };
+
