@@ -1,1 +1,39 @@
-<p>+{{modulo.Nombre}}</p>
+<div class="row">
+    <div class="col-4">
+        <p>{{modulo.Nombre}}</p>
+    </div>
+    <div class="col-8">
+        <div [formGroup]="formPermisosModulo" class="row d-flex justify-content-start">
+            <div class="col-2">
+                <nb-checkbox formControlName="leer" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.leer)">
+                </nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox formControlName="escribir" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.escribir)">
+                </nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox formControlName="eliminar" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.eliminar)">
+                </nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox formControlName="administrar" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.administrar)">
+                </nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox formControlName="ejecutar" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.ejecutar)">
+                </nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox formControlName="denegar" class="subtitle"
+                    (checkedChange)="EstablecePermisoModulo($event, tipoPermiso.denegar)">
+                </nb-checkbox>
+            </div>
+        </div>
+    </div>
+</div>

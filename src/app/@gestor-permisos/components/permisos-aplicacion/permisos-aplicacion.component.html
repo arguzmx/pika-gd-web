@@ -1,4 +1,36 @@
-<p>{{aplicacion.Nombre}}</p>
+<div class="row">
+    <div class="col-4"><b>{{aplicacion.Nombre}}</b></div>
+    <div class="col-8">
+        <div class="row">
+            <div class="col-2">
+                <nb-checkbox id="leer" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.leer)">Leer</nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox id="escribir" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.escribir)">Escribir</nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox id="eliminar" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.eliminar)">Eliminar</nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox id="administrar" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.administrar)">Administrar</nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox id="ejecutar" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.ejecutar)">Ejecutar</nb-checkbox>
+            </div>
+            <div class="col-2">
+                <nb-checkbox id="denegar" class="subtitle"
+                    (checkedChange)="EstablecePermisoApp(tipoPermiso.denegar)">Denegar</nb-checkbox>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
 
 <div *ngFor="let m of aplicacion.Modulos; let i = index">
     <ngx-permisos-modulo [modulo]="m"></ngx-permisos-modulo>
