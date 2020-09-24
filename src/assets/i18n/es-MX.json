@@ -60,6 +60,9 @@
         "between": "Entre",
         "fulltext": "Texto"
     },
+    "vistas": {
+        "visorcontenido": "Visor de contenido"
+    },
     "entidades": {
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",
         "entidad-unica": "Entidad|Entidades|la|las|menu-outline",

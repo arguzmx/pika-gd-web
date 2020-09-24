@@ -6,6 +6,7 @@ import { ValorListaOrdenada } from './valor-lista';
 import { AtributoVistaUI } from './atributos-vista-ui';
 import { AtributoLista } from './atributo-valorlista';
 import { AtributoEvento } from './atributo-evento';
+import { ParametroLinkVista } from './link-vista';
 
 export interface Propiedad {
     Id: string;
@@ -45,4 +46,5 @@ export interface Propiedad {
     Etiqueta: boolean;
     CatalogoVinculado?: boolean;
     EmitirCambiosValor?: boolean;
+    ParametroLinkVista?: ParametroLinkVista;
 }

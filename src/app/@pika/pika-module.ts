@@ -23,7 +23,7 @@ import { Acciones, MetadataInfo, EntidadVinculada, TipoCardinalidad,
   AtributoVistaUI,
   PLATAFORMA_WEB,
   Eventos, Evento, HTML_DATETIME, HTML_DATE, HTML_TIME,
-  AtributoEvento, IProveedorReporte, HTML_SELECT_MULTI } from './metadata/index';
+  AtributoEvento, IProveedorReporte, HTML_SELECT_MULTI, LinkVista, ParametroLinkVista } from './metadata/index';
 import { NodoJerarquico, Operacion, FiltroConsulta, Consulta, TextpOperador, Paginado } from './consulta/index';
 import { AppLogService } from './servicios/index';
 import { SesionQuery, AppBusStore, PropiedadesBus, SesionStore, AppBusQuery } from './state/index';
@@ -52,5 +52,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
-  Rol,
-   };
+  LinkVista, ParametroLinkVista,Rol,
+};

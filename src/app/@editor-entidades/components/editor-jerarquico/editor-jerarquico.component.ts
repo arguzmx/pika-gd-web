@@ -17,6 +17,7 @@ import { Subject, forkJoin } from 'rxjs';
 import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscador.component';
 import {
   EntidadVinculada,
+  LinkVista,
   TipoCardinalidad,
 } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
@@ -33,6 +34,8 @@ import { MetadataEditorComponent } from '../metadata-editor/metadata-editor.comp
 import { EventosArbol } from '../../model/eventos-arbol';
 import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
+import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -58,12 +61,13 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     router: Router,
     private dialogService: NbDialogService,
     private location: Location,
+    diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router);
+    super(entidades, applog, router, diccionarioNavegacion);
     this.T  = new Traductor(ts);
   }
 
-  public T: Traductor;
+
 
   @Input() config: ConfiguracionEntidadJerarquica;
   // config: ConfiguracionEntidad;
@@ -144,6 +148,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   public NodoArbolSeleccionado: DynamicFlatNode = null;
 
 
+
   private _CerrarDialogos() {
     if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
     if (this.dialogLinkPickRef) this.dialogLinkPickRef.close();
@@ -176,6 +181,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     this.ContenidoTarjetaTrasera = '';
     this.VistaTrasera = false;
     this.MostrarRegresar = false;
+    this.botonesLinkVista = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -347,7 +353,16 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       });
     }
 
+    if (this.metadataC.VistasVinculadas) {
+      this.metadataC.VistasVinculadas.forEach( link => {
+          this.T.ts.push(`vistas.${link.Vista}`);
+      });
+      this.tieneBotonesVista = this.metadataC.VistasVinculadas.length > 0;
+    }
+
     this.T.ObtenerTraducciones();
+    this.botonesLinkVista = this.metadataC.VistasVinculadas ?? [];
+
     this.T.translate
       .get([KeyNombreEntidadJ])
       .pipe(first())
@@ -769,5 +784,17 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       Id: 'Eliminada',
       Valor: [false],
     };
+  }
+
+  public procesaNavegarVista(link: LinkVista) {
+    if (this.InstanciaSeleccionadaC) {
+      this.ejecutaNavegarVista(link, this.entidadC, this.metadataC);
+    } else {
+      this.applog.AdvertenciaT(
+        'editor-pika.mensajes.warn-sin-seleccion',
+        null,
+        null,
+      );
+    }
   }
 }

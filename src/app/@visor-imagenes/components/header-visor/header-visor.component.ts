@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { Pagina, OperacionHeader } from '../../model/pagina';
   styleUrls: ['./header-visor.component.scss']
 })
 export class HeaderVisorComponent implements OnInit, OnDestroy {
-
+  @Output() callUpload = new  EventEmitter();
   pagina: Pagina = null;
   operaciones = OperacionHeader;
   private onDestroy$: Subject<void> = new Subject<void>();
@@ -37,5 +37,11 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
   EstableceOperacionPagina(operacion: OperacionHeader) {
     this.servicioVisor.EstableceOperacionHeader(operacion);
   }
+
+
+  doUpload() {
+    this.callUpload.emit();
+  }
+
 
 }

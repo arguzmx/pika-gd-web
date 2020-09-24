@@ -10,6 +10,12 @@ export interface Pagina {
     Alto?: number;
     Ancho?: number;
     Rotacion?: number;
+    EsAudio: boolean;
+    EsVideo: boolean;
+    EsPDF: boolean;
+    TieneMiniatura: boolean;
+    Indexada: boolean;
+    VolumenId: string;
 }
 
 export enum OperacionHeader {
