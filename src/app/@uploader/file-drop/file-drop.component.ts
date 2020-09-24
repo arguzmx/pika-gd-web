@@ -20,7 +20,7 @@ export class FileDropComponent implements OnInit {
     private translate: TranslateService,
     public uploadService: UploadService,
     public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
   ) {
     this.accept = data.accept;
     this.maxSize = data.maxSize;
@@ -85,7 +85,7 @@ export class FileDropComponent implements OnInit {
     this.progress = this.uploadService.upload(this.files);
     // tslint:disable-next-line: forin
     for (const key in this.progress) {
-      this.progress[key].progress.subscribe((val) => console.log(val));
+      this.progress[key].progress.subscribe((val) => console.log(`${key} ${val}`));
     }
 
     // convert the progress map into an array

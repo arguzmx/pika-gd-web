@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
@@ -5,6 +6,7 @@ import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
 import { resolve } from 'dns';
+import { IUploadConfig } from '../../@uploader/uploader.module';
 
 @Injectable()
 export class VisorImagenesService {
@@ -13,13 +15,17 @@ export class VisorImagenesService {
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
 
   documento: Documento = null;
-
+  config: IUploadConfig = null;
   thumbActivo: Pagina = null;
   thumbSeleccionados: Pagina[] = [];
   inicioSeleccion: Pagina = null;
   finSeleccion: Pagina = null;
 
   constructor(private docService: DocumentosService) {}
+
+  private DepuraUrl(url: string): string {
+    return url.replace(/\/$/, '') + '/';
+  }
 
   public ObtieneDocumento(DocumentoId: string): Observable<Documento> {
     // Un AsyncSubject devuelve el último valor obtenido ccuando se completa (subject.complete)
@@ -30,7 +36,26 @@ export class VisorImagenesService {
       .subscribe(
         (documento) => {
           this.documento = documento;
+
+          for (let i = 0; i < this.documento.Paginas.length; i++ ) {
+            let url = `${this.config.VolumenId}/`;
+            url = url + `${this.config.ElementoId}/`;
+            url = url + `${this.config.VersionId}/`;
+            url = url + `${this.documento.Paginas[i].Id}/`;
+            url = url + `${this.documento.Paginas[i].Extension}`;
+
+            this.documento.Paginas[i].Url = `${this.DepuraUrl(environment.mediaUrl)}pagina/` + url;
+            if ( this.documento.Paginas[i].TieneMiniatura ) {
+              this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(environment.mediaUrl)}mini/` + url;
+            } else {
+              this.documento.Paginas[i].UrlThumbnail = '/assets/images/file.png';
+            }
+          }
+
           documento.Paginas.sort((a, b) => a.Indice - b.Indice);
+
+          console.log(documento);
+
           subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
         },
         (error) => {

@@ -46,10 +46,11 @@ AfterViewInit, OnChanges {
 
   private procesaConfiguracion() {
     this.Titulo = this.config.Nombre;
+    this.servicioVisor.config = this.config;
   }
 
   ngAfterViewInit(): void {
-    this.servicioVisor.ObtieneDocumento('EjmeploId')
+    this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( doc =>  {
         this.documento = doc;

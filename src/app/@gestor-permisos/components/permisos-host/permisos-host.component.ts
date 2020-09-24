@@ -66,7 +66,6 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
   ObtieneUsuarios(filtro): void {
     this.servicioPermisos.ObtenerUsuarios(filtro)
     .subscribe(usuarios => {
-      console.log(usuarios);
       usuarios.forEach(x => x.Texto = x.Texto.split(' ')[2]
                       + ' ' + x.Texto.split(' ')[1] + ' ' + x.Texto.split(' ')[0]);
       this.usuarios = usuarios;
@@ -155,7 +154,6 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
           });
         }
       });
-      console.log(this.permisosUI);
     }
   }
 

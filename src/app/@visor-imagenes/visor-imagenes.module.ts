@@ -76,6 +76,11 @@ import { AngularSplitModule } from 'angular-split';
 import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumbnails.component';
 import { HeaderVisorComponent } from './components/header-visor/header-visor.component';
 import { UploaderModule } from '../@uploader/uploader.module';
+import { VisorTifComponent } from './components/visor-tif/visor-tif.component';
+import { VisorPdfComponent } from './components/visor-pdf/visor-pdf.component';
+import { VisorAudioComponent } from './components/visor-audio/visor-audio.component';
+import { VisorVideoComponent } from './components/visor-video/visor-video.component';
+import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
 
 @NgModule({
   imports: [
@@ -152,7 +157,7 @@ import { UploaderModule } from '../@uploader/uploader.module';
     UploaderModule,
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-    PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent ],
+    PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent, VisorTifComponent, VisorPdfComponent, VisorAudioComponent, VisorVideoComponent, VisorOtroComponent ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
 })
 export class VisorImagenesModule { }

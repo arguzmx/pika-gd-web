@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IUploadConfig } from '../../@uploader/uploader.module';
+import { UploadService } from '../../@uploader/uploader.service';
 
 @Component({
   selector: 'ngx-host-visor-contenido',
@@ -20,7 +21,10 @@ export class HostVisorContenidoComponent implements OnInit {
         this.config = { ElementoId: params['Id'],
         VolumenId: params['VolumenId'],
         PuntoMontajeId: params['PuntoMontajeId'],
-        Nombre: params['Nombre'] };
+        Nombre: params['Nombre'],
+        TransactionId: UploadService.NewGuid(),
+        VersionId: params['VersionId'],
+       };
       });
   }
 

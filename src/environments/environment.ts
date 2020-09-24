@@ -15,5 +15,7 @@ export const environment = {
   editorToken: 'tipo',
   callbackRoute: '/pages/tabular?tipo=volumen&id=&sub=',
   cacheActivo: true,
-  uploadUrl: 'http://localhost:5000/api/v1.0/Upload/ContenidoFiltrado',
+  uploadUrl: 'http://localhost:5000/api/v1.0/upload',
+  visordUrl: 'http://localhost:5000/api/v1.0/visor',
+  mediaUrl: 'http://localhost:5000/api/v1.0/media',
 };

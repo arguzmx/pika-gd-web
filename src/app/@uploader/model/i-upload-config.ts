@@ -3,4 +3,6 @@ export interface IUploadConfig {
     ElementoId: string;
     VolumenId: string;
     PuntoMontajeId: string;
+    TransactionId: string;
+    VersionId: string;
 }
