@@ -1,10 +1,12 @@
 import { environment } from './../../../environments/environment.prod';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
-import { Aplicacion, PermisoAplicacion, Rol } from '../../@pika/pika-module';
+import { Aplicacion, PermisoAplicacion, Rol, AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
 import { FormGroup } from '@angular/forms';
+import { EntidadesService } from '../../@editor-entidades/services/entidades.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum PermisosEnum {
   leer = 0,
@@ -28,7 +30,10 @@ export class PermisosService {
   private subjectFormPermisos = new BehaviorSubject<FormGroup>(null);
 
   private roles: Rol[] = null;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private applog: AppLogService,
+              private ts: TranslateService,
+              ) {}
 
   private CrearEndpoint(sufijo: string): string {
     return environment.apiUrl.replace(/\/$/, '') + '/' + sufijo;
@@ -118,11 +123,12 @@ export class PermisosService {
     this.http.post<string>(url, this.FiltraPermisosModulo(this.subjectPermisosModuloAplicacion.value))
     .pipe(first())
     .subscribe(result => {
-      console.log(result);
       resultSubject.next(result);
+      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-add', null, { nombre: 'Permisos'});
     },
     error => {
-      resultSubject.next('');
+      this.handleHTTPError(error, 'permisos', '');
+      resultSubject.next(null);
     },
     () => {
       resultSubject.complete();
@@ -153,11 +159,10 @@ export class PermisosService {
     this.http.post<string>(url, permisos)
     .pipe(first())
     .subscribe(result => {
-      console.log(result);
       resultSubject.next(result);
     },
     error => {
-      resultSubject.next('');
+      resultSubject.next(null);
     },
     () => {
       resultSubject.complete();
@@ -207,6 +212,62 @@ export class PermisosService {
   public ObtieneFormPermisosEntidad() {
     return this.subjectFormPermisos.asObservable();
   }
+
+  
+  // Proces alos errores de API
+  private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
+    if (error instanceof  HttpResponseBase) {
+      if (error.status === 401) {
+        // this.router.navigate(['/acceso/login']);
+      } else {
+        this.MuestraErrorHttp(error, modulo, nombreEntidad);
+      }
+    }
+  }
+
+private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): void {
+const traducciones: string[] = [];
+traducciones.push('entidades.' + modulo);
+
+this.ts.get(traducciones)
+.pipe(first())
+.subscribe( t => {
+
+  let trad: TraduccionEntidad =  null;
+  if ((t['entidades.' + modulo] !== 'entidades.' + modulo)
+    && t['entidades.' + modulo].indexOf('|') > 0 ) {
+    trad = new TraduccionEntidad(t['entidades.' + modulo]);
+  } else {
+    trad = new TraduccionEntidad( modulo + '|' + modulo + 's|' + '|');
+  }
+
+  if (error instanceof  HttpResponseBase) {
+    switch (error.status) {
+
+      case 400:
+          this.applog.FallaT('editor-pika.mensajes.err-datos-erroneos', null,
+          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+          break;
+
+      case 404:
+          this.applog.FallaT('editor-pika.mensajes.err-datos-noexiste', null,
+          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+          break;
+
+      case 409:
+          this.applog.FallaT('editor-pika.mensajes.err-datos-conflicto', null,
+          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
+          break;
+
+        case 500:
+          this.applog.FallaT('editor-pika.mensajes.err-datos-servidor', null,
+          { entidad: trad.singular, prefijo: trad.prefijoSingular, error: error.statusText } );
+          break;
+    }
+  }
+});
+
+}
 
 }
 

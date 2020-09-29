@@ -9,21 +9,16 @@ import { Subject } from 'rxjs';
   templateUrl: './permisos-aplicacion.component.html',
   styleUrls: ['./permisos-aplicacion.component.scss']
 })
-export class PermisosAplicacionComponent implements OnInit, OnDestroy {
+export class PermisosAplicacionComponent implements OnInit {
   @Input() aplicacion: Aplicacion;
   @Input() entidadSeleccionadaId: string;
+
   permiso: PermisoAplicacion;
   tipoPermiso = PermisosEnum;
 
-  private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioPermisos: PermisosService) { }
 
   ngOnInit(): void {}
-
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
-  }
 
   EstablecePermisoApp(tipo: PermisosEnum) {
     this.servicioPermisos.EstablecePermisoAplicacion(this.aplicacion.Id, tipo);

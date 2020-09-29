@@ -86,7 +86,7 @@ export class PermisosModuloComponent implements OnInit, OnDestroy {
               ejecutar: p.Ejecutar,
               denegar: p.NegarAcceso,
             });
-            this.NegarAcceso(p, p.NegarAcceso);
+            this.NegarAcceso(p);
           }
         }
       });
@@ -100,7 +100,7 @@ export class PermisosModuloComponent implements OnInit, OnDestroy {
       switch (tipo) {
         case PermisosEnum.denegar:
           p.NegarAcceso = checked;
-          this.NegarAcceso(p, checked);
+          this.NegarAcceso(p);
         break;
         case PermisosEnum.leer: p.Leer = checked; break;
         case PermisosEnum.escribir: p.Escribir = checked; break;
@@ -112,9 +112,9 @@ export class PermisosModuloComponent implements OnInit, OnDestroy {
     }
   }
 
-  NegarAcceso(permisosModulo: PermisoAplicacion, denegar: boolean) {
+  NegarAcceso(permisosModulo: PermisoAplicacion) {
     if (this.modulo.Id === permisosModulo.ModuloId) {
-      if (denegar) {
+      if (permisosModulo.NegarAcceso) {
         permisosModulo.Leer = false;
         permisosModulo.Escribir = false;
         permisosModulo.Ejecutar = false;
