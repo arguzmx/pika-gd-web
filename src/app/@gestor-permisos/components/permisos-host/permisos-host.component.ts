@@ -1,5 +1,5 @@
 import { PermisosService, TipoEntidadEnum } from './../../services/permisos.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Aplicacion, Rol, PermisoAplicacion } from '../../../@pika/pika-module';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
   providers: [PermisosService],
 })
 export class PermisosHostComponent implements OnInit, OnDestroy {
-
+  @Output() CapturaFinalizada = new EventEmitter();
 
   public aplicaciones: Aplicacion[];
   public roles: Rol[];
@@ -102,9 +102,8 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
 
   ActualizaPermisosEntidad(entidadId) {
     this.entidadSeleccionadaId = entidadId;
-    this.EstableceTextoEntidad();
-    // this.limpiarPermisosApp = true; // **
     this.ObtienePermisosEntidad();
+    this.EstableceTextoEntidad();
   }
 
   // -> ObtienePermisosEntidad()
@@ -128,53 +127,50 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
         if (app.Modulos.length > 0) {
           app.Modulos.forEach(mod => {
             const p = this.servicioPermisos.CreaPermisoApp();
-            p.DominioId = 'principal'; // ¿de dónde lo saco?
+            p.DominioId = 'principal'; // ¿de dónde lo saco? ***********************************
             p.TipoEntidadAcceso = this.tipoEntidadSeleccionada;
             p.AplicacionId = app.Id;
             p.ModuloId = mod.Id;
             p.EntidadAccesoId = this.entidadSeleccionadaId;
-            const permisobd = this.permisosEntidad.find(x => x.AplicacionId === p.AplicacionId &&
+            const permisoDb = this.permisosEntidad.find(x => x.AplicacionId === p.AplicacionId &&
                               x.ModuloId === p.ModuloId);
-            if (permisobd) {
-              if (permisobd.NegarAcceso) {
-                permisobd.Leer = false;
-                permisobd.Escribir = false;
-                permisobd.Eliminar = false;
-                permisobd.Admin = false;
-                permisobd.Ejecutar = false;
+            if (permisoDb) {
+              if (permisoDb.NegarAcceso) {
+                permisoDb.Leer = false;
+                permisoDb.Escribir = false;
+                permisoDb.Eliminar = false;
+                permisoDb.Admin = false;
+                permisoDb.Ejecutar = false;
               }
-              p.NegarAcceso = permisobd.NegarAcceso;
-              p.Leer = permisobd.Leer;
-              p.Escribir = permisobd.Escribir;
-              p.Eliminar = permisobd.Eliminar;
-              p.Admin = permisobd.Admin;
-              p.Ejecutar = permisobd.Ejecutar;
+              p.NegarAcceso = permisoDb.NegarAcceso;
+              p.Leer = permisoDb.Leer;
+              p.Escribir = permisoDb.Escribir;
+              p.Eliminar = permisoDb.Eliminar;
+              p.Admin = permisoDb.Admin;
+              p.Ejecutar = permisoDb.Ejecutar;
             }
             this.permisosUI.push(p);
           });
         }
       });
+      // console.log(this.permisosUI);
     }
   }
 
   EstableceTextoEntidad(evt?) {
     const rol = this.roles.find( x => x.Id === this.entidadSeleccionadaId);
     if (rol) {
+      // console.log('1');
       this.tipoEntidadSeleccionada = TipoEntidadEnum.rol;
       this.textoEntidadSeleccionada = rol.Nombre;
     }else {
+      // console.log('2');
       this.tipoEntidadSeleccionada = TipoEntidadEnum.usuario;
       this.textoEntidadSeleccionada = this.usuarios.find(x => x.Id === this.entidadSeleccionadaId).Texto.split(' ')[0];
     }
-    if (evt) evt.target.value = this.textoEntidadSeleccionada;
 
+    if (evt) evt.target.value = this.textoEntidadSeleccionada;
+    console.log(this.textoEntidadSeleccionada);
     this.focusInput = false;
   }
-
-  FocusInputEntidad(evt) {
-    this.focusInput = !this.focusInput;
-  }
-
-  FocusoutInputEntidad(evt) {}
-
 }

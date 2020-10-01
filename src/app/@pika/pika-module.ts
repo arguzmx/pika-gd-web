@@ -52,5 +52,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
-  LinkVista, ParametroLinkVista,Rol,
+  LinkVista, ParametroLinkVista, Rol,
 };

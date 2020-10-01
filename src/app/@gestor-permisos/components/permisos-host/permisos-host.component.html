@@ -5,21 +5,6 @@
                 <span>Administrador de Permisos</span>
             </div>
             <div class="col-4">
-                <!-- <nb-select [(selected)]="entidadSeleccionadaId" (selectedChange)="ActualizaPermisosEntidad($event)"
-                    shape="round" size="small" status="info" class="block">
-                    <nb-option-group title="Roles">
-                        <nb-option *ngFor="let r of roles" [value]="r.Id">
-                            {{r.Nombre}}
-                        </nb-option>
-                    </nb-option-group>
-                    <nb-select>
-                        <nb-autocomplete>
-                            <nb-option-group title="Usuarios">
-                                <input type="text" />
-                            </nb-option-group>
-                        </nb-autocomplete>
-                    </nb-select>
-                </nb-select> -->
                 <nb-form-field>
                     <button nbPrefix nbButton ghost 
                     (click)="focusInput=!focusInput; focusInput ? inputEntidad.focus() : inputEntidad.focusOut() ">
@@ -28,13 +13,13 @@
                     <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios"
                         (keyup)="ObtieneUsuarios($event.target.value)"
                         (focusout)="EstableceTextoEntidad($event)"
-                        (focus)='focusInput = true'
+                        (click)='focusInput = true'
                         [nbAutocomplete]="auto" [value]="textoEntidadSeleccionada" />
-                    <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus()">
+                    <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus(); focusInput=true">
                         <nb-icon icon="close-outline"></nb-icon>
                     </button>
                 </nb-form-field>
-                <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event)">
+                <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event);">
                     <nb-option-group title="Roles">
                         <nb-option *ngFor="let r of roles" [value]="r.Id">
                             {{r.Nombre}}
