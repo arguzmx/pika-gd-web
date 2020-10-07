@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { UploadService } from '../uploader.service';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material/bottom-sheet';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
 
@@ -13,18 +13,9 @@ import { first } from 'rxjs/operators';
   templateUrl: './file-drop.component.html',
   styleUrls: ['./file-drop.component.scss'],
 })
-export class FileDropComponent implements OnInit {
+export class FileDropComponent implements OnInit, OnDestroy {
   @ViewChild('file', { static: false }) file;
 
-  constructor(
-    private translate: TranslateService,
-    public uploadService: UploadService,
-    public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-  ) {
-    this.accept = data.accept;
-    this.maxSize = data.maxSize;
-  }
   //#region drag zone variables
   accept: string;
   maxSize: number;
@@ -45,6 +36,9 @@ export class FileDropComponent implements OnInit {
   progress: any;
   uploadSuccessful = false;
   uploading = false;
+  subjectProgresoGlobal = new Subject<number>();
+  progresoGlobal: number = 0;
+
   //#endregion
 
   // Claves para obtener la traducción
@@ -53,16 +47,34 @@ export class FileDropComponent implements OnInit {
   // Objeto resultante de la traduccion
   t: object;
 
+  private onDestroy$: Subject<void> = new Subject<void>();
+  constructor( private ref: ChangeDetectorRef,
+              private translate: TranslateService,
+              public uploadService: UploadService,
+              public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
+              @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
+    this.accept = data.accept;
+    this.maxSize = data.maxSize;
+  }
 
   ngOnInit(): void {
     this.CargaTraducciones();
   }
 
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
 
   private CargaTraducciones() {
-    this.ts = ['ui.enviar', 'ui.cancelar', 'ui.eliminar-todo', 'ui.elegir-ellipsis'];
+    this.ts = [
+      'ui.enviar',
+      'ui.cancelar',
+      'ui.eliminar-todo',
+      'ui.elegir-ellipsis',
+    ];
     this.ObtenerTraducciones();
-   }
+  }
 
   // Obtiene las tradcucciones
   ObtenerTraducciones(): void {
@@ -82,10 +94,36 @@ export class FileDropComponent implements OnInit {
   }
 
   uploadFiles() {
+    this.progresoGlobal = 0;
+    this.bottomSheetRef.disableClose = true;
+    this.uploading = true;
+    this.files = this.files.filter(x => !x.subido);
+
+    let i = 0;
+    let subido = false;
     this.progress = this.uploadService.upload(this.files);
+
     // tslint:disable-next-line: forin
     for (const key in this.progress) {
-      this.progress[key].progress.subscribe((val) => console.log(`${key} ${val}`));
+      i++;
+      this.progress[key].progress.subscribe((val) => {
+        // console.log(`${key} ${val}`);
+        this.progresoGlobal = Math.round((val.progreso * i) / this.files.length);
+        if (val.progreso === 100 && val.status === 200)
+          subido = true;
+        else
+          subido = false;
+
+        this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
+        this.ref.detectChanges();
+      },
+      error => {
+        subido = false;
+        this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
+        this.LimpiaUIArchivos();
+      }, () => {
+        this.LimpiaUIArchivos();
+      });
     }
 
     // convert the progress map into an array
@@ -94,20 +132,42 @@ export class FileDropComponent implements OnInit {
     for (const key in this.progress) {
       allProgressObservables.push(this.progress[key].progress);
     }
-    // The bottomSheet should not be closed while uploading
-    this.bottomSheetRef.disableClose = true;
 
     forkJoin(allProgressObservables).subscribe((end) => {
-      // ... the dialog can be closed now...
-      this.bottomSheetRef.disableClose = false;
-      // ... the upload was successful...
-      this.uploadSuccessful = true;
-      // ... and the component is no longer uploading
-      this.uploading = false;
+      this.LimpiaUIArchivos();
     });
+  }
+
+  ActualizaUIArchivo(file: any, exito: boolean) {
+    file.subido = exito;
+    if (exito) file.style = 'text-success';
+    else file. style = 'text-danger';
+  }
+
+  LimpiaUIArchivos() {
+    // ... the dialog can be closed now...
+    this.bottomSheetRef.disableClose = false;
+    // ... the upload was successful...
+    this.uploadSuccessful = true;
+    // ... and the component is no longer uploading
+    this.uploading = false;
+    this.ref.detectChanges();
+  }
+
+  EstablecePropiedades() {
+    this.LimpiaUIArchivos();
+    if (this.files.length > 0) {
+      this.files.forEach( f => {
+        if (!f.style) {
+          f.style = '';
+          f.subido = false;
+        }
+      });
+    }
   }
 
   getDate() {
     return new Date();
   }
 }
+
