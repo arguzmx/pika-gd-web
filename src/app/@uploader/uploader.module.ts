@@ -13,6 +13,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule, NbTooltipModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { IUploadConfig } from './model/i-upload-config';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { IUploadConfig } from './model/i-upload-config';
     MatProgressBarModule,
     ngfModule,
     NbTooltipModule,
+    MatIconModule,
   ],
   declarations: [UploaderComponent, FileDropComponent],
   exports: [UploaderComponent],
