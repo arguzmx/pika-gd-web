@@ -54,7 +54,6 @@ export class VisorImagenesService {
 
           documento.Paginas.sort((a, b) => a.Indice - b.Indice);
 
-          console.log(documento);
 
           subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
         },

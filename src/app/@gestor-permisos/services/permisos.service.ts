@@ -62,7 +62,6 @@ export class PermisosService {
   public ObtenerRoles(): Observable<Rol[]> {
     const rolsubject = new AsyncSubject<Rol[]>();
     const url = this.CrearEndpoint('org/rol/todos');
-
     this.http
       .get<Rol[]>(url)
       .pipe(first())

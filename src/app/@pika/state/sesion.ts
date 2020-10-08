@@ -1,5 +1,7 @@
 import { DominioActivo } from './../sesion/dominio-activo';
 import { NbMenuItem } from '@nebular/theme';
+import { ACLUsuario } from '../seguridad';
+import { MenuAplicacion } from '../aplicacion';
 
 export interface Sesion {
     IdUsuario: string;
@@ -9,8 +11,10 @@ export interface Sesion {
     AvatarBase64: string;
     token: string;
     isLoggedIn: boolean;
-    Menus: NbMenuItem[];
+    MenuItems: NbMenuItem[];
     uilocale: string;
     Dominios: DominioActivo[];
+    ACL: ACLUsuario;
+    MenuApp: MenuAplicacion;
 }
 

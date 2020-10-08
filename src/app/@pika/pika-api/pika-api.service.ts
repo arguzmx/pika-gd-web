@@ -1,90 +1,113 @@
+import { environment } from './../../../environments/environment';
+import { RutaTipo } from '../state/configuracion/ruta-tipo';
 import { IProveedorReporte } from './../metadata/iproveedor-reporte';
 import { FiltroConsulta } from './../consulta/filtro-consulta';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { EndpointDictionary } from './endpoint-dictionary';
-import { Observable } from 'rxjs';
+import { Observable, AsyncSubject } from 'rxjs';
 import { Consulta, Paginado, Operacion } from '../consulta';
 import { MetadataInfo } from '../metadata';
-import { retry } from 'rxjs/operators';
+import { first, retry } from 'rxjs/operators';
 import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
+import { SesionQuery } from '../state';
 
 const retryCount: number = 1;
 
 @Injectable({
   providedIn: 'root',
 })
-export class PikaApiService <T, U> {
 
-
-  private CrearEndpoint(TipoEntidad: string): string {
-    if (EndpointDictionary[TipoEntidad.toLowerCase()]) {
-      return this.baseUrl.replace(/\/$/, '') + '/' + EndpointDictionary[TipoEntidad.toLowerCase()] + '/';
-    }
-    return '';
-  }
+export class PikaApiService<T, U> {
 
   constructor(
-    private baseUrl: string,
+    private sessionQ: SesionQuery,
     private http: HttpClient,
   ) {
 
   }
+
+  public ObtieneRutas(): Observable<RutaTipo[]> {
+
+    let url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
+    url = url + 'api/v{version:apiversion}/sistema/appconfig/ruteotipos';
+    url = url.replace('{version:apiversion}', environment.apiVersion);
+
+    return this.http.get<RutaTipo[]>(url);
+
+  }
+
+
+  private CrearEndpoint(TipoEntidad: string): string {
+    let url = '';
+
+    // Las rutas de las entidades se obtienen desde el servidor
+    if (this.sessionQ.RutasEntidades.length === 0) return url;
+
+    const r = this.sessionQ.RutasEntidades.find(x => x.Tipo.toLocaleLowerCase() === TipoEntidad.toLowerCase());
+    if (r) {
+      url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
+      url = url + r.Ruta.replace('{version:apiVersion}', environment.apiVersion).toLocaleLowerCase() + '/';
+    }
+
+    return url;
+  }
+
+
 
 
 
   GetMetadata(entidad: string): Observable<MetadataInfo> {
     const endpoint = this.CrearEndpoint(entidad);
     return this.http.get<MetadataInfo>(endpoint + 'metadata')
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   Post(entity: T, entidad: string) {
     const endpoint = this.CrearEndpoint(entidad);
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.post(endpoint, entity, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   PostMiembros(idPadre: string, idMiembros: string[], entidad: string) {
     const endpoint = this.CrearEndpoint(entidad) + idPadre;
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.post(endpoint, idMiembros, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   DeleteMiembros(idPadre: string, idMiembros: string[], entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad) + idPadre + '/';
     let ids: string = '';
-    idMiembros.forEach( x => {
+    idMiembros.forEach(x => {
       ids = ids + x + ',';
     });
 
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.delete(endpoint + ids, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   Put(Id: string, entity: T, entidad: string) {
     const endpoint = this.CrearEndpoint(entidad);
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.put(endpoint + Id, entity, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   Page(consulta: Consulta, entidad: string): Observable<Paginado<T>> {
@@ -92,9 +115,9 @@ export class PikaApiService <T, U> {
     const qs = this.getQueryStringConsulta(consulta);
 
     return this.http.get<Paginado<T>>(endpoint + 'page' + qs)
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   PairList(lista: AtributoLista, consulta: Consulta): Observable<ValorListaOrdenada[]> {
@@ -107,9 +130,9 @@ export class PikaApiService <T, U> {
     const endpoint = this.CrearEndpoint(lista.Entidad);
     const qs = this.getQueryStringConsulta(consulta);
     return this.http.get<ValorListaOrdenada[]>(endpoint + 'pares' + qs)
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   PairListTypeAhead(lista: AtributoLista, texto: string): Observable<ValorListaOrdenada[]> {
@@ -120,16 +143,16 @@ export class PikaApiService <T, U> {
     filtro.Negacion = false;
     filtro.Operador = Operacion.OP_STARTS;
     filtro.Propiedad = 'Texto',
-    filtro.Valor = [texto];
+      filtro.Valor = [texto];
     filtro.ValorString = texto;
-    consulta.FiltroConsulta.push( filtro );
+    consulta.FiltroConsulta.push(filtro);
     const endpoint = this.CrearEndpoint(lista.Entidad);
     const qs = this.getQueryStringConsulta(consulta);
 
     return this.http.get<ValorListaOrdenada[]>(endpoint + 'pares' + qs)
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   PairListbyId(ids: string[], entidad: string): Observable<ValorListaOrdenada[]> {
@@ -138,14 +161,14 @@ export class PikaApiService <T, U> {
     consulta.tamano = 1000;
 
     let qids = '';
-    ids.forEach( s =>   { qids = qids + s + ','; } );
+    ids.forEach(s => { qids = qids + s + ','; });
 
     const endpoint = this.CrearEndpoint(entidad);
     const qs = this.getQueryStringConsulta(consulta);
     return this.http.get<ValorListaOrdenada[]>(endpoint + `pares/${qids}` + qs)
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
 
@@ -154,9 +177,9 @@ export class PikaApiService <T, U> {
     const qs = this.getQueryStringConsulta(consulta);
 
     return this.http.get<Paginado<T>>(endpoint + `page/${Type.toLowerCase()}/${Id}` + qs)
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   private getQueryStringConsulta(consulta: Consulta): string {
@@ -164,13 +187,13 @@ export class PikaApiService <T, U> {
     qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}`;
 
     let index: number = 0;
-    if(consulta.FiltroConsulta) {
-    consulta.FiltroConsulta.forEach((f) => {
+    if (consulta.FiltroConsulta) {
+      consulta.FiltroConsulta.forEach((f) => {
         qs =
           qs +
           `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}&f[${index}][v]=${f.ValorString}`;
 
-          if (f.Negacion) qs =
+        if (f.Negacion) qs =
           qs + `&f[${index}][n]=1`;
 
         index++;
@@ -182,31 +205,31 @@ export class PikaApiService <T, U> {
   Get(Id: U, entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad);
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.get(endpoint + Id, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   GetHieRaices(IdHie: U, entidad: string): Observable<any> {
-    const endpoint = this.CrearEndpoint(entidad) +  'jerarquia/' + IdHie;
+    const endpoint = this.CrearEndpoint(entidad) + 'jerarquia/' + IdHie;
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
-    return this.http.get(endpoint , { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .set('content-type', 'application/json');
+    return this.http.get(endpoint, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
   }
 
   GetHieHijos(IdHie: U, Id: U, entidad: string): Observable<any> {
-    const endpoint = this.CrearEndpoint(entidad) +  'jerarquia/' + IdHie + '/' + Id  ;
+    const endpoint = this.CrearEndpoint(entidad) + 'jerarquia/' + IdHie + '/' + Id;
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
-    return this.http.get(endpoint , { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .set('content-type', 'application/json');
+    return this.http.get(endpoint, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
   }
 
 
@@ -216,38 +239,38 @@ export class PikaApiService <T, U> {
     const headers = new HttpHeaders();
     reporte.Parametros.forEach(p => {
       endpoint = endpoint.replace(`{${p.Id}}`, p['Valor']);
-    } );
-    this.http.get(endpoint, {headers, responseType: 'blob' as 'json'}).subscribe(
-        (response: any) =>{
-            const dataType = response.type;
-            const binaryData = [];
-            binaryData.push(response);
-            const downloadLink = document.createElement('a');
-            downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
-            if (filename)
-                downloadLink.setAttribute('download', filename );
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-        },
-        (err) => {
-          console.warn(err);
-        }
+    });
+    this.http.get(endpoint, { headers, responseType: 'blob' as 'json' }).subscribe(
+      (response: any) => {
+        const dataType = response.type;
+        const binaryData = [];
+        binaryData.push(response);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+        if (filename)
+          downloadLink.setAttribute('download', filename);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      },
+      (err) => {
+        console.warn(err);
+      },
     );
-}
+  }
 
   Delete(Ids: U[], entidad: string): Observable<any> {
     const endpoint = this.CrearEndpoint(entidad);
     let ids: string = '';
-    Ids.forEach( x => {
+    Ids.forEach(x => {
       ids = ids + x + ',';
     });
 
     const headers = new HttpHeaders()
-    .set('content-type', 'application/json');
+      .set('content-type', 'application/json');
     return this.http.delete(endpoint + ids, { 'headers': headers })
-    .pipe(
-      retry(retryCount),
-    );
+      .pipe(
+        retry(retryCount),
+      );
   }
 
 }

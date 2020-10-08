@@ -56,7 +56,7 @@ export class EntidadesService {
     }
 
   private Init(): void {
-    this.cliente = new PikaApiService(environment.apiUrl, this.http);
+    this.cliente = new PikaApiService(this.sesion, this.http);
   }
 
   public Destroy(): void {}

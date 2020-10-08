@@ -127,7 +127,7 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
         if (app.Modulos.length > 0) {
           app.Modulos.forEach(mod => {
             const p = this.servicioPermisos.CreaPermisoApp();
-            p.DominioId = 'principal'; // ¿de dónde lo saco? ***********************************
+            p.DominioId = '';  // el identiicador del dominio se lee en el backend desde los headers
             p.TipoEntidadAcceso = this.tipoEntidadSeleccionada;
             p.AplicacionId = app.Id;
             p.ModuloId = mod.Id;
@@ -153,24 +153,20 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
           });
         }
       });
-      // console.log(this.permisosUI);
     }
   }
 
   EstableceTextoEntidad(evt?) {
     const rol = this.roles.find( x => x.Id === this.entidadSeleccionadaId);
     if (rol) {
-      // console.log('1');
       this.tipoEntidadSeleccionada = TipoEntidadEnum.rol;
       this.textoEntidadSeleccionada = rol.Nombre;
     }else {
-      // console.log('2');
       this.tipoEntidadSeleccionada = TipoEntidadEnum.usuario;
       this.textoEntidadSeleccionada = this.usuarios.find(x => x.Id === this.entidadSeleccionadaId).Texto.split(' ')[0];
     }
 
     if (evt) evt.target.value = this.textoEntidadSeleccionada;
-    console.log(this.textoEntidadSeleccionada);
     this.focusInput = false;
   }
 }

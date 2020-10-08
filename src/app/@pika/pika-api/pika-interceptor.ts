@@ -37,7 +37,6 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     const authReq = req.clone({
       headers: this._getPiKaHeaders(req),
     });
-
     return next.handle(authReq);
   }
 

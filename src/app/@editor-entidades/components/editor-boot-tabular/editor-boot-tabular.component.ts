@@ -1,4 +1,3 @@
-import { TipoDespliegueVinculo } from './../../../@pika/metadata/entidad-vinculada';
 import { PARAM_ID_ORIGEN, PARAM_TIPO_DESPLIEGUE } from './../../model/constantes';
 import { EntidadesService } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -8,6 +7,7 @@ import { PARAM_TIPO, PARAM_TIPO_ORIGEN } from '../../model/constantes';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
+import { SesionStore } from '../../../@pika/pika-module';
 
 @Component({
   selector: 'ngx-editor-boot-tabular',
@@ -19,21 +19,29 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   config: ConfiguracionEntidad;
 
-  constructor( private entidades: EntidadesService,
+  constructor(
+    private sesionStore: SesionStore,
+    private entidades: EntidadesService,
     private route: ActivatedRoute) { }
 
   public ParamListener(): void {
-    this.route.queryParams
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((params) => {
-      this.config = {
-        TipoEntidad: params[PARAM_TIPO] || '',
-        OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
-        OrigenId: params[PARAM_ID_ORIGEN] || '',
-        TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
-        TransactionId: this.entidades.NewGuid(),
-      };
-    });
+
+
+    const rutas = <any[]>this.route.snapshot.data['entidadesResolver'];
+    if (rutas.length > 0) {
+      this.sesionStore.setRutasTipo(rutas);
+      this.route.queryParams
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe((params) => {
+          this.config = {
+            TipoEntidad: params[PARAM_TIPO] || '',
+            OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
+            OrigenId: params[PARAM_ID_ORIGEN] || '',
+            TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
+            TransactionId: this.entidades.NewGuid(),
+          };
+        });
+    }
   }
 
   ngOnInit(): void {
