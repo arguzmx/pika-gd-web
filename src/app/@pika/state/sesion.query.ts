@@ -16,7 +16,7 @@ export class SesionQuery extends Query<SesionState> {
 
   public preferencias$ = this.select(({  preferencias }) => preferencias);
 
-  public menus$ = this.select(({ sesion }) => sesion.Menus);
+  public menus$ = this.select(state => state.sesion.MenuItems);
 
   public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
 
@@ -27,8 +27,13 @@ export class SesionQuery extends Query<SesionState> {
   get dominios() {
     return this.getValue().sesion.Dominios;
   }
+
   get preferencias() {
     return this.getValue().preferencias;
+  }
+
+  get RutasEntidades() {
+    return this.getValue().configuracion.RutasEntidades;
   }
 
 }

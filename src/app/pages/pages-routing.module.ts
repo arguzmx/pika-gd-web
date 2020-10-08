@@ -7,6 +7,7 @@ import { HostUploaderComponent } from './host-uploader/host-uploader.component';
 import { EditorBootTabularComponent, EditorBootJerarquicoComponent } from '../@editor-entidades/editor-entidades.module';
 import { PermisosHostComponent, PermisosModuloComponent } from '../@gestor-permisos/gestor-permisos.module';
 import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
+import { EntidadesResolver } from '../@pika/pika-module';
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -14,10 +15,16 @@ const routes: Routes = [{
     {
       path: 'tabular',
       component: EditorBootTabularComponent,
+      resolve: {
+        entidadesResolver: EntidadesResolver,
+      },
     },
     {
       path: 'jerarquia',
       component: EditorBootJerarquicoComponent,
+      resolve: {
+        entidadesResolver: EntidadesResolver,
+      },
     },
     {
       path: 'permisos',

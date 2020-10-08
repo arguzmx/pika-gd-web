@@ -1,6 +1,7 @@
+import { EntidadesResolver } from './servicios/resolvers/entidades-resolver';
 import { PikaSesionService } from './pika-api/pika-sesion-service';
-import { PikaApiService } from './pika-api/pika-api.service';
 import { NgModule } from '@angular/core';
+
 import { Acciones, MetadataInfo, EntidadVinculada, TipoCardinalidad,
   TipoDespliegueVinculo,
   tDate,
@@ -31,13 +32,14 @@ import { TraduccionEntidad } from './comunes/index';
 import { DominioActivo, UnidadOrganizacionalActiva } from './sesion';
 import { httpInterceptorProviders } from './pika-api/interceptor-provider';
 import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo,
-        TraduccionAplicacionModulo, Rol } from './seguridad';
+        TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL } from './seguridad';
+import { PikaApiService } from './pika-api';
 
 @NgModule({
   imports: [],
   declarations: [],
   exports: [],
-  providers: [PikaApiService, PikaSesionService],
+  providers: [],
 })
 class PikaModule {
 }
@@ -52,5 +54,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
-  LinkVista, ParametroLinkVista, Rol,
+  LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL,
 };

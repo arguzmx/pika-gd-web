@@ -1,4 +1,5 @@
-import { PikaModule, AppLogService, PikaSesionService, httpInterceptorProviders } from './@pika/pika-module';
+import { PikaModule, AppLogService, PikaSesionService,
+  httpInterceptorProviders, EntidadesResolver } from './@pika/pika-module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -68,7 +69,7 @@ import { PIKADiccionarioNavegacion } from './@core/data/diccionario-vistas';
   providers: [
     IsChldrenAuthorizedGuard,
     httpInterceptorProviders,
-    PikaSesionService, CookieService, 
+    PikaSesionService, CookieService,
     { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion} ,
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
     AppLogService,
