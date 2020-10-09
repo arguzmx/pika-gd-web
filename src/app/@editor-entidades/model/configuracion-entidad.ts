@@ -1,3 +1,4 @@
+import { PermisoAplicacion } from './../../@pika/seguridad/permiso-aplicacion';
 import { TipoDespliegueVinculo } from '../../@pika/pika-module';
 
 export interface ConfiguracionEntidad {
@@ -15,4 +16,6 @@ export interface ConfiguracionEntidad {
 
   // Tipo de despliegue a implementar
   TipoDespliegue: TipoDespliegueVinculo;
+
+  Permiso?: PermisoAplicacion;
 }

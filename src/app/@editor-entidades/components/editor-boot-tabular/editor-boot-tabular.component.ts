@@ -1,11 +1,11 @@
 import { PARAM_ID_ORIGEN, PARAM_TIPO_DESPLIEGUE } from './../../model/constantes';
 import { EntidadesService } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { PARAM_TIPO, PARAM_TIPO_ORIGEN } from '../../model/constantes';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { SesionStore } from '../../../@pika/pika-module';
 
@@ -22,7 +22,8 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   constructor(
     private sesionStore: SesionStore,
     private entidades: EntidadesService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private router: Router) { }
 
   public ParamListener(): void {
 
@@ -33,13 +34,36 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
       this.route.queryParams
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((params) => {
-          this.config = {
-            TipoEntidad: params[PARAM_TIPO] || '',
-            OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
-            OrigenId: params[PARAM_ID_ORIGEN] || '',
-            TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
-            TransactionId: this.entidades.NewGuid(),
-          };
+
+          this.entidades.ObtieneMetadatos(params[PARAM_TIPO]).pipe(first())
+            .subscribe(m => {
+              let pcontenido = null;
+              let permisos = true;
+
+              if (m.TokenApp && m.TokenMod) {
+                pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
+                permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
+              }
+
+
+              if (permisos) {
+                this.config = {
+                  TipoEntidad: params[PARAM_TIPO] || '',
+                  OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
+                  OrigenId: params[PARAM_ID_ORIGEN] || '',
+                  TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
+                  TransactionId: this.entidades.NewGuid(),
+                  Permiso: pcontenido,
+                };
+              } else {
+                this.router.navigateByUrl('/');
+              }
+
+            }, (e) => {
+              this.router.navigateByUrl('/');
+            }, () => { });
+
+
         });
     }
   }

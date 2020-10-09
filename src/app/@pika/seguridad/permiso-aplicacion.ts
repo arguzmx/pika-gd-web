@@ -10,4 +10,5 @@ export interface PermisoAplicacion {
     Eliminar: boolean;
     Admin: boolean;
     Ejecutar: boolean;
+    Mascara: number;
 }

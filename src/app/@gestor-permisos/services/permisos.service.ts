@@ -25,15 +25,15 @@ export enum TipoEntidadEnum {
 @Injectable()
 export class PermisosService {
   private subjectRolSeleccionadoId = new BehaviorSubject<string>(null);
-  private subjectPermisoAplicacion = new BehaviorSubject<{aplicacionId: string, tipo: PermisosEnum}>(null);
+  private subjectPermisoAplicacion = new BehaviorSubject<{ aplicacionId: string, tipo: PermisosEnum }>(null);
   private subjectPermisosModuloAplicacion = new BehaviorSubject<PermisoAplicacion[]>(null);
   private subjectFormPermisos = new BehaviorSubject<FormGroup>(null);
 
   private roles: Rol[] = null;
   constructor(private http: HttpClient,
-              private applog: AppLogService,
-              private ts: TranslateService,
-              ) {}
+    private applog: AppLogService,
+    private ts: TranslateService,
+  ) { }
 
   private CrearEndpoint(sufijo: string): string {
     return environment.apiUrl.replace(/\/$/, '') + '/' + sufijo;
@@ -79,13 +79,13 @@ export class PermisosService {
     return rolsubject;
   }
 
-  public ObtenerUsuarios(filtro): Observable<{Id: string, Texto: string, Indice: number}[]> {
-    const usuarioSubject = new AsyncSubject<{Id: string, Texto: string, Indice: number}[]>();
+  public ObtenerUsuarios(filtro): Observable<{ Id: string, Texto: string, Indice: number }[]> {
+    const usuarioSubject = new AsyncSubject<{ Id: string, Texto: string, Indice: number }[]>();
     const url = this.CrearEndpoint(
       'seguridad/usuarios/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=' + filtro);
 
     this.http
-      .get<{Id: string, Texto: string, Indice: number}[]>(url)
+      .get<{ Id: string, Texto: string, Indice: number }[]>(url)
       .pipe(first())
       .subscribe(
         (usuarios) => {
@@ -106,10 +106,16 @@ export class PermisosService {
       .pipe(first())
       .subscribe(
         (permisos) => {
-          permisosSubject.next(permisos);
+          const modificados = [];
+          permisos.forEach(p => {
+            const m = { ...p };
+            m.ModuloId = `${p.AplicacionId}-${p.ModuloId}`;
+            modificados.push(m);
+          });
+          permisosSubject.next(modificados);
         },
         (error) => permisosSubject.next([]),
-        () => permisosSubject.complete()
+        () => permisosSubject.complete(),
       );
 
     return permisosSubject;
@@ -119,19 +125,23 @@ export class PermisosService {
     const resultSubject = new AsyncSubject<string>();
     const url = this.CrearEndpoint('sistema/seguridad/permisos/aplicar');
 
-    this.http.post<string>(url, this.FiltraPermisosModulo(this.subjectPermisosModuloAplicacion.value))
-    .pipe(first())
-    .subscribe(result => {
-      resultSubject.next(result);
-      this.applog.ExitoT('editor-pika.mensajes.ok-entidad-add', null, { nombre: 'Permisos'});
-    },
-    error => {
-      this.handleHTTPError(error, 'permisos', '');
-      resultSubject.next(null);
-    },
-    () => {
-      resultSubject.complete();
+    this.subjectPermisosModuloAplicacion.value.forEach(p => {
+      p.ModuloId = p.ModuloId.replace(`${p.AplicacionId}-`, '');
     });
+
+    this.http.post<string>(url, this.FiltraPermisosModulo(this.subjectPermisosModuloAplicacion.value))
+      .pipe(first())
+      .subscribe(result => {
+        resultSubject.next(result);
+        this.applog.ExitoT('editor-pika.mensajes.ok-entidad-add', null, { nombre: 'Permisos' });
+      },
+        error => {
+          this.handleHTTPError(error, 'permisos', '');
+          resultSubject.next(null);
+        },
+        () => {
+          resultSubject.complete();
+        });
 
 
     return resultSubject;
@@ -141,7 +151,7 @@ export class PermisosService {
     const permisosGuardados: PermisoAplicacion[] = [];
     const permisosEliminados: PermisoAplicacion[] = [];
     permisos.forEach(p => {
-      if (p.Escribir || p.Leer || p.Eliminar || p.Ejecutar || p.Admin || p.NegarAcceso )
+      if (p.Escribir || p.Leer || p.Eliminar || p.Ejecutar || p.Admin || p.NegarAcceso)
         permisosGuardados.push(p);
       else
         permisosEliminados.push(p);
@@ -156,16 +166,16 @@ export class PermisosService {
     const url = this.CrearEndpoint('sistema/seguridad/permisos/eliminar');
 
     this.http.post<string>(url, permisos)
-    .pipe(first())
-    .subscribe(result => {
-      resultSubject.next(result);
-    },
-    error => {
-      resultSubject.next(null);
-    },
-    () => {
-      resultSubject.complete();
-    });
+      .pipe(first())
+      .subscribe(result => {
+        resultSubject.next(result);
+      },
+        error => {
+          resultSubject.next(null);
+        },
+        () => {
+          resultSubject.complete();
+        });
 
     return resultSubject;
   }
@@ -183,6 +193,7 @@ export class PermisosService {
       Eliminar: false,
       Admin: false,
       Ejecutar: false,
+      Mascara: 0,
     };
     return p;
 
@@ -204,7 +215,7 @@ export class PermisosService {
     return this.subjectPermisosModuloAplicacion.asObservable();
   }
 
-  public EstableceFormPermisosEntidad(form: FormGroup){
+  public EstableceFormPermisosEntidad(form: FormGroup) {
     this.subjectFormPermisos.next(form);
   }
 
@@ -212,10 +223,10 @@ export class PermisosService {
     return this.subjectFormPermisos.asObservable();
   }
 
-  
+
   // Proces alos errores de API
-  private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
-    if (error instanceof  HttpResponseBase) {
+  private handleHTTPError(error: Error, modulo: string, nombreEntidad: string): void {
+    if (error instanceof HttpResponseBase) {
       if (error.status === 401) {
         // this.router.navigate(['/acceso/login']);
       } else {
@@ -224,49 +235,49 @@ export class PermisosService {
     }
   }
 
-private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): void {
-const traducciones: string[] = [];
-traducciones.push('entidades.' + modulo);
+  private MuestraErrorHttp(error: Error, modulo: string, nombreEntidad: string): void {
+    const traducciones: string[] = [];
+    traducciones.push('entidades.' + modulo);
 
-this.ts.get(traducciones)
-.pipe(first())
-.subscribe( t => {
+    this.ts.get(traducciones)
+      .pipe(first())
+      .subscribe(t => {
 
-  let trad: TraduccionEntidad =  null;
-  if ((t['entidades.' + modulo] !== 'entidades.' + modulo)
-    && t['entidades.' + modulo].indexOf('|') > 0 ) {
-    trad = new TraduccionEntidad(t['entidades.' + modulo]);
-  } else {
-    trad = new TraduccionEntidad( modulo + '|' + modulo + 's|' + '|');
+        let trad: TraduccionEntidad = null;
+        if ((t['entidades.' + modulo] !== 'entidades.' + modulo)
+          && t['entidades.' + modulo].indexOf('|') > 0) {
+          trad = new TraduccionEntidad(t['entidades.' + modulo]);
+        } else {
+          trad = new TraduccionEntidad(modulo + '|' + modulo + 's|' + '|');
+        }
+
+        if (error instanceof HttpResponseBase) {
+          switch (error.status) {
+
+            case 400:
+              this.applog.FallaT('editor-pika.mensajes.err-datos-erroneos', null,
+                { entidad: trad.singular, prefijo: trad.prefijoSingular });
+              break;
+
+            case 404:
+              this.applog.FallaT('editor-pika.mensajes.err-datos-noexiste', null,
+                { entidad: trad.singular, prefijo: trad.prefijoSingular });
+              break;
+
+            case 409:
+              this.applog.FallaT('editor-pika.mensajes.err-datos-conflicto', null,
+                { entidad: trad.singular, prefijo: trad.prefijoSingular });
+              break;
+
+            case 500:
+              this.applog.FallaT('editor-pika.mensajes.err-datos-servidor', null,
+                { entidad: trad.singular, prefijo: trad.prefijoSingular, error: error.statusText });
+              break;
+          }
+        }
+      });
+
   }
-
-  if (error instanceof  HttpResponseBase) {
-    switch (error.status) {
-
-      case 400:
-          this.applog.FallaT('editor-pika.mensajes.err-datos-erroneos', null,
-          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
-          break;
-
-      case 404:
-          this.applog.FallaT('editor-pika.mensajes.err-datos-noexiste', null,
-          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
-          break;
-
-      case 409:
-          this.applog.FallaT('editor-pika.mensajes.err-datos-conflicto', null,
-          { entidad: trad.singular, prefijo: trad.prefijoSingular  } );
-          break;
-
-        case 500:
-          this.applog.FallaT('editor-pika.mensajes.err-datos-servidor', null,
-          { entidad: trad.singular, prefijo: trad.prefijoSingular, error: error.statusText } );
-          break;
-    }
-  }
-});
-
-}
 
 }
 

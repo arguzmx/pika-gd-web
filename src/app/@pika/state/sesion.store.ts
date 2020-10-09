@@ -142,12 +142,11 @@ export class SesionStore extends Store<SesionState> {
           const cm: ConstructorMenu = new  ConstructorMenu;
           const menu = cm.CreaMenu(data.menu, data.acl);
 
-console.log(data.acl);
+          // console.log(data.acl);
 
           this.setPropiedad(PropiedadesSesion.MenuItems, menu);
           this.setPropiedad(PropiedadesSesion.ACL, data.acl);
           this.setPropiedad(PropiedadesSesion.MenuApp, data.menu);
-
 
         }
           , (e) => {}, () => {} );

@@ -1,3 +1,4 @@
+import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
@@ -101,6 +102,26 @@ OnDestroy, OnChanges {
 
   public tieneReportes: boolean = false;
 
+  public Permiso: PermisoAplicacion ;
+
+
+  private permisoVacio(): PermisoAplicacion {
+    return {
+      DominioId: '',
+      AplicacionId: '',
+      ModuloId: '',
+      TipoEntidadAcceso: '',
+      EntidadAccesoId: '',
+      NegarAcceso: false,
+      Leer: false,
+      Escribir: false,
+      Eliminar: false,
+      Admin: false,
+      Ejecutar: false,
+      Mascara: 0,
+    };
+  }
+
   // Cosntructor del componente
   constructor(
     entidades: EntidadesService,
@@ -113,6 +134,7 @@ OnDestroy, OnChanges {
     ) {
     super(entidades, applog, router, diccionarioNavegacion);
     this.T  = new Traductor(ts);
+    this.Permiso = this.permisoVacio();
     this.setAlturaPanelLateral(window.innerHeight);
   }
 
@@ -144,6 +166,7 @@ OnDestroy, OnChanges {
 
   public _Reset(): void {
       if (this.tablas && this.tablas.first) this.tablas.first._Reset();
+      this.Permiso = this.permisoVacio();
       this._CerrarDialogos();
       this.busquedaLateral = false;
       this.tieneReportes = false;
@@ -198,7 +221,7 @@ OnDestroy, OnChanges {
   }
 
 private  ProcesaCambiosConfiguracion(): void {
-  if (this.config.TipoEntidad)  {
+  if (this.config && this.config.TipoEntidad)  {
     this._Reset();
     this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
     .pipe(first())
@@ -216,44 +239,10 @@ private  ProcesaCambiosConfiguracion(): void {
     return filtros;
   }
 
-  private ProcesaConfiguracion(): void {
+  private  Procesaentidad() {
 
-    if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '' ) {
-      this.NombreInstanciaDisponible = false;
-      this.NombreInstancia = '';
-      this.MostrarRegresar = false;
-      const entidad = this.entidades.GetCacheInstanciaAntidad(this.config.OrigenTipo, this.config.OrigenId);
-      if (entidad) {
-        this.NombreInstanciaDisponible = true;
-        this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, entidad);
-        this.MostrarRegresar = true;
-      } else {
-        // Si la entidad no existe obtiene los metadatos
-        this.entidades
-          .ObtieneMetadatos(this.config.OrigenTipo)
-          .pipe(first())
-          .subscribe((m) => {
-            this.entidades
-              .ObtieneEntidadUnica(
-                this.config.OrigenTipo,
-                this.config.OrigenId,
-              )
-              .pipe(first())
-              .subscribe((e) => {
-                // Y posteriormente una instancia en base al ID
-                // para establecer los títulos
-                if (e) {
-                  this.NombreInstanciaDisponible = true;
-                  this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
-                    this.config.OrigenTipo,
-                    e,
-                  );
-                  this.MostrarRegresar = true;
-                }
-              });
-          });
-      }
-    }
+    this.Permiso = this.config.Permiso ? this.config.Permiso : this.permisoVacio();
+
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
 
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
@@ -292,6 +281,52 @@ private  ProcesaCambiosConfiguracion(): void {
     .subscribe( t => {
         this.NombreEntidad = this.T.ObtienePlural(t[KeyNombreEntidad]);
     });
+  }
+
+  private ProcesaConfiguracion(): void {
+
+    // Es una entidad vinculada
+    if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '' ) {
+      this.NombreInstanciaDisponible = false;
+      this.NombreInstancia = '';
+      this.MostrarRegresar = false;
+      const entidad = this.entidades.GetCacheInstanciaAntidad(this.config.OrigenTipo, this.config.OrigenId);
+      if (entidad) {
+        this.NombreInstanciaDisponible = true;
+        this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, entidad);
+        this.MostrarRegresar = true;
+        this.Procesaentidad();
+      } else {
+        // Si la entidad no existe obtiene los metadatos
+        this.entidades
+          .ObtieneMetadatos(this.config.OrigenTipo)
+          .pipe(first())
+          .subscribe((m) => {
+            this.entidades
+              .ObtieneEntidadUnica(
+                this.config.OrigenTipo,
+                this.config.OrigenId,
+              )
+              .pipe(first())
+              .subscribe((e) => {
+                // Y posteriormente una instancia en base al ID
+                // para establecer los títulos
+                if (e) {
+                  this.NombreInstanciaDisponible = true;
+                  this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
+                    this.config.OrigenTipo,
+                    e,
+                  );
+                  this.MostrarRegresar = true;
+                  this.Procesaentidad();
+                }
+              });
+          });
+      }
+    } else {
+      this.Procesaentidad();
+    }
+
   }
 
   // recibe el evento de nueva entidad desde el editor

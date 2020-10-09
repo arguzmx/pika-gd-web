@@ -36,4 +36,8 @@ export class SesionQuery extends Query<SesionState> {
     return this.getValue().configuracion.RutasEntidades;
   }
 
+  get ACL() {
+    return this.getValue().sesion.ACL;
+  }
+
 }

@@ -33,6 +33,7 @@
 
       <!-- actialziar lista de elemento -->
       <button
+        *ngxAclMostrar = "Permiso.Leer"
         mat-icon-button
         on-click="refrescarTabla()"
         [nbTooltip]="T.t['ui.actualizar']" nbTooltipPlacement="bottom"
@@ -43,7 +44,7 @@
 
       <!-- mostrar vínculos del elemento seleccionado -->
       <button
-        *ngIf="vincularActivo"
+        *ngxAclMostrar = "Permiso.Leer && vincularActivo"
         mat-icon-button
         on-click="mostrarVinculos()"
         [nbTooltip]="T.t['ui.propiedades']" nbTooltipPlacement="bottom"
@@ -54,6 +55,7 @@
 
       <!-- crear un nuevo elemento -->
       <button
+        *ngxAclMostrar = "Permiso.Escribir"
         mat-icon-button
         on-click="mostrarCrear()"
         [nbTooltip]="T.t['ui.crear']" nbTooltipPlacement="bottom"
@@ -64,7 +66,7 @@
 
       <!-- Edistar el elemento seleccionado -->
       <button
-        *ngIf="editarDisponible"
+        *ngxAclMostrar = "Permiso.Escribir && editarDisponible"
         mat-icon-button
         on-click="mostrarEditar()"
         [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
@@ -75,7 +77,7 @@
 
       <!-- Eliminar el elemento seleccionado -->
       <button
-        *ngIf="InstanciaSeleccionada"
+        *ngxAclMostrar = "Permiso.Eliminar && InstanciaSeleccionada"
         mat-icon-button
         on-click="eliminarEntidades()"
         [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom"
@@ -85,7 +87,8 @@
       </button>
 
       <!-- Mostrar búsqueda -->
-      <button *ngIf="!busquedaLateral"
+      <button 
+        *ngxAclMostrar = "Permiso.Leer && !busquedaLateral"
         mat-icon-button
         on-click="mostrarBuscar()"
         [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom"
@@ -94,6 +97,7 @@
         <mat-icon>search</mat-icon>
       </button>
       <button
+        *ngxAclMostrar = "Permiso.Leer"
         mat-icon-button
         on-click="mostrarBuscarLateral()"
         [nbTooltip]="T.t['ui.busqueda-lateral']" nbTooltipPlacement="bottom"
@@ -103,6 +107,7 @@
       </button>
       <!-- Mostrar selector columnas -->
       <button
+        *ngxAclMostrar = "Permiso.Leer"
         mat-icon-button
         on-click="mostrarSelectorColumnas()"
         [nbTooltip]="T.t['ui.selcol']" nbTooltipPlacement="bottom"
@@ -113,7 +118,7 @@
 
         <!-- Mostrar reportes -->
         <button
-        *ngIf="tieneReportes"
+        *ngxAclMostrar = "Permiso.Leer && tieneReportes"
         mat-icon-button
         on-click="mostrarReportes()"
         [nbTooltip]="T.t['ui.reportes']" nbTooltipPlacement="bottom"
