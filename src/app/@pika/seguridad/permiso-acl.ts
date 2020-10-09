@@ -6,6 +6,7 @@ export const PADMINISTRAR = 16;
 export const PEJECUTAR = 32;
 
 export interface PermisoACL {
+    AplicacionId: string;
     ModuloId: string;
     Mascara: number;
 }

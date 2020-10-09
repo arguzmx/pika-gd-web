@@ -1,3 +1,4 @@
+import { PEJECUTAR, PELIMINAR, PESCRIBIR, PLEER, PADMINISTRAR } from './seguridad/permiso-acl';
 import { EntidadesResolver } from './servicios/resolvers/entidades-resolver';
 import { PikaSesionService } from './pika-api/pika-sesion-service';
 import { NgModule } from '@angular/core';
@@ -32,7 +33,7 @@ import { TraduccionEntidad } from './comunes/index';
 import { DominioActivo, UnidadOrganizacionalActiva } from './sesion';
 import { httpInterceptorProviders } from './pika-api/interceptor-provider';
 import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo,
-        TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL } from './seguridad';
+        TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL, PDENEGARACCESO } from './seguridad';
 import { PikaApiService } from './pika-api';
 
 @NgModule({
@@ -54,5 +55,6 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
-  LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL,
+  LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
+  PESCRIBIR, PLEER, PADMINISTRAR,
 };

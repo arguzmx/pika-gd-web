@@ -24,8 +24,8 @@ export class ConstructorMenu {
     private CreaItem(el: ElementoMenu): NbMenuItem {
         let adicionar = false;
 
-        if ( el.TokenSeguridad ) {
-            const permiso = this.acl.Permisos.find(x => x.ModuloId === el.TokenSeguridad);
+        if ( el.TokenMod && el.TokenApp ) {
+            const permiso = this.acl.Permisos.find(x => x.AplicacionId === el.TokenApp && x.ModuloId === el.TokenMod);
             if (permiso) {
                 if ( ((permiso.Mascara & PDENEGARACCESO) === 0) && (permiso.Mascara > 0) ) {
                     adicionar = true;
@@ -60,7 +60,6 @@ export class ConstructorMenu {
             return item;
 
         } else {
-            console.log("OOOOO");
             return null;
         }
 

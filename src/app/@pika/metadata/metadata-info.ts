@@ -15,4 +15,6 @@ export class MetadataInfo {
     VistasVinculadas?: LinkVista[];
     Propiedades: Propiedad[];
     Reportes?:  IProveedorReporte[];
+    TokenMod?: string;
+    TokenApp?: string;
 }
