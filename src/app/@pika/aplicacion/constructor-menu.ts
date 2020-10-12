@@ -24,15 +24,22 @@ export class ConstructorMenu {
     private CreaItem(el: ElementoMenu): NbMenuItem {
         let adicionar = false;
 
-        if ( el.TokenMod && el.TokenApp ) {
-            const permiso = this.acl.Permisos.find(x => x.AplicacionId === el.TokenApp && x.ModuloId === el.TokenMod);
-            if (permiso) {
-                if ( ((permiso.Mascara & PDENEGARACCESO) === 0) && (permiso.Mascara > 0) ) {
-                    adicionar = true;
-                }
-            }
-        } else {
+
+        if (this.acl.EsAdmin) {
             adicionar = true;
+        } else {
+            if ( el.TokenMod && el.TokenApp ) {
+                const permiso = this.acl.Permisos.find(x => x.AplicacionId === el.TokenApp
+                    && x.ModuloId === el.TokenMod);
+                if (permiso) {
+                    if ( ((permiso.Mascara & PDENEGARACCESO) === 0) && (permiso.Mascara > 0) ) {
+                        adicionar = true;
+                    }
+                }
+            } else {
+                // No valida ACL para los elementos del menú que no incluyen token de seguridad
+                adicionar = true;
+            }
         }
 
         if (adicionar) {
