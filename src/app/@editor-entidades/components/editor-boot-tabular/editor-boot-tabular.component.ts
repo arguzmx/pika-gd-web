@@ -25,6 +25,10 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router) { }
 
+
+  private paramTipo: string;
+  private paramTipoOrigen: string;
+
   public ParamListener(): void {
 
 
@@ -34,6 +38,10 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
       this.route.queryParams
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((params) => {
+
+          this.paramTipo = (params[PARAM_TIPO] || '').toLowerCase();
+          this.paramTipoOrigen = (params[PARAM_TIPO_ORIGEN] || '' ).toLowerCase();
+
 
           this.entidades.ObtieneMetadatos(params[PARAM_TIPO]).pipe(first())
             .subscribe(m => {
@@ -46,21 +54,23 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
               }
 
 
+              console.log(pcontenido);
+              console.log(permisos);
               if (permisos) {
                 this.config = {
-                  TipoEntidad: params[PARAM_TIPO] || '',
-                  OrigenTipo: params[PARAM_TIPO_ORIGEN] || '',
+                  TipoEntidad: this.paramTipo,
+                  OrigenTipo: this.paramTipoOrigen,
                   OrigenId: params[PARAM_ID_ORIGEN] || '',
                   TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
                   TransactionId: this.entidades.NewGuid(),
                   Permiso: pcontenido,
                 };
               } else {
-                this.router.navigateByUrl('/');
+                this.router.navigateByUrl('/pages/sinacceso');
               }
 
             }, (e) => {
-              this.router.navigateByUrl('/');
+              this.router.navigateByUrl('/pages/sinacceso');
             }, () => { });
 
 

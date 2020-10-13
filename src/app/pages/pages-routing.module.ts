@@ -1,3 +1,6 @@
+import { SinAccesoComponent } from './comunes/sin-acceso/sin-acceso.component';
+import { InicioComponent } from './comunes/inicio/inicio.component';
+import { DesconocidoComponent } from './comunes/desconocido/desconocido.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
@@ -39,9 +42,16 @@ const routes: Routes = [{
       component: HostUploaderComponent,
     },
     {
-      path: '',
-      redirectTo: 'dashboard',
-      pathMatch: 'full',
+      path: '404',
+      component: DesconocidoComponent,
+    },
+    {
+      path: 'sinacceso',
+      component: SinAccesoComponent,
+    },
+    {
+      path: 'inicio',
+      component: InicioComponent,
     },
     // {
     //   path: 'entidades',

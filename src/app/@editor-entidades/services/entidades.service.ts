@@ -75,38 +75,62 @@ export class EntidadesService {
     if (p.Leer) return true;
   }
 
+
+  public permisoSinAcceso: PermisoAplicacion = {
+    DominioId: '',
+    AplicacionId: '',
+    ModuloId: '',
+    TipoEntidadAcceso: '',
+    EntidadAccesoId: '',
+    NegarAcceso: false,
+    Leer: false,
+    Escribir: false,
+    Eliminar: false,
+    Admin: false,
+    Ejecutar: false,
+    Mascara: 0,
+  };
+
+  public permisoAdmin: PermisoAplicacion = {
+    DominioId: '',
+    AplicacionId: '',
+    ModuloId: '',
+    TipoEntidadAcceso: '',
+    EntidadAccesoId: '',
+    NegarAcceso: false,
+    Leer: true,
+    Escribir: true,
+    Eliminar: true,
+    Admin: true,
+    Ejecutar: true,
+    Mascara: 65535,
+  };
+
   // Getson de permisos
   ObtienePermiso(appid: string, moduloId: string ): PermisoAplicacion {
 
-    const acl =  this.sesion.ACL.Permisos.find(x => x.ModuloId === moduloId
-      && x.AplicacionId === appid);
+    console.info(this.sesion.ACL);
 
-    const permiso = {
-      DominioId: '',
-      AplicacionId: '',
-      ModuloId: '',
-      TipoEntidadAcceso: '',
-      EntidadAccesoId: '',
-      NegarAcceso: false,
-      Leer: false,
-      Escribir: false,
-      Eliminar: false,
-      Admin: false,
-      Ejecutar: false,
-      Mascara: 0,
-    };
+    if (this.sesion.ACL.EsAdmin) {
+        return this.permisoAdmin;
+    } else {
+      const acl =  this.sesion.ACL.Permisos.find(x => x.ModuloId === moduloId
+        && x.AplicacionId === appid);
 
-    if (acl) {
-      permiso.NegarAcceso = (acl.Mascara & PDENEGARACCESO) > 0;
-      permiso.Admin = (acl.Mascara & PADMINISTRAR) > 0;
-      permiso.Leer = (acl.Mascara & PLEER) > 0;
-      permiso.Eliminar = (acl.Mascara & PELIMINAR) > 0;
-      permiso.Escribir = (acl.Mascara & PESCRIBIR) > 0;
-      permiso.Ejecutar = (acl.Mascara & PEJECUTAR) > 0;
-      permiso.Mascara = acl.Mascara;
-    };
+      const permiso = this.permisoSinAcceso;
 
-    return permiso;
+      if (acl) {
+        permiso.NegarAcceso = (acl.Mascara & PDENEGARACCESO) > 0;
+        permiso.Admin = (acl.Mascara & PADMINISTRAR) > 0;
+        permiso.Leer = (acl.Mascara & PLEER) > 0;
+        permiso.Eliminar = (acl.Mascara & PELIMINAR) > 0;
+        permiso.Escribir = (acl.Mascara & PESCRIBIR) > 0;
+        permiso.Ejecutar = (acl.Mascara & PEJECUTAR) > 0;
+        permiso.Mascara = acl.Mascara;
+      }
+
+      return permiso;
+    }
   }
 
 

@@ -102,25 +102,8 @@ OnDestroy, OnChanges {
 
   public tieneReportes: boolean = false;
 
-  public Permiso: PermisoAplicacion ;
+  public Permiso: PermisoAplicacion;
 
-
-  private permisoVacio(): PermisoAplicacion {
-    return {
-      DominioId: '',
-      AplicacionId: '',
-      ModuloId: '',
-      TipoEntidadAcceso: '',
-      EntidadAccesoId: '',
-      NegarAcceso: false,
-      Leer: false,
-      Escribir: false,
-      Eliminar: false,
-      Admin: false,
-      Ejecutar: false,
-      Mascara: 0,
-    };
-  }
 
   // Cosntructor del componente
   constructor(
@@ -134,7 +117,7 @@ OnDestroy, OnChanges {
     ) {
     super(entidades, applog, router, diccionarioNavegacion);
     this.T  = new Traductor(ts);
-    this.Permiso = this.permisoVacio();
+    this.Permiso = this.entidades.permisoSinAcceso;
     this.setAlturaPanelLateral(window.innerHeight);
   }
 
@@ -166,7 +149,7 @@ OnDestroy, OnChanges {
 
   public _Reset(): void {
       if (this.tablas && this.tablas.first) this.tablas.first._Reset();
-      this.Permiso = this.permisoVacio();
+      this.Permiso = this.entidades.permisoSinAcceso;
       this._CerrarDialogos();
       this.busquedaLateral = false;
       this.tieneReportes = false;
@@ -241,7 +224,7 @@ private  ProcesaCambiosConfiguracion(): void {
 
   private  Procesaentidad() {
 
-    this.Permiso = this.config.Permiso ? this.config.Permiso : this.permisoVacio();
+    this.Permiso = this.config.Permiso ? this.config.Permiso : this.entidades.permisoSinAcceso;
 
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
 
@@ -522,14 +505,12 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   mostrarReportes() {
-
     if (this.entidad) {
       this.dialogReportPickerRef = this.dialogService
       .open(this.dialogReportPicker, { context: '' });
     } else {
       this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
     }
- 
   }
 
   EjecutarIrReporte(reporte: IProveedorReporte) {
@@ -539,13 +520,11 @@ private  ProcesaCambiosConfiguracion(): void {
     parametros.forEach(p => {
       if (p.Contextual) {
         const partes = p.IdContextual.split('.');
-        switch(partes[0].toUpperCase())
-        { 
+        switch (partes[0].toUpperCase()) {
           case CONTEXTO:
             p['Valor'] = this.entidad[partes[1]];
             break;
         }
-
       }
     });
 

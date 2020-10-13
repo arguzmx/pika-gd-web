@@ -6,6 +6,7 @@ export interface ElementoMenu {
     Icono: string;
     URL: string;
     EsGrupo: boolean;
+    EsHome: boolean;
     TokenApp: string;
     TokenMod: string;
     Hijos: ElementoMenu[];

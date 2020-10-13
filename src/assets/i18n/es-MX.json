@@ -1,5 +1,12 @@
 {
     "titulo-sitio": "PIKA-GD",
+    "paginascomunes": {
+        "irhome": "Ir al inicio",
+        "titulo404": "Página no encontrada",
+        "subtitulo404": "La página solicitada no existe",
+        "titulo401": "Sin aceso",
+        "subtitulo401": "No cuenta con los privilegios para acceder a esta sección, si nuevos permisos le han sido asignados debe salir e iniciar sesión nuevamente"
+    },
     "ui": {
         "ubicacion-org": "Ubicación",
         "modulo": "Módulo",
@@ -85,7 +92,22 @@
         "archivo":"Archivo|Archivo|el|los|archive-outline",
         "activo": "Activo acerco|Activos acervo|el|los|book-outline",
         "ampliacion": "Ampliación|Ampliaciones|la|las|clock-outline",
+        "tipoampliacion": "Tipo ampliación|Tipos ampliación|el|los|clock-outline",
+        "tipodisposiciondocumental": "Tipo disposición|Tipos disposición|el|los|trash-outline",
+        "tipovaloraciondocumental": "Tipo valoración|Tipos valoración|el|los|eye-outline",
         "propiedades": {
+            "tipoampliacion": {
+                "Id": "Id",
+                "Nombre": "Nombre"
+            },
+            "tipodisposiciondocumental": {
+                "Id": "Id",
+                "Nombre": "Nombre"
+            },
+            "tipovaloraciondocumental": {
+                "Id": "Id",
+                "Nombre": "Nombre"
+            },
             "dominio": {
                 "Id": "Id",
                 "Nombre": "Nombre",

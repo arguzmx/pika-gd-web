@@ -10,7 +10,7 @@ import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { ConfiguracionEntidadJerarquica } from '../../model/configuracion-entidad-jerarquica';
-import { SesionStore } from '../../../@pika/pika-module';
+import { SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 
 @Component({
   selector: 'ngx-editor-boot-jerarquico',
@@ -37,6 +37,10 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
     this.entidades.printCache();
   }
 
+  private paramTipoArbolJerarquico: string;
+  private paramTipoContenidoJerarquico: string;
+  private paramTipoJerarquico: string;
+  private paramTipoDespliegue: TipoDespliegueVinculo;
 
   public ParamListener(): void {
 
@@ -48,9 +52,14 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((params) => {
 
+        this.paramTipoArbolJerarquico = (params[PARAM_TIPO_ARBOL_JERARQUICO] || '').toLowerCase();
+        this.paramTipoContenidoJerarquico = (params[PARAM_TIPO_CONTENIDO_JERARQUICO] || '').toLowerCase();
+        this.paramTipoJerarquico = (params[PARAM_TIPO_JERARQUICO] || '').toLowerCase();
+        this.paramTipoDespliegue = params[PARAM_TIPO_DESPLIEGUE];
+
           forkJoin({
-            arbol: this.entidades.ObtieneMetadatos(params[PARAM_TIPO_ARBOL_JERARQUICO]),
-            contenido: this.entidades.ObtieneMetadatos(params[PARAM_TIPO_CONTENIDO_JERARQUICO])  })
+            arbol: this.entidades.ObtieneMetadatos(this.paramTipoArbolJerarquico),
+            contenido: this.entidades.ObtieneMetadatos(this.paramTipoContenidoJerarquico)  })
             .subscribe( datos => {
               let parbol = null;
               let pcontenido = null;
@@ -69,19 +78,19 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
               if (permisos) {
                 this.config = {
                   ConfiguracionJerarquia: {
-                    OrigenTipo: params[PARAM_TIPO_JERARQUICO] || '',
-                    TipoEntidad: params[PARAM_TIPO_ARBOL_JERARQUICO] || '',
+                    OrigenTipo: this.paramTipoJerarquico,
+                    TipoEntidad: this.paramTipoArbolJerarquico,
                     OrigenId: params[PARAM_ID_JERARQUICO] || '',
                     TransactionId: this.entidades.NewGuid(),
-                    TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
+                    TipoDespliegue: this.paramTipoDespliegue,
                     Permiso: parbol,
                   },
                   ConfiguracionContenido: {
-                    TipoEntidad: params[PARAM_TIPO_CONTENIDO_JERARQUICO] || '',
+                    TipoEntidad: this.paramTipoContenidoJerarquico,
                     OrigenTipo: '',
                     OrigenId: '',
                     TransactionId: this.entidades.NewGuid(),
-                    TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
+                    TipoDespliegue: this.paramTipoDespliegue,
                     Permiso: pcontenido,
                   },
                 };
@@ -92,11 +101,11 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
               this.EstablecePropiedadContextual(this.config.ConfiguracionContenido);
 
               } else {
-                this.router.navigateByUrl('/');
+                this.router.navigateByUrl('/pages/sinacceso');
               }
 
             }, (e)  => {
-              this.router.navigateByUrl('/');
+              this.router.navigateByUrl('/pages/sinacceso');
             } , () => {});
 
         });
