@@ -5,7 +5,6 @@ import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { NbAuthService, NbAuthJWTToken, NbAuthOAuth2Token } from '@nebular/auth';
 import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
 
 

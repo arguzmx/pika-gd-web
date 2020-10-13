@@ -124,12 +124,17 @@ export class PermisosService {
   public GuardaPermisos(): Observable<string> {
     const resultSubject = new AsyncSubject<string>();
     const url = this.CrearEndpoint('sistema/seguridad/permisos/aplicar');
+    const  permisosPost = [];
 
+    // Separa el estado para enviar el id de aplciación y del módulo por separado
+    // no eliminar
     this.subjectPermisosModuloAplicacion.value.forEach(p => {
-      p.ModuloId = p.ModuloId.replace(`${p.AplicacionId}-`, '');
+      const nuevop = {...p};
+      nuevop.ModuloId = nuevop.ModuloId.replace(`${nuevop.AplicacionId}-`, '');
+      permisosPost.push(nuevop);
     });
 
-    this.http.post<string>(url, this.FiltraPermisosModulo(this.subjectPermisosModuloAplicacion.value))
+    this.http.post<string>(url, this.FiltraPermisosModulo(permisosPost))
       .pipe(first())
       .subscribe(result => {
         resultSubject.next(result);

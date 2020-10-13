@@ -49,6 +49,7 @@ export class ConstructorMenu {
             item.group = el.EsGrupo;
             item.icon = el.Icono ? el.Icono : null;
             item.link = el.URL;
+            item.home = el.EsHome;
 
             if (el.Parametros.length > 0) {
                 const params = {};

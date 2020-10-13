@@ -21,6 +21,7 @@
 
       <!-- crear nodo raiz jerarquía -->
       <button
+        *ngIf="PermisoJ.Escribir"
         mat-icon-button
         on-click="mostrarCrearJerarquia(true)"
         [nbTooltip]="T.t['ui.raizcrear']" nbTooltipPlacement="bottom"
@@ -31,7 +32,7 @@
 
       <!-- editar nodo jerarquía -->
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarCrearJerarquia(false)"
         [nbTooltip]="T.t['ui.nodocrear']" nbTooltipPlacement="bottom"
@@ -41,7 +42,7 @@
       </button>
 
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarEditarT()"
         [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
@@ -52,7 +53,7 @@
 
       <!-- eliminar nodo jerarquía -->
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoJ.Eliminar && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="eliminarEntidadesJ()"
         [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom"
@@ -79,7 +80,7 @@
 
       <!-- crear elemento tabular -->
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoC.Escribir && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarCrearContenido()"
         [nbTooltip]="T.t['ui.tabularcrear']" nbTooltipPlacement="bottom"
@@ -89,7 +90,7 @@
       </button>
 
       <button
-        *ngIf="InstanciaSeleccionadaC"
+        *ngIf="PermisoC.Escribir && InstanciaSeleccionadaC"
         mat-icon-button
         on-click="mostrarEditarC()"
         [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
@@ -100,7 +101,7 @@
 
       <!-- eliminar contenido tabuela -->
       <button
-        *ngIf="InstanciaSeleccionadaC"
+        *ngIf="PermisoC.Eliminar && InstanciaSeleccionadaC"
         mat-icon-button
         on-click="eliminarEntidadesC()"
         [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom"
@@ -122,7 +123,7 @@
 
       <!-- actualiza  el contenido tabular -->
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="refrescarTabla()"
         [nbTooltip]="T.t['ui.actualizar']" nbTooltipPlacement="bottom"
@@ -133,7 +134,7 @@
 
       <!-- buscar contenido tabular -->
       <button
-        *ngIf="InstanciaSeleccionadaJ"
+        *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ"
         mat-icon-button
         on-click="mostrarBuscar()"
         [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom"
@@ -144,6 +145,7 @@
 
       <!-- seleccionar columnas contenido tabular -->
       <button
+        *ngIf="PermisoC.Leer"
         mat-icon-button
         on-click="mostrarSelectorColumnas()"
         [nbTooltip]="T.t['ui.selcol']" nbTooltipPlacement="bottom"
@@ -154,7 +156,7 @@
 
       <!-- eleminar fisltros activos contenido tabular -->
       <button
-        *ngIf="filtrosActivos"
+        *ngIf="PermisoC.Leer && filtrosActivos"
         mat-icon-button
         on-click="eliminarFiltros()"
         [nbTooltip]="T.t['ui.eliminar-filtro']" nbTooltipPlacement="bottom"
@@ -176,7 +178,7 @@
                     <as-split-area [size]="40">
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
-                          <ngx-editor-arbol-entidad
+                          <ngx-editor-arbol-entidad 
                             [config]="configJ"
                             (NodoSeleccionado)="NodoSeleccionado($event)"
                           ></ngx-editor-arbol-entidad>

@@ -1,6 +1,8 @@
 import { first, takeUntil } from 'rxjs/operators';
-import { Component, OnInit, Output, EventEmitter, OnChanges,
-  SimpleChanges, Input, OnDestroy,  ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component, OnInit, Output, EventEmitter, OnChanges,
+  SimpleChanges, Input, OnDestroy, ViewChild, AfterViewInit,
+} from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { NodoJerarquico } from '../../../@pika/pika-module';
 import { NodoArbol } from '../../model/nodo-arbol';
@@ -27,8 +29,8 @@ import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 })
 export class EditorArbolEntidadComponent extends EditorEntidadesBase
   implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-    @ViewChild('arboldinamico') arbol: MatTree<DynamicFlatNode> ;
-    private onDestroy$: Subject<void> = new Subject<void>();
+  @ViewChild('arboldinamico') arbol: MatTree<DynamicFlatNode>;
+  private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private database: DynamicDatabase,
@@ -36,21 +38,21 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
     router: Router,
     applog: AppLogService,
     diccionarioNavegacion: DiccionarioNavegacion,
-    ) {
+  ) {
     super(entidades, applog, router, diccionarioNavegacion);
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
-    this.dataSource = new DynamicDataSource(this.treeControl, database );
+    this.dataSource = new DynamicDataSource(this.treeControl, database);
     this.escuchaCambiosArbol();
   }
 
   escuchaCambiosArbol() {
     this.dataSource.dataChange
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( nodos => {
-      if (nodos.length > 0) {
-        this.mostrarArbol = true;
-      }
-    });
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(nodos => {
+        if (nodos.length > 0) {
+          this.mostrarArbol = true;
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -106,18 +108,22 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
   }
 
   public ProcesaConfiguracion(): void {
-    this.entidades.ObtieneDescriptorNodo(this.config.TipoEntidad).pipe(first())
-      .subscribe(d => {
-        this.descriptor = d;
-        if (this.descriptor) {
-          this.validametadata = true;
-          this.entidades.ObtieneMetadatos(this.config.TipoEntidad).pipe(first())
-            .subscribe(m => {
-              this.metadata = m;
-              this.ObtineRaices();
-            }, (err) => { this.descriptor = null; });
-        }
-      }, (err) => { this.descriptor = null; });
+
+    if (this.config) {
+      this.entidades.ObtieneDescriptorNodo(this.config.TipoEntidad).pipe(first())
+        .subscribe(d => {
+          this.descriptor = d;
+          if (this.descriptor) {
+            this.validametadata = true;
+            this.entidades.ObtieneMetadatos(this.config.TipoEntidad).pipe(first())
+              .subscribe(m => {
+                this.metadata = m;
+                this.ObtineRaices();
+              }, (err) => { this.descriptor = null; });
+          }
+        }, (err) => { this.descriptor = null; });
+    }
+
   }
 
 

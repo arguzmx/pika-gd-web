@@ -1,3 +1,4 @@
+import { Traductor } from './services/traductor';
 import { NgModule } from '@angular/core';
 
 import {
@@ -204,4 +205,4 @@ import { AclMostrarDirective } from './directives/acl-mostrar.directive';
 
  export { EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
   EditorBootTabularComponent, EditorBootJerarquicoComponent,
-  IDiccionarioNavegacion, DiccionarioNavegacion};
+  IDiccionarioNavegacion, DiccionarioNavegacion, Traductor};

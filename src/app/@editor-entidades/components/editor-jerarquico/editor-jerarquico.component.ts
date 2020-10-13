@@ -18,6 +18,7 @@ import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscado
 import {
   EntidadVinculada,
   LinkVista,
+  PermisoAplicacion,
   TipoCardinalidad,
 } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
@@ -65,6 +66,8 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   ) {
     super(entidades, applog, router, diccionarioNavegacion);
     this.T  = new Traductor(ts);
+    this.PermisoJ = this.entidades.permisoSinAcceso;
+    this.PermisoC = this.entidades.permisoSinAcceso;
   }
 
 
@@ -147,7 +150,8 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   public NodoArbolSeleccionado: DynamicFlatNode = null;
 
-
+  public PermisoC: PermisoAplicacion;
+  public PermisoJ: PermisoAplicacion;
 
   private _CerrarDialogos() {
     if (this.dialogComnfirmDelRef) this.dialogComnfirmDelRef.close();
@@ -161,6 +165,8 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   public _Reset(): void {
     if (this.tablas && this.tablas.first) this.tablas.first._Reset();
     this._CerrarDialogos();
+    this.PermisoJ = this.entidades.permisoSinAcceso;
+    this.PermisoC = this.entidades.permisoSinAcceso;
     this.InstanciaSeleccionadaJ = false;
     this.InstanciaSeleccionadaC = false;
     this.metadataJ = null;
@@ -228,7 +234,17 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   }
 
   private ProcesaCambiosConfiguracion(): void {
-    if (this.config.ConfiguracionJerarquia.TipoEntidad) {
+
+    if (this.config && this.config.ConfiguracionJerarquia.TipoEntidad) {
+
+      this.PermisoJ = this.config.ConfiguracionJerarquia.Permiso ?
+        this.config.ConfiguracionJerarquia.Permiso : this.entidades.permisoSinAcceso;
+
+      this.PermisoC = this.config.ConfiguracionContenido.Permiso ?
+        this.config.ConfiguracionContenido.Permiso : this.entidades.permisoSinAcceso;
+
+      console.log(this.PermisoJ, this.PermisoC);
+
       this.configJ = this.config.ConfiguracionJerarquia;
       this.configC = this.config.ConfiguracionContenido;
       this._Reset();
