@@ -10,6 +10,11 @@
     <nb-card class="loadingCard" [ngStyle]="{'display': loading ? 'flex' : 'none' }">
         <nb-card-body  [nbSpinner]="true" nbSpinnerSize="large" nbSpinnerStatus="info" nbSpinnerMessage="Cargando imagen..."></nb-card-body>
     </nb-card>
-    <canvas id="canvas" width="500" height="500">
+    
+    <div style="display: none;">
+        <img [src]="dataUrl$|async" #imgPag>
+    </div>
+    
+    <canvas id="canvas" width="500" height="500"> -->
     </canvas>
 </div>
