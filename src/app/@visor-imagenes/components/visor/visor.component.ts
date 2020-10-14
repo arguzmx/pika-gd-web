@@ -6,13 +6,15 @@ import {
   SimpleChanges,
   OnDestroy,
   HostListener,
-} from '@angular/core';
+  ViewChild } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Documento } from '../../model/documento';
 import { fabric } from 'fabric';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Pagina, OperacionHeader } from '../../model/pagina';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-visor',
@@ -20,15 +22,23 @@ import { Pagina, OperacionHeader } from '../../model/pagina';
   styleUrls: ['./visor.component.scss'],
 })
 export class VisorComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() documento: Documento;
+@ViewChild('imgPag') domImg;
+
   canvas: any;
   paginaVisible: Pagina = null;
   oImg: any = null;
   muestraZoom: boolean = false;
   loading = false;
 
+  // ** Imagen segura
+    private src: string = '';
+    private src$ = new BehaviorSubject(this.src);
+  //
+
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private servicioVisor: VisorImagenesService) {}
+  constructor(private servicioVisor: VisorImagenesService,
+              private httpClient: HttpClient,
+              private domSanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.IniciaCanvas();
@@ -42,16 +52,19 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    for (const propiedad in changes) {
-      if (changes.hasOwnProperty(propiedad)) {
-        switch (propiedad) {
-          case 'documento':
-            this.ProcesaDocumento();
-            break;
-        }
-      }
-    }
+    this.src$.next(this.src);
   }
+
+  dataUrl$ = this.src$.pipe(switchMap(url => this.cargaImgSegura(url)));
+
+  private cargaImgSegura(url: string): Observable<any> {
+    return this.httpClient
+      // load the image as a blob
+      .get(url, {responseType: 'blob'})
+      // create an object url of that blob that we can use in the src attribute
+      .pipe(map(e => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))));
+  }
+
 
   private IniciaCanvas() {
     this.canvas = new fabric.Canvas('canvas');
@@ -94,7 +107,6 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
       this.isDragging = false;
       this.selection = true;
     });
-
     // ==================
   }
 
@@ -119,17 +131,32 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private MuestraPaginaVisible() {
-    if (this.paginaVisible !== null && this.canvas !== null)
-      fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
-        this.canvas.clear();
-        img.set({ originX:  'middle', originY: 'middle' });
-        this.canvas.setDimensions({ width: img.width, height: img.height });
-        this.canvas.add(img);
-        this.canvas.renderAll();
+    if (this.paginaVisible !== null && this.canvas !== null) {
+      // para cargar la img segura, fue necesario añadirla en un elemento img en el dom
+      // debido a que en el método fabric.Image.fromURL el blob da un error 404
+      const domImg = this.domImg.nativeElement;
+      const instanciaImg = new fabric.Image(domImg, { selectable: false })
+                          .set({ originX:  'middle', originY: 'middle' });
+      this.oImg = instanciaImg;
 
-        this.oImg = img;
-        this.loading = false;
-      }, {selectable: false});
+      this.canvas.clear();
+      this.canvas.setDimensions({ width: instanciaImg.width / 2 , height: instanciaImg.height / 2});
+      this.canvas.add(instanciaImg);
+      this.canvas.renderAll();
+
+      // ********************
+
+    }
+      // fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
+      //   this.canvas.clear();
+      //   img.set({ originX:  'middle', originY: 'middle' });
+      //   this.canvas.setDimensions({ width: img.width, height: img.height });
+      //   this.canvas.add(img);
+      //   this.canvas.renderAll();
+
+      //   this.oImg = img;
+      //   this.loading = false;
+      // }, {selectable: false});
   }
 
   private GiraPagina(dir: OperacionHeader) {
@@ -152,9 +179,13 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
       .ObtienePaginaVisible()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
-        this.paginaVisible = p;
-        this.loading = p !== null;
-        this.MuestraPaginaVisible();
+        if (p) {
+          this.src$.next(p.Url);
+          this.paginaVisible = p;
+          this.loading = true;
+          this.MuestraPaginaVisible();
+          this.loading = false;
+        }
       });
   }
 
@@ -172,8 +203,5 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
-  
-  private ProcesaDocumento() {
-    // console.log(this.documento);
-  }
 }
+

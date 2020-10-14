@@ -7,8 +7,10 @@ import {
 } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Pagina } from '../../model/pagina';
-import { takeUntil, first, take } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { takeUntil, first, take, switchMap, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 export enum KEY_CODE {
   SHIFT = 16,
@@ -20,6 +22,7 @@ export enum KEY_CODE {
   styleUrls: ['./thumbnail.component.scss'],
 })
 export class ThumbnailComponent implements OnInit, OnDestroy {
+  @Input() private srcThumb: string = '';
   @Input() pagina: Pagina;
   paginaVisible: boolean = false;
   paginaSeleccionada: boolean = false;
@@ -27,7 +30,9 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   seleccionCtrl: boolean = false;
 
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private servicioVisor: VisorImagenesService) {}
+  constructor(private servicioVisor: VisorImagenesService,
+              private httpClient: HttpClient,
+              private domSanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.EscuchaPaginaActiva();
@@ -39,6 +44,22 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
+  private srcThumb$ = new BehaviorSubject(this.srcThumb);
+  ngOnChanges(): void {
+      this.srcThumb$.next(this.srcThumb);
+  }
+
+  dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
+
+  private cargaImgSegura(url: string): Observable<any> {
+    return (
+        this.httpClient
+    // load the image as a blob
+        .get(url, { responseType: 'blob' })
+    // create an object url of that blob that we can use in the src attribute
+        .pipe(map((e) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))))
+    );
+}
   // Este funcion se llama al dar click en el thumbnail
   SeleccionaThumbnails() {
     if (!this.seleccionShift && !this.seleccionCtrl)
@@ -48,6 +69,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   }
 
   EstablecePaginaActiva() {
+    
     this.servicioVisor.EliminarSeleccion();
     this.servicioVisor.EstablecerPaginaActiva(this.pagina);
     this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);

@@ -99,43 +99,46 @@ export class FileDropComponent implements OnInit, OnDestroy {
     this.uploading = true;
     this.files = this.files.filter(x => !x.subido);
 
-    let i = 0;
-    let subido = false;
-    this.progress = this.uploadService.upload(this.files);
+    if (this.files.length > 0) {
+      let i = 0;
+      let subido = false;
+      this.progress = this.uploadService.upload(this.files);
 
-    // tslint:disable-next-line: forin
-    for (const key in this.progress) {
-      i++;
-      this.progress[key].progress.subscribe((val) => {
-        // console.log(`${key} ${val}`);
-        this.progresoGlobal = Math.round((val.progreso * i) / this.files.length);
-        if (val.progreso === 100 && val.status === 200)
-          subido = true;
-        else
+      // tslint:disable-next-line: forin
+      for (const key in this.progress) {
+        i++;
+        this.progress[key].progress.subscribe((val) => {
+          // console.log(`${key} ${val}`);
+          this.progresoGlobal = Math.round((val.progreso * i) / this.files.length);
+          if (val.progreso === 100 && val.status === 200)
+            subido = true;
+          else
+            subido = false;
+
+          this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
+          this.ref.detectChanges();
+        },
+        error => {
           subido = false;
+          this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
+          this.LimpiaUIArchivos();
+        }, () => {
+          this.LimpiaUIArchivos();
+        });
+      }
 
-        this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
-        this.ref.detectChanges();
-      },
-      error => {
-        subido = false;
-        this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
-        this.LimpiaUIArchivos();
-      }, () => {
+      // convert the progress map into an array
+      const allProgressObservables = [];
+      // tslint:disable-next-line: forin
+      for (const key in this.progress) {
+        allProgressObservables.push(this.progress[key].progress);
+      }
+
+      forkJoin(allProgressObservables).subscribe((end) => {
         this.LimpiaUIArchivos();
       });
-    }
-
-    // convert the progress map into an array
-    const allProgressObservables = [];
-    // tslint:disable-next-line: forin
-    for (const key in this.progress) {
-      allProgressObservables.push(this.progress[key].progress);
-    }
-
-    forkJoin(allProgressObservables).subscribe((end) => {
+    }else
       this.LimpiaUIArchivos();
-    });
   }
 
   ActualizaUIArchivo(file: any, exito: boolean) {

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { HostVisorComponent } from './components/host-visor/host-visor.component';
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
 import { VisorComponent } from './components/visor/visor.component';
@@ -81,6 +80,8 @@ import { VisorPdfComponent } from './components/visor-pdf/visor-pdf.component';
 import { VisorAudioComponent } from './components/visor-audio/visor-audio.component';
 import { VisorVideoComponent } from './components/visor-video/visor-video.component';
 import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MyHttpInterceptor } from './interceptores/my-http.interceptor';
 
 @NgModule({
   imports: [
@@ -155,10 +156,16 @@ import { VisorOtroComponent } from './components/visor-otro/visor-otro.component
     RouterModule,
     MatSliderModule,
     UploaderModule,
+    // HttpClientModule,
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-    PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent, VisorTifComponent, VisorPdfComponent, VisorAudioComponent, VisorVideoComponent, VisorOtroComponent ],
-  exports: [HostVisorComponent, ThumbnailComponent, VisorComponent, PieVisorComponent, HostThumbnailsComponent],
+                PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent, VisorTifComponent,
+                VisorPdfComponent, VisorAudioComponent, VisorVideoComponent, VisorOtroComponent ],
+  exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
+            PieVisorComponent, HostThumbnailsComponent],
+  // providers: [{
+  //   provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
+  // }],
 })
 export class VisorImagenesModule { }
 
