@@ -52,12 +52,14 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     this.src$.next(this.src);
   }
 
   dataUrl$ = this.src$.pipe(switchMap(url => this.cargaImgSegura(url)));
 
   private cargaImgSegura(url: string): Observable<any> {
+    console.log(url);
     return this.httpClient
       // load the image as a blob
       .get(url, {responseType: 'blob'})
@@ -134,11 +136,13 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     if (this.paginaVisible !== null && this.canvas !== null) {
       // para cargar la img segura, fue necesario añadirla en un elemento img en el dom
       // debido a que en el método fabric.Image.fromURL el blob da un error 404
+      console.log('1');
       const domImg = this.domImg.nativeElement;
       const instanciaImg = new fabric.Image(domImg, { selectable: false })
                           .set({ originX:  'middle', originY: 'middle' });
       this.oImg = instanciaImg;
 
+      console.log('2');
       this.canvas.clear();
       this.canvas.setDimensions({ width: instanciaImg.width / 2 , height: instanciaImg.height / 2});
       this.canvas.add(instanciaImg);
