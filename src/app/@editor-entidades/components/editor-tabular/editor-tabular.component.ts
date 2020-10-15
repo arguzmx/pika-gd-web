@@ -514,6 +514,7 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   EjecutarIrReporte(reporte: IProveedorReporte) {
+
     this.dialogReportPickerRef.close();
 
     const parametros = reporte.Parametros;
@@ -528,7 +529,9 @@ private  ProcesaCambiosConfiguracion(): void {
       }
     });
 
-  const nombre =  this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) + '.xlsx';
+    const nombre = reporte.Nombre + ' ' +
+    this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) +
+    '.' + reporte.FormatosDisponibles[0].Id;
 
     this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
   }
