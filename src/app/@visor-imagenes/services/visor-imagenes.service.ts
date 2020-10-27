@@ -13,6 +13,10 @@ export class VisorImagenesService {
   private subjectPaginasSeleccionadas = new BehaviorSubject<Pagina[]>([]);
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
+  private subjectFiltroPaginas = new BehaviorSubject<boolean>(null);
+
+  private subjectPaginas = new BehaviorSubject<Object>(null);
+
 
   documento: Documento = null;
   config: IUploadConfig = null;
@@ -63,7 +67,7 @@ export class VisorImagenesService {
         },
         () => {
           // Una vez que se recie el primer valor u ocurre un error completamos el subjet
-          // y así sus sucriptores reciber el último valro obtenido
+          // y así sus sucriptores reciber el último valor obtenido
           subject.complete();
         }
       );
@@ -71,7 +75,23 @@ export class VisorImagenesService {
     return subject;
   }
 
-  // Administración de páginas seleccionadas
+
+
+  //#region Actualiza páginas después de subida de archivos
+  // --------------------------------------------------------------
+  public EstablecePaginas(paginas: Object ) {
+    this.subjectPaginas.next(paginas);
+  }
+
+  public ObtienePaginas(): Observable<Object> {
+    return this.subjectPaginas.asObservable();
+  }
+
+
+  //#endregion
+  // --------------------------------------------------------------
+
+  //#region Administración de páginas seleccionadas
   // --------------------------------------------------------------
   public EstablecerPaginaActiva(p: Pagina) {
     this.thumbActivo = p;
@@ -100,6 +120,15 @@ export class VisorImagenesService {
     }
   }
 
+  public EliminarPaginaSeleccion(p: Pagina) {
+    if (this.thumbSeleccionados.find( x => x.Id === p.Id)) {
+      console.log(this.thumbSeleccionados.length);
+      this.thumbSeleccionados.splice(this.thumbSeleccionados.findIndex(x => x.Id === p.Id), 1);
+      console.log(this.thumbSeleccionados.length);
+      this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+    }
+  }
+
   public EliminarSeleccion() {
     this.thumbSeleccionados = [];
     this.inicioSeleccion = null;
@@ -108,6 +137,7 @@ export class VisorImagenesService {
   }
 
   /// -----------------------------------------------------
+
   ObtienePaginasSeleccionadas(): Observable<Pagina[]> {
     return this.subjectPaginasSeleccionadas.asObservable();
   }
@@ -120,6 +150,22 @@ export class VisorImagenesService {
     return this.subjectOperacionHeader.asObservable();
   }
 
+  //#endregion
   // --------------------------------------------------------------
+
+  //#region Filtro Solo imágenes
+  // --------------------------------------------------------------
+
+  public EstableceFiltroPaginas(soloImagenes: boolean ) {
+    this.subjectFiltroPaginas.next(soloImagenes);
+  }
+
+  public ObtieneFiltroPaginas(): Observable<Object> {
+    return this.subjectFiltroPaginas.asObservable();
+  }
+
+
+
+  // //#endregion
   // --------------------------------------------------------------
 }

@@ -8,6 +8,8 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChildren,
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IUploadConfig } from '../../../@uploader/uploader.module';
+import { FileDropComponent } from '../../../@uploader/file-drop/file-drop.component';
+import { Pagina } from '../../model/pagina';
 
 @Component({
   selector: 'ngx-host-visor',
@@ -19,6 +21,7 @@ export class HostVisorComponent implements OnInit, OnDestroy,
 AfterViewInit, OnChanges {
   private onDestroy$: Subject<void> = new Subject<void>();
   public documento: Documento;
+  private paginas: Pagina[] = [];
   public Titulo: string = '';
   public alturaComponente = '500px';
 
@@ -50,11 +53,29 @@ AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
+    this.CargaDocumento();
+    this.EscuchaFiltroPaginas();
+  }
+
+  public CargaDocumento () {
     this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( doc =>  {
         this.documento = doc;
+        this.paginas = this.documento.Paginas;
     });
+  }
+
+  EscuchaFiltroPaginas() {
+    this.servicioVisor.ObtieneFiltroPaginas()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(soloImagenes => {
+      if (this.documento) this.documento.Paginas = soloImagenes ? this.paginas.filter(x => x.EsImagen) : this.paginas;
+    });
+  }
+
+  toggleSoloImagenes(soloImagenes) {
+
   }
 
   ngOnInit(): void {
@@ -84,6 +105,7 @@ AfterViewInit, OnChanges {
 
 
   public callUpload() {
+    console.log(this.uploaders.first);
     this.uploaders.first.openUploadSheet();
   }
 

@@ -12,14 +12,17 @@ import { IUploadConfig } from './model/i-upload-config';
 import { first, mergeMap } from 'rxjs/operators';
 import { AppLogService, TraduccionEntidad } from '../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
+import { VisorImagenesService } from '../@visor-imagenes/services/visor-imagenes.service';
+import { Pagina } from '../@visor-imagenes/model/pagina';
 
 const url = environment.uploadUrl;
 
 @Injectable()
 export class UploadService {
   private indiceCarga: number;
-  private subjectStatusArchivos = new BehaviorSubject<{ [key: string]: { codeStatus: number } }[]>(null);
-  constructor(private http: HttpClient, private applog: AppLogService, private ts: TranslateService) {
+  private subjectPaginas = new BehaviorSubject<Object>(null); // o uno desde el servicio de visor
+  constructor(private http: HttpClient, private applog: AppLogService,
+              private ts: TranslateService) {
     this.indiceCarga = 1;
   }
 
@@ -70,7 +73,7 @@ export class UploadService {
               .post(url + `/completar/${this.config.TransactionId}`, null)
               .pipe(first())
               .subscribe((result) => {
-                // console.log(result);
+                this.subjectPaginas.next(result);
                 if (result) this.applog.ExitoT('editor-pika.mensajes.msg-exito', null, {});
               });
           }
@@ -89,6 +92,11 @@ export class UploadService {
     return status;
   }
 
+  ObtienePaginas(): Observable<Object> {
+    return this.subjectPaginas.asObservable();
+  }
+  
+  // public ActualizaPaginas(){}
     // Proces alos errores de API
     private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
       if (error instanceof  HttpResponseBase) {
