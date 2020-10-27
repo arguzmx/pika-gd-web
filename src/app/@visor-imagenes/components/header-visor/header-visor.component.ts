@@ -34,6 +34,10 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
     });
   }
 
+  EstableceSoloImaganes(soloImagenes: boolean) {
+    this.servicioVisor.EstableceFiltroPaginas(soloImagenes);
+  }
+
   EstableceOperacionPagina(operacion: OperacionHeader) {
     this.servicioVisor.EstableceOperacionHeader(operacion);
   }

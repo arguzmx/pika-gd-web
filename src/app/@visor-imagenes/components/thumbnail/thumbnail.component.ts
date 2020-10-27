@@ -15,6 +15,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 export enum KEY_CODE {
   SHIFT = 16,
   CTRL = 17,
+  A_RIGTH = 39,
+  A_LEFT = 37,
 }
 @Component({
   selector: 'ngx-thumbnail',
@@ -24,6 +26,7 @@ export enum KEY_CODE {
 export class ThumbnailComponent implements OnInit, OnDestroy {
   @Input() private srcThumb: string = '';
   @Input() pagina: Pagina;
+
   paginaVisible: boolean = false;
   paginaSeleccionada: boolean = false;
   seleccionShift: boolean = false;
@@ -37,6 +40,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.EscuchaPaginaActiva();
     this.EscuchaPaginaSeleccion();
+    this.EscuchaFiltroPaginas();
   }
 
   ngOnDestroy(): void {
@@ -69,7 +73,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   }
 
   EstablecePaginaActiva() {
-    
     this.servicioVisor.EliminarSeleccion();
     this.servicioVisor.EstablecerPaginaActiva(this.pagina);
     this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
@@ -97,16 +100,40 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
       });
   }
 
+  EscuchaFiltroPaginas() {
+    this.servicioVisor
+      .ObtieneFiltroPaginas()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(soloImagenes => {
+        if (soloImagenes && !this.pagina.EsImagen) {
+          this.servicioVisor.EliminarPaginaSeleccion(this.pagina);
+          if (this.paginaVisible) this.servicioVisor.EstablecerPaginaActiva(null);
+        }
+      });
+  }
+
 
   @HostListener('window:keydown', ['$event'])
   ActivaSeleccionMultiple(event: KeyboardEvent) {
-    this.seleccionShift = event.keyCode === KEY_CODE.SHIFT;
-    this.seleccionCtrl = event.keyCode === KEY_CODE.CTRL;
+    this.seleccionShift = event.shiftKey;
+    this.seleccionCtrl = event.ctrlKey;
   }
 
   @HostListener('window:keyup', ['$event'])
   DesactivaSeleccionMultiple(event: KeyboardEvent) {
     if (event.keyCode === KEY_CODE.SHIFT) this.seleccionShift = false;
     if (event.keyCode === KEY_CODE.CTRL) this.seleccionCtrl = false;
+
+    if (this.paginaVisible)
+    switch (event.key) {
+      case 'ArrowRight':
+        console.log(this.pagina);
+      break;
+      case 'ArrowLeft':
+        console.log(this.pagina);
+      break;
+    }
+
   }
 }
+

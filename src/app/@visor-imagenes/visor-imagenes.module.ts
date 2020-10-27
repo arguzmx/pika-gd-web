@@ -81,7 +81,7 @@ import { VisorAudioComponent } from './components/visor-audio/visor-audio.compon
 import { VisorVideoComponent } from './components/visor-video/visor-video.component';
 import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MyHttpInterceptor } from './interceptores/my-http.interceptor';
+import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
 
 @NgModule({
   imports: [

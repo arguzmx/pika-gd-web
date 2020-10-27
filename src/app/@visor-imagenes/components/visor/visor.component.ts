@@ -1,14 +1,11 @@
 import {
   Component,
   OnInit,
-  Input,
   OnChanges,
   SimpleChanges,
   OnDestroy,
-  HostListener,
   ViewChild } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
-import { Documento } from '../../model/documento';
 import { fabric } from 'fabric';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
