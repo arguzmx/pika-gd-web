@@ -61,11 +61,12 @@ export class UploadService {
 
       const progress = new Subject<{progreso: number, status: number}>();
       this.http.request(req).subscribe((event) => {
+        console.log(event);
         if (event.type === HttpEventType.UploadProgress) {
+          console.log('event');
           const percentDone = Math.round((100 * event.loaded) / event.total);
           progress.next({progreso: percentDone, status: percentDone === 100 ? 200 : 0});
         } else if (event instanceof HttpResponse) {
-          // console.log(event);
           progress.complete();
           total--;
           if (total === 0) {
@@ -81,12 +82,14 @@ export class UploadService {
       },
       error => {
         total--;
-        progress.error({progreso: 0, status: error.status });
+        progress.next({progreso: 0, status: error.status });
         this.handleHTTPError(error, file.name, '');
       });
+
       status[file.name] = {
-          progress: progress.asObservable(),
-        };
+        progress: progress.asObservable(),
+      };
+      console.log(status);
     }
 
     return status;

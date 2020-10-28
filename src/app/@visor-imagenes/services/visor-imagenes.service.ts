@@ -14,6 +14,7 @@ export class VisorImagenesService {
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
   private subjectFiltroPaginas = new BehaviorSubject<boolean>(null);
+  private subjectCambiarPagina = new BehaviorSubject<{anterior: boolean, siguiente: boolean, indice: number}>(null);
 
   private subjectPaginas = new BehaviorSubject<Object>(null);
 
@@ -52,13 +53,22 @@ export class VisorImagenesService {
             if ( this.documento.Paginas[i].TieneMiniatura ) {
               this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(environment.mediaUrl)}mini/` + url;
             } else {
-              this.documento.Paginas[i].UrlThumbnail = '/assets/images/file.png';
+              let tipoImg = null;
+              if (this.documento.Paginas[i].EsPDF) tipoImg = 'pdf.png';
+              if (this.documento.Paginas[i].EsAudio) tipoImg = 'audio.png';
+              if (this.documento.Paginas[i].EsVideo) tipoImg = 'video.png';
+              if (this.documento.Paginas[i].Url.includes('.doc')) tipoImg = 'doc.png';
+              if (this.documento.Paginas[i].Url.includes('.xls')) tipoImg = 'xls.png';
+              if (this.documento.Paginas[i].Url.includes('.ppt')) tipoImg = 'ppt.png';
+
+              tipoImg = tipoImg ? tipoImg : 'file.png';
+              this.documento.Paginas[i].UrlThumbnail =  '/assets/images/' + tipoImg;
             }
           }
 
           documento.Paginas.sort((a, b) => a.Indice - b.Indice);
 
-          console.log(documento);
+          // console.log(documento);
 
           subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
         },
@@ -123,10 +133,9 @@ export class VisorImagenesService {
 
   public EliminarPaginaSeleccion(p: Pagina) {
     if (this.thumbSeleccionados.find( x => x.Id === p.Id)) {
-      console.log(this.thumbSeleccionados.length);
       this.thumbSeleccionados.splice(this.thumbSeleccionados.findIndex(x => x.Id === p.Id), 1);
-      console.log(this.thumbSeleccionados.length);
       this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+      // ELIMINAR VISOR SI ESTA SELECCIONADA NO IMG
     }
   }
 
@@ -135,6 +144,18 @@ export class VisorImagenesService {
     this.inicioSeleccion = null;
     this.finSeleccion = null;
     this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+  }
+
+  public SiguientePaginaVisible(pagina: Pagina, siguiente: boolean) {
+    this.subjectCambiarPagina.next({anterior: false, siguiente: siguiente, indice: pagina.Indice});
+  }
+
+  public AnteriorPaginaVisible(pagina: Pagina, anterior: boolean) {
+    this.subjectCambiarPagina.next({anterior: anterior, siguiente: false, indice: pagina.Indice});
+  }
+
+  public ObtieneCambiarPagina(): Observable<{anterior: boolean, siguiente: boolean, indice: number}> {
+    return this.subjectCambiarPagina.asObservable();
   }
 
   /// -----------------------------------------------------

@@ -18,7 +18,7 @@ export class UploaderComponent implements OnChanges{
 
   @Input() accept: string;
   @Input() config: IUploadConfig;
-  @Input() maxSize: number; // bytes . 1024 = 1kb . 1048576 = 1mb
+  @Input() maxSize: number; // bytes . 1024 = 1kb . 1048576 b = 1mb . 10485760 b = 10 mb
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {

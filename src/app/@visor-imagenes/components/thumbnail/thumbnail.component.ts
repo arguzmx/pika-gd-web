@@ -127,10 +127,12 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     if (this.paginaVisible)
     switch (event.key) {
       case 'ArrowRight':
-        console.log(this.pagina);
+        console.log('r');
+        this.servicioVisor.SiguientePaginaVisible(this.pagina, true);
       break;
       case 'ArrowLeft':
-        console.log(this.pagina);
+        console.log('L');
+        this.servicioVisor.AnteriorPaginaVisible(this.pagina, true);
       break;
     }
 

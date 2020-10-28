@@ -1,4 +1,5 @@
-<div class="divContenedor" (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false">
+<div [style]="paginaVisible && paginaVisible.EsImagen ? '' : 'display:none'" class="divContenedor"
+    (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false">
     <div class="btn-group-vertical btnZoomGroup" [ngClass]="{'zoomVisible': muestraZoom}">
         <button class="btn btn-primary" on-click="ZoomIn($event)">
             <nb-icon icon="plus"></nb-icon>
@@ -8,13 +9,32 @@
         </button>
     </div>
     <nb-card class="loadingCard" [ngStyle]="{'display': loading ? 'flex' : 'none' }">
-        <nb-card-body  [nbSpinner]="true" nbSpinnerSize="large" nbSpinnerStatus="info" nbSpinnerMessage="Cargando imagen..."></nb-card-body>
+        <nb-card-body [nbSpinner]="true" nbSpinnerSize="large" nbSpinnerStatus="info"
+            nbSpinnerMessage="Cargando imagen..."></nb-card-body>
     </nb-card>
-    
+
     <div style="display: none;">
         <img [src]="dataUrl$|async" #imgPag>
     </div>
-    
-    <canvas id="canvas" width="500" height="500"> -->
+
+    <canvas id="canvas" width="500" height="500">
     </canvas>
+</div>
+
+<div *ngIf="paginaVisible">
+    <div *ngIf="paginaVisible.EsPDF">
+        <ngx-visor-pdf [pagina]="paginaVisible"></ngx-visor-pdf>
+    </div>
+
+    <div *ngIf="paginaVisible.EsVideo">
+        <ngx-visor-video [pagina]="paginaVisible"></ngx-visor-video>
+    </div>
+
+    <div *ngIf="paginaVisible.EsAudio">
+        <ngx-visor-audio [pagina]="paginaVisible"></ngx-visor-audio>
+    </div>
+    
+    <div *ngIf="!paginaVisible.EsAudio && !paginaVisible.EsImagen && !paginaVisible.EsVideo && !paginaVisible.EsPDF">
+        <ngx-visor-otro [pagina] = "paginaVisible"></ngx-visor-otro>
+    </div>
 </div>

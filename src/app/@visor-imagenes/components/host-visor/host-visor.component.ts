@@ -52,9 +52,19 @@ AfterViewInit, OnChanges {
     this.servicioVisor.config = this.config;
   }
 
+  ngOnInit(): void {
+    this.setAlturaPanel(window.innerHeight);
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
+
   ngAfterViewInit(): void {
     this.CargaDocumento();
     this.EscuchaFiltroPaginas();
+    this.EscuchaCambiarPaginaVisible();
   }
 
   public CargaDocumento () {
@@ -74,18 +84,35 @@ AfterViewInit, OnChanges {
     });
   }
 
-  toggleSoloImagenes(soloImagenes) {
+  EscuchaCambiarPaginaVisible(){
+    this.servicioVisor.ObtieneCambiarPagina()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(control => {
+      if (this.documento && control) {
+        let pagina: Pagina = null;
+        const index = this.documento.Paginas.findIndex(x => x.Indice === control.indice);
+        
+        console.log(index, control.anterior, control.siguiente);
 
+        if (control.siguiente) {
+          pagina = this.documento.Paginas[index + 1];
+          if (pagina) this.servicioVisor.SiguientePaginaVisible(pagina, false);
+        }
+        if (control.anterior) {
+          pagina = this.documento.Paginas[index - 1];
+          if (pagina) this.servicioVisor.AnteriorPaginaVisible(pagina, false);
+        }
+
+        if (pagina) {
+          this.servicioVisor.EliminarSeleccion();
+          this.servicioVisor.EstablecerPaginaActiva(pagina);
+          this.servicioVisor.AdicionarPaginaSeleccion(pagina);
+        }
+      }
+    });
   }
 
-  ngOnInit(): void {
-    this.setAlturaPanel(window.innerHeight);
-  }
 
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
-  }
 
  private setAlturaPanel(altura: number) {
     let h = parseInt(altura.toString(), 0) - 250;

@@ -82,9 +82,11 @@ import { VisorVideoComponent } from './components/visor-video/visor-video.compon
 import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @NgModule({
   imports: [
+    NgxExtendedPdfViewerModule,
     AngularSplitModule.forRoot(),
     A11yModule,
     ClipboardModule,

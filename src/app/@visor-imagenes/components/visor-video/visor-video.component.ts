@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Pagina } from '../../model/pagina';
 
 @Component({
   selector: 'ngx-visor-video',
@@ -6,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./visor-video.component.scss']
 })
 export class VisorVideoComponent implements OnInit {
+  @Input() pagina: Pagina;
 
   constructor() { }
 
   ngOnInit(): void {
   }
-
 }
