@@ -260,22 +260,27 @@ implements ITablaMetadatos, OnInit, OnChanges {
     this.renglonSeleccionado = -1;
     this.NuevaSeleccion.emit(this.entidadseleccionada);
   }
+
   // Otiene la etqueta para una celda con un Id
   public EtiquetaDeId(Id: string, EntidadId: string) {
     // El texto para ls etiqeutas viene desde el servicio de entidades
      // Y se carga tras el paginado
+
+     // console.log(Id, EntidadId);
+
     if (this.metadata) {
-    const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
-    let e = '';
-    if (i >= 0 && this.metadata.Propiedades[i].AtributoLista.Entidad) {
-      e = this.metadata.Propiedades[i].AtributoLista.Entidad;
-      const index = this.entidades.ListaIds.findIndex(x =>  x.Id === Id &&
+      const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
+      let e = '';
+      // console.log(i,this.metadata.Propiedades[i]);
+      if (i >= 0 && this.metadata.Propiedades[i].AtributoLista) {
+        e = this.metadata.Propiedades[i].AtributoLista.Entidad;
+        const index = this.entidades.ListaIds.findIndex(x =>  x.Id === Id &&
         x.Entidad === e );
-      if ( index >= 0 ) {
+        if ( index >= 0 ) {
           return this.entidades.ListaIds[index].Texto;
         }
+      }
     }
-  }
     return Id;
   }
 

@@ -95,7 +95,41 @@
         "tipoampliacion": "Tipo ampliación|Tipos ampliación|el|los|clock-outline",
         "tipodisposiciondocumental": "Tipo disposición|Tipos disposición|el|los|trash-outline",
         "tipovaloraciondocumental": "Tipo valoración|Tipos valoración|el|los|eye-outline",
+        "plantilla": "Plantilla|Plantillas|la|las|bookmark-outline",
+        "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|list-outline",
         "propiedades": {
+            "propiedadplantilla": {
+                "PlantillaId": "PlantillaId",
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "Requerido": "Requerido",
+                "IndiceOrdenamiento": "Ïndice",
+                "TipoDatoId": "Tipo dato",
+                "ValorDefault": "Valor Default",
+                "IndiceOrdenamientoTabla": "IndiceOrdenamientoTabla",
+                "Buscable": "Buscable",
+                "Ordenable": "Ordenable",
+                "Visible": "Visible",
+                "EsIdClaveExterna": "EsIdClaveExterna",
+                "EsIdRegistro": "EsIdRegistro",
+                "EsIdJerarquia": "EsIdJerarquia",
+                "EsTextoJerarquia": "EsTextoJerarquia",
+                "EsIdRaizJerarquia": "EsIdRaizJerarquia",
+                "EsFiltroJerarquia": "EsFiltroJerarquia",
+                "Autogenerado": "Autogenerado",
+                "EsIndice": "Es índice",
+                "OrdenarValoresListaPorNombre": "OrdenarValoresListaPorNombre",
+                "ControlHTML": "ControlHTML",
+                "Etiqueta": "Etiqueta",
+                "Contextual": "Contextual",
+                "IdContextual": "IdContextual",
+                "MostrarEnTabla": "MostrarEnTabla",
+                "AlternarEnTabla": "AlternarEnTabla"
+            },
+            "plantilla": {
+                "Id": "Id",
+                "Nombre": "Nombre"
+            },
             "tipoampliacion": {
                 "Id": "Id",
                 "Nombre": "Nombre"
@@ -175,7 +209,8 @@
                 "MesesVigenciHistorico": "Años AH",
                 "TipoDisposicionDocumentalId": "Disposición",
                 "Eliminada": "Eliminada",
-                "TipoValoracionDocumentalId": "Valoración"
+                "TipoValoracionDocumentalId": "Valoración",
+                "Descripcion": "Comentario"
             },
             "volumen": {
                 "Id": "Id",
