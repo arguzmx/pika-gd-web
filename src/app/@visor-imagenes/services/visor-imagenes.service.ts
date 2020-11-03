@@ -1,7 +1,7 @@
 import { environment } from './../../../environments/environment';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
+import { Observable, AsyncSubject, BehaviorSubject, Subject } from 'rxjs';
 import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
@@ -14,8 +14,10 @@ export class VisorImagenesService {
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
   private subjectFiltroPaginas = new BehaviorSubject<boolean>(null);
+  private subjectCambiarPagina = new BehaviorSubject<{anterior: boolean, siguiente: boolean, indice: number}>(null);
 
-  private subjectPaginas = new BehaviorSubject<Object>(null);
+  private subjecActualizarPaginas = new BehaviorSubject<Pagina[]>(null);
+  private subjectOpenUpload = new BehaviorSubject<boolean>(false);
 
 
   documento: Documento = null;
@@ -40,26 +42,9 @@ export class VisorImagenesService {
       .subscribe(
         (documento) => {
           this.documento = documento;
+          this.GeneraUrlPaginas();
 
-          for (let i = 0; i < this.documento.Paginas.length; i++ ) {
-            let url = `${this.config.VolumenId}/`;
-            url = url + `${this.config.ElementoId}/`;
-            url = url + `${this.config.VersionId}/`;
-            url = url + `${this.documento.Paginas[i].Id}/`;
-            url = url + `${this.documento.Paginas[i].Extension}`;
-
-            this.documento.Paginas[i].Url = `${this.DepuraUrl(environment.mediaUrl)}pagina/` + url;
-            if ( this.documento.Paginas[i].TieneMiniatura ) {
-              this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(environment.mediaUrl)}mini/` + url;
-            } else {
-              this.documento.Paginas[i].UrlThumbnail = '/assets/images/file.png';
-            }
-          }
-
-          documento.Paginas.sort((a, b) => a.Indice - b.Indice);
-
-
-          subject.next(documento); // con .next asigamos un nuevo valor a nuestro subject
+          subject.next(this.documento); // con .next asigamos un nuevo valor a nuestro subject
         },
         (error) => {
           // En caso de que ocurra un error asignamos el valor null a nuestrp subject
@@ -75,16 +60,54 @@ export class VisorImagenesService {
     return subject;
   }
 
+  // Genera las urls de las páginas del documento actual y el arreglo de páginas para leerlo después de SUBIR nuevas
+  public GeneraUrlPaginas(): Pagina[] {
+    for (let i = 0; i < this.documento.Paginas.length; i++ ) {
+      let url = `${this.config.VolumenId}/`;
+      url = url + `${this.config.ElementoId}/`;
+      url = url + `${this.config.VersionId}/`;
+      url = url + `${this.documento.Paginas[i].Id}/`;
+      url = url + `${this.documento.Paginas[i].Extension}`;
+
+      this.documento.Paginas[i].Url = `${this.DepuraUrl(environment.mediaUrl)}pagina/` + url;
+      if ( this.documento.Paginas[i].TieneMiniatura ) {
+        this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(environment.mediaUrl)}mini/` + url;
+      } else {
+        let tipoImg = null;
+        if (this.documento.Paginas[i].EsPDF) tipoImg = 'pdf.png';
+        if (this.documento.Paginas[i].EsAudio) tipoImg = 'audio.png';
+        if (this.documento.Paginas[i].EsVideo) tipoImg = 'video.png';
+        if (this.documento.Paginas[i].Url.includes('.doc')) tipoImg = 'doc.png';
+        if (this.documento.Paginas[i].Url.includes('.xls')) tipoImg = 'xls.png';
+        if (this.documento.Paginas[i].Url.includes('.ppt')) tipoImg = 'ppt.png';
+
+        tipoImg = tipoImg ? tipoImg : 'file.png';
+        this.documento.Paginas[i].UrlThumbnail =  '/assets/images/' + tipoImg;
+      }
+    }
+    this.documento.Paginas.sort((a, b) => a.Indice - b.Indice);
+    return this.documento.Paginas;
+  }
 
 
   //#region Actualiza páginas después de subida de archivos
   // --------------------------------------------------------------
-  public EstablecePaginas(paginas: Object ) {
-    this.subjectPaginas.next(paginas);
+
+  public EstableceAbrirUpload(actualizar: boolean) {
+    console.log(actualizar);
+    this.subjectOpenUpload.next(actualizar);
   }
 
-  public ObtienePaginas(): Observable<Object> {
-    return this.subjectPaginas.asObservable();
+  public ObtieneAbrirUpload(): Observable<boolean> {
+    return this.subjectOpenUpload.asObservable();
+  }
+
+  public EstableceActualizarPaginas(paginas: Pagina[]) {
+    this.subjecActualizarPaginas.next(paginas);
+  }
+
+  public ObtieneActualizarPags(): Observable<Pagina[]> {
+    return this.subjecActualizarPaginas.asObservable();
   }
 
 
@@ -122,10 +145,9 @@ export class VisorImagenesService {
 
   public EliminarPaginaSeleccion(p: Pagina) {
     if (this.thumbSeleccionados.find( x => x.Id === p.Id)) {
-      console.log(this.thumbSeleccionados.length);
       this.thumbSeleccionados.splice(this.thumbSeleccionados.findIndex(x => x.Id === p.Id), 1);
-      console.log(this.thumbSeleccionados.length);
       this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+      // ELIMINAR VISOR SI ESTA SELECCIONADA NO IMG
     }
   }
 
@@ -134,6 +156,18 @@ export class VisorImagenesService {
     this.inicioSeleccion = null;
     this.finSeleccion = null;
     this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+  }
+
+  public SiguientePaginaVisible(pagina: Pagina, siguiente: boolean) {
+    this.subjectCambiarPagina.next({anterior: false, siguiente: siguiente, indice: pagina.Indice});
+  }
+
+  public AnteriorPaginaVisible(pagina: Pagina, anterior: boolean) {
+    this.subjectCambiarPagina.next({anterior: anterior, siguiente: false, indice: pagina.Indice});
+  }
+
+  public ObtieneCambiarPagina(): Observable<{anterior: boolean, siguiente: boolean, indice: number}> {
+    return this.subjectCambiarPagina.asObservable();
   }
 
   /// -----------------------------------------------------

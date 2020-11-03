@@ -22,6 +22,7 @@ import {
   NbMenuModule,
   NbLayoutRulerService,
   NbSpinnerModule,
+  NbProgressBarModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -80,11 +81,19 @@ import { VisorPdfComponent } from './components/visor-pdf/visor-pdf.component';
 import { VisorAudioComponent } from './components/visor-audio/visor-audio.component';
 import { VisorVideoComponent } from './components/visor-video/visor-video.component';
 import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { FileDropComponent } from './components/uploader/file-drop/file-drop.component';
+import { UploaderComponent } from './components/uploader/uploader.component';
+import { ngfModule } from 'angular-file';
+import { UploadService } from './services/uploader.service';
+import { VisorImagenesService } from './services/visor-imagenes.service';
 
 @NgModule({
   imports: [
+    ngfModule,
+    NgxExtendedPdfViewerModule,
     AngularSplitModule.forRoot(),
     A11yModule,
     ClipboardModule,
@@ -130,6 +139,7 @@ import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
     OverlayModule,
     PortalModule,
     ScrollingModule,
+    NbProgressBarModule,
     NgSelectModule,
     NbSpinnerModule,
     NbTooltipModule,
@@ -156,16 +166,17 @@ import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
     RouterModule,
     MatSliderModule,
     UploaderModule,
-    // HttpClientModule,
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-                PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent, VisorTifComponent,
-                VisorPdfComponent, VisorAudioComponent, VisorVideoComponent, VisorOtroComponent ],
+                PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
+                VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
+                VisorVideoComponent, VisorOtroComponent,
+                UploaderComponent, FileDropComponent],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent],
-  // providers: [{
-  //   provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
-  // }],
+  providers: [UploadService, VisorImagenesService, {
+    provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
+  }],
 })
 export class VisorImagenesModule { }
 

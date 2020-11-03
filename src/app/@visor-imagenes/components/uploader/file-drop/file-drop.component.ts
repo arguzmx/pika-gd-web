@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { UploadService } from '../uploader.service';
+import { UploadService } from '../../../services/uploader.service';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
@@ -7,15 +7,15 @@ import {
 import { forkJoin, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
+import { VisorImagenesService } from '../../../services/visor-imagenes.service';
 
 @Component({
-  selector: 'ngx-file-drop-old',
+  selector: 'ngx-file-drop',
   templateUrl: './file-drop.component.html',
   styleUrls: ['./file-drop.component.scss'],
 })
 export class FileDropComponent implements OnInit, OnDestroy {
   @ViewChild('file', { static: false }) file;
-  // @ViewChildren(HostVisorComponent) visores: QueryList<HostVisorComponent>;
 
   //#region drag zone variables
   accept: string;

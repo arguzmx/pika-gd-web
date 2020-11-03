@@ -1,24 +1,32 @@
 import { IUploadConfig } from './model/i-upload-config';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FileDropComponent } from './file-drop/file-drop.component';
-import { UploadService } from './uploader.service';
+import { UploadService } from '../../services/uploader.service';
+import { VisorImagenesService } from '../../services/visor-imagenes.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
-  selector: 'ngx-uploader-old',
+  selector: 'ngx-uploader',
   templateUrl: './uploader.component.html',
   styleUrls: ['./uploader.component.scss'],
 })
-export class UploaderComponent implements OnChanges {
-  // tslint:disable-next-line: max-line-length
-  constructor(public bottomSheet: MatBottomSheet,
-    public dialog: MatDialog,
-    public uploadService: UploadService) {}
-
+export class UploaderComponent implements OnInit, OnChanges {
   @Input() accept: string;
   @Input() config: IUploadConfig;
   @Input() maxSize: number; // bytes . 1024 = 1kb . 1048576 b = 1mb . 10485760 b = 10 mb
+
+  private onDestroy$: Subject<void> = new Subject<void>();
+  constructor(public bottomSheet: MatBottomSheet,
+    public dialog: MatDialog,
+    public uploadService: UploadService,
+    public servicioVisor: VisorImagenesService) {}
+  ngOnInit(): void {
+    this.EscuchaAbrirUpload();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -30,6 +38,18 @@ export class UploaderComponent implements OnChanges {
         }
       }
     }
+  }
+
+  EscuchaAbrirUpload() {
+    this.servicioVisor.ObtieneAbrirUpload()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(abrir => {
+      if (abrir) {
+        this.openUploadSheet();
+        this.servicioVisor.EstableceAbrirUpload(false);
+       }
+    });
+
   }
 
   private procesaConfiguracion() {

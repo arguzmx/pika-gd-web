@@ -6,7 +6,6 @@ import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 // tslint:disable-next-line: max-line-length
-import { HostUploaderComponent } from './host-uploader/host-uploader.component';
 import { EditorBootTabularComponent, EditorBootJerarquicoComponent } from '../@editor-entidades/editor-entidades.module';
 import { PermisosHostComponent, PermisosModuloComponent } from '../@gestor-permisos/gestor-permisos.module';
 import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
@@ -36,10 +35,6 @@ const routes: Routes = [{
     {
       path: 'visor',
       component: HostVisorContenidoComponent,
-    },
-    {
-      path: 'upload',
-      component: HostUploaderComponent,
     },
     {
       path: '404',

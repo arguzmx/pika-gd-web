@@ -14,6 +14,7 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
   @Output() callUpload = new  EventEmitter();
   pagina: Pagina = null;
   operaciones = OperacionHeader;
+  soloImagenes: boolean = false;
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioVisor: VisorImagenesService) { }
 
@@ -35,6 +36,7 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
   }
 
   EstableceSoloImaganes(soloImagenes: boolean) {
+    this.soloImagenes = soloImagenes;
     this.servicioVisor.EstableceFiltroPaginas(soloImagenes);
   }
 
@@ -46,6 +48,4 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
   doUpload() {
     this.callUpload.emit();
   }
-
-
 }

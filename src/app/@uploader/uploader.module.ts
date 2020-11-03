@@ -14,8 +14,6 @@ import { NbButtonModule, NbPopoverModule, NbIconModule, NbProgressBarModule, NbT
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { IUploadConfig } from './model/i-upload-config';
 import { MatIconModule } from '@angular/material/icon';
-import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module';
-import { VisorImagenesService } from '../@visor-imagenes/services/visor-imagenes.service';
 import { DocumentosService } from '../@visor-imagenes/services/documentos.service';
 
 
@@ -39,7 +37,7 @@ import { DocumentosService } from '../@visor-imagenes/services/documentos.servic
   declarations: [UploaderComponent, FileDropComponent],
   exports: [UploaderComponent],
   entryComponents: [FileDropComponent],
-  providers: [UploadService, VisorImagenesService, DocumentosService],
+  providers: [UploadService, DocumentosService],
 })
 class UploaderModule {}
 

@@ -1,0 +1,83 @@
+<div class="container col-12 justify-content-around">
+    <div ngfDrop [(validDrag)]="baseDropValid" multiple="1" [selectable]="selectable"
+        (fileOver)="hasBaseDropZoneOver=$event" [(files)]="files" [accept]="accept" [maxSize]="maxSize"
+        [(dragFiles)]="dragFiles" [(lastInvalids)]="lastInvalids" class="my-drop-zone"
+        [class.invalid-drag]="baseDropValid===false" [class.valid-drag]="baseDropValid"
+        (filesChange)="lastFileAt=getDate()" [fileDropDisabled]="fileDropDisabled">
+        <br>
+        <div style="margin-bottom: 40px">
+            <div class="row justify-content-around">
+                <div class="col-md justify-content-start">
+                    <button ngfSelect nbButton multiple="1" type="file" [(files)]="files" [accept]="accept"
+                        [maxSize]="maxSize" [(lastInvalids)]="lastInvalids" (filesChange)="EstablecePropiedades()">
+                        {{t['ui.elegir-ellipsis']}}
+                    </button>
+                </div>
+                <div class="col-5">
+                    <nb-progress-bar [value]="progresoGlobal" status="primary" [displayValue]="true">
+                    </nb-progress-bar>
+                </div>
+                <div class="col-md justify-content-end">
+                    <button class="single-view-button" nbButton size="small" on-click="uploadFiles()"
+                        [disabled]="!files.length || uploading" [nbTooltip]="t['ui.enviar']"
+                        nbTooltipPlacement="bottom">
+                        <nb-icon icon="upload-outline" pack="eva"></nb-icon>
+                    </button>
+                    <button class="grid-view-button" nbButton size="small" [disabled]="!httpEmitter || uploading"
+                        on-click="cancel()" [nbTooltip]="t['ui.cancelar']" nbTooltipPlacement="bottom">
+                        <nb-icon icon="slash-outline" pack="eva"></nb-icon>
+                    </button>
+                    <button class="grid-view-button" nbButton size="small" on-click="files.length=0"
+                        [disabled]="!files.length || uploading" [nbTooltip]="t['ui.eliminar-todo']"
+                        nbTooltipPlacement="bottom">
+                        <nb-icon icon="trash-outline" pack="eva"></nb-icon>
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-around">
+                <div class="filesContainer">
+                    <div class="filesList">
+                        <div *ngFor="let item of files;let i=index">
+                            <div class="row">
+                                <div class="col-1">
+                                    <button type="button" nbButton ghost (click)="files.splice(i,1)">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="col-1"
+                                    *ngIf="['image/gif','image/png','image/jpeg'].indexOf(item.type)>=0; else elseBlock">
+                                    <div class="previewIcon" [ngfBackground]="item"></div>
+                                </div>
+                                <ng-template #elseBlock>
+                                    <div class="col-1"></div>
+                                </ng-template>
+                                <div class="col-8">
+                                    <p [ngClass]="item.style ? item.style : ''">
+                                        {{item.name}}
+                                    </p>
+                                </div>
+                                <div class="col-2">
+                                    <mat-icon *ngIf="item.style && item.style === 'text-success'"
+                                        [ngClass]="item.style  ? item.style : ''">
+                                        done
+                                    </mat-icon>
+                                    <mat-icon *ngIf="item.style && item.style === 'text-danger'"
+                                        [ngClass]="item.style ? item.style : ''">
+                                        error_outline
+                                    </mat-icon>
+                                </div>
+                            </div>
+                            <mat-divider inset="true"></mat-divider>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end">
+                        <p>{{ files.length }} archivos seleccionados</p>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>

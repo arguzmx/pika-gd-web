@@ -123,17 +123,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   DesactivaSeleccionMultiple(event: KeyboardEvent) {
     if (event.keyCode === KEY_CODE.SHIFT) this.seleccionShift = false;
     if (event.keyCode === KEY_CODE.CTRL) this.seleccionCtrl = false;
-
-    if (this.paginaVisible)
-    switch (event.key) {
-      case 'ArrowRight':
-        console.log(this.pagina);
-      break;
-      case 'ArrowLeft':
-        console.log(this.pagina);
-      break;
-    }
-
   }
 }
 

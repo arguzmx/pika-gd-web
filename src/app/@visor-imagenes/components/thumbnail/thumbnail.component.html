@@ -3,8 +3,4 @@
     [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
                 'imgVisible,imgSeleccionada' : paginaVisible && paginaSeleccionada}"
                 [src]="dataUrl$ | async" on-click="SeleccionaThumbnails();">
-    <ng-template #elseBlock>
-        <p> {{pagina.Id}} </p>
-    </ng-template>
 </div>
-<!-- *ngIf="pagina.EsImagen; else elseBlock" -->

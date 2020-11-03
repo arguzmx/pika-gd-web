@@ -4,15 +4,16 @@ import {
   HttpRequest,
   HttpEventType,
   HttpResponse,
-   HttpResponseBase,
+  HttpResponseBase,
 } from '@angular/common/http';
-import { Subject, Observable, of, from, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { IUploadConfig } from './model/i-upload-config';
+import { Subject, Observable } from 'rxjs';
+import { IUploadConfig } from '../components/uploader/model/i-upload-config';
 import { first } from 'rxjs/operators';
-import { AppLogService, TraduccionEntidad } from '../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
-import { VisorImagenesService } from '../@visor-imagenes/services/visor-imagenes.service';
+import { environment } from '../../../environments/environment';
+import { AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
+import { VisorImagenesService } from './visor-imagenes.service';
+
 
 const url = environment.uploadUrl;
 
@@ -21,7 +22,8 @@ export class UploadService {
   private indiceCarga: number;
 
   constructor(private http: HttpClient, private applog: AppLogService,
-              private ts: TranslateService, private servicioVisor: VisorImagenesService) {
+              private ts: TranslateService,
+              private servicioVisor: VisorImagenesService) {
     this.indiceCarga = 1;
   }
 
@@ -71,9 +73,9 @@ export class UploadService {
             this.http
               .post(url + `/completar/${this.config.TransactionId}`, null)
               .pipe(first())
-              .subscribe((result) => {
-                if (result) {
-                  this.servicioVisor.EstableceActualizarPaginas(true);
+              .subscribe((paginasNuevas) => {
+                if (paginasNuevas) {
+                  this.servicioVisor.EstableceActualizarPaginas(paginasNuevas);
                   this.applog.ExitoT('editor-pika.mensajes.msg-exito', null, {});
                 }
               });
