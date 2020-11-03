@@ -1,12 +1,15 @@
-import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef,
+  QueryList, ViewChildren } from '@angular/core';
 import { UploadService } from '../uploader.service';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material/bottom-sheet';
-import { forkJoin, Subject, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import { HostVisorComponent } from '../../@visor-imagenes/components/host-visor/host-visor.component';
+import { VisorImagenesService } from '../../@visor-imagenes/services/visor-imagenes.service';
 
 @Component({
   selector: 'ngx-file-drop-old',
@@ -52,6 +55,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   constructor( private ref: ChangeDetectorRef,
               private translate: TranslateService,
               public uploadService: UploadService,
+              public servicioVisor: VisorImagenesService, // ***********************************
               public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.accept = data.accept;
@@ -141,6 +145,9 @@ export class FileDropComponent implements OnInit, OnDestroy {
       this.LimpiaUIArchivos();
   }
 
+  public ObtienePaginas(): Observable<Object> {
+    return this.uploadService.ObtienePaginas();
+  }
   ActualizaUIArchivo(file: any, exito: boolean) {
     file.subido = exito;
     file.style = exito ? 'text-success' : 'text-danger';

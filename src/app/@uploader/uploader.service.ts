@@ -62,6 +62,7 @@ export class UploadService {
       this.http.request(req).subscribe((event) => {
         // console.log(event);
         if (event.type === HttpEventType.UploadProgress) {
+          console.log('event');
           const percentDone = Math.round((100 * event.loaded) / event.total);
           progress.next({progreso: percentDone, status: percentDone === 100 ? 200 : 0});
         } else if (event instanceof HttpResponse) {
@@ -94,6 +95,11 @@ export class UploadService {
     return status;
   }
 
+  ObtienePaginas(): Observable<Object> {
+    return this.subjectPaginas.asObservable();
+  }
+  
+  // public ActualizaPaginas(){}
     // Proces alos errores de API
     private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
       if (error instanceof  HttpResponseBase) {
