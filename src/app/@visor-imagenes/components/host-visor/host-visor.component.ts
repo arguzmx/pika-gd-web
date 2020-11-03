@@ -1,36 +1,40 @@
 
-import { UploaderComponent } from './../../../@uploader/uploader.component';
 import { Documento } from './../../model/documento';
 import { DocumentosService } from './../../services/documentos.service';
 import { VisorImagenesService } from './../../services/visor-imagenes.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChildren,
   QueryList, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { IUploadConfig } from '../../../@uploader/uploader.module';
+import { FileDropComponent } from '../../../@uploader/file-drop/file-drop.component';
+import { Pagina } from '../../model/pagina';
+import { UploaderComponent } from '../uploader/uploader.component';
+import { UploadService } from '../../services/uploader.service';
 
 @Component({
   selector: 'ngx-host-visor',
   templateUrl: './host-visor.component.html',
   styleUrls: ['./host-visor.component.scss'],
-  providers: [VisorImagenesService, DocumentosService],
+  providers: [DocumentosService],
 })
 export class HostVisorComponent implements OnInit, OnDestroy,
 AfterViewInit, OnChanges {
-  private onDestroy$: Subject<void> = new Subject<void>();
   public documento: Documento;
+  private paginas: Pagina[] = [];
   public Titulo: string = '';
   public alturaComponente = '500px';
 
   @Input() config: IUploadConfig;
-  @ViewChildren(UploaderComponent) uploaders: QueryList<UploaderComponent>;
+  @ViewChildren(FileDropComponent) uploaders: QueryList<FileDropComponent>;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.setAlturaPanel(event.target.innerHeight);
   }
 
-  constructor(private servicioVisor: VisorImagenesService) { }
+  private onDestroy$: Subject<void> = new Subject<void>();
+  constructor(private servicioVisor: VisorImagenesService, private uploadService: UploadService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -49,14 +53,6 @@ AfterViewInit, OnChanges {
     this.servicioVisor.config = this.config;
   }
 
-  ngAfterViewInit(): void {
-    this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( doc =>  {
-        this.documento = doc;
-    });
-  }
-
   ngOnInit(): void {
     this.setAlturaPanel(window.innerHeight);
   }
@@ -65,6 +61,69 @@ AfterViewInit, OnChanges {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
   }
+
+  ngAfterViewInit(): void {
+    this.CargaDocumento();
+    this.EscuchaFiltroPaginas();
+    this.EscuchaCambiarPaginaVisible();
+    this.EscuchaActualizarPaginas();
+  }
+
+  public CargaDocumento () {
+    this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe( doc =>  {
+        this.documento = doc;
+        this.paginas = this.documento.Paginas;
+    });
+  }
+
+  EscuchaFiltroPaginas() {
+    this.servicioVisor.ObtieneFiltroPaginas()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(soloImagenes => {
+      if (this.documento) this.documento.Paginas = soloImagenes ? this.paginas.filter(x => x.EsImagen) : this.paginas;
+    });
+  }
+
+  EscuchaCambiarPaginaVisible () {
+    this.servicioVisor.ObtieneCambiarPagina()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(control => {
+      if (this.documento && control) {
+        let pagina: Pagina = null;
+        const index = this.documento.Paginas.findIndex(x => x.Indice === control.indice);
+
+        if (control.siguiente) {
+          pagina = this.documento.Paginas[index + 1];
+          if (pagina) this.servicioVisor.SiguientePaginaVisible(pagina, false);
+        }
+        if (control.anterior) {
+          pagina = this.documento.Paginas[index - 1];
+          if (pagina) this.servicioVisor.AnteriorPaginaVisible(pagina, false);
+        }
+
+        if (pagina) {
+          this.servicioVisor.EliminarSeleccion();
+          this.servicioVisor.EstablecerPaginaActiva(pagina);
+          this.servicioVisor.AdicionarPaginaSeleccion(pagina);
+        }
+      }
+    });
+  }
+
+  EscuchaActualizarPaginas() {
+    this.servicioVisor.ObtieneActualizarPags()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(paginasNuevas => {
+      if (this.documento) {
+        this.documento.Paginas = this.documento.Paginas.concat(paginasNuevas);
+        this.documento.Paginas = this.servicioVisor.GeneraUrlPaginas();
+      }
+    });
+
+  }
+
 
  private setAlturaPanel(altura: number) {
     let h = parseInt(altura.toString(), 0) - 250;
@@ -84,7 +143,33 @@ AfterViewInit, OnChanges {
 
 
   public callUpload() {
-    this.uploaders.first.openUploadSheet();
+    this.servicioVisor.EstableceAbrirUpload(true);
   }
 
+  @HostListener('window:keydown', ['$event'])
+  CancelaFuncionReAvPag($event) {
+    if ($event.key === 'PageUp' || $event.key === 'PageDown') {
+      $event.preventDefault();
+    }
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  CambiaPaginaVisible($event) {
+    $event.stopPropagation();
+    if ($event.key === 'PageUp' || $event.key === 'PageDown') {
+      let paginaActual = null;
+      this.servicioVisor.ObtienePaginaVisible()
+      .pipe(take(1))
+      .subscribe(pagina => { if (pagina) paginaActual = pagina; });
+
+      switch ($event.key) {
+        case 'PageDown':
+          this.servicioVisor.SiguientePaginaVisible(paginaActual, true);
+        break;
+        case 'PageUp':
+          this.servicioVisor.AnteriorPaginaVisible(paginaActual, true);
+        break;
+      }
+    }
+  }
 }

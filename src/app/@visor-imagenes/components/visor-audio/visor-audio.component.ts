@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Pagina } from '../../model/pagina';
 
 @Component({
   selector: 'ngx-visor-audio',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./visor-audio.component.scss']
 })
 export class VisorAudioComponent implements OnInit {
+@Input() pagina: Pagina;
 
   constructor() { }
 

@@ -6,7 +6,7 @@
       <ngx-header-visor (callUpload)="callUpload()"></ngx-header-visor>
     </mat-toolbar>
   </div>
-  
+
   <div class="col-lg-12">
     <nb-reveal-card [showToggleButton]="false">
       <nb-card-front>
@@ -14,22 +14,18 @@
           <nb-card-body>
             <div class="row">
               <div class="col-lg-12">
-                <div style="width: 100%;"
-                [ngStyle]="{'height': alturaComponente}"
-                >
+                <div style="width: 100%;" [ngStyle]="{'height': alturaComponente}">
                   <as-split direction="horizontal">
                     <as-split-area [size]="40" class="hideScroll">
-                      <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12">
-                          <ngx-host-thumbnails [documento]="documento"></ngx-host-thumbnails>
-                        </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        <ngx-host-thumbnails [documento]="documento"></ngx-host-thumbnails>
                       </div>
                     </as-split-area>
                     <as-split-area [size]="60">
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12" style="position: relative;">
                           <div class="padded">
-                            <ngx-visor [documento]="documento"></ngx-visor>
+                            <ngx-visor></ngx-visor>
                           </div>
                         </div>
                       </div>
@@ -67,7 +63,5 @@
     </nb-reveal-card>
   </div>
 </div>
-<ngx-uploader 
-[accept]="'.jpg,.doc,.docx,.pdf'"
-[config] = "config"
-[maxSize] = '1048576'></ngx-uploader>
+<ngx-uploader [accept]="'.jpg,.doc,.docx,.pdf,.mp4,.mov,.avi,.mp3, .wav, .wmv,.ogg, .doc,.docx, .xls,.xlsx,.ppt,.pptx'"
+  [config]="config" [maxSize]='10485760'></ngx-uploader>

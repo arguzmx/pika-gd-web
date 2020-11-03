@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-lg-12" *ngIf="Permiso.Leer">
+  <div class="col-lg-12">
     <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
       <button
         *ngIf="MostrarRegresar"
@@ -33,7 +33,6 @@
 
       <!-- actialziar lista de elemento -->
       <button
-        *ngIf = "Permiso.Leer"
         mat-icon-button
         on-click="refrescarTabla()"
         [nbTooltip]="T.t['ui.actualizar']" nbTooltipPlacement="bottom"
@@ -44,7 +43,6 @@
 
       <!-- mostrar vínculos del elemento seleccionado -->
       <button
-        *ngIf = "Permiso.Leer && vincularActivo"
         mat-icon-button
         on-click="mostrarVinculos()"
         [nbTooltip]="T.t['ui.propiedades']" nbTooltipPlacement="bottom"

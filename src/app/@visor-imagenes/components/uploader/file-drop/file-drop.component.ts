@@ -1,24 +1,21 @@
-import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef,
-  QueryList, ViewChildren } from '@angular/core';
-import { UploadService } from '../uploader.service';
+import { Component, OnInit, ViewChild, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { UploadService } from '../../../services/uploader.service';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material/bottom-sheet';
-import { forkJoin, Observable, Subject, Subscription } from 'rxjs';
+import { forkJoin, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { first, takeUntil } from 'rxjs/operators';
-import { HostVisorComponent } from '../../@visor-imagenes/components/host-visor/host-visor.component';
-import { VisorImagenesService } from '../../@visor-imagenes/services/visor-imagenes.service';
+import { first } from 'rxjs/operators';
+import { VisorImagenesService } from '../../../services/visor-imagenes.service';
 
 @Component({
-  selector: 'ngx-file-drop-old',
+  selector: 'ngx-file-drop',
   templateUrl: './file-drop.component.html',
   styleUrls: ['./file-drop.component.scss'],
 })
 export class FileDropComponent implements OnInit, OnDestroy {
   @ViewChild('file', { static: false }) file;
-  // @ViewChildren(HostVisorComponent) visores: QueryList<HostVisorComponent>;
 
   //#region drag zone variables
   accept: string;
@@ -55,7 +52,6 @@ export class FileDropComponent implements OnInit, OnDestroy {
   constructor( private ref: ChangeDetectorRef,
               private translate: TranslateService,
               public uploadService: UploadService,
-              public servicioVisor: VisorImagenesService, // ***********************************
               public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.accept = data.accept;
