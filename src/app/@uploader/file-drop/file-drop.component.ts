@@ -145,9 +145,6 @@ export class FileDropComponent implements OnInit, OnDestroy {
       this.LimpiaUIArchivos();
   }
 
-  public ObtienePaginas(): Observable<Object> {
-    return this.uploadService.ObtienePaginas();
-  }
   ActualizaUIArchivo(file: any, exito: boolean) {
     file.subido = exito;
     file.style = exito ? 'text-success' : 'text-danger';

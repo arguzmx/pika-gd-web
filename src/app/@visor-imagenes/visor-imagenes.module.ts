@@ -81,7 +81,6 @@ import { VisorPdfComponent } from './components/visor-pdf/visor-pdf.component';
 import { VisorAudioComponent } from './components/visor-audio/visor-audio.component';
 import { VisorVideoComponent } from './components/visor-video/visor-video.component';
 import { VisorOtroComponent } from './components/visor-otro/visor-otro.component';
-<<<<<<< HEAD
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
@@ -94,14 +93,6 @@ import { VisorImagenesService } from './services/visor-imagenes.service';
 @NgModule({
   imports: [
     ngfModule,
-=======
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { MyHttpInterceptor } from './interceptors/my-http.interceptor';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-
-@NgModule({
-  imports: [
->>>>>>> ef711bf6ebff7ab599bbc3b24d014da29fbf664c
     NgxExtendedPdfViewerModule,
     AngularSplitModule.forRoot(),
     A11yModule,
@@ -175,10 +166,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     RouterModule,
     MatSliderModule,
     UploaderModule,
-    // HttpClientModule,
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-<<<<<<< HEAD
                 PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
                 VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
                 VisorVideoComponent, VisorOtroComponent,
@@ -188,15 +177,6 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
   providers: [UploadService, VisorImagenesService, {
     provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
   }],
-=======
-                PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent, VisorTifComponent,
-                VisorPdfComponent, VisorAudioComponent, VisorVideoComponent, VisorOtroComponent ],
-  exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-            PieVisorComponent, HostThumbnailsComponent],
-  // providers: [{
-  //   provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
-  // }],
->>>>>>> ef711bf6ebff7ab599bbc3b24d014da29fbf664c
 })
 export class VisorImagenesModule { }
 

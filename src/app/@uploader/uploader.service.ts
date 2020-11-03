@@ -74,7 +74,7 @@ export class UploadService {
               .pipe(first())
               .subscribe((result) => {
                 if (result) {
-                  this.servicioVisor.EstableceActualizarPaginas(true);
+                  // this.servicioVisor.EstableceActualizarPaginas(true);
                   this.applog.ExitoT('editor-pika.mensajes.msg-exito', null, {});
                 }
               });
@@ -95,10 +95,6 @@ export class UploadService {
     return status;
   }
 
-  ObtienePaginas(): Observable<Object> {
-    return this.subjectPaginas.asObservable();
-  }
-  
   // public ActualizaPaginas(){}
     // Proces alos errores de API
     private handleHTTPError(error: Error, modulo: string, nombreEntidad: string ): void {
