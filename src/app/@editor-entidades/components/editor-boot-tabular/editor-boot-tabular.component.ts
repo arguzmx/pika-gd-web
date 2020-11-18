@@ -48,6 +48,8 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
               let pcontenido = null;
               let permisos = true;
 
+              console.log(m);
+              console.log(m.TokenMod);
               if (m.TokenApp && m.TokenMod) {
                 pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
                 permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
