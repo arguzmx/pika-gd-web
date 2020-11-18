@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class CacheEntidadesService {
 
   public ClaveValorContextual(origen: string, propiedad: string, tranid: string): string {
-    let clave =`${origen.toLowerCase()}.${propiedad.toLowerCase()}`;
+    let clave = `${origen.toLowerCase()}.${propiedad.toLowerCase()}`;
     if (tranid) {
         clave = clave + `.${tranid.toLowerCase()}`;
     }

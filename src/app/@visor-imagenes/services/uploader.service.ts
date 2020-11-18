@@ -13,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../environments/environment';
 import { AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
 import { VisorImagenesService } from './visor-imagenes.service';
+import { Pagina } from '../model/pagina';
 
 
 const url = environment.uploadUrl;
@@ -71,7 +72,7 @@ export class UploadService {
           total--;
           if (total === 0) {
             this.http
-              .post(url + `/completar/${this.config.TransactionId}`, null)
+              .post<Pagina[]>(url + `/completar/${this.config.TransactionId}`, null)
               .pipe(first())
               .subscribe((paginasNuevas) => {
                 if (paginasNuevas) {

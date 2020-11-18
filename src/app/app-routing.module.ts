@@ -1,15 +1,6 @@
-import { environment } from './../environments/environment';
 import { IsChldrenAuthorizedGuard } from './@core/services/auth-guard/auth-guard.service';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import {
-  NbAuthComponent,
-  NbLoginComponent,
-  NbLogoutComponent,
-  NbRegisterComponent,
-  NbRequestPasswordComponent,
-  NbResetPasswordComponent,
-} from '@nebular/auth';
 
 export const routes: Routes = [
   {
@@ -24,6 +15,7 @@ export const routes: Routes = [
       .then(m => m.PagesModule),
   },
   { path: '', redirectTo: 'pages/inicio', pathMatch: 'full' },
+  { path: 'index.html', redirectTo: 'pages/inicio', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages/404' },
 ];
 

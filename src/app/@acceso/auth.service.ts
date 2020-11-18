@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthErrorEvent, OAuthService, UserInfo } from 'angular-oauth2-oidc';
+import { Console } from 'console';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -56,7 +57,7 @@ export class AuthService {
 
     // This is tricky, as it might cause race conditions (where access_token is set in another
     // tab before everything is said and done there.
-    // TODO: Improve this setup. See: 
+    // TODO: Improve this setup. See:
     // https://github.com/jeroenheijmans/sample-angular-oauth2-oidc-with-auth-guards/issues/2
     window.addEventListener('storage', (event) => {
       // The `key` is `null` if the event was caused by `.clear()`

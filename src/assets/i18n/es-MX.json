@@ -97,6 +97,7 @@
         "tipovaloraciondocumental": "Tipo valoración|Tipos valoración|el|los|eye-outline",
         "plantilla": "Plantilla|Plantillas|la|las|bookmark-outline",
         "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|list-outline",
+        "tipodatoid": "Propiedad|Propiedades|la|las|bookmark-outline",
         "propiedades": {
             "propiedadplantilla": {
                 "PlantillaId": "PlantillaId",
