@@ -71,6 +71,7 @@ OnDestroy, OnChanges {
   public tieneVinculos: boolean = false;
   // Lista de entidades vinculadas
   public vinculos: EntidadVinculada[] = [];
+  public vinculosActivos: EntidadVinculada[] = [];
   // Texto a mostrar en la tarjeta trasera
   public EtiequetaTarjetaTrasera: string = '';
   // Tipo de contenido de la tarjeta trasera
@@ -103,7 +104,6 @@ OnDestroy, OnChanges {
   public tieneReportes: boolean = false;
 
   public Permiso: PermisoAplicacion;
-
 
   // Cosntructor del componente
   constructor(
@@ -169,6 +169,7 @@ OnDestroy, OnChanges {
       this.vincularActivo = false;
       this.tieneVinculos = false;
       this.vinculos = [];
+      this.vinculosActivos = [];
       this.EtiequetaTarjetaTrasera = '';
       this.ContenidoTarjetaTrasera = '';
       this.VistaTrasera = false;
@@ -242,11 +243,17 @@ private  ProcesaCambiosConfiguracion(): void {
       this.metadata.EntidadesVinculadas.forEach( e => {
           // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
           e.Etiqueta = e.EntidadHijo.split(',')[0];
+          if(e.FiltroUI===''){
+            e.Activo = true;
+          } else {
+            e.Activo = false;
+          }
           this.vinculos.push(e);
           e.EntidadHijo.split(',').forEach( entidad => {
             if (entidad) this.T.ts.push('entidades.' + entidad.toLowerCase());
           });
       });
+      this.vinculosActivos = this.vinculos;
     }
 
     if (this.metadata.VistasVinculadas) {
@@ -285,6 +292,7 @@ private  ProcesaCambiosConfiguracion(): void {
           .ObtieneMetadatos(this.config.OrigenTipo)
           .pipe(first())
           .subscribe((m) => {
+            console.log(m);
             this.entidades
               .ObtieneEntidadUnica(
                 this.config.OrigenTipo,
@@ -319,13 +327,31 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   // Recibe el evento de nueva selección desde la tabla
-  public NuevaSeleccion(entidad: any) {
+  public NuevaSeleccion(entidad: unknown) {
+    
+    console.log(entidad);
+
     this.entidad = entidad;
     this.InstanciaSeleccionada = entidad !== null ? true : false;
     this.editarDisponible = this.InstanciaSeleccionada &&
     (this.config.TipoDespliegue.toString() !== TipoDespliegueVinculo.Membresia.toString());
 
-    this.vincularActivo = (this.InstanciaSeleccionada && this.tieneVinculos);
+    const tmp: EntidadVinculada[] =[]; 
+    this.vinculos.forEach( v => {
+      if (v.FiltroUI === '') {
+        tmp.push(v);
+      } else {
+        const exp = v.FiltroUI.replace(/\[/g, 'entidad[');
+        const vv = {...v};
+        vv.Activo = eval(exp);    
+        if(vv.Activo){
+          tmp.push(vv);
+        }
+      }
+    });
+
+    this.vinculosActivos = tmp;
+    this.vincularActivo = (this.InstanciaSeleccionada && this.tieneVinculos && (this.vinculosActivos.length > 0));
   }
 
   public EntidadActualizada(entidad: any) {
@@ -343,8 +369,10 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   public mostrarVinculos(): void {
-    this.dialogLinkPickRef = this.dialogService
-    .open(this.dialogLinks, { context: '' });
+    if(this.vincularActivo){
+      this.dialogLinkPickRef = this.dialogService
+      .open(this.dialogLinks, { context: '' });
+    }
   }
 
   linkUnoAVarios(link: EntidadVinculada) {

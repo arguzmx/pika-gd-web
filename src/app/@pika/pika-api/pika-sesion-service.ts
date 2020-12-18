@@ -40,6 +40,14 @@ export class PikaSesionService {
     return this.http.get<MenuAplicacion>(url);
   }
 
+  public GetDominios(): Observable<DominioActivo[]> {
+    const url = this.CrearEndpoint(this.DOMINIOS);
+    return this.http.get<DominioActivo[]>(url)
+      .pipe(
+        retry(retryCount),
+        first(),
+      );
+  }
 
   // Genera el endpoint para la función del perfil
   private CrearEndpoint(Tipo: string): string {
@@ -58,19 +66,10 @@ export class PikaSesionService {
       case this.DOMINIOS:
         url = url + 'dominios';
         break;
-
     }
-
     return url;
   }
 
-  public GetDominios(): Observable<DominioActivo[]> {
-    const url = this.CrearEndpoint(this.DOMINIOS);
-    return this.http.get<DominioActivo[]>(url)
-      .pipe(
-        retry(retryCount),
-        first(),
-      );
-  }
+
 
 }

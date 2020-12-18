@@ -3,11 +3,11 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { EntidadesService } from '../../../services/entidades.service';
 import { first } from 'rxjs/operators';
 import { Evento } from '../../../../@pika/pika-module';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { AtributoLista } from '../../../../@pika/pika-module';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 
 @Component({
@@ -26,14 +26,14 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   @ViewChild('lista') Lista: any;
 
-  constructor(entidades: EntidadesService) {
-    super(entidades);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
   }
 
 
   private eventoCambiarValor(valor: any) {
     if (this.propiedad.EmitirCambiosValor) {
-      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.transaccionId );
     }
   }
   ActualizarLista(evt: Evento) {
@@ -61,7 +61,7 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   // Otiene la lista de alores disponibles para la entidad
   private ObtieneLista(atributo: AtributoLista, consulta: Consulta) {
-    this.entidades.SolicitarLista(atributo, consulta).pipe(first())
+    this.eventos.SolicitarLista(atributo, consulta).pipe(first())
     .subscribe( lst => {
       if (this.isUpdate) {
         atributo.Default = this.group.get(this.propiedad.Id).value;

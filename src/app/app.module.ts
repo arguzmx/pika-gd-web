@@ -30,6 +30,9 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { AcesoModule } from './@acceso/aceso.module';
 import { DiccionarioNavegacion } from './@editor-entidades/editor-entidades.module';
 import { PIKADiccionarioNavegacion } from './@core/data/diccionario-vistas';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 
@@ -45,6 +48,11 @@ import { PIKADiccionarioNavegacion } from './@core/data/diccionario-vistas';
         deps: [HttpClient],
       },
     }),
+    FormsModule,
+    ReactiveFormsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    NgxMaskModule.forRoot(),
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,

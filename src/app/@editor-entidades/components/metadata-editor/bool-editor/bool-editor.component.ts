@@ -1,10 +1,7 @@
-import { EntidadesService } from './../../../services/entidades.service';
 import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ICampoEditable } from '../../../model/i-campo-editable';
-import { Propiedad } from '../../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../../model/configuracion-entidad';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-bool-editor',
@@ -15,8 +12,8 @@ export class BoolEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
 
-  constructor(e: EntidadesService) {
-    super(e);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
    }
 
   ngOnDestroy(): void {
@@ -25,7 +22,7 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   cambiovalor(valor){
     if (this.propiedad.EmitirCambiosValor) {
-      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.transaccionId );
     }
   }
 

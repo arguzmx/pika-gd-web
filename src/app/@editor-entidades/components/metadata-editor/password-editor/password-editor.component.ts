@@ -1,7 +1,7 @@
-import { EntidadesService } from './../../../services/entidades.service';
 import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-password-editor',
@@ -18,8 +18,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   propValidName: string = '';
   match: boolean = false;
 
-  constructor(entidades: EntidadesService) {
-    super(entidades);
+  constructor(eventos: EventosInterprocesoService ) {
+    super(eventos);
   }
 
   private texto1: string = '';

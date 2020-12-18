@@ -4,11 +4,7 @@ import { ConfiguracionEntidad } from './configuracion-entidad';
 
 export interface ICampoEditable {
   propiedad: Propiedad;
-
   group: FormGroup;
-
   isUpdate: boolean;
-
-  congiguracion: ConfiguracionEntidad;
-
+  transaccionId: string;
 }

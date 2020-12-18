@@ -86,10 +86,12 @@ export class SesionStore extends Store<SesionState> {
     this.setPreferencias(prefs);
 
     auth.Autenticado$.subscribe((autenticado) => {
-      this.setPropiedad(PropiedadesSesion.isLoggedIn, autenticado);
       if (autenticado) {
-        this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
-        this.procesaUsuario();
+        this.setPropiedad(PropiedadesSesion.isLoggedIn, autenticado);
+        if (autenticado) {
+          this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
+          this.procesaUsuario();
+        }
       }
     });
 

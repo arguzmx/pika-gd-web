@@ -1,0 +1,23 @@
+<div>
+    <div class="row">
+        &nbsp;
+    </div>
+    <form [formGroup]="formGroup">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let campo of propiedadesActivas;">
+                <ng-container ngxCampoEditable [propiedad]="campo" [isUpdate]="modoEditar" [group]="formGroup"
+                    [transaccionId]="transaccionId">
+                </ng-container>
+            </div>
+        </div>
+        <div class="row">
+            <span *ngFor="let campo of propiedadesHidden;">
+                <ng-container ngxCampoEditable [propiedad]="campo" [isUpdate]="modoEditar" [group]="formGroup"
+                    [transaccionId]="transaccionId">
+                </ng-container>
+            </span>
+        </div>
+        <div class="row">
+            &nbsp;
+        </div>
+    </form>

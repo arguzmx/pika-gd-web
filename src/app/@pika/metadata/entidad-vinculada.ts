@@ -23,5 +23,8 @@ export interface EntidadVinculada {
   Etiqueta: string;
   HijoDinamico: boolean;
   PropiedadIdMiembro: string;
+  FiltroUI: string;
   DiccionarioEntidadesVinculadas: DiccionarioEntidadVinculada[];
+  // Propieades locales
+  Activo: boolean;
 }

@@ -45,6 +45,9 @@ export class CampoEditableDirective
   implements ICampoEditable, OnChanges, OnInit {
 
   @Input()
+  transaccionId: string;
+
+  @Input()
   propiedad: Propiedad;
 
   @Input()
@@ -69,7 +72,7 @@ export class CampoEditableDirective
       this.component.instance.propiedad = this.propiedad;
       this.component.instance.group = this.group;
       this.component.instance.isUpdate = this.isUpdate;
-      this.component.instance.congiguracion = this.congiguracion;
+      this.component.instance.transaccionId = this.transaccionId;
     }
   }
 
@@ -82,10 +85,10 @@ export class CampoEditableDirective
         components[vista.Control],
       );
       this.component = this.container.createComponent(component);
-      this.component.instance.congiguracion = this.congiguracion;
       this.component.instance.group = this.group;
       this.component.instance.propiedad = this.propiedad;
       this.component.instance.isUpdate = this.isUpdate;
+      this.component.instance.transaccionId = this.transaccionId;
     }
   }
 }

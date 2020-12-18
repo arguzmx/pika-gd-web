@@ -39,7 +39,7 @@ export class AuthService {
 
   private navigateToLoginPage() {
     // TODO: Remember current URL
-    this.router.navigateByUrl('/acceso/login');
+    // this.router.navigateByUrl('/acceso/login');
   }
 
   constructor(
@@ -47,13 +47,13 @@ export class AuthService {
     private router: Router,
   ) {
     // Useful for debugging:
-    // this.oauthService.events.subscribe(event => {
-    //   if (event instanceof OAuthErrorEvent) {
-    //     console.error('OAuthErrorEvent Object:', event);
-    //   } else {
-    //     console.warn('OAuthEvent Object:', event);
-    //   }
-    // });
+    this.oauthService.events.subscribe(event => {
+      if (event instanceof OAuthErrorEvent) {
+        console.error('OAuthErrorEvent Object:', event);
+      } else {
+        console.warn('OAuthEvent Object:', event);
+      }
+    });
 
     // This is tricky, as it might cause race conditions (where access_token is set in another
     // tab before everything is said and done there.
@@ -66,9 +66,10 @@ export class AuthService {
       }
 
       console.warn('Noticed changes to access_token (most likely from another tab), updating isAuthenticated');
-      this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+      const isauth: boolean = this.oauthService.hasValidAccessToken();
+      this.isAuthenticatedSubject$.next(isauth);
 
-      if (!this.oauthService.hasValidAccessToken()) {
+      if (!isauth) {
         this.navigateToLoginPage();
       } else {
         this.tokenSubject$.next(this.oauthService.getAccessToken());
@@ -76,7 +77,7 @@ export class AuthService {
     });
 
     this.oauthService.events
-      .subscribe(_ => {
+      .subscribe(ev => {
         this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
       });
 

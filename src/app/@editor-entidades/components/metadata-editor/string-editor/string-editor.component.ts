@@ -1,7 +1,7 @@
-import { EntidadesService } from './../../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EditorCampo } from '../editor-campo';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-string-editor',
@@ -14,13 +14,13 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   isTextArea: boolean = false;
 
-  constructor(entidades: EntidadesService) {
-    super(entidades);
+  constructor(eventos: EventosInterprocesoService ) {
+    super(eventos);
   }
 
   cambiovalor(evento){
     if (this.propiedad.EmitirCambiosValor) {
-      this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.congiguracion.TransactionId );
+      this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.transaccionId );
     }
   }
 

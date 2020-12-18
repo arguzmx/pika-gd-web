@@ -1,8 +1,8 @@
-import { EntidadesService } from './../../../services/entidades.service';
 import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-numeric-editor',
@@ -16,8 +16,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   mask: string = 'separator.4';
   negativos: boolean = true;
 
-  constructor(entidades: EntidadesService) {
-    super(entidades);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
    }
 
 ngOnDestroy(): void {
@@ -26,7 +26,7 @@ ngOnDestroy(): void {
 
 cambiovalor(evento) {
   if (this.propiedad.EmitirCambiosValor) {
-    this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.congiguracion.TransactionId );
+    this.EmiteEventoCambio(this.propiedad.Id,evento.srcElement.value, this.transaccionId );
   }
 }
 

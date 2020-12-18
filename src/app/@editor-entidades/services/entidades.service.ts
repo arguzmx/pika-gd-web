@@ -219,6 +219,9 @@ export class EntidadesService {
   // ---------------------------------------
   public SetCachePropiedadContextual(propiedad: string, origen: string, tranid: string, valor: any): void {
     const key = this.cache.ClaveValorContextual(origen, propiedad, tranid);
+
+    console.log(`${key} === ${valor}`)
+
     this.cache.set(key, valor);
     this.EmiteEventoContexto({ Origen: key, Valor: valor });
   }
@@ -254,6 +257,8 @@ export class EntidadesService {
 
   public SetCacheInstanciaEntidad(tipo: string, id: string, entidad: any): void {
     const key = this.cache.ClaveInstancia(tipo, id);
+    console.log(key );
+    console.log(entidad );
     this.cache.set(key, entidad);
   }
 
@@ -432,18 +437,7 @@ export class EntidadesService {
     this.BusFiltros.next(ev);
   }
 
-  // Eventos interproceso
-  // ---------------------------------------
-  // ---------------------------------------
-
-  ObtieneEventos(): Observable<Evento> {
-    return this.BusEventos.asObservable();
-  }
-
-  EmiteEvento(evt: Evento): void {
-    this.BusEventos.next(evt);
-  }
-
+ 
 
   // Eventos interproceso
   // ---------------------------------------
