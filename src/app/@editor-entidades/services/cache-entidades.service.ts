@@ -57,6 +57,6 @@ export class CacheEntidadesService {
   }
 
   public print() {
-    // console.log(this.items);
+    console.log(this.items);
   }
 }

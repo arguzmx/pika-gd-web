@@ -1,33 +1,33 @@
 import { Subject } from 'rxjs';
 import { Propiedad, Eventos, Evento, AtributoEvento, Operaciones } from '../../../@pika/pika-module';
-import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { FormGroup } from '@angular/forms';
-import { EntidadesService } from '../../services/entidades.service';
 import { takeUntil } from 'rxjs/operators';
+import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
 
 export class EditorCampo {
+    transaccionId: string;
     propiedad: Propiedad;
-    congiguracion: ConfiguracionEntidad;
     group: FormGroup;
     isUpdate: boolean;
     onDestroy$: Subject<void>;
 
     oculto: boolean = false;
 
-    constructor(public entidades: EntidadesService ) {}
+    constructor(public eventos: EventosInterprocesoService ) {}
 
 
     hookEscuchaEventos() {
         if (this.onDestroy$) {
-            console.warn('El listner ya ha sido configurado');
+            console.warn('El listener ya ha sido configurado');
             return;
         }
+        
         this.onDestroy$ = new Subject<void>();
         if (this.recepcionEventos()) {
-            this.entidades.ObtieneEventos()
+            this.eventos.ObtieneEventos()
             .pipe(takeUntil(this.onDestroy$))
             .subscribe( ev => {
-                if (ev && ev.Transaccion === this.congiguracion.TransactionId) {
+                if (ev && ev.Transaccion === this.transaccionId) {
                     // el evento esta en la misma transacción de UI
                     switch (ev.Evento) {
                         case Eventos.AlCambiar:
@@ -46,11 +46,12 @@ export class EditorCampo {
           Evento: Eventos.AlCambiar,
           Transaccion: Transaccion,
         };
-        this.entidades.EmiteEvento(evt);
+        this.eventos.EmiteEvento(evt);
       }
 
 
     eventoActualizar(ev: Evento, a: AtributoEvento) {
+        // Este evento debe programarse en el componente que deriva de la clase
         console.warn("eventoActualizar no implementado");
     }
 
@@ -67,7 +68,7 @@ export class EditorCampo {
 
     private eventoAlCambiar(ev: Evento) {
         this.propiedad.AtributosEvento.forEach( a => {
-            if (ev.Origen === a.Entidad ) {
+            if (ev.Origen.toLowerCase() === a.Entidad.toLowerCase() ) {
                 switch (a.Operacion) {
                     case Operaciones.Actualizar:
                         this.eventoActualizar(ev, a);

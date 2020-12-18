@@ -1,4 +1,3 @@
-import { EntidadesService } from './../../../services/entidades.service';
 import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
@@ -7,6 +6,7 @@ import {
   HTML_TIME,
   HTML_DATETIME,
 } from '../../../../@pika/pika-module';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-datetime-editor',
@@ -20,8 +20,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   @ViewChild('dt1') date1: any;
 
   format: string = '';
-  constructor(e: EntidadesService) {
-    super(e);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
   }
 
   ngOnDestroy(): void {
@@ -31,7 +31,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   cambiovalor(){
     if (this.date1._selected) {
       if (this.propiedad.EmitirCambiosValor) {
-        this.EmiteEventoCambio(this.propiedad.Id, this.date1._selected, this.congiguracion.TransactionId );
+        this.EmiteEventoCambio(this.propiedad.Id, this.date1._selected, this.transaccionId);
       }
     }
   }

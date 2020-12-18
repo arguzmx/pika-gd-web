@@ -9,7 +9,6 @@ import { take, takeUntil } from 'rxjs/operators';
 import { IUploadConfig } from '../../../@uploader/uploader.module';
 import { FileDropComponent } from '../../../@uploader/file-drop/file-drop.component';
 import { Pagina } from '../../model/pagina';
-import { UploaderComponent } from '../uploader/uploader.component';
 import { UploadService } from '../../services/uploader.service';
 
 @Component({

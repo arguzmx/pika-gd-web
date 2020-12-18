@@ -54,7 +54,7 @@ export class VisorImagenesService {
           // Una vez que se recie el primer valor u ocurre un error completamos el subjet
           // y así sus sucriptores reciber el último valor obtenido
           subject.complete();
-        }
+        },
       );
 
     return subject;

@@ -98,7 +98,14 @@
         "plantilla": "Plantilla|Plantillas|la|las|bookmark-outline",
         "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|list-outline",
         "tipodatoid": "Propiedad|Propiedades|la|las|bookmark-outline",
+        "valorlistaplantilla": "Valor|Valores|el|los|list-outline",
         "propiedades": {
+            "valorlistaplantilla": {
+                "PropiedadId": "PropiedadId",
+                "Id": "Id",
+                "Texto": "Valor",
+                "Indice": "Posición"
+            },
             "propiedadplantilla": {
                 "PlantillaId": "PlantillaId",
                 "Id": "Id",

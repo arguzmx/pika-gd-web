@@ -19,8 +19,6 @@ import { Subject } from 'rxjs';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 
 
-
-
 @Component({
   selector: 'ngx-editor-arbol-entidad',
   templateUrl: './editor-arbol-entidad.component.html',

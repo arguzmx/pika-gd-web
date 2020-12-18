@@ -65,6 +65,8 @@ export class EditorEntidadesBase {
     entidad: any,
     config: ConfiguracionEntidad,
   ): void {
+    console.log(link);
+
     if (entidad) {
       this.CerrarDialogos();
       if (link.HijoDinamico) {
@@ -107,6 +109,7 @@ export class EditorEntidadesBase {
           break;
       }
 
+      console.log(url);
       if (url) {
         url = url + `&${PARAM_TIPO_DESPLIEGUE}=${link.TipoDespliegue}`;
         this.entidades.SetCacheInstanciaEntidad(

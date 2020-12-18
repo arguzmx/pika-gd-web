@@ -3,7 +3,6 @@ import { HostVisorComponent } from './components/host-visor/host-visor.component
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
 import { VisorComponent } from './components/visor/visor.component';
 import { PieVisorComponent } from './components/pie-visor/pie-visor.component';
-
 import {
   NbTooltipModule,
   NbPopoverModule,
@@ -20,9 +19,9 @@ import {
   NbFormFieldModule,
   NbToggleModule,
   NbMenuModule,
-  NbLayoutRulerService,
   NbSpinnerModule,
   NbProgressBarModule,
+  NbTabsetModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -89,9 +88,14 @@ import { UploaderComponent } from './components/uploader/uploader.component';
 import { ngfModule } from 'angular-file';
 import { UploadService } from './services/uploader.service';
 import { VisorImagenesService } from './services/visor-imagenes.service';
+import { EditorPlantillaComponent } from './components/editor-plantilla/editor-plantilla.component';
+import { PlantillasService } from './services/plantillas.service';
+import { DialogMetadataComponent } from './components/dialog-metadata/dialog-metadata.component';
+import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module';
 
 @NgModule({
   imports: [
+    EditorEntidadesModule,
     ngfModule,
     NgxExtendedPdfViewerModule,
     AngularSplitModule.forRoot(),
@@ -166,15 +170,17 @@ import { VisorImagenesService } from './services/visor-imagenes.service';
     RouterModule,
     MatSliderModule,
     UploaderModule,
+    NbTabsetModule,
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-                PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
-                VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
-                VisorVideoComponent, VisorOtroComponent,
-                UploaderComponent, FileDropComponent],
+    PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
+    VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
+    VisorVideoComponent, VisorOtroComponent,
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent,
+  ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent],
-  providers: [UploadService, VisorImagenesService, {
+  providers: [PlantillasService, UploadService, VisorImagenesService, {
     provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
   }],
 })

@@ -2,6 +2,7 @@ import { EntidadesService } from './../../../services/entidades.service';
 import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 
 @Component({
@@ -13,13 +14,13 @@ export class HiddenEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
 
-  constructor(e: EntidadesService) {
-    super(e);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
   }
 
   cambiovalor(evento){
     if (this.propiedad.EmitirCambiosValor) {
-      this.EmiteEventoCambio(this.propiedad.Id, evento.srcElement.value, this.congiguracion.TransactionId );
+      this.EmiteEventoCambio(this.propiedad.Id, evento.srcElement.value, this.transaccionId );
     }
   }
 

@@ -30,8 +30,6 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   private paramTipoOrigen: string;
 
   public ParamListener(): void {
-
-
     const rutas = <any[]>this.route.snapshot.data['entidadesResolver'];
     if (rutas.length > 0) {
       this.sesionStore.setRutasTipo(rutas);
@@ -41,23 +39,23 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
 
           this.paramTipo = (params[PARAM_TIPO] || '').toLowerCase();
           this.paramTipoOrigen = (params[PARAM_TIPO_ORIGEN] || '' ).toLowerCase();
-
+          //console.log(params[PARAM_TIPO]);
 
           this.entidades.ObtieneMetadatos(params[PARAM_TIPO]).pipe(first())
             .subscribe(m => {
               let pcontenido = null;
               let permisos = true;
 
-              console.log(m);
-              console.log(m.TokenMod);
+              // console.log(m);
+              // console.log(m.TokenMod);
               if (m.TokenApp && m.TokenMod) {
                 pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
                 permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
               }
 
 
-              console.log(pcontenido);
-              console.log(permisos);
+              // console.log(pcontenido);
+              // console.log(permisos);
               if (permisos) {
                 this.config = {
                   TipoEntidad: this.paramTipo,

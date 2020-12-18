@@ -1,7 +1,5 @@
-import { PLATAFORMA_WEB } from './../../../../@pika/metadata/atributos-vista-ui';
 import { EditorCampo } from './../editor-campo';
 import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../../../@pika/pika-module';
-import { EntidadesService } from './../../../services/entidades.service';
 import { ICampoEditable } from './../../../model/i-campo-editable';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
@@ -9,6 +7,7 @@ import { Subject, Observable, of } from 'rxjs';
 import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { MatSelect } from '@angular/material/select';
+import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
 
 
@@ -38,19 +37,18 @@ export class ListEditorComponent extends EditorCampo
 
   @ViewChild('lista') Lista: any;
 
-  constructor(entidades: EntidadesService) {
-    super(entidades);
+  constructor(eventos: EventosInterprocesoService) {
+    super(eventos);
   }
 
 
   private eventoCambiarValor(valor: any) {
     if (this.propiedad.EmitirCambiosValor) {
-      this.EmiteEventoCambio(this.propiedad.Id, valor, this.congiguracion.TransactionId );
+      this.EmiteEventoCambio(this.propiedad.Id, valor, this.transaccionId );
     }
   }
 
   eventoActualizar(ev: Evento, a: AtributoEvento) {
-
     this.eventoCambiarValor('');
     const consulta = new Consulta();
     const f = new FiltroConsulta();
@@ -61,7 +59,6 @@ export class ListEditorComponent extends EditorCampo
 
     this.list = [];
     this.selected = null;
-
     if (this.isTypeAhead) {
       this.elementos = [];
     } else {
@@ -79,14 +76,14 @@ export class ListEditorComponent extends EditorCampo
 
   // Otiene la lista de alores disponibles para la entidad
   private ObtieneLista(atributo: AtributoLista, consulta: Consulta) {
-    this.entidades.SolicitarLista(atributo, consulta).pipe(first())
+    this.eventos.SolicitarLista(atributo, consulta).pipe(first())
     .subscribe( lst => {
       if (this.isUpdate) {
         atributo.Default = this.group.get(this.propiedad.Id).value;
       }
 
       if (lst.Valores && lst.Valores.length > 0) {
-        if (this.propiedad.Id === lst.PropiedadId) {
+        if (this.propiedad.Id.toLowerCase() === lst.PropiedadId.toLowerCase()) {
           this.propiedad.ValoresLista = lst.Valores;
 
           if (this.propiedad.OrdenarValoresListaPorNombre) {
@@ -119,7 +116,7 @@ export class ListEditorComponent extends EditorCampo
     .pipe(
         distinctUntilChanged(),
         tap(() => this.listaLoading = true),
-        switchMap( term => this.entidades.TypeAhead(this.propiedad.AtributoLista, term)
+        switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term)
         .pipe(
           catchError(() => of([])), // empty list on error
           tap(() => this.listaLoading = false),
@@ -147,7 +144,6 @@ export class ListEditorComponent extends EditorCampo
 
       if (this.propiedad.AtributoLista.DatosRemotos) {
           // Los datos e obhtienen desde el servidor
-
           const tieneEventos = this.propiedad.AtributosEvento  &&
           (this.propiedad.AtributosEvento.length  > 0);
 
@@ -158,7 +154,7 @@ export class ListEditorComponent extends EditorCampo
 
             // Carga la lista de valores si es un update
             if (this.isUpdate && aheadval) {
-              this.entidades.ValoresLista([aheadval ],
+              this.eventos.ValoresLista([aheadval ],
               this.propiedad.AtributoLista.Entidad ).subscribe( items => {
                 this.elementos = items;
                 this.ngSelect.toggle();

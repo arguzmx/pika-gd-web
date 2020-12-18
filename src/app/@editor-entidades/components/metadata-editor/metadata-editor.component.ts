@@ -46,11 +46,13 @@ import { HTML_PASSWORD_CONFIRM,
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
 
 @Component({
   selector: 'ngx-metadata-editor',
   templateUrl: './metadata-editor.component.html',
   styleUrls: ['./metadata-editor.component.scss'],
+  providers: [EventosInterprocesoService]
 })
 export class MetadataEditorComponent extends EditorEntidadesBase
   implements IEditorMetadatos, OnInit, OnDestroy, OnChanges {
@@ -79,6 +81,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   public propiedadesEvento: string[] = [];
 
+  public transaccionId: string;
 
   private formaCreada: boolean = false;
 
@@ -92,6 +95,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     private fb: FormBuilder,
   ) {
     super(entidades, applog, router, diccionarioNavegacion);
+    this.transaccionId = (new Date()).getMilliseconds().toString();
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
@@ -267,14 +271,15 @@ export class MetadataEditorComponent extends EditorEntidadesBase
         if (p.AtributosEvento && p.AtributosEvento.length > 0){
             p.AtributosEvento.forEach( ev => {
               if (this.propiedadesEvento.indexOf(ev.Entidad) < 0) {
-                this.propiedadesEvento.push(ev.Entidad);
+                this.propiedadesEvento.push(ev.Entidad.toLowerCase());
               }
             });
         }
      });
 
+
      this.metadata.Propiedades.forEach( p => {
-          p.EmitirCambiosValor = (this.propiedadesEvento.indexOf( p.Id) >= 0);
+          p.EmitirCambiosValor = (this.propiedadesEvento.indexOf( p.Id.toLowerCase()) >= 0);
      });
 
       this.ObtieneValoresVinculados();
@@ -350,14 +355,21 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
 
   private ObtieneValoresVinculados():  void {
+    console.log(this.config);
     if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '') {
       this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
       .subscribe( m => {
+        console.log(m.EntidadesVinculadas);
+        console.log(`$=== ${this.config.TipoEntidad.toLowerCase()}`);
         const index  = m.EntidadesVinculadas
         .findIndex( x => x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase());
+        console.log(index);
         if ( index >= 0 ) {
           const link = m.EntidadesVinculadas[index];
+          console.log(link.PropiedadHijo + '=>');
+          console.log(this.config.OrigenId);
           this.valoresDefault[link.PropiedadHijo] = this.config.OrigenId;
+          console.log(this.valoresDefault[link.PropiedadHijo]);
         }
       });
     }
@@ -392,8 +404,10 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       }
     });
 
+    console.log(this.valoresDefault);
     const controls = Object.keys(this.formGroup.controls);
     controls.forEach((control) => {
+      console.log(control);
       if (this.valoresDefault[control]) {
         this.formGroup.get(control).setValue(this.valoresDefault[control]);
       }

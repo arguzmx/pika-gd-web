@@ -128,6 +128,7 @@ export class PikaApiService<T, U> {
       consulta.tamano = 50;
     }
     const endpoint = this.CrearEndpoint(lista.Entidad);
+ 
     const qs = this.getQueryStringConsulta(consulta);
     return this.http.get<ValorListaOrdenada[]>(endpoint + 'pares' + qs)
       .pipe(

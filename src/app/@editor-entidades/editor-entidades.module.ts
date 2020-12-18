@@ -1,5 +1,5 @@
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { Traductor } from './services/traductor';
-import { NgModule } from '@angular/core';
 
 import {
   NbPopoverModule,
@@ -96,6 +96,7 @@ import { DatetimeSearchComponent } from './components/metadata-buscador/datetime
 import { ListSearchComponent } from './components/metadata-buscador/list-search/list-search.component';
 import { IDiccionarioNavegacion, DiccionarioNavegacion } from './model/i-diccionario-navegacion';
 import { AclMostrarDirective } from './directives/acl-mostrar.directive';
+import { OfflineMetadataEditorComponent } from './components/metadata-editor/offline-metadata-editor.component';
 
 @NgModule({
   imports: [
@@ -172,6 +173,9 @@ import { AclMostrarDirective } from './directives/acl-mostrar.directive';
     MatSliderModule,
     NbTooltipModule,
   ],
+  exports: [EditorTabularComponent, EditorJerarquicoComponent,
+    EditorBootTabularComponent, EditorBootJerarquicoComponent, 
+    MetadataEditorComponent, OfflineMetadataEditorComponent, ],
   declarations: [
     EditorJerarquicoComponent,
     EditorTabularComponent,
@@ -199,10 +203,11 @@ import { AclMostrarDirective } from './directives/acl-mostrar.directive';
     HiddenSearchComponent,
     AclMostrarDirective,
     AclMostrarDirective,
+    OfflineMetadataEditorComponent,
   ],
 })
  class EditorEntidadesModule { }
 
  export { EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
-  EditorBootTabularComponent, EditorBootJerarquicoComponent,
+  EditorBootTabularComponent, EditorBootJerarquicoComponent, MetadataEditorComponent,
   IDiccionarioNavegacion, DiccionarioNavegacion, Traductor};
