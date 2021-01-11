@@ -42,8 +42,7 @@ export class EntidadesService {
   // CLiente APi PIKA
   public cliente: PikaApiService<any, string>;
 
-  private BusEventos = new BehaviorSubject(null);
-  private BusContexto = new BehaviorSubject(null);
+    private BusContexto = new BehaviorSubject(null);
   private BusArbol = new BehaviorSubject(null);
   private BusFiltros = new BehaviorSubject<EventosFiltrado>(EventosFiltrado.Ninguno);
 

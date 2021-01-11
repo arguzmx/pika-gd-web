@@ -35,6 +35,10 @@ import { httpInterceptorProviders } from './pika-api/interceptor-provider';
 import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo,
         TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL, PDENEGARACCESO } from './seguridad';
 import { PikaApiService } from './pika-api';
+import { ValorPropiedad } from './metadata/valor-propiedad';
+import { DocumentoPlantilla } from './metadata/documeto-plantilla';
+import { VinculoDocumentoPlantilla, VinculosObjetoPlantilla } from './metadata/vinculos-objeto-plantilla';
+import { RequestValoresPlantilla } from './metadata/request-valores-plantilla';
 
 @NgModule({
   imports: [],
@@ -56,5 +60,6 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
   LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
-  PESCRIBIR, PLEER, PADMINISTRAR,
+  PESCRIBIR, PLEER, PADMINISTRAR, ValorPropiedad, DocumentoPlantilla, VinculosObjetoPlantilla, VinculoDocumentoPlantilla,
+  RequestValoresPlantilla
 };

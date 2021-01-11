@@ -1,9 +1,12 @@
+import { OfflineMetadataEditorComponent } from './../../../@editor-entidades/components/metadata-editor/offline-metadata-editor.component';
 import { first } from 'rxjs/operators';
-import { Component, Input, OnInit, ViewEncapsulation, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, AfterViewInit, ViewChild } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { ConfiguracionEntidad } from '../../../@editor-entidades/model/configuracion-entidad';
 import { MetadataInfo, TipoDespliegueVinculo } from '../../../@pika/metadata';
 import { DocumentosService } from '../../services/documentos.service';
+import { AppLogService } from '../../../@pika/servicios';
+import { DocumentoPlantilla, RequestValoresPlantilla, ValorPropiedad } from '../../../@pika/pika-module';
 @Component({
   selector: 'ngx-dialog-metadata',
   templateUrl: './dialog-metadata.component.html',
@@ -13,7 +16,9 @@ import { DocumentosService } from '../../services/documentos.service';
 })
 export class DialogMetadataComponent implements OnInit, AfterViewInit {
 
+  @ViewChild('editor') editor: OfflineMetadataEditorComponent;
   @Input() data: string;
+  @Input() documento: DocumentoPlantilla;
   config: ConfiguracionEntidad;
   metadata: MetadataInfo;
   entidad: any;
@@ -21,14 +26,21 @@ export class DialogMetadataComponent implements OnInit, AfterViewInit {
 
   constructor(
     protected ref: NbDialogRef<DialogMetadataComponent>,
-    protected servicio: DocumentosService) {
+    protected servicio: DocumentosService,
+    private applog: AppLogService) {
     }
 
   ngAfterViewInit(): void {
     this.servicio.ObtieneMetadataInfo(this.data)
     .pipe(first()).subscribe( m => {
-      console.log(m);
-      this.metadata = m;
+      const temp: MetadataInfo =JSON.parse( JSON.stringify(m));
+      if (this.documento !== null){
+        temp.Propiedades.forEach(p => {
+          p.ValorDefault = this.documento.Valores.find(x=>x.PropiedadId === p.Id).Valor
+        });
+      }
+
+      this.metadata = temp;
 
       this.config = {
         TipoEntidad: this.data,
@@ -39,7 +51,9 @@ export class DialogMetadataComponent implements OnInit, AfterViewInit {
         Permiso: null
       }
       this.cargandoMetadatos = false;
-    }, (ex) => {}, () => {} );
+    }, (ex) => {
+      this.ref.close();
+    }, () => {} );
   }
 
   ngOnInit(): void {
@@ -47,11 +61,7 @@ export class DialogMetadataComponent implements OnInit, AfterViewInit {
   }
 
   cancel() {
-    this.ref.close();
-  }
-
-  submit(name) {
-    this.ref.close(name);
+    this.ref.close(null);
   }
 
   public NuevaEntidad(entidad: any) {
@@ -65,5 +75,39 @@ export class DialogMetadataComponent implements OnInit, AfterViewInit {
   public EntidadActualizada(entidad: any) {
 
   }
+
+
+  public CrearEntidad(): void {
+    if (this.editor.EntidadValida()) {
+      const request = this.CreaRequest(this.editor.ObtieneEntidad());
+      this.ref.close(request);
+    } else {
+      this.applog.Advertencia("","Los datos introducidos no son válidos");
+    }
+  }
+
+  private CreaRequest(object: unknown): RequestValoresPlantilla {
+    const request: RequestValoresPlantilla = {
+      Tipo: '',
+      Id: '',
+      Filtro: '',
+      Valores: []
+    };
+
+    if (this.documento!=null) {
+      request.Id = this.documento.Id;
+    }
+
+    for (let [key, value] of Object.entries(object)) {
+      const propiedad: ValorPropiedad = {
+        PropiedadId: key,
+        Valor: JSON.stringify(value).replace('"','').replace('"','')
+      }
+      request.Valores.push(propiedad);
+    }
+
+    return request;
+  }
+
 
 }
