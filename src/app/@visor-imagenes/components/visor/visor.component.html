@@ -1,5 +1,12 @@
+<div *ngIf="!paginaVisible" #emptyCanvas
+[ngStyle] = "{background: canvasColor, height: alturaComponente}"
+    >
+</div>
+
 <div [style]="paginaVisible && paginaVisible.EsImagen ? '' : 'display:none'" class="divContenedor"
-    (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false">
+    (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false" 
+    [ngStyle] = "{background: canvasColor}"
+    >
     <div class="btn-group-vertical btnZoomGroup" [ngClass]="{'zoomVisible': muestraZoom}">
         <button class="btn btn-primary" on-click="ZoomIn($event)">
             <nb-icon icon="plus"></nb-icon>
@@ -14,10 +21,10 @@
     </nb-card>
 
     <div style="display: none;">
-        <img [src]="dataUrl$|async" #imgPag>
+        <img [src]="dataUrl$|async" (load) = "imagenCargada($event)" #imgPag>
     </div>
 
-    <canvas id="canvas" width="500" height="500">
+    <canvas id="canvas" width="100" height="100">
     </canvas>
 </div>
 

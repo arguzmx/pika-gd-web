@@ -4,7 +4,8 @@ import {
   OnChanges,
   SimpleChanges,
   OnDestroy,
-  ViewChild } from '@angular/core';
+  ViewChild, 
+  Input} from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { fabric } from 'fabric';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -18,29 +19,43 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './visor.component.html',
   styleUrls: ['./visor.component.scss'],
 })
-export class VisorComponent implements OnInit, OnChanges, OnDestroy {
+export class VisorComponent implements OnInit, OnDestroy {
 @ViewChild('imgPag') domImg;
+@ViewChild('emptyCanvas') emptyCanvas;
+@Input() alturaComponente: string;
+
 
   canvas: any;
   paginaVisible: Pagina = null;
   oImg: any = null;
   muestraZoom: boolean = false;
   loading = false;
+  canvasColor: string = "#000";
 
-  // ** Imagen segura
-    private src: string = '';
-    private src$ = new BehaviorSubject(this.src);
-  //
+  private src$ = new BehaviorSubject('');
 
+  public dataUrl$ : Observable<any>;
+  
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioVisor: VisorImagenesService,
               private httpClient: HttpClient,
               private domSanitizer: DomSanitizer) {}
 
+
+
   ngOnInit(): void {
     this.IniciaCanvas();
     this.EscuchaCambiosPagina();
     this.EscuchaCambiosHeader();
+
+    this.dataUrl$ = this.src$
+    .pipe(takeUntil(this.onDestroy$))
+    .pipe(
+      switchMap(url => {
+            return this.cargaImgSegura(url);
+          }
+       )
+    );
   }
 
   ngOnDestroy(): void {
@@ -48,25 +63,22 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     this.onDestroy$.complete();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    this.src$.next(this.src);
-  }
-
-  dataUrl$ = this.src$.pipe(switchMap(url => this.cargaImgSegura(url)));
-
+  
   private cargaImgSegura(url: string): Observable<any> {
-    // console.log(url);
     return this.httpClient
-      // load the image as a blob
       .get(url, {responseType: 'blob'})
-      // create an object url of that blob that we can use in the src attribute
-      .pipe(map(e => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))));
+      .pipe(
+        map(e => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))));
   }
 
+  imagenCargada($event: any) {
+    this.MuestraPaginaVisible();
+    this.loading = false;
+  }
 
   private IniciaCanvas() {
-    this.canvas = new fabric.Canvas('canvas');
+    this.canvas = new fabric.Canvas('canvas', {backgroundColor : "#000"});
+    
     const canvas = this.canvas;
     // ====== zoom ======
     this.canvas.on('mouse:wheel', function (opt) {
@@ -114,6 +126,7 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     zoom *= 0.999 ** -100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
+    console.log(zoom);
     this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
@@ -124,6 +137,8 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
     zoom *= 0.999 ** 100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
+    
+    console.log(zoom);
     this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
@@ -142,7 +157,14 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
       this.canvas.setDimensions({ width: instanciaImg.width / 2 , height: instanciaImg.height / 2});
       this.canvas.add(instanciaImg);
       this.canvas.renderAll();
-
+      const ac: number = parseInt( this.alturaComponente.replace('px',''));
+      const z = ac/instanciaImg.height;
+      console.log(z)
+      if(z!=Infinity){
+        this.canvas.zoomToPoint({ x: 500, y: 200 }, z * 0.95);
+      }
+      
+      
       // ********************
 
     } else
@@ -179,12 +201,11 @@ export class VisorComponent implements OnInit, OnChanges, OnDestroy {
       .ObtienePaginaVisible()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
+        console.log(p);
         if (p) {
+          this.loading = true;
           this.src$.next(p.Url);
           this.paginaVisible = p;
-          this.loading = true;
-          this.MuestraPaginaVisible();
-          this.loading = false;
         }
       });
   }

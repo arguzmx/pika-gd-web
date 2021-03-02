@@ -1,6 +1,7 @@
+import { format, parseISO } from 'date-fns';
 import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { ValorPropiedad } from '../../../@pika/pika-module';
+import { tBinaryData, tBoolean, tDate, tDateTime, tDouble, tInt32, tInt64, tList, tString, tTime, ValorPropiedad } from '../../../@pika/pika-module';
 
 
 @Component({
@@ -30,8 +31,12 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
     const temp : ValorPropiedad[] = [];
 
     this.metadatos.Propiedades.forEach(p => {
+      
+      p.TipoDatoId
       const contenido = this.valores.find(v=>v.PropiedadId === p.Id);
-      const textoValor = contenido !== null ? contenido.Valor : '';
+      const textoValor = this.ObtieneValorPropiedad(contenido, p.TipoDatoId);
+
+
       const valor : ValorPropiedad = {
         PropiedadId: p.Nombre,
         Valor: textoValor
@@ -39,6 +44,59 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
       temp.push(valor);
     });
     this.propiedadesTabla = temp;
+  }
+
+
+  private ObtieneValorPropiedad(contenido: ValorPropiedad, tipo: string): string {
+    let valor = contenido !== null ? contenido.Valor : '';
+
+    switch (tipo) {
+      case tString:
+        break;
+
+      case tDouble:
+        break;
+
+      case tBoolean:
+        if (valor.toLowerCase() === 'true') {
+          valor = 'Verdadero';
+        } else {
+          valor = 'Falso';
+        }
+        break;
+
+      case tInt32:
+        break;
+
+      case tInt64:
+        break;
+
+      case tDateTime:
+        if( valor !== ''){
+          valor = format( parseISO(valor), 'dd-MM-yyyy HH:mm:ss');
+        }
+        break;
+
+      case tDate:
+        if( valor !== ''){
+          valor = format( parseISO(valor), 'dd-MM-yyyy');
+        }        
+        break;
+
+      case tTime:
+        if( valor !== ''){
+          valor = format( parseISO(valor), 'HH:mm:ss');
+        }
+        break;
+
+      case tBinaryData:
+        break;
+
+      case tList:
+        break;
+    }
+
+    return valor;
   }
 
   public Editar(event): void {
