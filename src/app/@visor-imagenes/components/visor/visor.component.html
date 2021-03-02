@@ -5,7 +5,7 @@
 
 <div [style]="paginaVisible && paginaVisible.EsImagen ? '' : 'display:none'" class="divContenedor"
     (mouseover)="muestraZoom=true" (mouseout)="muestraZoom=false" 
-    [ngStyle] = "{background: canvasColor}"
+    [ngStyle] = "{background: canvasColor}" #contenedorImg
     >
     <div class="btn-group-vertical btnZoomGroup" [ngClass]="{'zoomVisible': muestraZoom}">
         <button class="btn btn-primary" on-click="ZoomIn($event)">

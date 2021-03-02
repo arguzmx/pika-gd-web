@@ -1,8 +1,6 @@
 import {
   Component,
   OnInit,
-  OnChanges,
-  SimpleChanges,
   OnDestroy,
   ViewChild, 
   Input} from '@angular/core';
@@ -22,6 +20,7 @@ import { HttpClient } from '@angular/common/http';
 export class VisorComponent implements OnInit, OnDestroy {
 @ViewChild('imgPag') domImg;
 @ViewChild('emptyCanvas') emptyCanvas;
+@ViewChild("contenedorImg") contenedorImg;
 @Input() alturaComponente: string;
 
 
@@ -80,6 +79,7 @@ export class VisorComponent implements OnInit, OnDestroy {
     this.canvas = new fabric.Canvas('canvas', {backgroundColor : "#000"});
     
     const canvas = this.canvas;
+    
     // ====== zoom ======
     this.canvas.on('mouse:wheel', function (opt) {
       const delta = opt.e.deltaY;
@@ -91,7 +91,7 @@ export class VisorComponent implements OnInit, OnDestroy {
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
-    // ===================
+    
     // ====== paneo ======
     this.canvas.on('mouse:down', function(opt) {
       const evt = opt.e;
@@ -118,7 +118,7 @@ export class VisorComponent implements OnInit, OnDestroy {
       this.isDragging = false;
       this.selection = true;
     });
-    // ==================
+
   }
 
   ZoomIn(event) {
@@ -126,7 +126,7 @@ export class VisorComponent implements OnInit, OnDestroy {
     zoom *= 0.999 ** -100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
-    console.log(zoom);
+
     this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
@@ -138,47 +138,48 @@ export class VisorComponent implements OnInit, OnDestroy {
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
     
-    console.log(zoom);
     this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
   }
 
   private MuestraPaginaVisible() {
+   
     if (this.paginaVisible.EsImagen && this.canvas !== null) {
+
+      const altura = parseInt(this.alturaComponente.replace('px',''));
+      const anchura = parseInt(this.contenedorImg.nativeElement.clientWidth);
+
       // para cargar la img segura, fue necesario añadirla en un elemento img en el dom
       // debido a que en el método fabric.Image.fromURL el blob da un error 404
       const domImg = this.domImg.nativeElement;
       const instanciaImg = new fabric.Image(domImg, { selectable: false })
                           .set({ originX:  'middle', originY: 'middle' });
-      this.oImg = instanciaImg;
+      
+
 
       this.canvas.clear();
-      this.canvas.setDimensions({ width: instanciaImg.width / 2 , height: instanciaImg.height / 2});
+      this.canvas.setDimensions({ width: anchura , height: altura });
       this.canvas.add(instanciaImg);
       this.canvas.renderAll();
-      const ac: number = parseInt( this.alturaComponente.replace('px',''));
-      const z = ac/instanciaImg.height;
-      console.log(z)
-      if(z!=Infinity){
-        this.canvas.zoomToPoint({ x: 500, y: 200 }, z * 0.95);
+      
+      var z: number = 1;
+      
+      if (instanciaImg.width > instanciaImg.height) {
+        z = anchura/instanciaImg.width;
+      } else {
+        z = altura/instanciaImg.height;
       }
       
-      
-      // ********************
+      if(z!=Infinity){
+        this.canvas.zoomToPoint({ x: 0 , y: 0   }, z * 0.95);
+        this.canvas.viewportCenterObject(instanciaImg);
+      }
 
     } else
-        this.canvas.clear();
-      // fabric.Image.fromURL(this.paginaVisible.Url, (img) => {
-      //   this.canvas.clear();
-      //   img.set({ originX:  'middle', originY: 'middle' });
-      //   this.canvas.setDimensions({ width: img.width, height: img.height });
-      //   this.canvas.add(img);
-      //   this.canvas.renderAll();
-
-      //   this.oImg = img;
-      //   this.loading = false;
-      // }, {selectable: false});
+     {
+      this.canvas.clear();
+     }
   }
 
   private GiraPagina(dir: OperacionHeader) {
