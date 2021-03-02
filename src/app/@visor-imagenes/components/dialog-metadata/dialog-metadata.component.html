@@ -5,13 +5,13 @@
         >
     <nb-card-header>Editor de metadatos</nb-card-header>
     <nb-card-body>
-        <ngx-offline-metadata-editor [entidad]="entidad" [config]="config" [metadata]="metadata"
+        <ngx-offline-metadata-editor #editor [entidad]="entidad" [config]="config" [metadata]="metadata"
             (NuevaEntidad)="NuevaEntidad($event)" (CapturaFinalizada)="CapturaFinalizada($event)"
             (EntidadActualizada)="EntidadActualizada($event)">
         </ngx-offline-metadata-editor>
     </nb-card-body>
     <nb-card-footer>
-        <button class="cancel" nbButton status="danger" (click)="cancel()">Cancel</button>
-        <button nbButton status="success" (click)="cancel()">Submit</button>
+        <button class="cancel" nbButton status="danger" (click)="cancel()">Cancelar</button>
+        <button nbButton status="success" (click)="CrearEntidad()">Aceptar</button>
     </nb-card-footer>
 </nb-card>

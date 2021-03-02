@@ -17,6 +17,7 @@ import {
   NbToggleModule,
   NbMenuModule,
   NbTooltipModule,
+  NbAccordionModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -97,6 +98,8 @@ import { ListSearchComponent } from './components/metadata-buscador/list-search/
 import { IDiccionarioNavegacion, DiccionarioNavegacion } from './model/i-diccionario-navegacion';
 import { AclMostrarDirective } from './directives/acl-mostrar.directive';
 import { OfflineMetadataEditorComponent } from './components/metadata-editor/offline-metadata-editor.component';
+import { OfflineMetadataVisorComponent } from './components/offline-metadata-visor/offline-metadata-visor.component';
+import { CacheEntidadesService } from './services/cache-entidades.service';
 
 @NgModule({
   imports: [
@@ -152,8 +155,10 @@ import { OfflineMetadataEditorComponent } from './components/metadata-editor/off
     NbPopoverModule,
     NbToggleModule,
     NbInputModule,
+    NbActionsModule,
     NbCardModule,
     NbButtonModule,
+    NbAccordionModule,
     NbActionsModule,
     NbUserModule,
     NbCheckboxModule,
@@ -175,7 +180,8 @@ import { OfflineMetadataEditorComponent } from './components/metadata-editor/off
   ],
   exports: [EditorTabularComponent, EditorJerarquicoComponent,
     EditorBootTabularComponent, EditorBootJerarquicoComponent, 
-    MetadataEditorComponent, OfflineMetadataEditorComponent, ],
+    MetadataEditorComponent, OfflineMetadataEditorComponent, 
+    OfflineMetadataVisorComponent ],
   declarations: [
     EditorJerarquicoComponent,
     EditorTabularComponent,
@@ -204,10 +210,11 @@ import { OfflineMetadataEditorComponent } from './components/metadata-editor/off
     AclMostrarDirective,
     AclMostrarDirective,
     OfflineMetadataEditorComponent,
+    OfflineMetadataVisorComponent,
   ],
 })
  class EditorEntidadesModule { }
 
  export { EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
   EditorBootTabularComponent, EditorBootJerarquicoComponent, MetadataEditorComponent,
-  IDiccionarioNavegacion, DiccionarioNavegacion, Traductor};
+  IDiccionarioNavegacion, DiccionarioNavegacion, Traductor, CacheEntidadesService};

@@ -3,7 +3,7 @@ import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../
 import { ICampoEditable } from './../../../model/i-campo-editable';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { MatSelect } from '@angular/material/select';
@@ -136,6 +136,7 @@ export class ListEditorComponent extends EditorCampo
   ngOnInit(): void {
     this.hookEscuchaEventos();
     let aheadval = '';
+
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {
         this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
@@ -170,6 +171,7 @@ export class ListEditorComponent extends EditorCampo
           }
 
       } else {
+        this.propiedad.ValoresLista = this.propiedad.AtributoLista.Valores;
         if (this.propiedad.OrdenarValoresListaPorNombre) {
           this.list = this.Sort('Texto');
         } else {

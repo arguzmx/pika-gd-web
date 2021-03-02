@@ -10,12 +10,13 @@ import { IUploadConfig } from '../../../@uploader/uploader.module';
 import { FileDropComponent } from '../../../@uploader/file-drop/file-drop.component';
 import { Pagina } from '../../model/pagina';
 import { UploadService } from '../../services/uploader.service';
+import { CacheEntidadesService } from '../../../@editor-entidades/editor-entidades.module';
 
 @Component({
   selector: 'ngx-host-visor',
   templateUrl: './host-visor.component.html',
   styleUrls: ['./host-visor.component.scss'],
-  providers: [DocumentosService],
+  providers: [DocumentosService, CacheEntidadesService],
 })
 export class HostVisorComponent implements OnInit, OnDestroy,
 AfterViewInit, OnChanges {
@@ -48,6 +49,7 @@ AfterViewInit, OnChanges {
   }
 
   private procesaConfiguracion() {
+    console.log(this.config);
     this.Titulo = this.config.Nombre;
     this.servicioVisor.config = this.config;
   }

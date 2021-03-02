@@ -43,41 +43,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     this.EscuchaFiltroPaginas();
   }
 
-  ngOnDestroy(): void {
-    this.onDestroy$.next(null);
-    this.onDestroy$.complete();
-  }
-
-  private srcThumb$ = new BehaviorSubject(this.srcThumb);
-  ngOnChanges(): void {
-      this.srcThumb$.next(this.srcThumb);
-  }
-
-  dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
-
-  private cargaImgSegura(url: string): Observable<any> {
-    return (
-        this.httpClient
-    // load the image as a blob
-        .get(url, { responseType: 'blob' })
-    // create an object url of that blob that we can use in the src attribute
-        .pipe(map((e) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))))
-    );
-}
-  // Este funcion se llama al dar click en el thumbnail
-  SeleccionaThumbnails() {
-    if (!this.seleccionShift && !this.seleccionCtrl)
-      this.EstablecePaginaActiva();
-    else
-      this.EstabeleceSeleccion();
-  }
-
-  EstablecePaginaActiva() {
-    this.servicioVisor.EliminarSeleccion();
-    this.servicioVisor.EstablecerPaginaActiva(this.pagina);
-    this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
-  }
-
+  // Obtiene pagina activa para mostrar
   EscuchaPaginaActiva() {
     this.servicioVisor.ObtienePaginaVisible()
     .pipe(takeUntil(this.onDestroy$))
@@ -86,10 +52,6 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     });
   }
 
-  EstabeleceSeleccion() {
-    if (this.seleccionCtrl) this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
-    if (this.seleccionShift) this.servicioVisor.SeleccionShift(this.pagina);
-  }
 
   EscuchaPaginaSeleccion() {
     this.servicioVisor
@@ -112,6 +74,46 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
+
+  private srcThumb$ = new BehaviorSubject(this.srcThumb);
+  ngOnChanges(): void {
+      this.srcThumb$.next(this.srcThumb);
+  }
+
+  dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
+
+  private cargaImgSegura(url: string): Observable<any> {
+    return (
+        this.httpClient
+        .get(url, { responseType: 'blob' })
+        .pipe(map((e) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))))
+    );
+}
+
+// Este funcion se llama al dar click en el thumbnail
+  SeleccionaThumbnails() {
+    if (!this.seleccionShift && !this.seleccionCtrl)
+      this.EstablecePaginaActiva();
+    else
+      this.EstabeleceSeleccion();
+  }
+
+  EstablecePaginaActiva() {
+    this.servicioVisor.EliminarSeleccion();
+    this.servicioVisor.EstablecerPaginaActiva(this.pagina);
+    this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
+  }
+
+  
+  EstabeleceSeleccion() {
+    if (this.seleccionCtrl) this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
+    if (this.seleccionShift) this.servicioVisor.SeleccionShift(this.pagina);
+  }
+
 
   @HostListener('window:keydown', ['$event'])
   ActivaSeleccionMultiple(event: KeyboardEvent) {
@@ -127,11 +129,9 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     if (this.paginaVisible)
     switch (event.key) {
       case 'ArrowRight':
-        console.log('r');
         this.servicioVisor.SiguientePaginaVisible(this.pagina, true);
       break;
       case 'ArrowLeft':
-        console.log('L');
         this.servicioVisor.AnteriorPaginaVisible(this.pagina, true);
       break;
     }

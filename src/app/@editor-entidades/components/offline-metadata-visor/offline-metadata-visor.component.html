@@ -1,0 +1,23 @@
+<nb-accordion>
+    <nb-accordion-item>
+        <nb-accordion-item-header>
+            <button mat-icon-button (click)="Editar($event)"  nbTooltip="Editar">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="Eliminar($event)"  nbTooltip="Eliminar">
+                <mat-icon>remove_circle_outline</mat-icon>
+            </button>
+            {{etiqueta}} 
+        </nb-accordion-item-header>
+        <nb-accordion-item-body>
+            <table class="table table-striped">
+                <tbody>
+                    <tr  *ngFor="let p of propiedadesTabla"> 
+                        <td>{{p.PropiedadId}}</td>
+                        <td>{{p.Valor}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
+</nb-accordion>

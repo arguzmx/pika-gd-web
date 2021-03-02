@@ -1,8 +1,10 @@
+import { CacheEntidadesService } from './../@editor-entidades/services/cache-entidades.service';
 import { NgModule } from '@angular/core';
 import { HostVisorComponent } from './components/host-visor/host-visor.component';
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
 import { VisorComponent } from './components/visor/visor.component';
 import { PieVisorComponent } from './components/pie-visor/pie-visor.component';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import {
   NbTooltipModule,
   NbPopoverModule,
@@ -22,6 +24,7 @@ import {
   NbSpinnerModule,
   NbProgressBarModule,
   NbTabsetModule,
+  NbAccordionModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -92,6 +95,7 @@ import { EditorPlantillaComponent } from './components/editor-plantilla/editor-p
 import { PlantillasService } from './services/plantillas.service';
 import { DialogMetadataComponent } from './components/dialog-metadata/dialog-metadata.component';
 import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
 
 @NgModule({
   imports: [
@@ -157,30 +161,33 @@ import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.mod
     NbCheckboxModule,
     NbRadioModule,
     NbFormFieldModule,
-    NbIconModule,
     NbDatepickerModule,
     NbSelectModule,
-    NbIconModule,
     TableModule,
     NbCardModule,
     ThemeModule,
     FormsModule,
+    NbAccordionModule,
     ReactiveFormsModule,
     NbMenuModule,
     RouterModule,
     MatSliderModule,
     UploaderModule,
     NbTabsetModule,
+    NgScrollbarModule,
+    NbEvaIconsModule, 
+    NbIconModule
   ],
   declarations: [HostVisorComponent, ThumbnailComponent, VisorComponent,
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent,
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent],
-  providers: [PlantillasService, UploadService, VisorImagenesService, {
+  providers: [PlantillasService, UploadService, VisorImagenesService, CacheEntidadesService,
+     {
     provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
   }],
 })
