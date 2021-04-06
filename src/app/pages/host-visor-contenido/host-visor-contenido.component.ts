@@ -17,6 +17,8 @@ export class HostVisorContenidoComponent implements OnInit {
     this.route
       .queryParams
       .subscribe(params => {
+        console.log(params); 
+        
         // Defaults to 0 if no query param provided.
         this.config = { ElementoId: params['Id'],
         VolumenId: params['VolumenId'],
@@ -25,6 +27,8 @@ export class HostVisorContenidoComponent implements OnInit {
         TransactionId: UploadService.NewGuid(),
         VersionId: params['VersionId'],
        };
+
+       
       });
   }
 

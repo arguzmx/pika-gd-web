@@ -12,9 +12,12 @@ import { Pagina, OperacionHeader } from '../../model/pagina';
 })
 export class HeaderVisorComponent implements OnInit, OnDestroy {
   @Output() callUpload = new  EventEmitter();
+  @Output() eventMuestraInfo = new  EventEmitter();
   pagina: Pagina = null;
   operaciones = OperacionHeader;
   soloImagenes: boolean = false;
+  estadoMuestraInfo: boolean = false;
+
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioVisor: VisorImagenesService) { }
 
@@ -44,6 +47,10 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
     this.servicioVisor.EstableceOperacionHeader(operacion);
   }
 
+  muestraInfo() {
+    this.estadoMuestraInfo = !this.estadoMuestraInfo
+    this.eventMuestraInfo.emit();
+  }
 
   doUpload() {
     this.callUpload.emit();

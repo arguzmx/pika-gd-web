@@ -170,6 +170,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
           .CreaEntidad(this.config.TipoEntidad, entidadCopiada)
           .pipe(first())
           .subscribe((entidad) => {
+            console.log(entidad);
             if (entidad) {
               this.NuevaEntidad.emit(entidad);
               if (cerrar) {

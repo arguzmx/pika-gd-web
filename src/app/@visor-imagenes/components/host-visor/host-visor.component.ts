@@ -24,6 +24,7 @@ AfterViewInit, OnChanges {
   private paginas: Pagina[] = [];
   public Titulo: string = '';
   public alturaComponente = '500px';
+  public VistaTrasera: boolean;
 
   @Input() config: IUploadConfig;
   @ViewChildren(FileDropComponent) uploaders: QueryList<FileDropComponent>;
@@ -55,6 +56,7 @@ AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.VistaTrasera = false;
     this.setAlturaPanel(window.innerHeight);
   }
 
@@ -142,6 +144,11 @@ AfterViewInit, OnChanges {
     });
   }
 
+
+  // Envia el  input para mostrar el tarahet trasera del panel del visor
+  public eventMuestraInfo() {
+    this.VistaTrasera = !this.VistaTrasera;
+  }
 
   public callUpload() {
     this.servicioVisor.EstableceAbrirUpload(true);

@@ -195,6 +195,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
           case 'config':
+            console.log(changes);
             this.ProcesaCambiosConfiguracion();
             break;
         }
@@ -803,14 +804,18 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   }
 
   public procesaNavegarVista(link: LinkVista) {
-    if (this.InstanciaSeleccionadaC) {
-      this.ejecutaNavegarVista(link, this.entidadC, this.metadataC);
+    if (link.RequiereSeleccion) {
+      if (this.InstanciaSeleccionadaC) {
+        this.ejecutaNavegarVista(link, this.entidadC, this.metadataC);
+      } else {
+        this.applog.AdvertenciaT(
+          'editor-pika.mensajes.warn-sin-seleccion',
+          null,
+          null,
+        );
+      }
     } else {
-      this.applog.AdvertenciaT(
-        'editor-pika.mensajes.warn-sin-seleccion',
-        null,
-        null,
-      );
+      this.ejecutaNavegarVistaParametros(link, { OrigenId: this.configJ.OrigenId, OrigenTipo: this.configJ.OrigenTipo } );
     }
   }
 }

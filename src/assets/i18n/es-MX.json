@@ -68,7 +68,14 @@
         "fulltext": "Texto"
     },
     "vistas": {
-        "visorcontenido": "Visor de contenido"
+        "visorcontenido": "Visor de contenido",
+        "buscarcontenido": "Buscar contenido"
+    },
+    "busqueda": {
+        "bmetadatos": "Busrca por plantilla",
+        "bpropiedades": "Buscar por propiedades",
+        "bfolder": "Buscar por carpeta",
+        "btexto": "Buscar por contenido"
     },
     "entidades": {
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",
