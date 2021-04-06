@@ -1,0 +1,71 @@
+<div class="row">
+    <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+            <button *ngIf="MostrarRegresar" mat-icon-button [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
+                on-click="regresar()" aria-label="T.t['ui.regresar']">
+                <mat-icon color="primary">reply</mat-icon>
+            </button>
+            <span>
+                Buscar en : NOMBRE REPO
+
+            </span>
+            <span class="toolbar-spacer"></span>
+            
+            <!-- Mostrar busqueda meatdatos -->
+            <button  mat-icon-button on-click="alternarMetadatos()"
+                [nbTooltip]="T.t['busqueda.bmetadatos']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bmetadatos']">
+                <mat-icon>turned_in_not</mat-icon>
+            </button>
+            
+<!-- Mostrar busqueda propieddes -->
+<button  mat-icon-button on-click="alternarMetadatos()"
+[nbTooltip]="T.t['busqueda.bpropiedades']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bpropiedades']">
+<mat-icon>fingerprint</mat-icon>
+</button>
+
+<!-- Mostrar busqueda folder -->
+<button  mat-icon-button on-click="alternarMetadatos()"
+[nbTooltip]="T.t['busqueda.bfolder']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bfolder']">
+<mat-icon>folder_open</mat-icon>
+</button>
+
+<!-- Mostrar busqueda folder -->
+<button  mat-icon-button on-click="alternarMetadatos()"
+[nbTooltip]="T.t['busqueda.btexto']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.btexto']">
+<mat-icon>text_fields</mat-icon>
+</button>
+
+
+            <!-- Separadador -->
+            <mat-icon class="gray-icon">more_vert</mat-icon>
+
+        </mat-toolbar>
+    </div>
+    <div class="col-lg-12">
+        <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
+            <nb-card-front>
+                <nb-card accent="info" size="large">
+                    <nb-card-body>
+                        <div class="row">
+
+                        </div>
+                    </nb-card-body>
+                    <nb-card-footer>
+
+                    </nb-card-footer>
+                </nb-card>
+            </nb-card-front>
+
+            <nb-card-back>
+                <nb-card accent="danger" size="large">
+                    <nb-card-header>
+
+                    </nb-card-header>
+                    <nb-card-body>
+
+                    </nb-card-body>
+                </nb-card>
+            </nb-card-back>
+        </nb-reveal-card>
+    </div>
+</div>

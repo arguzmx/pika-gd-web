@@ -15,10 +15,12 @@
             <nb-icon icon="minus"></nb-icon>
         </button>
     </div>
-    <nb-card class="loadingCard" [ngStyle]="{'display': loading ? 'flex' : 'none' }">
-        <nb-card-body [nbSpinner]="true" nbSpinnerSize="large" nbSpinnerStatus="info"
-            nbSpinnerMessage="Cargando imagen..."></nb-card-body>
-    </nb-card>
+
+    <nb-card *ngIf="loading" style="background-color: black;" size="tiny" [nbSpinner]="loading"
+             nbSpinnerStatus="danger"
+             nbSpinnerSize="large"
+             nbSpinnerMessage="">
+   </nb-card>
 
     <div style="display: none;">
         <img [src]="dataUrl$|async" (load) = "imagenCargada($event)" #imgPag>

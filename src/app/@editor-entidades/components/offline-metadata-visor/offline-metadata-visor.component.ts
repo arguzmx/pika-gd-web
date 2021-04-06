@@ -2,6 +2,7 @@ import { format, parseISO } from 'date-fns';
 import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { tBinaryData, tBoolean, tDate, tDateTime, tDouble, tInt32, tInt64, tList, tString, tTime, ValorPropiedad } from '../../../@pika/pika-module';
+import { tIndexedString } from '../../../@pika/metadata';
 
 
 @Component({
@@ -51,6 +52,7 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
     let valor = contenido !== null ? contenido.Valor : '';
 
     switch (tipo) {
+      case tIndexedString:
       case tString:
         break;
 
@@ -93,6 +95,11 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
         break;
 
       case tList:
+        const prop = this.metadatos.Propiedades.find(p=>p.Id === contenido.PropiedadId);
+        const item = prop.AtributoLista.Valores.find( l => l.Id == contenido.Valor);
+        if (item) {
+          valor = item.Texto
+        }
         break;
     }
 

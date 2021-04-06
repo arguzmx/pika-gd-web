@@ -65,7 +65,6 @@ export class EditorEntidadesBase {
     entidad: any,
     config: ConfiguracionEntidad,
   ): void {
-    console.log(link);
 
     if (entidad) {
       this.CerrarDialogos();
@@ -208,11 +207,14 @@ export class EditorEntidadesBase {
 
   public ejecutaNavegarVista(link: LinkVista, entidad: any, metadata: MetadataInfo) {
       const parametros = {};
-      metadata.Propiedades.forEach( p => {
-        if (p.ParametroLinkVista) {
-          parametros[p.Id] = entidad[p.Id];
-        }
-      });
+      if(entidad!=null){
+        metadata.Propiedades.forEach( p => {
+          if (p.ParametroLinkVista) {
+            console.log(p.Id);
+            parametros[p.Id] = entidad[p.Id];
+          }
+        });
+      } 
       const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
       if (url) {
         this.router.navigate([url], { queryParams: parametros});
@@ -224,6 +226,19 @@ export class EditorEntidadesBase {
         );
       }
   }
+
+  public ejecutaNavegarVistaParametros(link: LinkVista, parametros: unknown) {
+    const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
+    if (url) {
+      this.router.navigate([url], { queryParams: parametros});
+    } else {
+      this.applog.FallaT(
+        'editor-pika.mensajes.err-config-vinculo',
+        null,
+        null,
+      );
+    }
+}
 
   public tituloNavegarLista(link: LinkVista) {
     return this.T.t[`vistas.${link.Vista}`];

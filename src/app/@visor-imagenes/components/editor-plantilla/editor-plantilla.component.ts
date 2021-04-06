@@ -24,6 +24,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
   public editorVisible: boolean = false;
   public documentosMetadatos: DocumentoPlantilla[] = []
   public vinculos: VinculosObjetoPlantilla;
+  public sinMetadatos: boolean;
   private cantidadDocumentosUnicos: number;
   private cantidadMetadatosDocumentosUnicos: number;
   private idSeleccionado: string;
@@ -47,15 +48,19 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     this.metadatosUnicos.clear();
     const componentFactory = this.resolver.resolveComponentFactory(OfflineMetadataVisorComponent);
     const containerRef = this.metadatosUnicos;
-    this.vinculos.Documentos.forEach( v => {
-      const component: ComponentRef<OfflineMetadataVisorComponent> = containerRef.createComponent(componentFactory);
-      component.instance.metadatos =  this.metadatos.find(m => m.Tipo === v.PlantillaId) ;
-      component.instance.valores = this.documentosMetadatos.find( d => d.Id === v.DocumentoId).Valores;
-      component.instance.etiqueta = v.Nombre !== '' ? v.Nombre : this.metadatos.find(m => m.Tipo === v.PlantillaId).FullName;
-      component.instance.registroId = v.DocumentoId;
-      component.instance.EventoEditar.subscribe(id => { this.EditarUnico(id); });
-      component.instance.EventoEliminar.subscribe(id => { this.ConfirmarEliminarUnico(id); });
-
+    this.vinculos.Documentos.forEach( v => 
+      {
+        // Algunos links purden estar rotos y no hay datos
+        if (this.documentosMetadatos.find( d => d.Id === v.DocumentoId)) {
+          this.sinMetadatos = false;
+          const component: ComponentRef<OfflineMetadataVisorComponent> = containerRef.createComponent(componentFactory);
+          component.instance.metadatos =  this.metadatos.find(m => m.Tipo === v.PlantillaId) ;
+          component.instance.valores = this.documentosMetadatos.find( d => d.Id === v.DocumentoId).Valores;
+          component.instance.etiqueta = v.Nombre !== '' ? v.Nombre : this.metadatos.find(m => m.Tipo === v.PlantillaId).FullName;
+          component.instance.registroId = v.DocumentoId;
+          component.instance.EventoEditar.subscribe(id => { this.EditarUnico(id); });
+          component.instance.EventoEliminar.subscribe(id => { this.ConfirmarEliminarUnico(id); });
+        }
     });
   }
 
@@ -114,8 +119,10 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
 
   // Obtiene las plantillas disponibles para el documento
   private ObtienePlantillas(): void {
+    this.sinMetadatos = true;
     this.servicioPlantilla.ObtienePlantillas().pipe(first())
     .subscribe( (data) => {
+      console.log(data);
       this.plantillas = data;
     }, (e) => {}, () => {});
   }
@@ -149,7 +156,12 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     this.servicioPlantilla.ObtieneDocumentoUnicoMetadatos(vinculo.PlantillaId, vinculo.DocumentoId).pipe(first())
     .subscribe( (documento) => {
       this.documentosMetadatos.push(documento);
-    }, (e) => {}, () => {
+    }, (e) => {
+      this.cantidadDocumentosUnicos --;
+      if(this.cantidadDocumentosUnicos === 0){
+        this.ObtieneMetadatosDocumentosUnicos();
+      }
+    }, () => {
       this.cantidadDocumentosUnicos --;
       if(this.cantidadDocumentosUnicos === 0){
         this.ObtieneMetadatosDocumentosUnicos();
@@ -159,7 +171,6 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
 
   // Obtiene la defeinición de metadatos para cada tipo diferet
   private ObtieneMetadatosDocumentosUnicos(): void {
-
     const idmetadatos: string [] = [];
     this.vinculos.Documentos.forEach(v=> {
       if(idmetadatos.indexOf(v.PlantillaId)<0 ){
@@ -173,7 +184,12 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
         this.servicioPlantilla.ObtieneMetadataInfo(id)
             .subscribe(m => {
               this.metadatos.push(m);
-            }, (e) => {}, () => {
+            }, (e) => {
+              this.cantidadMetadatosDocumentosUnicos --;
+              if (this.cantidadMetadatosDocumentosUnicos === 0) {
+                this.DeespliegaMetadatosUnicos();
+              }
+            }, () => {
               this.cantidadMetadatosDocumentosUnicos --;
               if (this.cantidadMetadatosDocumentosUnicos === 0) {
                 this.DeespliegaMetadatosUnicos();

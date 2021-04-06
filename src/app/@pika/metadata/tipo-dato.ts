@@ -1,4 +1,5 @@
 export const  tString = 'string';
+export const  tIndexedString = "istring";
 export const  tDouble = 'double';
 export const  tBoolean = 'bool';
 export const  tInt32 = 'int';

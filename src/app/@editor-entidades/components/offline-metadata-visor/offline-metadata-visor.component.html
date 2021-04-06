@@ -1,23 +1,27 @@
 <nb-accordion>
     <nb-accordion-item>
         <nb-accordion-item-header>
-            <button mat-icon-button (click)="Editar($event)"  nbTooltip="Editar">
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button (click)="Eliminar($event)"  nbTooltip="Eliminar">
-                <mat-icon>remove_circle_outline</mat-icon>
-            </button>
-            {{etiqueta}} 
+            <div class="mat-elevation-z3" style="width: 100%;">
+                <button mat-icon-button (click)="Editar($event)" nbTooltip="Editar">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="Eliminar($event)" nbTooltip="Eliminar">
+                    <mat-icon>remove_circle_outline</mat-icon>
+                </button>
+                {{etiqueta}}
+            </div>
         </nb-accordion-item-header>
         <nb-accordion-item-body>
-            <table class="table table-striped">
-                <tbody>
-                    <tr  *ngFor="let p of propiedadesTabla"> 
-                        <td>{{p.PropiedadId}}</td>
-                        <td>{{p.Valor}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="mat-elevation-z0" style="width: 100%;">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr *ngFor="let p of propiedadesTabla">
+                            <td>{{p.PropiedadId}}</td>
+                            <td>{{p.Valor}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </nb-accordion-item-body>
     </nb-accordion-item>
 </nb-accordion>

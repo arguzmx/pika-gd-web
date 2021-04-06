@@ -9,7 +9,9 @@ import { PagesComponent } from './pages.component';
 import { EditorBootTabularComponent, EditorBootJerarquicoComponent } from '../@editor-entidades/editor-entidades.module';
 import { PermisosHostComponent, PermisosModuloComponent } from '../@gestor-permisos/gestor-permisos.module';
 import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
+import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-busqueda-contenido.component';
 import { EntidadesResolver } from '../@pika/pika-module';
+
 const routes: Routes = [{
   path: '',
   component: PagesComponent,
@@ -35,6 +37,10 @@ const routes: Routes = [{
     {
       path: 'visor',
       component: HostVisorContenidoComponent,
+    },
+    {
+      path: 'buscador',
+      component: HostBusquedaContenidoComponent,
     },
     {
       path: '404',

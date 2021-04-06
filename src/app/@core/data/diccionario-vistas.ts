@@ -4,6 +4,7 @@ import { DiccionarioNavegacion } from '../../@editor-entidades/editor-entidades.
 
 export const DiccionarioVistas: { [type: string]: string } = {
     visorcontenido: '/pages/visor',
+    buscarcontenido: '/pages/buscador',
 };
 
 @Injectable({

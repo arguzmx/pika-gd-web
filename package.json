@@ -73,6 +73,7 @@
     "ionicons": "2.0.1",
     "jwt-decode": "^2.2.0",
     "leaflet": "1.2.0",
+    "material-design-icons": "^3.0.1",
     "moment": "^2.26.0",
     "nebular-icons": "1.1.0",
     "ng-pick-datetime": "^7.0.0",

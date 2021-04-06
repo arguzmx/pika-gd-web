@@ -6,4 +6,5 @@ export interface LinkVista {
     Vista: string;
     Icono: string;
     Titulo: string;
+    RequiereSeleccion: boolean;
 }
