@@ -1,7 +1,8 @@
+import { environment } from './../../environments/environment';
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authConfig: AuthConfig = {
-  issuer: 'http://localhost:4000',
+  issuer: environment.authUrl,
   clientId: 'api-pika-gd-angular', // The "Auth Code + PKCE" client
   responseType: 'code',
   redirectUri: window.location.origin + '/index.html',
