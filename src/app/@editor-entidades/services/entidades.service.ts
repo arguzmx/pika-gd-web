@@ -14,7 +14,6 @@ import { AppLogService } from '../../@pika/pika-module';
 import { TextoDesdeId } from '../model/texto-desde-id';
 import { Consulta, Paginado } from '../../@pika/pika-module';
 import { ValorListaOrdenada } from '../../@pika/pika-module';
-import { Evento } from '../../@pika/pika-module';
 import { AtributoLista } from '../../@pika/pika-module';
 import { debounceTime, first } from 'rxjs/operators';
 import { SesionQuery } from '../../@pika/pika-module';
@@ -218,9 +217,6 @@ export class EntidadesService {
   // ---------------------------------------
   public SetCachePropiedadContextual(propiedad: string, origen: string, tranid: string, valor: any): void {
     const key = this.cache.ClaveValorContextual(origen, propiedad, tranid);
-
-    console.log(`${key} === ${valor}`)
-
     this.cache.set(key, valor);
     this.EmiteEventoContexto({ Origen: key, Valor: valor });
   }
@@ -256,8 +252,6 @@ export class EntidadesService {
 
   public SetCacheInstanciaEntidad(tipo: string, id: string, entidad: any): void {
     const key = this.cache.ClaveInstancia(tipo, id);
-    console.log(key );
-    console.log(entidad );
     this.cache.set(key, entidad);
   }
 
@@ -269,23 +263,6 @@ export class EntidadesService {
     return null;
   }
 
-
-
-  // Cache de filtros
-  // ---------------------------------------
-  // ---------------------------------------
-  public SetCacheFiltros(id: string, filtros: FiltroConsulta[]) {
-    const key = this.cache.ClaveFiltro(id);
-    this.cache.set(key, filtros);
-  }
-
-  public GetCacheFiltros(id: string): FiltroConsulta[] {
-    const key = this.cache.ClaveFiltro(id);
-    if (this.cache.has(key)) {
-      return this.cache.get(key);
-    }
-    return [];
-  }
 
 
   // Manejo CRUD de entidades

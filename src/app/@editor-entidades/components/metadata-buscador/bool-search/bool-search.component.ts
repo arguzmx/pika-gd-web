@@ -1,4 +1,4 @@
-import { EntidadesService } from './../../../services/entidades.service';
+import { CacheFiltrosBusqueda } from './../../../services/cache-filtros-busqueda';
 import { BuscadorEntidadesBase } from './../../../model/buscador-entidades-base';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { Component, OnInit } from '@angular/core';
@@ -22,10 +22,10 @@ export class BoolSearchComponent extends BuscadorEntidadesBase
   constructor(
     applog: AppLogService,
     translate: TranslateService,
-    entidades: EntidadesService,
+    cache: CacheFiltrosBusqueda,
     router: Router,
   ) {
-    super(entidades, translate);
+    super(cache, translate);
     this.T  = new Traductor(translate);
     this.T.ts = ['ui.no', 'ui.verdadero', 'ui.falso'];
   }

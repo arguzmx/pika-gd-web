@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './services/cache-filtros-busqueda';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { Traductor } from './services/traductor';
 
@@ -100,6 +101,9 @@ import { AclMostrarDirective } from './directives/acl-mostrar.directive';
 import { OfflineMetadataEditorComponent } from './components/metadata-editor/offline-metadata-editor.component';
 import { OfflineMetadataVisorComponent } from './components/offline-metadata-visor/offline-metadata-visor.component';
 import { CacheEntidadesService } from './services/cache-entidades.service';
+import { ConfiguracionEntidad } from './model/configuracion-entidad';
+import { OfflineMetadataBuscadorComponent } from './components/offline-metadata-buscador/offline-metadata-buscador.component';
+import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
 
 @NgModule({
   imports: [
@@ -181,7 +185,8 @@ import { CacheEntidadesService } from './services/cache-entidades.service';
   exports: [EditorTabularComponent, EditorJerarquicoComponent,
     EditorBootTabularComponent, EditorBootJerarquicoComponent, 
     MetadataEditorComponent, OfflineMetadataEditorComponent, 
-    OfflineMetadataVisorComponent ],
+    OfflineMetadataVisorComponent, MetadataBuscadorComponent, 
+    OfflineMetadataBuscadorComponent ],
   declarations: [
     EditorJerarquicoComponent,
     EditorTabularComponent,
@@ -211,10 +216,12 @@ import { CacheEntidadesService } from './services/cache-entidades.service';
     AclMostrarDirective,
     OfflineMetadataEditorComponent,
     OfflineMetadataVisorComponent,
+    OfflineMetadataBuscadorComponent,
   ],
 })
  class EditorEntidadesModule { }
 
- export { EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
+ export {MetadataBuscadorComponent, EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
   EditorBootTabularComponent, EditorBootJerarquicoComponent, MetadataEditorComponent,
-  IDiccionarioNavegacion, DiccionarioNavegacion, Traductor, CacheEntidadesService};
+  IDiccionarioNavegacion, DiccionarioNavegacion, Traductor, CacheEntidadesService, ConfiguracionEntidad,
+  CacheFiltrosBusqueda, ServicioListaMetadatos};

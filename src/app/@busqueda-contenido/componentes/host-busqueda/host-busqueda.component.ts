@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './../../../@editor-entidades/services/cache-filtros-busqueda';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
@@ -5,12 +6,14 @@ import { takeUntil } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from '../../../@pika/servicios';
-import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { ServicioListaMetadatos, Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { ServicioBusquedaAPI } from '../../services/servicio-busqueda-api';
 
 @Component({
   selector: 'ngx-host-busqueda',
   templateUrl: './host-busqueda.component.html',
-  styleUrls: ['./host-busqueda.component.scss']
+  styleUrls: ['./host-busqueda.component.scss'],
+  providers: [ CacheFiltrosBusqueda, ServicioBusquedaAPI, ServicioListaMetadatos ]
 })
 export class HostBusquedaComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
@@ -18,6 +21,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   MostrarRegresar: boolean = true; 
   VistaTrasera: boolean = false;
   MotrarMetadatos: boolean = false;
+  MostrarPropiedades: boolean = false;
 
   public T: Traductor;
   
@@ -44,7 +48,6 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((params) => {
-          console.log(params);
           this.CargaTraducciones();
       }, (e) => {
         this.router.navigateByUrl('/pages/sinacceso');
@@ -77,5 +80,18 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   alternarMetadatos(): void {
     this.MotrarMetadatos = !this.MotrarMetadatos;
   }
+
+
+  public alternarPropiedades() {
+    this.MostrarPropiedades = !this.MostrarPropiedades;
+    
+    if(this.MostrarPropiedades){
+
+    } else {
+
+    }
+
+  }
+
 
 }

@@ -8,9 +8,11 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+// la ruta de authUrl debe ir sin / al fina
+// ---------------------------------------------------
 export const environment = {
   production: false,
-  authUrl: 'http://localhost:4000/',
+  authUrl: 'http://localhost:4000', 
   apiUrl: 'http://localhost:5000/api/v1.0/',
   pikaApiUrl: 'http://localhost:5000/',
   apiVersion: '1.0',

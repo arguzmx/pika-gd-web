@@ -62,7 +62,6 @@ export class UploadService {
       this.http.request(req).subscribe((event) => {
         // console.log(event);
         if (event.type === HttpEventType.UploadProgress) {
-          console.log('event');
           const percentDone = Math.round((100 * event.loaded) / event.total);
           progress.next({progreso: percentDone, status: percentDone === 100 ? 200 : 0});
         } else if (event instanceof HttpResponse) {
@@ -89,7 +88,7 @@ export class UploadService {
 
       status[file.name] = {
         progress: progress.asObservable(),
-      }; // console.log(status);
+      }; 
     }
 
     return status;

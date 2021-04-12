@@ -72,6 +72,10 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
 
   ngOnChanges() {
     if (this.component) {
+
+      if(this.propiedad.NombreI18n == null) {
+        this.propiedad.NombreI18n = this.propiedad.Nombre;
+      }
       this.component.instance.config = this.config;
       this.component.instance.group = this.group;
       this.component.instance.propiedad = this.propiedad;
@@ -81,6 +85,11 @@ export class CampoBusquedaDirective implements ICampoBuscable , OnChanges, OnIni
 
   ngOnInit() {
     let component: any = null;
+
+    if(this.propiedad.NombreI18n == null) {
+      this.propiedad.NombreI18n = this.propiedad.Nombre;
+    }
+
     if (this.propiedad.AtributoLista) {
       component = this.resolver.resolveComponentFactory<ICampoBuscable>(components['list']);
     } else {

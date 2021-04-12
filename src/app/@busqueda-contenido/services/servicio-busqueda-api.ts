@@ -16,7 +16,7 @@ export class ServicioBusquedaAPI  {
     return url.replace(/\/$/, '') + '/';
   }
 
-  //constructor(private http: HttpClient, private cache: CacheEntidadesService) {
+  
   constructor(private http: HttpClient) {
     this.endpointPlantilla = this.DepuraUrl(environment.apiUrl) + `metadatos/`;
     this.endpointMetadatos = this.DepuraUrl(environment.apiUrl) + `metadatos/`;

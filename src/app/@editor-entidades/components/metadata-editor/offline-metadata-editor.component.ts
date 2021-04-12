@@ -43,6 +43,7 @@ import {
 import { Subject } from 'rxjs';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-offline-metadata-editor',
@@ -87,10 +88,12 @@ export class OfflineMetadataEditorComponent
   ) {
     this.TransaccionId = (new Date()).getMilliseconds().toString();
     this.formGroup = this.createGroup();
-    this.formGroup.valueChanges
-      // .subscribe(campos => {
-      //   console.log(campos);
-      // });
+    if(!environment.production) {
+      this.formGroup.valueChanges
+      .subscribe(campos => {
+        console.debug(campos);
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -105,7 +108,6 @@ export class OfflineMetadataEditorComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     this.ProcesaConfiguracion();
   }
 
@@ -179,7 +181,6 @@ export class OfflineMetadataEditorComponent
     }
 
     if (this.metadata) {
-      console.log("metdatda ok");
       this.metadata.Propiedades.forEach(p => {
         if (p.AtributosEvento && p.AtributosEvento.length > 0) {
           p.AtributosEvento.forEach(ev => {
@@ -197,7 +198,6 @@ export class OfflineMetadataEditorComponent
 
       this.ObtieneValoresVinculados();
       this.LimpiarForma();
-      console.log("Creando forma");
       this.CrearForma();
     }
 

@@ -8,12 +8,14 @@ import { Subject } from 'rxjs';
 import { takeUntil, first } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { SesionStore } from '../../../@pika/pika-module';
+import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
+import { ServicioListaMetadatos } from '../../services/servicio-lista-metadatos';
 
 @Component({
   selector: 'ngx-editor-boot-tabular',
   templateUrl: './editor-boot-tabular.component.html',
   styleUrls: ['./editor-boot-tabular.component.scss'],
-  providers: [EntidadesService, CacheEntidadesService],
+  providers: [EntidadesService, CacheEntidadesService, CacheFiltrosBusqueda, ServicioListaMetadatos],
 })
 export class EditorBootTabularComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();

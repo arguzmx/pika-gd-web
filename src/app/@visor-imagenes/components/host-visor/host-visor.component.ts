@@ -50,7 +50,6 @@ AfterViewInit, OnChanges {
   }
 
   private procesaConfiguracion() {
-    console.log(this.config);
     this.Titulo = this.config.Nombre;
     this.servicioVisor.config = this.config;
   }

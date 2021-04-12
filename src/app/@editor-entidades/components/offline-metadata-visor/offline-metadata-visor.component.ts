@@ -3,6 +3,7 @@ import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { tBinaryData, tBoolean, tDate, tDateTime, tDouble, tInt32, tInt64, tList, tString, tTime, ValorPropiedad } from '../../../@pika/pika-module';
 import { tIndexedString } from '../../../@pika/metadata';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -20,8 +21,11 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
   @Input() metadatos: MetadataInfo;
   @Input() valores: ValorPropiedad[];
   constructor() { }
+  
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    if(!environment.production){
+      console.debug(changes);
+    }
   }
 
 

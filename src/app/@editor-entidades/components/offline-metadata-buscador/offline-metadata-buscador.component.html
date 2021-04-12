@@ -1,0 +1,27 @@
+<div class="row">
+  <div [ngClass]="{'col-lg-8 col-md-8 col-sm-8': lateral, 'col-lg-8 col-md-6 col-sm-6': !lateral}">
+    
+    <nb-select fullWidth="true" size="small" [(selected)]="selectedPropId">
+      <nb-option *ngFor="let p of propiedades" [value]="p.Id">{{p.Nombre}}</nb-option>
+    </nb-select>
+  </div>
+  <div [ngClass]="{'col-lg-4 col-md-4 col-sm-4': lateral, 'col-lg-4 col-md-6 col-sm-6': !lateral}">
+    <button (click)="addFiltro()" nbButton>
+      <nb-icon icon="plus-circle-outline"></nb-icon>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="(propiedadesFiltro.length>0)">
+  <form [formGroup]="group">
+    <div [ngClass]="{'row pt-1': lateral, 'row pt-2': !lateral}" *ngFor="let propiedad of propiedadesFiltro;">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <hr>
+        <ng-container ngxSearchField [lateral]="lateral" [config]="config" [group]="group" [propiedad]="propiedad"
+          [filtroDefault]="GetfiltroDefault(propiedad)" (EliminarFiltro)="EliminarFiltro($event)"
+          (EstadoFiltro)="EstadoFiltro($event)">
+        </ng-container>
+      </div>
+    </div>
+  </form>
+</div>

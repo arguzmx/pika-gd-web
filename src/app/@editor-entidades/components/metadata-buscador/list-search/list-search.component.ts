@@ -6,11 +6,14 @@ import { Operacion, Consulta } from '../../../../@pika/consulta';
 import { Observable, Subject, of } from 'rxjs';
 import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
-import { EntidadesService } from '../../../services/entidades.service';
 import { distinctUntilChanged, tap, switchMap, catchError, first } from 'rxjs/operators';
 import { AtributoLista } from '../../../../@pika/pika-module';
 import { CTL_OP_PREFIX } from '../../../model/constantes';
 import { Traductor } from '../../../services/traductor';
+import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
+import { ServicioListaMetadatos } from '../../../services/servicio-lista-metadatos';
+import { NB_THEME_OPTIONS } from '@nebular/theme';
+import { isThursday } from 'date-fns';
 
 @Component({
   selector: 'ngx-list-search',
@@ -23,7 +26,7 @@ ICampoBuscable {
   list: ValorListaOrdenada[];
   ops = [Operacion.OP_EQ];
   isTypeAhead:  boolean  = false;
-
+  listaEnpoint: string = null;
   elementos$: Observable<ValorListaOrdenada[]>;
   listaLoading: boolean = false;
   selectedItems: ValorListaOrdenada[] = [];
@@ -33,9 +36,12 @@ ICampoBuscable {
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(applog: AppLogService, translate: TranslateService,
-    entidades: EntidadesService) {
-    super(entidades, translate);
+  constructor(
+    private servicioListas: ServicioListaMetadatos, 
+    applog: AppLogService, 
+    translate: TranslateService,
+    cache: CacheFiltrosBusqueda) {
+    super(cache, translate);
     this.T = new Traductor(translate);
     this.T.ts = ['ui.no'];
   }
@@ -66,7 +72,7 @@ ICampoBuscable {
 
   // Otiene la lista de alores disponibles para la entidad
   private ObtieneLista(atributo: AtributoLista, consulta: Consulta) {
-    this.entidades.SolicitarLista(atributo, consulta).pipe(first())
+    this.servicioListas.SolicitarLista(atributo, consulta, this.listaEnpoint).pipe(first())
     .subscribe( lista => {
       if (lista.Valores && lista.Valores.length > 0) {
         if (this.propiedad.Nombre === lista.PropiedadId) {
@@ -93,6 +99,11 @@ ICampoBuscable {
     if (this.propiedad.AtributoLista) {
       if (this.propiedad.AtributoLista.DatosRemotos) {
         // Los datos e obhtienen desde el servidor
+
+        if(this.propiedad.AtributoLista.Endpoint) {
+          this.listaEnpoint = this.propiedad.AtributoLista.Endpoint;
+        }
+
         const tieneEventos = this.propiedad.AtributosEvento  &&
         (this.propiedad.AtributosEvento.length  > 0);
 
@@ -133,7 +144,7 @@ ICampoBuscable {
     this.elementos$ = this.listInput$.pipe(
         distinctUntilChanged(),
         tap(() => this.listaLoading = true),
-        switchMap( term => this.entidades.TypeAhead(this.propiedad.AtributoLista, term)
+        switchMap( term => this.servicioListas.TypeAhead(this.propiedad.AtributoLista, term, this.listaEnpoint)
         .pipe(
           catchError(() => of([])), // empty list on error
           tap(() => this.listaLoading = false),
@@ -167,6 +178,9 @@ ICampoBuscable {
 
 
   Sort(by: string) {
+
+    if(this.propiedad)
+
     return this.propiedad.ValoresLista.sort((obj1, obj2) => {
       if (obj1[by] > obj2[by]) {
           return 1;

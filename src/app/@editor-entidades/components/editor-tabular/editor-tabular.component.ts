@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, TipoDespliegueVinculo } from '../../../@pika/pika-module';
@@ -107,6 +108,7 @@ OnDestroy, OnChanges {
 
   // Cosntructor del componente
   constructor(
+    private cacheFiltros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
     ts: TranslateService,
     applog: AppLogService,
@@ -236,7 +238,7 @@ private  ProcesaCambiosConfiguracion(): void {
 
     this.tieneReportes = (this.metadata.Reportes && this.metadata.Reportes.length > 0);
 
-    this.entidades.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
+    this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, this.GetFiltrosDeafault());
 
     // Establece entidades vinculadas
     if (this.metadata.EntidadesVinculadas) {
@@ -292,7 +294,6 @@ private  ProcesaCambiosConfiguracion(): void {
           .ObtieneMetadatos(this.config.OrigenTipo)
           .pipe(first())
           .subscribe((m) => {
-            console.log(m);
             this.entidades
               .ObtieneEntidadUnica(
                 this.config.OrigenTipo,
@@ -328,9 +329,6 @@ private  ProcesaCambiosConfiguracion(): void {
 
   // Recibe el evento de nueva selección desde la tabla
   public NuevaSeleccion(entidad: unknown) {
-    
-    console.log(entidad);
-
     this.entidad = entidad;
     this.InstanciaSeleccionada = entidad !== null ? true : false;
     this.editarDisponible = this.InstanciaSeleccionada &&
@@ -490,7 +488,7 @@ private  ProcesaCambiosConfiguracion(): void {
         }
     });
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
-    this.entidades.SetCacheFiltros(this.config.TransactionId, cache);
+    this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;
     this.tablas.first.obtenerPaginaDatos(true);
   }
@@ -514,7 +512,7 @@ private  ProcesaCambiosConfiguracion(): void {
   public eliminarFiltros(): void {
     const cache: FiltroConsulta[] = (this.GetFiltrosDeafault());
     this.filtrosActivos = false;
-    this.entidades.SetCacheFiltros(this.config.TransactionId, cache);
+    this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.tablas.first.obtenerPaginaDatos(true);
     this.entidades.EmiteEventoFiltros(EventosFiltrado.EliminarFiltros);
   }

@@ -7,6 +7,7 @@ import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { EntidadesService } from '../../../services/entidades.service';
 import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../../model/constantes';
+import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
 
 @Component({
   selector: 'ngx-hidden-search',
@@ -18,8 +19,8 @@ ICampoBuscable {
 
   public T: Traductor;
   ops = [Operacion.OP_EQ];
-    constructor(applog: AppLogService, translate: TranslateService, entidades: EntidadesService) {
-      super(entidades, translate);
+    constructor(applog: AppLogService, translate: TranslateService, cache: CacheFiltrosBusqueda) {
+      super(cache, translate);
       this.T = new Traductor(translate);
       this.T.ts = ['ui.no'];
   }

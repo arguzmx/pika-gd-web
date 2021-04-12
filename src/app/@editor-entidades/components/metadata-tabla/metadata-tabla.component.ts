@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { EntidadesService } from './../../services/entidades.service';
 import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
@@ -109,6 +110,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
 
   public T: Traductor;
   constructor(private cdr: ChangeDetectorRef,
+    private cacheFilros: CacheFiltrosBusqueda,
     entidades: EntidadesService, translate: TranslateService, 
     diccionarioNavegacion: DiccionarioNavegacion,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
@@ -204,7 +206,7 @@ implements ITablaMetadatos, OnInit, OnChanges {
 
   // Obtiene una nueva página de datos
   public obtenerPaginaDatos(notificar: boolean): void {
-    this.consulta.FiltroConsulta = this.entidades.GetCacheFiltros(this.config.TransactionId);
+    this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
     this.AnularSeleccion();
     this.data = [];
     this.configuration.isLoading = true;

@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -74,6 +75,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
 
   // Cosntructor del componente
   constructor(
+    private cacheFiltros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
     ts: TranslateService,
     applog: AppLogService,
@@ -108,7 +110,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
       this.propiedades = this.metadata.Propiedades.filter(
         (x) => x.Buscable === true,
       );
-      const filtros = this.entidades.GetCacheFiltros(this.config.TransactionId);
+      const filtros = this.cacheFiltros.GetCacheFiltros(this.config.TransactionId);
       filtros.forEach((item) => {
         const index = this.propiedades.findIndex((x) => x.Id === item.Id);
         if (index >= 0) {
@@ -133,7 +135,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
   }
 
   borrarFiltrosBuscador(): void {
-    const fs = this.entidades.GetCacheFiltros(this.config.TransactionId);
+    const fs = this.cacheFiltros.GetCacheFiltros(this.config.TransactionId);
     this._EliminarTodosFiltros();
     fs.forEach( f => {
       this._addFiltro(f.Id, null);

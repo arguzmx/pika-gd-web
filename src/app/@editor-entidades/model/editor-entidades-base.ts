@@ -108,7 +108,6 @@ export class EditorEntidadesBase {
           break;
       }
 
-      console.log(url);
       if (url) {
         url = url + `&${PARAM_TIPO_DESPLIEGUE}=${link.TipoDespliegue}`;
         this.entidades.SetCacheInstanciaEntidad(
@@ -210,7 +209,6 @@ export class EditorEntidadesBase {
       if(entidad!=null){
         metadata.Propiedades.forEach( p => {
           if (p.ParametroLinkVista) {
-            console.log(p.Id);
             parametros[p.Id] = entidad[p.Id];
           }
         });

@@ -11,12 +11,14 @@ import { takeUntil } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { ConfiguracionEntidadJerarquica } from '../../model/configuracion-entidad-jerarquica';
 import { SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
+import { ServicioListaMetadatos } from '../../services/servicio-lista-metadatos';
 
 @Component({
   selector: 'ngx-editor-boot-jerarquico',
   templateUrl: './editor-boot-jerarquico.component.html',
   styleUrls: ['./editor-boot-jerarquico.component.scss'],
-  providers: [EntidadesService, CacheEntidadesService],
+  providers: [EntidadesService, CacheEntidadesService, CacheFiltrosBusqueda, ServicioListaMetadatos],
 })
 export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
 

@@ -1,1 +1,15 @@
-<p>b-metadatos works!</p>
+<div class="row">
+    <div class="col-lg-12">
+        <nb-select (selectedChange)="opChange($event)" fullWidth="true" #listaplantilla>
+            <nb-option *ngFor="let p of plantillas" [value]="p.Id">{{p.Texto}}</nb-option>
+        </nb-select>
+    </div>
+    <div>
+        <ngx-offline-metadata-buscador
+                          [lateral]="lateral"
+                          [config]="config"
+                          [metadata]="metadata"
+                          (EventoFiltrar)="EventoFiltrar($event)"
+                        ></ngx-offline-metadata-buscador>
+    </div>
+</div>

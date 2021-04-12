@@ -13,7 +13,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ThemeModule } from '../@theme/theme.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BusquedaInterceptor } from './services/busqueda-interceptor';
-import { CacheEntidadesService } from '../@editor-entidades/editor-entidades.module';
+import { CacheEntidadesService, EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module';
 import { HostBusquedaComponent } from './componentes/host-busqueda/host-busqueda.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,10 +22,18 @@ import { BMetadatosComponent } from './componentes/b-metadatos/b-metadatos.compo
 import { BPropiedadesComponent } from './componentes/b-propiedades/b-propiedades.component';
 import { BTextoComponent } from './componentes/b-texto/b-texto.component';
 import { BCarpetaComponent } from './componentes/b-carpeta/b-carpeta.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 @NgModule({
   declarations: [HostBusquedaComponent, BMetadatosComponent, BPropiedadesComponent, BTextoComponent, BCarpetaComponent],
   imports: [
+    MatDatepickerModule,
+    MatNativeDateModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
+    EditorEntidadesModule,
     CommonModule,
     MatIconModule,
     MatButtonModule,

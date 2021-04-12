@@ -95,7 +95,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
       this.DeespliegaMetadatosUnicos();
       this.applog.Exito("","Datos eliminados satisfactoriamente");
     }, (e) => {
-      console.log(e);
+      console.error(e);
       this.applog.Falla("","Los datos no pudieron ser eliminados");
     }, () => {});
   }
@@ -122,7 +122,6 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     this.sinMetadatos = true;
     this.servicioPlantilla.ObtienePlantillas().pipe(first())
     .subscribe( (data) => {
-      console.log(data);
       this.plantillas = data;
     }, (e) => {}, () => {});
   }
@@ -259,7 +258,6 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     data.Id = this.config.ElementoId;
     data.Tipo = this.TipoObjetoMetadatos;
     data.Filtro = this.config.PuntoMontajeId;
-    console.log(data);
 
     this.servicioPlantilla.CreaMetadatosPlantilla(this.listaplantilla.selected,
       data).subscribe( doc => {

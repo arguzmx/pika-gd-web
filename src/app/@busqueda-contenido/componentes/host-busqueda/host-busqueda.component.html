@@ -10,30 +10,32 @@
 
             </span>
             <span class="toolbar-spacer"></span>
+
+            <!-- Mostrar busqueda propieddes -->
+            <button mat-icon-button on-click="alternarPropiedades()" [nbTooltip]="T.t['busqueda.bpropiedades']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bpropiedades']">
+                <mat-icon>fingerprint</mat-icon>
+            </button>
+
             
             <!-- Mostrar busqueda meatdatos -->
-            <button  mat-icon-button on-click="alternarMetadatos()"
-                [nbTooltip]="T.t['busqueda.bmetadatos']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bmetadatos']">
+            <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bmetadatos']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bmetadatos']">
                 <mat-icon>turned_in_not</mat-icon>
             </button>
-            
-<!-- Mostrar busqueda propieddes -->
-<button  mat-icon-button on-click="alternarMetadatos()"
-[nbTooltip]="T.t['busqueda.bpropiedades']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bpropiedades']">
-<mat-icon>fingerprint</mat-icon>
-</button>
 
-<!-- Mostrar busqueda folder -->
-<button  mat-icon-button on-click="alternarMetadatos()"
-[nbTooltip]="T.t['busqueda.bfolder']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bfolder']">
-<mat-icon>folder_open</mat-icon>
-</button>
 
-<!-- Mostrar busqueda folder -->
-<button  mat-icon-button on-click="alternarMetadatos()"
-[nbTooltip]="T.t['busqueda.btexto']" nbTooltipPlacement="bottom" aria-label="T.t['busqueda.btexto']">
-<mat-icon>text_fields</mat-icon>
-</button>
+            <!-- Mostrar busqueda folder -->
+            <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bfolder']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bfolder']">
+                <mat-icon>folder_open</mat-icon>
+            </button>
+
+            <!-- Mostrar busqueda folder -->
+            <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.btexto']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.btexto']">
+                <mat-icon>text_fields</mat-icon>
+            </button>
 
 
             <!-- Separadador -->
@@ -46,8 +48,21 @@
             <nb-card-front>
                 <nb-card accent="info" size="large">
                     <nb-card-body>
-                        <div class="row">
-
+                        <div class="col-lg-6 mat-elevation-z2">
+                            <nb-accordion>
+                                <nb-accordion-item *ngIf="MostrarPropiedades">
+                                    <nb-accordion-item-header>Propiedades</nb-accordion-item-header>
+                                    <nb-accordion-item-body>
+                                        <ngx-b-propiedades></ngx-b-propiedades>
+                                    </nb-accordion-item-body>
+                                </nb-accordion-item>
+                                <nb-accordion-item *ngIf="MotrarMetadatos">
+                                    <nb-accordion-item-header>Plantillas</nb-accordion-item-header>
+                                    <nb-accordion-item-body>
+                                        <ngx-b-metadatos></ngx-b-metadatos>
+                                    </nb-accordion-item-body>
+                                </nb-accordion-item>
+                            </nb-accordion>
                         </div>
                     </nb-card-body>
                     <nb-card-footer>

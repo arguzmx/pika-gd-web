@@ -202,7 +202,6 @@ export class VisorComponent implements OnInit, OnDestroy {
       .ObtienePaginaVisible()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
-        console.log(p);
         if (p) {
           this.loading = true;
           this.src$.next(p.Url);

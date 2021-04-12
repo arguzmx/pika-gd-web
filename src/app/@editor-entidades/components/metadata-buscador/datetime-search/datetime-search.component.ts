@@ -10,6 +10,7 @@ import { Operacion } from '../../../../@pika/pika-module';
 import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../../model/constantes';
 import { Router } from '@angular/router';
 import { Traductor } from '../../../services/traductor';
+import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
 
 @Component({
   selector: 'ngx-datetime-search',
@@ -26,9 +27,9 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
   ops = [Operacion.OP_EQ, Operacion.OP_BETWEN, Operacion.OP_GT, Operacion.OP_GTE,
     Operacion.OP_LT, Operacion.OP_LTE];
 
-    constructor(applog: AppLogService, translate: TranslateService, entidades: EntidadesService,
+    constructor(applog: AppLogService, translate: TranslateService, cache: CacheFiltrosBusqueda,
       router: Router) {
-      super(entidades, translate);
+      super(cache, translate);
       this.T = new Traductor(translate);
       this.T.ts = ['ui.no'];
   }
@@ -92,6 +93,7 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
     const webcontrol = this.propiedad.AtributosVistaUI.find(
       (x) => x.Plataforma === 'web',
     );
+
     if (webcontrol) {
       switch (webcontrol.Control) {
         case HTML_DATE:

@@ -1,4 +1,4 @@
-import { EntidadesService } from './../services/entidades.service';
+import { CacheFiltrosBusqueda } from './../services/cache-filtros-busqueda';
 import { TranslateService } from '@ngx-translate/core';
 import { FiltroConsulta, TextpOperador } from '../../@pika/pika-module';
 import { first } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class BuscadorEntidadesBase {
   INVALID_ICON: string = 'checkmark-circle-2-outline';
 
   constructor(
-    public entidades: EntidadesService,
+    public cache: CacheFiltrosBusqueda,
     public translate: TranslateService) {
     this.filtro = {
       Negacion: false,
@@ -110,7 +110,7 @@ export class BuscadorEntidadesBase {
 
   public EstableceFltroDefault() {
 
-    const filtros = this.entidades.GetCacheFiltros(this.config.TransactionId);
+    const filtros = this.cache.GetCacheFiltros(this.config.TransactionId);
     const index = filtros.findIndex( x => x.Id === this.propiedad.Id);
     if (index >= 0) {
       const f = filtros[index];

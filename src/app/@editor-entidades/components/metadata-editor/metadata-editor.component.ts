@@ -101,7 +101,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.formGroup = this.createGroup();
     this.formGroup.valueChanges
     .subscribe( campos => {
-      console.log(campos);
+      console.debug(campos);
     });
   }
 
@@ -170,7 +170,6 @@ export class MetadataEditorComponent extends EditorEntidadesBase
           .CreaEntidad(this.config.TipoEntidad, entidadCopiada)
           .pipe(first())
           .subscribe((entidad) => {
-            console.log(entidad);
             if (entidad) {
               this.NuevaEntidad.emit(entidad);
               if (cerrar) {
@@ -356,21 +355,14 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
 
   private ObtieneValoresVinculados():  void {
-    console.log(this.config);
     if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '') {
       this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
       .subscribe( m => {
-        console.log(m.EntidadesVinculadas);
-        console.log(`$=== ${this.config.TipoEntidad.toLowerCase()}`);
         const index  = m.EntidadesVinculadas
         .findIndex( x => x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase());
-        console.log(index);
         if ( index >= 0 ) {
           const link = m.EntidadesVinculadas[index];
-          console.log(link.PropiedadHijo + '=>');
-          console.log(this.config.OrigenId);
           this.valoresDefault[link.PropiedadHijo] = this.config.OrigenId;
-          console.log(this.valoresDefault[link.PropiedadHijo]);
         }
       });
     }
@@ -405,10 +397,8 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       }
     });
 
-    console.log(this.valoresDefault);
     const controls = Object.keys(this.formGroup.controls);
     controls.forEach((control) => {
-      console.log(control);
       if (this.valoresDefault[control]) {
         this.formGroup.get(control).setValue(this.valoresDefault[control]);
       }

@@ -1,3 +1,4 @@
+import { CacheFiltrosBusqueda } from './../../../services/cache-filtros-busqueda';
 import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { Component, OnInit } from '@angular/core';
@@ -21,8 +22,8 @@ ICampoBuscable {
     Operacion.OP_STARTS, Operacion.OP_FULLTEXT];
   public T: Traductor;
 
-    constructor(applog: AppLogService, translate: TranslateService, entidades: EntidadesService) {
-      super(entidades, translate);
+    constructor(applog: AppLogService, translate: TranslateService, cache: CacheFiltrosBusqueda) {
+      super(cache, translate);
       this.T = new Traductor(translate);
       this.T.ts = ['ui.no'];
   }

@@ -8,4 +8,5 @@ export class AtributoLista {
     Default: string;
     ValoresCSV?: string;
     Valores?: ValorListaOrdenada[];
+    Endpoint?: string;
 }

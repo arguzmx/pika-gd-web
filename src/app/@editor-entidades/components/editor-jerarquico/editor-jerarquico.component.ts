@@ -36,6 +36,7 @@ import { EventosArbol } from '../../model/eventos-arbol';
 import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 
 
 const CONTENIDO_BUSCAR = 'buscar';
@@ -56,6 +57,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   // Cosntructor del componente
   constructor(
+    private cacheFilros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
     ts: TranslateService,
     applog: AppLogService,
@@ -195,7 +197,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
           case 'config':
-            console.log(changes);
+            // console.log(changes);
             this.ProcesaCambiosConfiguracion();
             break;
         }
@@ -244,7 +246,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       this.PermisoC = this.config.ConfiguracionContenido.Permiso ?
         this.config.ConfiguracionContenido.Permiso : this.entidades.permisoSinAcceso;
 
-      console.log(this.PermisoJ, this.PermisoC);
+      // console.log(this.PermisoJ, this.PermisoC);
 
       this.configJ = this.config.ConfiguracionJerarquia;
       this.configC = this.config.ConfiguracionContenido;
@@ -349,7 +351,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
         ? true
         : false;
 
-    this.entidades.SetCacheFiltros(
+    this.cacheFilros.SetCacheFiltros(
       this.configC.TransactionId,
       this.GetFiltrosDeafault(),
     );
@@ -754,7 +756,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     });
     this.RemoverSeleccionC();
     this.filtrosActivos = conteoFiltrosDefault !== defaults.length;
-    this.entidades.SetCacheFiltros(this.configC.TransactionId, cache);
+    this.cacheFilros.SetCacheFiltros(this.configC.TransactionId, cache);
     this.VistaTrasera = false;
     this.tablas.first.obtenerPaginaDatos(true);
   }
@@ -784,7 +786,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       );
     }
     this.filtrosActivos = false;
-    this.entidades.SetCacheFiltros(this.configC.TransactionId, cache);
+    this.cacheFilros.SetCacheFiltros(this.configC.TransactionId, cache);
     this.tablas.first.obtenerPaginaDatos(true);
   }
 
