@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: false,
-  authUrl: 'http://localhost/identidad',
+  authUrl: 'http://localhost/identidad/',
   apiUrl: 'http://localhost/servicios/api/v1.0/',
   pikaApiUrl: 'http://localhost/servicios',
   apiVersion: '1.0',

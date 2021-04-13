@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 
 export const authConfig: AuthConfig = {
   issuer: environment.authUrl,
+  skipIssuerCheck: true,
   clientId: 'api-pika-gd-angular', // The "Auth Code + PKCE" client
   responseType: 'code',
   redirectUri: window.location.origin + '/index.html',
@@ -14,5 +15,5 @@ export const authConfig: AuthConfig = {
   sessionChecksEnabled: false,
   showDebugInformation: false, // Also requires enabling "Verbose" level in devtools
   clearHashAfterLogin: false, // https://github.com/manfredsteyer/angular-oauth2-oidc/issues/457#issuecomment-431807040,
-  nonceStateSeparator : 'semicolon' // Real semicolon gets mangled by IdentityServer's URI encoding
+  nonceStateSeparator : 'semicolon', // Real semicolon gets mangled by IdentityServer's URI encoding
 };
