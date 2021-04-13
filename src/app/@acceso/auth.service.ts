@@ -4,6 +4,7 @@ import { OAuthErrorEvent, OAuthService, UserInfo } from 'angular-oauth2-oidc';
 import { Console } from 'console';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -46,6 +47,10 @@ export class AuthService {
     private oauthService: OAuthService,
     private router: Router,
   ) {
+
+    console.debug("----------------------");
+    console.debug(environment.authUrl);
+
     // Useful for debugging:
     this.oauthService.events.subscribe(event => {
       if (event instanceof OAuthErrorEvent) {
@@ -67,6 +72,7 @@ export class AuthService {
 
       console.warn('Noticed changes to access_token (most likely from another tab), updating isAuthenticated');
       const isauth: boolean = this.oauthService.hasValidAccessToken();
+      console.debug(isauth);
       this.isAuthenticatedSubject$.next(isauth);
 
       if (!isauth) {
@@ -103,7 +109,10 @@ export class AuthService {
     // 0. LOAD CONFIG:
     // First we have to check to see how the IdServer is
     // currently configured:
-    return this.oauthService.loadDiscoveryDocument()
+    
+    const discovery = environment.authUrl + ".well-known/openid-configuration";
+    console.debug("Discovery:" +  discovery);
+    return this.oauthService.loadDiscoveryDocument(discovery)
 
       // For demo purposes, we pretend the previous call was very slow
       // .then(() => new Promise(resolve => setTimeout(() => resolve(), 1000)))
@@ -112,14 +121,16 @@ export class AuthService {
       // Try to log in via hash fragment after redirect back
       // from IdServer from initImplicitFlow:
       .then(() => {
+        console.debug("1");
         this.oauthService.tryLogin(); })
 
       .then(() => {
+        console.debug("2");
         if (this.oauthService.hasValidAccessToken()) {
           this.tokenSubject$.next(this.oauthService.getAccessToken());
           return Promise.resolve();
         }
-
+        console.debug("3");
         // 2. SILENT LOGIN:
         // Try to log in via a refresh because then we can prevent
         // needing to redirect the user:
@@ -175,7 +186,10 @@ export class AuthService {
           this.router.navigateByUrl(stateUrl);
         }
       })
-      .catch(() => this.isDoneLoadingSubject$.next(true));
+      .catch((ex) => { 
+        console.log(ex);  
+        this.isDoneLoadingSubject$.next(true); 
+      } );
   }
 
   public login(targetUrl?: string) {
