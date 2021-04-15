@@ -1,11 +1,10 @@
-import { environment } from './../../../environments/environment';
+import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, AsyncSubject, BehaviorSubject, Subject } from 'rxjs';
 import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
-import { resolve } from 'dns';
 import { IUploadConfig } from '../../@uploader/uploader.module';
 
 @Injectable()
@@ -27,7 +26,9 @@ export class VisorImagenesService {
   inicioSeleccion: Pagina = null;
   finSeleccion: Pagina = null;
 
-  constructor(private docService: DocumentosService) {}
+  constructor(
+    private app: AppConfig,
+    private docService: DocumentosService) {}
 
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
@@ -69,9 +70,9 @@ export class VisorImagenesService {
       url = url + `${this.documento.Paginas[i].Id}/`;
       url = url + `${this.documento.Paginas[i].Extension}`;
 
-      this.documento.Paginas[i].Url = `${this.DepuraUrl(environment.mediaUrl)}pagina/` + url;
+      this.documento.Paginas[i].Url = `${this.DepuraUrl(this.app.config.mediaUrl)}pagina/` + url;
       if ( this.documento.Paginas[i].TieneMiniatura ) {
-        this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(environment.mediaUrl)}mini/` + url;
+        this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(this.app.config.mediaUrl)}mini/` + url;
       } else {
         let tipoImg = null;
         if (this.documento.Paginas[i].EsPDF) tipoImg = 'pdf.png';

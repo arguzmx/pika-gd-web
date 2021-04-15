@@ -1,8 +1,7 @@
+import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
-import { CacheEntidadesService } from './../../@editor-entidades/services/cache-entidades.service';
 import { MetadataInfo } from './../../@pika/metadata/metadata-info';
 import { Plantilla } from './../model/plantilla';
-import { environment } from './../../../environments/environment';
 import { AsyncSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -21,14 +20,16 @@ export class DocumentosService implements IDocumentoService {
   }
 
   //constructor(private http: HttpClient, private cache: CacheEntidadesService) {
-  constructor(private http: HttpClient) {
-    this.endpointPlantilla = this.DepuraUrl(environment.apiUrl) + `metadatos/`;
-    this.endpointMetadatos = this.DepuraUrl(environment.apiUrl) + `metadatos/`;
+  constructor(
+    private app: AppConfig,
+    private http: HttpClient) {
+    this.endpointPlantilla = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
+    this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
 
   }
 
   public ObtieneDocumento(documentoId: string ): Observable<Documento> {
-    const url = this.DepuraUrl(environment.visordUrl) + `documento/${documentoId}`;
+    const url = this.DepuraUrl(this.app.config.visordUrl) + `documento/${documentoId}`;
     return this.http.get<Documento>(url);
   }
 

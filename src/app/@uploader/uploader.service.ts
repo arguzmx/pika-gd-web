@@ -1,3 +1,4 @@
+import { AppConfig } from './../app-config';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -6,23 +7,26 @@ import {
   HttpResponse,
    HttpResponseBase,
 } from '@angular/common/http';
-import { Subject, Observable, of, from, BehaviorSubject } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Subject, Observable } from 'rxjs';
 import { IUploadConfig } from './model/i-upload-config';
 import { first } from 'rxjs/operators';
 import { AppLogService, TraduccionEntidad } from '../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { VisorImagenesService } from '../@visor-imagenes/services/visor-imagenes.service';
 
-const url = environment.uploadUrl;
+
 
 @Injectable()
 export class UploadService {
   private indiceCarga: number;
+  private url: string;
 
-  constructor(private http: HttpClient, private applog: AppLogService,
-              private ts: TranslateService, private servicioVisor: VisorImagenesService) {
+  constructor(
+    private app: AppConfig,
+    private http: HttpClient, private applog: AppLogService,
+    private ts: TranslateService, private servicioVisor: VisorImagenesService) {
     this.indiceCarga = 1;
+    this.url = this.app.config.uploadUrl;
   }
 
   public static NewGuid(): string {
@@ -53,7 +57,7 @@ export class UploadService {
       formData.append('VersionId', this.config.VersionId);
       formData.append('file', file, file.name);
 
-      const req = new HttpRequest('POST', url, formData, {
+      const req = new HttpRequest('POST', this.url, formData, {
         reportProgress: true,
         responseType: 'text',
       });
@@ -69,7 +73,7 @@ export class UploadService {
           total--;
           if (total === 0) {
             this.http
-              .post(url + `/completar/${this.config.TransactionId}`, null)
+              .post(this.url + `/completar/${this.config.TransactionId}`, null)
               .pipe(first())
               .subscribe((result) => {
                 if (result) {

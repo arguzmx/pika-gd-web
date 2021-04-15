@@ -12,15 +12,5 @@
 // ---------------------------------------------------
 export const environment = {
   production: false,
-  authUrl: 'http://localhost:4000', 
-  apiUrl: 'http://localhost:5000/api/v1.0/',
-  pikaApiUrl: 'http://localhost:5000/',
-  apiVersion: '1.0',
-  editorToken: 'tipo',
-  callbackRoute: '/pages/tabular?tipo=volumen&id=&sub=',
-  cacheActivo: true,
-  uploadUrl: 'http://localhost:5000/api/v1.0/upload',
-  visordUrl: 'http://localhost:5000/api/v1.0/visor',
-  mediaUrl: 'http://localhost:5000/api/v1.0/media',
 };
 

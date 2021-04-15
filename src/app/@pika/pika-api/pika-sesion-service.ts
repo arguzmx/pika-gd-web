@@ -6,7 +6,7 @@ import { retry, first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ACLUsuario } from '../seguridad';
 import { MenuAplicacion } from '../aplicacion';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app-config';
 
 const retryCount: number = 1;
 
@@ -21,6 +21,7 @@ export class PikaSesionService {
   DOMINIOS = 'dominios';
 
   constructor(
+    private app: AppConfig,
     private log: AppLogService,
     private http: HttpClient,
   ) {
@@ -51,8 +52,8 @@ export class PikaSesionService {
 
   // Genera el endpoint para la función del perfil
   private CrearEndpoint(Tipo: string): string {
-    let url = environment.pikaApiUrl.replace(/\/$/, '') + '/' +
-      'api/v' + environment.apiVersion + '/usuario/Perfil/';
+    let url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/' +
+      'api/v' + this.app.config.apiVersion + '/usuario/Perfil/';
 
     switch (Tipo) {
       case this.ACl:

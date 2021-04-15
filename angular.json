@@ -24,6 +24,7 @@
               "src/favicon.ico",
               "src/favicon.png",
               "src/silent-refresh.html",
+              "src/config.json",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",
@@ -156,6 +157,7 @@
               "src/favicon.ico",
               "src/favicon.png",
               "src/silent-refresh.html",
+              "src/config.json",
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images",

@@ -1,3 +1,4 @@
+import { AppConfig } from './../../app-config';
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -10,22 +11,24 @@ import { Subject, Observable } from 'rxjs';
 import { IUploadConfig } from '../components/uploader/model/i-upload-config';
 import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { environment } from '../../../environments/environment';
 import { AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
 import { VisorImagenesService } from './visor-imagenes.service';
 import { Pagina } from '../model/pagina';
 
 
-const url = environment.uploadUrl;
+
 
 @Injectable()
 export class UploadService {
   private indiceCarga: number;
-
-  constructor(private http: HttpClient, private applog: AppLogService,
+  private url: string;
+  constructor(
+    private app: AppConfig,
+    private http: HttpClient, private applog: AppLogService,
               private ts: TranslateService,
               private servicioVisor: VisorImagenesService) {
     this.indiceCarga = 1;
+    this.url = this.app.config.uploadUrl;
   }
 
   public static NewGuid(): string {
@@ -56,7 +59,7 @@ export class UploadService {
       formData.append('VersionId', this.config.VersionId);
       formData.append('file', file, file.name);
 
-      const req = new HttpRequest('POST', url, formData, {
+      const req = new HttpRequest('POST', this.url, formData, {
         reportProgress: true,
         responseType: 'text',
       });
@@ -72,7 +75,7 @@ export class UploadService {
           total--;
           if (total === 0) {
             this.http
-              .post<Pagina[]>(url + `/completar/${this.config.TransactionId}`, null)
+              .post<Pagina[]>(this.url + `/completar/${this.config.TransactionId}`, null)
               .pipe(first())
               .subscribe((paginasNuevas) => {
                 if (paginasNuevas) {

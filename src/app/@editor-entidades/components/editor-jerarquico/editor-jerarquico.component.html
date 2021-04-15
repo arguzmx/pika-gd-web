@@ -1,167 +1,98 @@
 <div class="row">
   <div class="col-lg-12">
     <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
-      <button
-        *ngIf="MostrarRegresar"
-        mat-icon-button
-        [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
-        on-click="regresar()"
-        aria-label="T.t['ui.regresar']"
-      >
+      <button *ngIf="MostrarRegresar" mat-icon-button [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
+        on-click="regresar()" aria-label="T.t['ui.regresar']">
         <mat-icon color="primary">reply</mat-icon>
       </button>
       <span>
         {{ NombreEntidad }}
-        <span *ngIf="NombreInstanciaDisponible"
-          >:&nbsp;
+        <span *ngIf="NombreInstanciaDisponible">:&nbsp;
           <span class="text-primary">{{ NombreInstancia }}</span>
         </span>
       </span>
       <span class="toolbar-spacer"></span>
 
       <!-- crear nodo raiz jerarquía -->
-      <button
-        *ngIf="PermisoJ.Escribir"
-        mat-icon-button
-        on-click="mostrarCrearJerarquia(true)"
-        [nbTooltip]="T.t['ui.raizcrear']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.raizcrear']"
-      >
+      <button *ngIf="PermisoJ.Escribir" mat-icon-button on-click="mostrarCrearJerarquia(true)"
+        [nbTooltip]="T.t['ui.raizcrear']" nbTooltipPlacement="bottom" aria-label="T.t['ui.raizcrear']">
         <mat-icon>create_new_folder</mat-icon>
       </button>
 
       <!-- editar nodo jerarquía -->
-      <button
-        *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="mostrarCrearJerarquia(false)"
-        [nbTooltip]="T.t['ui.nodocrear']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.crear']"
-      >
+      <button *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ" mat-icon-button
+        on-click="mostrarCrearJerarquia(false)" [nbTooltip]="T.t['ui.nodocrear']" nbTooltipPlacement="bottom"
+        aria-label="T.t['ui.crear']">
         <mat-icon>folder</mat-icon>
       </button>
 
-      <button
-        *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="mostrarEditarT()"
-        [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.editar']"
-      >
+      <button *ngIf="PermisoJ.Escribir && InstanciaSeleccionadaJ" mat-icon-button on-click="mostrarEditarT()"
+        [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.editar']">
         <mat-icon>edit</mat-icon>
       </button>
 
       <!-- eliminar nodo jerarquía -->
-      <button
-        *ngIf="PermisoJ.Eliminar && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="eliminarEntidadesJ()"
-        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.eliminar']"
-      >
+      <button *ngIf="PermisoJ.Eliminar && InstanciaSeleccionadaJ" mat-icon-button on-click="eliminarEntidadesJ()"
+        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
         <mat-icon>delete_outline</mat-icon>
       </button>
 
       <!-- Separadador -->
       <mat-icon class="gray-icon">more_vert</mat-icon>
 
-      <button 
-        *ngFor="let link of botonesLinkVista"
-        mat-icon-button
-        on-click="navegarVista(link)"
-        [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom"
-        aria-label="tituloNavegarLista(link)"
-      >
+      <!-- Separadador -->
+      <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+      <!-- mosrar selector de elementos -->
+      <button *ngIf="vincularActivoC" mat-icon-button on-click="mostrarVinculos()" [nbTooltip]="T.t['ui.propiedades']"
+        nbTooltipPlacement="bottom" aria-label="T.t['ui.propiedades']">
+        <mat-icon>pending</mat-icon>
+      </button>
+
+      <button *ngFor="let link of botonesLinkVista" mat-icon-button on-click="navegarVista(link)"
+        [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom" aria-label="tituloNavegarLista(link)">
         <mat-icon>{{link.Icono}}</mat-icon>
       </button>
 
-      <!-- Separadador -->
-      <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+
 
       <!-- crear elemento tabular -->
-      <button
-        *ngIf="PermisoC.Escribir && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="mostrarCrearContenido()"
-        [nbTooltip]="T.t['ui.tabularcrear']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.crear']"
-      >
+      <button *ngIf="PermisoC.Escribir && InstanciaSeleccionadaJ" mat-icon-button on-click="mostrarCrearContenido()"
+        [nbTooltip]="T.t['ui.tabularcrear']" nbTooltipPlacement="bottom" aria-label="T.t['ui.crear']">
         <mat-icon>add</mat-icon>
       </button>
 
-      <button
-        *ngIf="PermisoC.Escribir && InstanciaSeleccionadaC"
-        mat-icon-button
-        on-click="mostrarEditarC()"
-        [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.editar']"
-      >
+      <button *ngIf="PermisoC.Escribir && InstanciaSeleccionadaC" mat-icon-button on-click="mostrarEditarC()"
+        [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.editar']">
         <mat-icon>edit</mat-icon>
       </button>
 
       <!-- eliminar contenido tabuela -->
-      <button
-        *ngIf="PermisoC.Eliminar && InstanciaSeleccionadaC"
-        mat-icon-button
-        on-click="eliminarEntidadesC()"
-        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.eliminar']"
-      >
+      <button *ngIf="PermisoC.Eliminar && InstanciaSeleccionadaC" mat-icon-button on-click="eliminarEntidadesC()"
+        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
         <mat-icon>delete_outline</mat-icon>
       </button>
 
-      <!-- mosrar selector de elementos -->
-      <button
-        *ngIf="vincularActivoC"
-        mat-icon-button
-        on-click="mostrarVinculos()"
-        [nbTooltip]="T.t['ui.propiedades']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.propiedades']"
-      >
-      <mat-icon>touch_app</mat-icon>
-      </button>
-
       <!-- actualiza  el contenido tabular -->
-      <button
-        *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="refrescarTabla()"
-        [nbTooltip]="T.t['ui.actualizar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.actualizar']"
-      >
+      <button *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ" mat-icon-button on-click="refrescarTabla()"
+        [nbTooltip]="T.t['ui.actualizar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.actualizar']">
         <mat-icon>refresh</mat-icon>
       </button>
 
       <!-- buscar contenido tabular -->
-      <button
-        *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ"
-        mat-icon-button
-        on-click="mostrarBuscar()"
-        [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.buscar']"
-      >
+      <button *ngIf="PermisoC.Leer && InstanciaSeleccionadaJ" mat-icon-button on-click="mostrarBuscar()"
+        [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.buscar']">
         <mat-icon>search</mat-icon>
       </button>
 
       <!-- seleccionar columnas contenido tabular -->
-      <button
-        *ngIf="PermisoC.Leer"
-        mat-icon-button
-        on-click="mostrarSelectorColumnas()"
-        [nbTooltip]="T.t['ui.selcol']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.selcol']"
-      >
+      <button *ngIf="PermisoC.Leer" mat-icon-button on-click="mostrarSelectorColumnas()" [nbTooltip]="T.t['ui.selcol']"
+        nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
         <mat-icon>view_comfy</mat-icon>
       </button>
 
       <!-- eleminar fisltros activos contenido tabular -->
-      <button
-        *ngIf="PermisoC.Leer && filtrosActivos"
-        mat-icon-button
-        on-click="eliminarFiltros()"
-        [nbTooltip]="T.t['ui.eliminar-filtro']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.eliminar-filtro']"
-      >
+      <button *ngIf="PermisoC.Leer && filtrosActivos" mat-icon-button on-click="eliminarFiltros()"
+        [nbTooltip]="T.t['ui.eliminar-filtro']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar-filtro']">
         <mat-icon color="warn">filter_alt</mat-icon>
       </button>
     </mat-toolbar>
@@ -178,10 +109,8 @@
                     <as-split-area [size]="40">
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
-                          <ngx-editor-arbol-entidad 
-                            [config]="configJ"
-                            (NodoSeleccionado)="NodoSeleccionado($event)"
-                          ></ngx-editor-arbol-entidad>
+                          <ngx-editor-arbol-entidad [config]="configJ" (NodoSeleccionado)="NodoSeleccionado($event)">
+                          </ngx-editor-arbol-entidad>
                         </div>
                       </div>
                     </as-split-area>
@@ -189,13 +118,9 @@
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                           <div class="padded">
-                            <ngx-metadata-tabla
-                              [config]="configC"
-                              [metadata]="metadataC"
-                              (ConteoRegistros)="ConteoRegistrosC($event)"
-                              (NuevaSeleccion)="NuevaSeleccionC($event)"
-                              (EditarSeleccion)="EditarSeleccionC($event)"
-                            >
+                            <ngx-metadata-tabla [config]="configC" [metadata]="metadataC"
+                              (ConteoRegistros)="ConteoRegistrosC($event)" (NuevaSeleccion)="NuevaSeleccionC($event)"
+                              (EditarSeleccion)="EditarSeleccionC($event)">
                             </ngx-metadata-tabla>
                           </div>
                         </div>
@@ -216,40 +141,22 @@
       <nb-card-back>
         <nb-card accent="danger" size="large">
           <nb-card-header>
-            <label class="text-primary" >{{ EtiequetaTarjetaTrasera }}</label>
-            <span
-              [ngSwitch]="ContenidoTarjetaTrasera"
-              class="single-view-button"
-            >
+            <label class="text-primary">{{ EtiequetaTarjetaTrasera }}</label>
+            <span [ngSwitch]="ContenidoTarjetaTrasera" class="single-view-button">
               <span *ngSwitchCase="'buscar'">
-                <button
-                  class="single-view-button"
-                  nbButton
-                  size="small"
-                  on-click="borrarFiltrosBuscador()"
-                  [nbTooltip]="T.t['ui.borrarfiltros']" nbTooltipPlacement="bottom"
-                >
+                <button class="single-view-button" nbButton size="small" on-click="borrarFiltrosBuscador()"
+                  [nbTooltip]="T.t['ui.borrarfiltros']" nbTooltipPlacement="bottom">
                   <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
                 </button>
-                <button
-                  class="grid-view-button"
-                  nbButton
-                  size="small"
-                  on-click="OcultarTarjetaTrasera()"
-                  [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom"
-                >
+                <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                  [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
                   <nb-icon icon="close-outline" pack="eva"></nb-icon>
                 </button>
               </span>
 
               <span *ngSwitchCase="'editar'">
-                <button
-                  class="grid-view-button"
-                  nbButton
-                  size="small"
-                  on-click="OcultarTarjetaTrasera()"
-                  [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom"
-                >
+                <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                  [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
                   <nb-icon icon="close-outline" pack="eva"></nb-icon>
                 </button>
               </span>
@@ -262,11 +169,8 @@
                   <div *ngSwitchCase="'buscar'">
                     <div class="row">
                       <div class="col-lg-12">
-                        <ngx-metadata-buscador 
-                            [config]="configC"
-                            [metadata]="metadataC"
-                            (EventoFiltrar) = "EventoFiltrar($event)"
-                          ></ngx-metadata-buscador>
+                        <ngx-metadata-buscador [config]="configC" [metadata]="metadataC"
+                          (EventoFiltrar)="EventoFiltrar($event)"></ngx-metadata-buscador>
                       </div>
                     </div>
                     <div class="row">
@@ -279,24 +183,14 @@
                   <div *ngSwitchCase="'editar'">
                     <div class="row">
                       <div *ngIf="editandoJerarquica" class="col-lg-12">
-                        <ngx-metadata-editor
-                          [entidad]="entidadJ"
-                          [config]="configJ"
-                          [metadata]="metadataJ"
-                          (NuevaEntidad)="NuevaEntidadJ($event)"
-                          (CapturaFinalizada)="CapturaFinalizadaJ($event)"
-                          (EntidadActualizada)="EntidadActualizadaJ($event)"
-                        ></ngx-metadata-editor>
+                        <ngx-metadata-editor [entidad]="entidadJ" [config]="configJ" [metadata]="metadataJ"
+                          (NuevaEntidad)="NuevaEntidadJ($event)" (CapturaFinalizada)="CapturaFinalizadaJ($event)"
+                          (EntidadActualizada)="EntidadActualizadaJ($event)"></ngx-metadata-editor>
                       </div>
                       <div *ngIf="!editandoJerarquica" class="col-lg-12">
-                        <ngx-metadata-editor
-                          [entidad]="entidadC"
-                          [config]="configC"
-                          [metadata]="metadataC"
-                          (NuevaEntidad)="NuevaEntidadC($event)"
-                          (CapturaFinalizada)="CapturaFinalizadaC($event)"
-                          (EntidadActualizada)="EntidadActualizadaC($event)"
-                        ></ngx-metadata-editor>
+                        <ngx-metadata-editor [entidad]="entidadC" [config]="configC" [metadata]="metadataC"
+                          (NuevaEntidad)="NuevaEntidadC($event)" (CapturaFinalizada)="CapturaFinalizadaC($event)"
+                          (EntidadActualizada)="EntidadActualizadaC($event)"></ngx-metadata-editor>
                       </div>
                     </div>
                   </div>
@@ -340,31 +234,33 @@
 
 <ng-template #dialogLinkPicker let-data let-ref="dialogRef">
   <nb-card>
-      <nb-card-header>{{T.t['ui.propiedades']}}</nb-card-header>
-      <nb-card-body>
-          <div class="col-lg-12 col-md-12 col-sm-12"  *ngFor="let link of this.vinculos">
+    <nb-card-header>{{T.t['ui.propiedades']}}</nb-card-header>
+    <nb-card-body>
+      <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let link of this.vinculos">
 
-              <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
-              <ng-template #uno>
-                  <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="EjecutarIrALink(link)" >{{T.ObtieneSingularT('entidades.' + link.Etiqueta)}}
-                      <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
-                  </button>
-              </ng-template>
-              <ng-template #varios>
-                  <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)" >{{T.ObtienePluralT('entidades.' + link.Etiqueta)}}
-                      <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
-                  </button>
-              </ng-template>
+        <div *ngIf="linkUnoAVarios(link); then varios else uno"></div>
+        <ng-template #uno>
+          <button nbButton shape="semi-round" size="large" fullWidth="true"
+            (click)="EjecutarIrALink(link)">{{T.ObtieneSingularT('entidades.' + link.Etiqueta)}}
+            <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+          </button>
+        </ng-template>
+        <ng-template #varios>
+          <button nbButton shape="semi-round" fullWidth="true" (click)="IrALink(link)">{{T.ObtienePluralT('entidades.' +
+            link.Etiqueta)}}
+            <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+          </button>
+        </ng-template>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="float-right">
+            <button nbButton size="medium" (click)="ref.close()">{{T.t['ui.cerrar']}}</button>
           </div>
-      </nb-card-body>
-      <nb-card-footer>
-          <div class="row">
-              <div class="col-lg-12">
-                  <div class="float-right">
-                      <button nbButton size="medium" (click)="ref.close()">{{T.t['ui.cerrar']}}</button>
-                  </div>
-              </div>
-          </div>
-      </nb-card-footer>
+        </div>
+      </div>
+    </nb-card-footer>
   </nb-card>
 </ng-template>

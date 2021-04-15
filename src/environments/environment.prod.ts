@@ -4,16 +4,6 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  production: false,
-  authUrl: 'http://localhost/identidad',
-  apiUrl: 'http://localhost/servicios/api/v1.0/',
-  pikaApiUrl: 'http://localhost/servicios',
-  apiVersion: '1.0',
-  editorToken: 'tipo',
-  callbackRoute: '/pages/tabular?tipo=volumen&id=&sub=',
-  cacheActivo: true,
-  uploadUrl: 'http://localhost/servicios/api/v1.0/upload',
-  visordUrl: 'http://localhost/servicios/api/v1.0/visor',
-  mediaUrl: 'http://localhost/servicios/api/v1.0/media',
+  production: true,
 };
 

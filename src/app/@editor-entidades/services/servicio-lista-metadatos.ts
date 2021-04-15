@@ -1,15 +1,16 @@
+import { AppConfig } from './../../app-config';
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AsyncSubject, Observable } from "rxjs";
 import { debounceTime, first, retry } from "rxjs/operators";
-import { environment } from "../../../environments/environment";
 import { Consulta, FiltroConsulta, Operacion } from "../../@pika/consulta";
 import { AtributoLista, ValorListaOrdenada } from "../../@pika/metadata";
 import { SesionQuery } from "../../@pika/state";
 
 @Injectable()
 export class ServicioListaMetadatos {
-    constructor(    
+    constructor(
+        private app: AppConfig,    
         private sessionQ: SesionQuery,
         private http: HttpClient,) {
         
@@ -110,7 +111,7 @@ export class ServicioListaMetadatos {
 
       private CrearEndpointUrl(endpoint: string): string {
         let url = '';
-        url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
+        url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
         url = url + endpoint;
         return url;
       }
@@ -123,8 +124,8 @@ export class ServicioListaMetadatos {
     
         const r = this.sessionQ.RutasEntidades.find(x => x.Tipo.toLocaleLowerCase() === TipoEntidad.toLowerCase());
         if (r) {
-          url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
-          url = url + r.Ruta.replace('{version:apiVersion}', environment.apiVersion).toLocaleLowerCase() + '/';
+          url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
+          url = url + r.Ruta.replace('{version:apiVersion}', this.app.config.apiVersion).toLocaleLowerCase() + '/';
         }
     
         return url;

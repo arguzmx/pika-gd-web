@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OAuthService } from 'angular-oauth2-oidc';
 
 @Component({
   selector: 'ngx-inicio',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioComponent implements OnInit {
 
-  constructor() { }
+  constructor(private oauthService: OAuthService) { }
 
   ngOnInit(): void {
+    let claims = this.oauthService.getIdentityClaims();
+    // console.log(claims);
   }
 
 }

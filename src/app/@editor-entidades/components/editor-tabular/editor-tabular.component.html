@@ -31,6 +31,18 @@
     <!-- Separadador -->
     <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
 
+  <!-- mostrar vínculos del elemento seleccionado -->
+  <button
+  *ngIf = "tieneVinculos"
+    mat-icon-button
+    on-click="mostrarVinculos()"
+    [nbTooltip]="T.t['ui.propiedades']" nbTooltipPlacement="bottom"
+    aria-label="T.t['ui.propiedades']"
+  >
+  <mat-icon>pending</mat-icon>
+  </button>
+
+
       <!-- actialziar lista de elemento -->
       <button
         mat-icon-button
@@ -41,17 +53,7 @@
         <mat-icon>refresh</mat-icon>
       </button>
 
-      <!-- mostrar vínculos del elemento seleccionado -->
-      <button
-      *ngIf = "tieneVinculos"
-        mat-icon-button
-        on-click="mostrarVinculos()"
-        [nbTooltip]="T.t['ui.propiedades']" nbTooltipPlacement="bottom"
-        aria-label="T.t['ui.propiedades']"
-      >
-      <mat-icon>touch_app</mat-icon>
-      </button>
-
+    
       <!-- crear un nuevo elemento -->
       <button
         *ngIf = "Permiso.Escribir"

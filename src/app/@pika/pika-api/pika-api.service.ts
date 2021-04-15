@@ -1,13 +1,13 @@
-import { environment } from './../../../environments/environment';
+import { AppConfig } from './../../app-config';
 import { RutaTipo } from '../state/configuracion/ruta-tipo';
 import { IProveedorReporte } from './../metadata/iproveedor-reporte';
 import { FiltroConsulta } from './../consulta/filtro-consulta';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, AsyncSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Consulta, Paginado, Operacion } from '../consulta';
 import { MetadataInfo } from '../metadata';
-import { first, retry } from 'rxjs/operators';
+import {  retry } from 'rxjs/operators';
 import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
@@ -21,6 +21,7 @@ const retryCount: number = 1;
 export class PikaApiService<T, U> {
 
   constructor(
+    private app: AppConfig,
     private sessionQ: SesionQuery,
     private http: HttpClient,
   ) {
@@ -29,9 +30,9 @@ export class PikaApiService<T, U> {
 
   public ObtieneRutas(): Observable<RutaTipo[]> {
 
-    let url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
+    let url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
     url = url + 'api/v{version:apiversion}/sistema/appconfig/ruteotipos';
-    url = url.replace('{version:apiversion}', environment.apiVersion);
+    url = url.replace('{version:apiversion}', this.app.config.apiVersion);
 
     return this.http.get<RutaTipo[]>(url);
 
@@ -46,8 +47,8 @@ export class PikaApiService<T, U> {
 
     const r = this.sessionQ.RutasEntidades.find(x => x.Tipo.toLocaleLowerCase() === TipoEntidad.toLowerCase());
     if (r) {
-      url = environment.pikaApiUrl.replace(/\/$/, '') + '/';
-      url = url + r.Ruta.replace('{version:apiVersion}', environment.apiVersion).toLocaleLowerCase() + '/';
+      url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
+      url = url + r.Ruta.replace('{version:apiVersion}', this.app.config.apiVersion).toLocaleLowerCase() + '/';
     }
 
     return url;

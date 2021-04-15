@@ -1,6 +1,5 @@
 import { RutaTipo } from './configuracion/ruta-tipo';
 import { PikaSesionService } from './../pika-api/pika-sesion-service';
-import { AuthService } from './../../@acceso/auth.service';
 import { DominioActivo } from './../sesion/dominio-activo';
 import { Sesion } from './sesion';
 import { Injectable } from '@angular/core';
@@ -12,6 +11,7 @@ import { IConfiguracion } from './configuracion/i-configuracion';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
+import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
 
 export interface SesionState {
   sesion: Sesion | null;
@@ -77,29 +77,47 @@ export class SesionStore extends Store<SesionState> {
   }
 
   constructor(
-    private auth: AuthService,
+    private auth: OAuthService,
     private localStorage: LocalStorageService,
     private serviceSesion: PikaSesionService) {
     super(createInitialState());
 
     const prefs = this.ObtienePreferencias();
     this.setPreferencias(prefs);
-
-    auth.Autenticado$.subscribe((autenticado) => {
-      if (autenticado) {
-        this.setPropiedad(PropiedadesSesion.isLoggedIn, autenticado);
-        if (autenticado) {
-          this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
-          this.procesaUsuario();
-        }
+    this.auth.setupAutomaticSilentRefresh();
+    this.auth.events.subscribe(event => {
+      if (event instanceof OAuthSuccessEvent) {
+        this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
+        this.setPropiedad(PropiedadesSesion.token, this.auth.getAccessToken());
+        this.procesaUsuario();
       }
+
+      // if (event instanceof OAuthErrorEvent) {
+      //   if(event.type== "token_validation_error"){
+      //     this.auth.refreshToken().then( r=> {
+      //         console.log(r);
+      //     } );
+      //   }
+      // } else {
+      //   console.warn('OAuthEvent Object:', event);
+      // }
     });
 
-    auth.userInfo$.subscribe((usuario) => {
-      if (usuario) {
-        this.setPropiedad(PropiedadesSesion.IdUsuario, usuario.sub);
-      }
-    });
+    // auth.Autenticado$.subscribe((autenticado) => {
+    //   if (autenticado) {
+    //     this.setPropiedad(PropiedadesSesion.isLoggedIn, autenticado);
+    //     if (autenticado) {
+    //       this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
+    //       this.procesaUsuario();
+    //     }
+    //   }
+    // });
+
+    // auth.userInfo$.subscribe((usuario) => {
+    //   if (usuario) {
+    //     this.setPropiedad(PropiedadesSesion.IdUsuario, usuario.sub);
+    //   }
+    // });
   }
 
 
@@ -144,7 +162,6 @@ export class SesionStore extends Store<SesionState> {
           const cm: ConstructorMenu = new  ConstructorMenu;
           const menu = cm.CreaMenu(data.menu, data.acl);
 
-          // console.log(data.acl);
 
           this.setPropiedad(PropiedadesSesion.MenuItems, menu);
           this.setPropiedad(PropiedadesSesion.ACL, data.acl);

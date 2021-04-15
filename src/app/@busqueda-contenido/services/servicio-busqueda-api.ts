@@ -1,5 +1,5 @@
+import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
-import { environment } from './../../../environments/environment';
 import { AsyncSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,7 @@ import { Plantilla } from '../model/plantilla';
 @Injectable()
 export class ServicioBusquedaAPI  {
 
+  
   private endpointPlantilla: string;
   private endpointMetadatos: string;
 
@@ -17,10 +18,9 @@ export class ServicioBusquedaAPI  {
   }
 
   
-  constructor(private http: HttpClient) {
-    this.endpointPlantilla = this.DepuraUrl(environment.apiUrl) + `metadatos/`;
-    this.endpointMetadatos = this.DepuraUrl(environment.apiUrl) + `metadatos/`;
-
+  constructor(private http: HttpClient, private config: AppConfig) {
+    this.endpointPlantilla = this.DepuraUrl(config.config.apiUrl) + `metadatos/`;
+    this.endpointMetadatos = this.DepuraUrl(config.config.apiUrl) + `metadatos/`;
   }
 
 

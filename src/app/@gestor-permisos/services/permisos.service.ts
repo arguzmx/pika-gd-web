@@ -1,11 +1,10 @@
-import { environment } from './../../../environments/environment.prod';
+import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
 import { Aplicacion, PermisoAplicacion, Rol, AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
 import { FormGroup } from '@angular/forms';
-import { EntidadesService } from '../../@editor-entidades/services/entidades.service';
 import { TranslateService } from '@ngx-translate/core';
 
 export enum PermisosEnum {
@@ -30,13 +29,15 @@ export class PermisosService {
   private subjectFormPermisos = new BehaviorSubject<FormGroup>(null);
 
   private roles: Rol[] = null;
-  constructor(private http: HttpClient,
+  constructor(
+    private app: AppConfig,
+    private http: HttpClient,
     private applog: AppLogService,
     private ts: TranslateService,
   ) { }
 
   private CrearEndpoint(sufijo: string): string {
-    return environment.apiUrl.replace(/\/$/, '') + '/' + sufijo;
+    return this.app.config.apiUrl.replace(/\/$/, '') + '/' + sufijo;
   }
 
   public ObtenerAplicaciones(): Observable<Aplicacion[]> {

@@ -1,5 +1,7 @@
-import { PikaModule, AppLogService, PikaSesionService,
-  httpInterceptorProviders, EntidadesResolver } from './@pika/pika-module';
+import {
+  PikaModule, AppLogService, PikaSesionService,
+  httpInterceptorProviders, EntidadesResolver
+} from './@pika/pika-module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -9,7 +11,6 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {
-  NbChatModule,
   NbDatepickerModule,
   NbDialogModule,
   NbMenuModule,
@@ -24,23 +25,26 @@ import { environment } from '../environments/environment';
 import { NbTokenStorage, NbTokenLocalStorage } from '@nebular/auth';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import {NgxLocalStorageModule} from 'ngx-localstorage';
+import { NgxLocalStorageModule } from 'ngx-localstorage';
 import { CookieService } from 'ngx-cookie-service';
 import { OAuthModule } from 'angular-oauth2-oidc';
-import { AcesoModule } from './@acceso/aceso.module';
 import { DiccionarioNavegacion } from './@editor-entidades/editor-entidades.module';
 import { PIKADiccionarioNavegacion } from './@core/data/diccionario-vistas';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { NgxMaskModule } from 'ngx-mask';
+import { APP_INITIALIZER } from '@angular/core';
+import { AppConfig, TokenProvider } from './app-config';
 
-
+export function servicesOnRun(config: AppConfig, token: TokenProvider) {
+  return () => config.load().then(() => token.load());
+}
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     PikaModule,
-    NgxLocalStorageModule.forRoot( { prefix: 'PIKA-'} ),
+    NgxLocalStorageModule.forRoot({ prefix: 'PIKA-' }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -64,10 +68,6 @@ import { NgxMaskModule } from 'ngx-mask';
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
-    AcesoModule.forRoot(),
-    NbChatModule.forRoot({
-      messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
-    }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     environment.production ? [] : AkitaNgDevtools,
@@ -78,9 +78,17 @@ import { NgxMaskModule } from 'ngx-mask';
     IsChldrenAuthorizedGuard,
     httpInterceptorProviders,
     PikaSesionService, CookieService,
-    { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion} ,
+    { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion },
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
     AppLogService,
+    AppConfig,
+    TokenProvider,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: servicesOnRun,
+      multi: true,
+      deps: [AppConfig, TokenProvider]
+    }
   ],
 })
 export class AppModule {

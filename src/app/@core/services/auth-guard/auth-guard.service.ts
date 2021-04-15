@@ -1,6 +1,6 @@
-import { AuthService } from './../../../@acceso/auth.service';
+//import { AuthService } from './../../../@acceso/auth.service';
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild, UrlTree } from '@angular/router';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -11,31 +11,39 @@ import { Observable } from 'rxjs';
 export class IsChldrenAuthorizedGuard implements CanActivate, CanActivateChild {
 
   constructor(
-    private authService: AuthService,
+    //private authService: AuthService,
   ) {
   }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): Observable<boolean> {
-    return this.authService.isDoneLoading$.pipe(
-      filter(isDone => isDone),
-      switchMap(_ => this.authService.isAuthenticated$),
-      tap(isAuthenticated => isAuthenticated ||
-        this.authService.login(state.url)),
-    );
+  canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return true;
+  }
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+    return true;
   }
 
+  
+  // canActivate(
+  //   route: ActivatedRouteSnapshot,
+  //   state: RouterStateSnapshot,
+  // ): Observable<boolean> {
+  //   return this.authService.isDoneLoading$.pipe(
+  //     filter(isDone => isDone),
+  //     switchMap(_ => this.authService.isAuthenticated$),
+  //     tap(isAuthenticated => isAuthenticated ||
+  //       this.authService.login(state.url)),
+  //   );
+  // }
+
  
-  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    // return this.authService.Autenticado$
-    // .pipe(tap(x => console.log('You tried to go to ' + state.url + ' and this guard said ' + x)));
-    return this.authService.isDoneLoading$.pipe(
-      filter(isDone => isDone),
-      switchMap(_ => this.authService.isAuthenticated$),
-      tap(isAuthenticated => isAuthenticated ||
-        this.authService.login(state.url)),
-    );
-  }
+  // canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+  //   // return this.authService.Autenticado$
+  //   // .pipe(tap(x => console.log('You tried to go to ' + state.url + ' and this guard said ' + x)));
+  //   return this.authService.isDoneLoading$.pipe(
+  //     filter(isDone => isDone),
+  //     switchMap(_ => this.authService.isAuthenticated$),
+  //     tap(isAuthenticated => isAuthenticated ||
+  //       this.authService.login(state.url)),
+  //   );
+  // }
 }
