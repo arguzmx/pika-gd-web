@@ -1,3 +1,4 @@
+import { AppConfig } from './../../app-config';
 import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR } from './../../@pika/seguridad/permiso-acl';
 import { Propiedad, IProveedorReporte, PermisoAplicacion, PDENEGARACCESO } from '../../@pika/pika-module';
 import { FiltroConsulta } from '../../@pika/pika-module';
@@ -46,6 +47,7 @@ export class EntidadesService {
   private BusFiltros = new BehaviorSubject<EventosFiltrado>(EventosFiltrado.Ninguno);
 
   constructor(
+    private app: AppConfig,
     private sesion: SesionQuery,
     private cache: CacheEntidadesService, private http: HttpClient,
     private ts: TranslateService, private router: Router, private applog: AppLogService) {
@@ -53,7 +55,7 @@ export class EntidadesService {
   }
 
   private Init(): void {
-    this.cliente = new PikaApiService(this.sesion, this.http);
+    this.cliente = new PikaApiService(this.app, this.sesion, this.http);
   }
 
   public Destroy(): void { }

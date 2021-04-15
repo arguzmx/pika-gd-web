@@ -1,3 +1,4 @@
+import { AppConfig } from './../../app-config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AsyncSubject, BehaviorSubject, Observable } from 'rxjs';
@@ -14,13 +15,15 @@ export class EventosInterprocesoService {
   private BusEventos = new BehaviorSubject(null);
   public cliente: PikaApiService<any, string>;
 
-  constructor(private cache: CacheEntidadesService, private http: HttpClient,
+  constructor(
+    private app: AppConfig,
+    private cache: CacheEntidadesService, private http: HttpClient,
     private sesion: SesionQuery,) {
       this.Init();
      }
 
     private Init(): void {
-      this.cliente = new PikaApiService(this.sesion, this.http);
+      this.cliente = new PikaApiService(this.app, this.sesion, this.http);
     }
 
   // Eventos interproceso
