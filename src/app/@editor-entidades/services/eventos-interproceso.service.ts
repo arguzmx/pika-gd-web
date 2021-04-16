@@ -29,7 +29,6 @@ export class EventosInterprocesoService {
   // Eventos interproceso
   // ---------------------------------------
   // ---------------------------------------
-
   ObtieneEventos(): Observable<Evento> {
     return this.BusEventos.asObservable();
   }

@@ -33,7 +33,7 @@ import { TraduccionEntidad } from './comunes/index';
 import { DominioActivo, UnidadOrganizacionalActiva } from './sesion';
 import { httpInterceptorProviders } from './pika-api/interceptor-provider';
 import { Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo,
-        TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL, PDENEGARACCESO } from './seguridad';
+        TraduccionAplicacionModulo, Rol, ACLUsuario, PermisoACL, PDENEGARACCESO, RespuestaPermisos } from './seguridad';
 import { PikaApiService } from './pika-api';
 import { ValorPropiedad } from './metadata/valor-propiedad';
 import { DocumentoPlantilla } from './metadata/documeto-plantilla';
@@ -61,5 +61,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
   LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
   PESCRIBIR, PLEER, PADMINISTRAR, ValorPropiedad, DocumentoPlantilla, VinculosObjetoPlantilla, VinculoDocumentoPlantilla,
-  RequestValoresPlantilla
+  RequestValoresPlantilla, RespuestaPermisos
 };

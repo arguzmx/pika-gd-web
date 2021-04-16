@@ -58,7 +58,7 @@ export class BMetadatosComponent implements OnInit {
 
 
   EventoFiltrar(data: unknown): void {
-    console.debug(data);
+    // console.debug(data);
   }
 
 }

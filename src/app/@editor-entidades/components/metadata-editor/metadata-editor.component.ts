@@ -47,6 +47,7 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-metadata-editor',
@@ -99,10 +100,12 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    this.formGroup.valueChanges
-    .subscribe( campos => {
-      console.debug(campos);
-    });
+    if(!environment.production) {
+      this.formGroup.valueChanges
+      .subscribe( campos => {
+        console.debug(campos);
+      });
+    }
   }
 
   ngOnDestroy(): void {

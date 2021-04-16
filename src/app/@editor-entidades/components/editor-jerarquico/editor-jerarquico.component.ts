@@ -240,17 +240,18 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
     if (this.config && this.config.ConfiguracionJerarquia.TipoEntidad) {
 
+      
+      this._Reset();
+      // Esta debe ser la perimera linea del método
+
       this.PermisoJ = this.config.ConfiguracionJerarquia.Permiso ?
         this.config.ConfiguracionJerarquia.Permiso : this.entidades.permisoSinAcceso;
 
       this.PermisoC = this.config.ConfiguracionContenido.Permiso ?
         this.config.ConfiguracionContenido.Permiso : this.entidades.permisoSinAcceso;
 
-      // console.log(this.PermisoJ, this.PermisoC);
-
       this.configJ = this.config.ConfiguracionJerarquia;
       this.configC = this.config.ConfiguracionContenido;
-      this._Reset();
 
       const mJ = this.entidades
       .ObtieneMetadatos(this.configJ.TipoEntidad)

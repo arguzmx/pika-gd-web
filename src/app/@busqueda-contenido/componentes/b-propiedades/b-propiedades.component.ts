@@ -31,7 +31,7 @@ export class BPropiedadesComponent implements OnInit {
   }
 
   public EventoFiltrar(filtros: FiltroConsulta[]) {
-    console.debug(filtros);
+    // console.debug(filtros);
   }
 
 }

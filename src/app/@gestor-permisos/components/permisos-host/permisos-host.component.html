@@ -12,8 +12,6 @@
                     </button>
                     <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios"
                         (keyup)="ObtieneUsuarios($event.target.value)"
-                        (focusout)="EstableceTextoEntidad($event)"
-                        (click)='focusInput = true'
                         [nbAutocomplete]="auto" [value]="textoEntidadSeleccionada" />
                     <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus(); focusInput=true">
                         <nb-icon icon="close-outline"></nb-icon>
@@ -34,13 +32,13 @@
 
             </div>
             <div class="col-5 d-flex justify-content-end">
-                <button mat-icon-button nbTooltip="Guardar" on-click="GuardaPermisos()">
+                <button mat-icon-button nbTooltip="Guardar" on-click="GuardaPermisos()"  [disabled]="EsAdmin">
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-icon-button nbTooltip="Establecer todos" on-click="MarcaTodos()">
+                <button mat-icon-button nbTooltip="Establecer todos" on-click="MarcaTodos()" [disabled]="EsAdmin">
                     <mat-icon>check_box</mat-icon>
                 </button>
-                <button mat-icon-button nbTooltip="Borrar todos" on-click="DesmarcaTodos()">
+                <button mat-icon-button nbTooltip="Borrar todos" on-click="DesmarcaTodos()" [disabled]="EsAdmin">
                     <mat-icon>check_box_outline_blank</mat-icon>
                 </button>
             </div>

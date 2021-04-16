@@ -3,7 +3,7 @@ import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
-import { Aplicacion, PermisoAplicacion, Rol, AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
+import { Aplicacion, PermisoAplicacion, Rol, AppLogService, TraduccionEntidad, RespuestaPermisos } from '../../@pika/pika-module';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -99,23 +99,29 @@ export class PermisosService {
     return usuarioSubject;
   }
 
-  public ObtenerPermisos(tipo: string, id: string): Observable<PermisoAplicacion[]> {
-    const permisosSubject = new AsyncSubject<PermisoAplicacion[]>();
+  public ObtenerPermisos(tipo: string, id: string): Observable<RespuestaPermisos> {
+    const permisosSubject = new AsyncSubject<RespuestaPermisos>();
     const url = this.CrearEndpoint('sistema/seguridad/permisos/' + tipo + '/' + id);
     this.http
-      .get<PermisoAplicacion[]>(url)
+      .get<RespuestaPermisos>(url)
       .pipe(first())
       .subscribe(
-        (permisos) => {
-          const modificados = [];
-          permisos.forEach(p => {
+        (respuesta) => {
+          const actualizada: RespuestaPermisos = {
+            Id: respuesta.Id,
+            EsAdmmin: respuesta.EsAdmmin,
+            Permisos: [] 
+          }
+
+          
+          respuesta.Permisos.forEach(p => {
             const m = { ...p };
             m.ModuloId = `${p.AplicacionId}-${p.ModuloId}`;
-            modificados.push(m);
+            actualizada.Permisos.push(m);
           });
-          permisosSubject.next(modificados);
+          permisosSubject.next(actualizada);
         },
-        (error) => permisosSubject.next([]),
+        (error) => permisosSubject.next(null),
         () => permisosSubject.complete(),
       );
 

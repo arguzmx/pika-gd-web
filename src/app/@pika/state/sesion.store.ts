@@ -1,3 +1,4 @@
+import { AppConfig } from './../../app-config';
 import { RutaTipo } from './configuracion/ruta-tipo';
 import { PikaSesionService } from './../pika-api/pika-sesion-service';
 import { DominioActivo } from './../sesion/dominio-activo';
@@ -12,6 +13,7 @@ import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
 import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
+import { HIGH_CONTRAST_MODE_ACTIVE_CSS_CLASS } from '@angular/cdk/a11y/high-contrast-mode/high-contrast-mode-detector';
 
 export interface SesionState {
   sesion: Sesion | null;
@@ -66,6 +68,8 @@ export function creaSesion(sesion: Sesion) {
 @StoreConfig({ name: 'sesion' })
 export class SesionStore extends Store<SesionState> {
 
+  private GetUserInfo:boolean =true;
+
   // Obtiene las preferncias desde el almacenamiento local
   private ObtienePreferencias(): IPreferencias {
     const p: IPreferencias = this.localStorage.get(PREF_STORAGE_NAME);
@@ -77,6 +81,7 @@ export class SesionStore extends Store<SesionState> {
   }
 
   constructor(
+    private app: AppConfig,
     private auth: OAuthService,
     private localStorage: LocalStorageService,
     private serviceSesion: PikaSesionService) {
@@ -87,37 +92,27 @@ export class SesionStore extends Store<SesionState> {
     this.auth.setupAutomaticSilentRefresh();
     this.auth.events.subscribe(event => {
       if (event instanceof OAuthSuccessEvent) {
-        this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
-        this.setPropiedad(PropiedadesSesion.token, this.auth.getAccessToken());
-        this.procesaUsuario();
+        if(this.auth.hasValidAccessToken()){
+          this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
+          this.setPropiedad(PropiedadesSesion.token, this.auth.getAccessToken());
+          this.procesaUsuario();
+        } else {
+          console.error("Invalid access token");
+        }
       }
 
-      // if (event instanceof OAuthErrorEvent) {
-      //   if(event.type== "token_validation_error"){
-      //     this.auth.refreshToken().then( r=> {
-      //         console.log(r);
-      //     } );
-      //   }
-      // } else {
-      //   console.warn('OAuthEvent Object:', event);
+      if(this.GetUserInfo) {
+        this.GetUserInfo = false;
+        this.auth.loadUserProfile().then(u=>{
+          // console.log(u);
+        });
+      }
+
+      // if (event instanceof OAuthErrorEvent ) {
       // }
+      
+      
     });
-
-    // auth.Autenticado$.subscribe((autenticado) => {
-    //   if (autenticado) {
-    //     this.setPropiedad(PropiedadesSesion.isLoggedIn, autenticado);
-    //     if (autenticado) {
-    //       this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
-    //       this.procesaUsuario();
-    //     }
-    //   }
-    // });
-
-    // auth.userInfo$.subscribe((usuario) => {
-    //   if (usuario) {
-    //     this.setPropiedad(PropiedadesSesion.IdUsuario, usuario.sub);
-    //   }
-    // });
   }
 
 

@@ -49,7 +49,6 @@ export class ServicioListaMetadatos {
         if( url ){
             endpoint = this.CrearEndpointUrl(url);
         } else {
-            console.log(lista.Entidad);
             endpoint = this.CrearEndpointEntidad(lista.Entidad);
         }
 

@@ -26,7 +26,6 @@ export class AppConfig {
     load() {
 
         var url = environment.production ? "./config.json" : "./config.json"; 
-
         return new Promise((resolve, reject) => {
             return this.client.get<ApplicationConfiguration>(url).subscribe(r=>{
                 this.config = r;

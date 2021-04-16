@@ -31,8 +31,7 @@ export class AppComponent implements OnInit {
     translate.addLangs(['es-MX']);
     translate.setDefaultLang('es-MX');
 
-
-    auth.issuer = config.config.authUrl;
+    auth.issuer = this.config.config.authUrl;
     auth.skipIssuerCheck = true;
     auth.clientId = 'api-pika-gd-angular';
     auth.redirectUri = window.location.origin + '/index.html'
@@ -46,13 +45,14 @@ export class AppComponent implements OnInit {
     auth.setStorage(sessionStorage);
 
     let url = auth.issuer + '.well-known/openid-configuration';
-
     this.auth.loadDiscoveryDocument(url).then(() => {
       this.auth.tryLogin({}).then(r=> {
         if(!r){
           this.auth.initImplicitFlow();
         }
-      })
+      }).catch((err)=> { 
+        this.auth.initImplicitFlow();
+      });
 
     }).catch((err) => { console.error(err)});
 
