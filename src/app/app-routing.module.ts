@@ -14,8 +14,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
-  { path: '', redirectTo: '/pages/buscador?OrigenId=bd03c5b8-e1a1-4f5f-bbde-d8bd9ba99b32&OrigenTipo=puntomontaje', pathMatch: 'full' },
-  { path: 'index.html', redirectTo: '/pages/buscador?OrigenId=bd03c5b8-e1a1-4f5f-bbde-d8bd9ba99b32&OrigenTipo=puntomontaje', pathMatch: 'full' },
+  { path: '', redirectTo: 'pages/inicio', pathMatch: 'full' },
+  { path: 'index.html', redirectTo: 'pages/inicio', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages/404' },
 ];
 
