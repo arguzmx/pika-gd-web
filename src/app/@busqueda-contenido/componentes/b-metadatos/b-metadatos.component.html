@@ -1,15 +1,12 @@
-<div class="row">
-    <div class="col-lg-12">
-        <nb-select (selectedChange)="opChange($event)" fullWidth="true" #listaplantilla>
+<div class="row pb-2">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <b>Plantilla</b>
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+        <nb-select  size="small" filled status="info" (selectedChange)="opChange($event)" fullWidth="true" #listaplantilla>
             <nb-option *ngFor="let p of plantillas" [value]="p.Id">{{p.Texto}}</nb-option>
         </nb-select>
     </div>
-    <div>
-        <ngx-offline-metadata-buscador
-                          [lateral]="lateral"
-                          [config]="config"
-                          [metadata]="metadata"
-                          (EventoFiltrar)="EventoFiltrar($event)"
-                        ></ngx-offline-metadata-buscador>
-    </div>
 </div>
+<ngx-offline-metadata-buscador [lateral]="lateral" [config]="config" [metadata]="metadata"
+    (EventoFiltrar)="EventoFiltrar($event)"></ngx-offline-metadata-buscador>

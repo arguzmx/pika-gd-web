@@ -12,7 +12,7 @@ import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
 
-const retryCount: number = 1;
+const retryCount: number = 0;
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
+import { environment } from './../../../environments/environment.prod';
 import { AppConfig } from './../../app-config';
 import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR } from './../../@pika/seguridad/permiso-acl';
 import { Propiedad, IProveedorReporte, PermisoAplicacion, PDENEGARACCESO } from '../../@pika/pika-module';
-import { FiltroConsulta } from '../../@pika/pika-module';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import { CacheEntidadesService } from './cache-entidades.service';
 import { Injectable } from '@angular/core';
@@ -109,7 +109,10 @@ export class EntidadesService {
   // Getson de permisos
   ObtienePermiso(appid: string, moduloId: string ): PermisoAplicacion {
 
-    console.info(this.sesion.ACL);
+    if(!environment.production) {
+      console.debug(this.sesion.ACL);
+    }
+    
 
     if (this.sesion.ACL.EsAdmin) {
         return this.permisoAdmin;

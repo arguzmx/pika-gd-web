@@ -1,16 +1,26 @@
 <div class="row">
-  <div [ngClass]="{'col-lg-8 col-md-8 col-sm-8': lateral, 'col-lg-8 col-md-6 col-sm-6': !lateral}">
-    
-    <nb-select fullWidth="true" size="small" [(selected)]="selectedPropId">
-      <nb-option *ngFor="let p of propiedades" [value]="p.Id">{{p.Nombre}}</nb-option>
-    </nb-select>
-  </div>
-  <div [ngClass]="{'col-lg-4 col-md-4 col-sm-4': lateral, 'col-lg-4 col-md-6 col-sm-6': !lateral}">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
     <button (click)="addFiltro()" nbButton>
       <nb-icon icon="plus-circle-outline"></nb-icon>
-    </button>
-  </div>
+    </button> Campo
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+      <nb-select fullWidth="true" size="small" [(selected)]="selectedPropId">
+        <nb-option *ngFor="let p of propiedades" [value]="p.Id">{{p.Nombre}}</nb-option>
+      </nb-select>
+    </div>
 </div>
+
+
+<!-- <div class="row">
+  <div [ngClass]="{'col-lg-8 col-md-8 col-sm-8': lateral, 'col-lg-8 col-md-6 col-sm-6': !lateral}">
+    
+
+  </div>
+  <div [ngClass]="{'col-lg-4 col-md-4 col-sm-4': lateral, 'col-lg-4 col-md-6 col-sm-6': !lateral}">
+    
+  </div>
+</div> -->
 
 <div *ngIf="(propiedadesFiltro.length>0)">
   <form [formGroup]="group">

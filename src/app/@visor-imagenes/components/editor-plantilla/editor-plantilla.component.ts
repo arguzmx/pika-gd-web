@@ -291,7 +291,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
   }
 
   public opChange(event): void {
-    console.info(event);
+    // console.info(event);
   }
 
 }

@@ -89,23 +89,49 @@ export class SesionStore extends Store<SesionState> {
 
     const prefs = this.ObtienePreferencias();
     this.setPreferencias(prefs);
+    
     this.auth.setupAutomaticSilentRefresh();
+    
+    window.addEventListener('storage', (event) => {
+
+      console.log(event);
+      // The `key` is `null` if the event was caused by `.clear()`
+      if (event.key !== 'access_token' && event.key !== null) {
+        return;
+      }
+
+      // console.warn('Noticed changes to access_token (most likely from another tab), updating isAuthenticated');
+      // this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+
+      // if (!this.oauthService.hasValidAccessToken()) {
+      //   this.navigateToLoginPage();
+      // } else {
+      //   this.tokenSubject$.next(this.oauthService.getAccessToken());
+      // }
+    });
+
     this.auth.events.subscribe(event => {
       if (event instanceof OAuthSuccessEvent) {
-        if(this.auth.hasValidAccessToken()){
+        console.log(this.auth.getAccessToken());
+        
+        if (this.auth.hasValidAccessToken()){
+
           this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
           this.setPropiedad(PropiedadesSesion.token, this.auth.getAccessToken());
           this.procesaUsuario();
+
+          if(this.GetUserInfo) {
+            this.GetUserInfo = false;
+            this.auth.loadUserProfile().then(u=>{
+              // console.log(u);
+            });
+          }
+
         } else {
           console.error("Invalid access token");
+          window.location.reload();
+          //this.auth.silentRefresh();
         }
-      }
-
-      if(this.GetUserInfo) {
-        this.GetUserInfo = false;
-        this.auth.loadUserProfile().then(u=>{
-          // console.log(u);
-        });
       }
 
       // if (event instanceof OAuthErrorEvent ) {
