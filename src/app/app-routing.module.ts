@@ -14,8 +14,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
-  { path: '', redirectTo: '/pages/jerarquia?tipo=cuadroclasificacion&t=ElementoClasificacion&c=EntradaClasificacion&id=bbf0b8e6-4bc1-4b42-ade3-4c9afef2b9ed&disp=2', pathMatch: 'full' },
-  { path: 'index.html', redirectTo: '/pages/jerarquia?tipo=cuadroclasificacion&t=ElementoClasificacion&c=EntradaClasificacion&id=bbf0b8e6-4bc1-4b42-ade3-4c9afef2b9ed&disp=2', pathMatch: 'full' },
+  { path: '', redirectTo: 'pages/inicio', pathMatch: 'full' },
+  { path: 'index.html', redirectTo: 'pages/inicio', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages/404' },
 ];
 
