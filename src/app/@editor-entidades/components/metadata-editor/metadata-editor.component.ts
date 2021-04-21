@@ -100,12 +100,12 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    if(!environment.production) {
-      this.formGroup.valueChanges
-      .subscribe( campos => {
-        console.debug(campos);
-      });
-    }
+    // if(!environment.production) {
+    //   this.formGroup.valueChanges
+    //   .subscribe( campos => {
+    //     console.debug(campos);
+    //   });
+    // }
   }
 
   ngOnDestroy(): void {

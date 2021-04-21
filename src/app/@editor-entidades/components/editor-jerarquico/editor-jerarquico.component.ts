@@ -615,14 +615,18 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       .EliminarEntidad(this.configJ.TipoEntidad, Id, nombre)
       .pipe(first())
       .subscribe((resultado) => {
-        this.NodoArbolSeleccionado = null;
-        this.InstanciaSeleccionadaJ = false;
         this.entidades.EmiteEventoArbol({
           Origen: this.NodoArbolSeleccionado,
           Valor: null,
           Evento: EventosArbol.EliminarNodo,
           Transaccion: '',
         });
+        this.NodoArbolSeleccionado = null;
+        this.InstanciaSeleccionadaJ = false;
+      }, (err)=> {
+        console.error(err);
+      }, ()=> {
+
       });
   }
 

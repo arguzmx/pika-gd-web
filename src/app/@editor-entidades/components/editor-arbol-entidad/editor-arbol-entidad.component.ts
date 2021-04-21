@@ -12,11 +12,12 @@ import { AppLogService } from '../../../@pika/pika-module';
 import { DescriptorNodo } from '../../model/descriptor-nodo';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
-import { DynamicDatabase, DynamicFlatNode, DynamicDataSource } from './dynamic-database';
+import { DynamicDatabase, DynamicFlatNode } from './dynamic-database';
 import { MatTree } from '@angular/material/tree';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { DynamicDataSource } from './dynamic-datasource';
 
 
 @Component({

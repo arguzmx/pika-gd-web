@@ -94,20 +94,11 @@ export class SesionStore extends Store<SesionState> {
     
     window.addEventListener('storage', (event) => {
 
-      console.log(event);
       // The `key` is `null` if the event was caused by `.clear()`
       if (event.key !== 'access_token' && event.key !== null) {
         return;
       }
 
-      // console.warn('Noticed changes to access_token (most likely from another tab), updating isAuthenticated');
-      // this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
-
-      // if (!this.oauthService.hasValidAccessToken()) {
-      //   this.navigateToLoginPage();
-      // } else {
-      //   this.tokenSubject$.next(this.oauthService.getAccessToken());
-      // }
     });
 
     this.auth.events.subscribe(event => {

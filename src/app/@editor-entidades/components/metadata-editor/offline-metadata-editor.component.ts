@@ -88,12 +88,12 @@ export class OfflineMetadataEditorComponent
   ) {
     this.TransaccionId = (new Date()).getMilliseconds().toString();
     this.formGroup = this.createGroup();
-    if(!environment.production) {
-      this.formGroup.valueChanges
-      .subscribe(campos => {
-        console.debug(campos);
-      });
-    }
+    // if(!environment.production) {
+    //   this.formGroup.valueChanges
+    //   .subscribe(campos => {
+    //     console.debug(campos);
+    //   });
+    // }
   }
 
   ngOnDestroy(): void {

@@ -109,8 +109,11 @@
                     <as-split-area [size]="40">
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
-                          <ngx-editor-arbol-entidad [config]="configJ" (NodoSeleccionado)="NodoSeleccionado($event)">
+                          <ngx-editor-arbol-entidad [config]="configJ" 
+                          (NodoSeleccionado)="NodoSeleccionado($event)">
                           </ngx-editor-arbol-entidad>
+                          <!-- <ngx-editor-arbol [config]="configJ"
+                          (NodoSeleccionado)="NodoSeleccionado($event)"></ngx-editor-arbol> -->
                         </div>
                       </div>
                     </as-split-area>
