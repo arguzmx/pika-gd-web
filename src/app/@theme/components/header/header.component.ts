@@ -6,6 +6,8 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { environment } from '../../../../environments/environment';
 
 
 @Component({
@@ -16,8 +18,8 @@ import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
-  user: any;
-
+  user: any = {};
+  ver: string = '';
   themes = [
     {
       value: 'default',
@@ -39,9 +41,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [ { title: 'Perfil' }, { title: 'Salir' } ];
 
   constructor(
+              private auth: OAuthService,
               private appBusStore: AppBusStore,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
@@ -50,6 +53,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
               ) {
+                this.ver = environment.version;
   }
 
 
@@ -63,9 +67,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.currentTheme = this.themeService.currentTheme;
 
-    this.userService.getUsers()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((users: any) => this.user = users.nick);
+    if(this.auth.hasValidAccessToken()) {
+      const claims = this.auth.getIdentityClaims();
+      console.log(claims);
+      console.log(claims['preferred_username']);
+      this.user['name'] = claims['preferred_username'] ;
+    }
+
+    // this.userService.getUsers()
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe((users: any) => this.user = users.nick);
+
 
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()

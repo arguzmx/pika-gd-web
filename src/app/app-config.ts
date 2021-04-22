@@ -17,12 +17,9 @@ export interface ApplicationConfiguration {
 
 @Injectable()
 export class AppConfig {
-    constructor(
-        private client: HttpClient){
-    }
+    constructor(private client: HttpClient) {}
 
     public config: ApplicationConfiguration = null;
-
     load() {
 
         var url = environment.production ? "./config.json" : "./config.json"; 

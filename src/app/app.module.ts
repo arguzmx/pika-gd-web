@@ -44,7 +44,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   declarations: [AppComponent],
   imports: [
     PikaModule,
-    NgxLocalStorageModule.forRoot({ prefix: 'PIKA-' }),
+    NgxLocalStorageModule.forRoot({ prefix: 'pika' }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -75,6 +75,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   ],
   bootstrap: [AppComponent],
   providers: [
+    CookieService,
     IsChldrenAuthorizedGuard,
     httpInterceptorProviders,
     PikaSesionService, CookieService,

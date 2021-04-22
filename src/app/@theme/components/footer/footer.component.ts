@@ -1,3 +1,4 @@
+import { environment } from './../../../../environments/environment';
 import { takeUntil, first } from 'rxjs/operators';
 import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
