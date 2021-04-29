@@ -21,6 +21,7 @@ export class BuscadorEntidadesBase {
   negCtlId: string;
   opCtlId: string;
   lateral: boolean;
+  isValid: boolean = false;
 
   VALID_COLOR: string = 'success';
   INVALID_COLOR: string = 'basic';
@@ -53,7 +54,12 @@ export class BuscadorEntidadesBase {
     });
  }
 
+ public FiltroValido(): boolean {
+  return this.isValid;
+ }
+
   setValidIcon(valid: boolean) {
+    this.isValid = valid;
     if (valid) {
       this.validstatus = this.VALID_COLOR;
       this.validIcon = this.VALID_ICON;

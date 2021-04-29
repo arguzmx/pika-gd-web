@@ -224,4 +224,4 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
  export {MetadataBuscadorComponent, EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
   EditorBootTabularComponent, EditorBootJerarquicoComponent, MetadataEditorComponent,
   IDiccionarioNavegacion, DiccionarioNavegacion, Traductor, CacheEntidadesService, ConfiguracionEntidad,
-  CacheFiltrosBusqueda, ServicioListaMetadatos};
+  CacheFiltrosBusqueda, ServicioListaMetadatos, OfflineMetadataBuscadorComponent};

@@ -57,8 +57,8 @@ import { NgxMaskModule } from 'ngx-mask';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { DemoComponent } from './demo/demo.component';
-import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module'
+import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module';
+import { BienvenidaComponent } from './bienvenida/bienvenida.component'
 
 @NgModule({
   imports: [
@@ -140,7 +140,7 @@ import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module'
   declarations: [
     UIRootComponent,
     UiComponent,
-    DemoComponent,
+    BienvenidaComponent
   ],
 })
 export class UiModule { }

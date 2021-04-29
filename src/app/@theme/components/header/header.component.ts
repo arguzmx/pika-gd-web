@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbMediaBreakpointsService, NbMenuService, NbSidebarService,
-  NbThemeService } from '@nebular/theme';
+import { Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { NbContextMenuComponent, NbDialogService, NbMediaBreakpointsService, NbMenuItem, NbMenuService, NbSidebarService,
+  NbThemeService, 
+  NB_WINDOW} from '@nebular/theme';
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -40,18 +42,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ];
 
   currentTheme = 'default';
+  
+  // Claves para obtener la traducción
+  ts: string[];
+  // Objeto resultante de la traduccion
+  t: object;
 
-  userMenu = [ { title: 'Perfil' }, { title: 'Salir' } ];
+  userMenu: NbMenuItem[] = [ { title: 'Perfil', data: "perfil"  },
+   { title: 'Salir', data: "salir" } ];
+
+   @ViewChild('logout') public logoutRef: TemplateRef<any>;
 
   constructor(
+              private translate: TranslateService,
+              private dialog: NbDialogService,
               private auth: OAuthService,
               private appBusStore: AppBusStore,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
-              private userService: UserData,
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
+              @Inject(NB_WINDOW) private window
               ) {
                 this.ver = environment.version;
   }
@@ -59,11 +71,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    // this.currentDominio = this.servicioPreferencias.getDominio();
-    // if (this.currentDominio){
-    //   this.changeDominio(this.currentDominio);
-    // }
-    // this.inicializaDominio();
 
     this.currentTheme = this.themeService.currentTheme;
 
@@ -73,11 +80,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       console.log(claims['preferred_username']);
       this.user['name'] = claims['preferred_username'] ;
     }
-
-    // this.userService.getUsers()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((users: any) => this.user = users.nick);
-
 
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()
@@ -93,7 +95,51 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
+
+
+      this.menuService.onItemClick()
+      .pipe(
+        filter(({ tag }) => tag === 'user-menu'),
+        map(({ item: { data } }) => data),
+      )
+      .subscribe(data => this.hubMenuUsuario(data) );
+
+      this.CargaTraducciones();
   }
+
+  private CargaTraducciones() {
+    this.ts = ['ui.cancelar', 'ui.aceptar', 'ui.advertencia', 'ui.salir-app'];
+    this.ObtenerTraducciones();
+  }
+
+  // Obtiene las tradcucciones
+  ObtenerTraducciones(): void {
+    this.translate
+      .get(this.ts)
+      .pipe(first())
+      .subscribe((res) => {
+        this.t = res;
+      });
+  }
+
+  hubMenuUsuario(data: string) {
+    switch(data) {
+      case "salir":
+        this.logout();
+        break;
+
+      case "perfil":
+      break;
+    }
+  }
+
+
+  logout(): void {
+    this.dialog.open(
+      this.logoutRef,
+      { context: '' });
+  }
+
 
   ngOnDestroy() {
     this.destroy$.next();
@@ -113,13 +159,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateHome() {
-    this.menuService.navigateHome();
-    return false;
+    // this.menuService.navigateHome();
+    // return false;
   }
 
   selectorOrganiacion(): void {
     this.appBusStore.setPropiedadAppBus(PropiedadesBus.CambiarOrganizacion, true);
   }
 
+  salir():void {
+    this.auth.logOut();
+  }
 
 }

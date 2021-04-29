@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
   {
-    path: 'ui',
+    path: '',
     loadChildren: () => import('./ui/ui.module')
       .then(m => m.UiModule),
   },
@@ -14,8 +14,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
-  { path: '', redirectTo: 'pages/inicio', pathMatch: 'full' },
-  { path: 'index.html', redirectTo: 'pages/inicio', pathMatch: 'full' },
+  { path: '', redirectTo: 'ui/bienvenida', pathMatch: 'full' },
+  { path: 'index.html', redirectTo: 'ui/bienvenida', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages/404' },
 ];
 

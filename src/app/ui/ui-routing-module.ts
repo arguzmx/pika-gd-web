@@ -1,8 +1,8 @@
+import { BienvenidaComponent } from './bienvenida/bienvenida.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { UIRootComponent } from './ui-root-component';
 import { UiComponent } from './ui/ui.component';
-import { DemoComponent } from './demo/demo.component';
 
 
 const routes: Routes = [{
@@ -15,9 +15,10 @@ const routes: Routes = [{
       component: UiComponent,
     },
     {
-      path: 'demo',
-      component: DemoComponent,
+      path: 'bienvenida',
+      component: BienvenidaComponent,
     },
+
   ],
 }];
 

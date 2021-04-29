@@ -38,249 +38,248 @@ import { Traductor } from '../../services/traductor';
   templateUrl: './offline-metadata-buscador.component.html',
   styleUrls: ['./offline-metadata-buscador.component.scss']
 })
-export class OfflineMetadataBuscadorComponent 
-implements IBuscadorMetadatos, OnInit, OnDestroy, OnChanges {
+export class OfflineMetadataBuscadorComponent
+  implements IBuscadorMetadatos, OnInit, OnDestroy, OnChanges {
 
-private onDestroy$ = new Subject();
-// Mantiene la configutación de la entidad obtenida por el ruteo
-@Input() config: ConfiguracionEntidad;
-@Input() metadata: MetadataInfo;
-@Input() lateral: boolean;
-@Output() EventoFiltrar = new EventEmitter();
+  private onDestroy$ = new Subject();
+  // Mantiene la configutación de la entidad obtenida por el ruteo
+  @Input() config: ConfiguracionEntidad;
+  @Input() metadata: MetadataInfo;
+  @Input() lateral: boolean;
+  @Output() EventoFiltrar = new EventEmitter();
 
-// Porpieades válidas para el filtrado
-public propiedades: Propiedad[] = [];
+  // Porpieades válidas para el filtrado
+  public propiedades: Propiedad[] = [];
 
-// Porpieades establecidas como filtro
-public propiedadesFiltro: Propiedad[] = [];
+  // Porpieades establecidas como filtro
+  public propiedadesFiltro: Propiedad[] = [];
 
-// lista de los filtros válidos configurads
-private filtros: FiltroConsulta[] = [];
+  // lista de los filtros válidos configurads
+  public filtros: FiltroConsulta[] = [];
 
-// Id de la Propiedad seleccionad para la adición en filtros
-public selectedPropId: string = null;
+  // Id de la Propiedad seleccionad para la adición en filtros
+  public selectedPropId: string = null;
 
-public group: FormGroup;
+  public group: FormGroup;
 
-// Especifica si la entidad tiene eliminar logico
-public eliminarLogico: boolean = false;
+  // Especifica si la entidad tiene eliminar logico
+  public eliminarLogico: boolean = false;
 
-public T: Traductor;
-
-// Cosntructor del componente
-constructor(
-  ts: TranslateService,
-  private applog: AppLogService,
-  private fb: FormBuilder,
-) {
-  this.T = new Traductor(ts);
-  this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
-  this.group = this.fb.group({});
-}
+  public T: Traductor;
+  // Cosntructor del componente
+  constructor(
+    ts: TranslateService,
+    private applog: AppLogService,
+    private fb: FormBuilder,
+  ) {
+    this.T = new Traductor(ts);
+    this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
+    this.group = this.fb.group({});
+  }
   ngOnChanges(changes: SimpleChanges): void {
     this.ProcesaConfiguracion();
   }
 
-ngOnDestroy(): void {
-  this.onDestroy$.next(null);
-  this.onDestroy$.complete();
-}
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
 
-public _Reset() {
-  this.propiedades = [];
-  this.propiedadesFiltro = [];
-  this.filtros = [];
-  this.selectedPropId = null;
-  this.eliminarLogico = false;
-}
-
-private ProcesaConfiguracion(): void {
-  this._Reset();
-  if (this.metadata && this.metadata.Propiedades.length > 0) {
+  public _Reset() {
+    this.propiedades = [];
+    this.propiedadesFiltro = [];
     this.filtros = [];
-    this.propiedades = this.metadata.Propiedades.filter(
-      (x) => x.Buscable === true,
-    );
-    // const filtros = this.entidades.GetCacheFiltros(this.config.TransactionId);
-    // filtros.forEach((item) => {
-    //   const index = this.propiedades.findIndex((x) => x.Id === item.Id);
-    //   if (index >= 0) {
-    //     this._addFiltro(item.Id, item);
-    //   }
+    this.selectedPropId = null;
+    this.eliminarLogico = false;
+  }
+
+  private ProcesaConfiguracion(): void {
+    this._Reset();
+    if (this.metadata && this.metadata.Propiedades.length > 0) {
+      this.filtros = [];
+      this.propiedades = this.metadata.Propiedades.filter(
+        (x) => x.Buscable === true,
+      );
+      // const filtros = this.entidades.GetCacheFiltros(this.config.TransactionId);
+      // filtros.forEach((item) => {
+      //   const index = this.propiedades.findIndex((x) => x.Id === item.Id);
+      //   if (index >= 0) {
+      //     this._addFiltro(item.Id, item);
+      //   }
+      // });
+      this.regenerarForma();
+    }
+  }
+
+
+  public borrarFiltrosBuscador(): void {
+    // const fs = this.entidades.GetCacheFiltros(this.config.TransactionId);
+    // this._EliminarTodosFiltros();
+    // fs.forEach( f => {
+    //   this._addFiltro(f.Id, null);
     // });
-    this.regenerarForma();
   }
-}
 
-
-public borrarFiltrosBuscador(): void {
-  // const fs = this.entidades.GetCacheFiltros(this.config.TransactionId);
-  // this._EliminarTodosFiltros();
-  // fs.forEach( f => {
-  //   this._addFiltro(f.Id, null);
-  // });
-}
-
-// Genra el iltro base para las entidades con eliminación lógica
-addFiltro(): void {
-  if (this.selectedPropId) {
-    this._addFiltro(this.selectedPropId, null);
-    this.regenerarForma();
+  // Genra el iltro base para las entidades con eliminación lógica
+  addFiltro(): void {
+    if (this.selectedPropId) {
+      this._addFiltro(this.selectedPropId, null);
+      this.regenerarForma();
+    }
   }
-}
 
-GetfiltroDefault(p: Propiedad) {
-  return this.filtros.find((x) => x.Id === p.Id);
-}
+  GetfiltroDefault(p: Propiedad) {
+    return this.filtros.find((x) => x.Id === p.Id);
+  }
 
-private _addFiltro(id: string, filtro: FiltroConsulta) {
-  const propiedad = this.propiedades.find((x) => x.Id === id);
-  if (propiedad) {
-    const existente = this.propiedadesFiltro.find((x) => x.Id === id);
-    if (existente) {
-      this.applog.AdvertenciaT('editor-pika.mensajes.warn-filtros-existente');
-    } else {
-      this.propiedadesFiltro.push(propiedad);
-      if (filtro) {
-        this.filtros.push(filtro);
+  private _addFiltro(id: string, filtro: FiltroConsulta) {
+    const propiedad = this.propiedades.find((x) => x.Id === id);
+    if (propiedad) {
+      const existente = this.propiedadesFiltro.find((x) => x.Id === id);
+      if (existente) {
+        this.applog.AdvertenciaT('editor-pika.mensajes.warn-filtros-existente');
       } else {
-        // añade un valor a la lista de filtros seleccioandos
-        const fc = new FiltroConsulta();
-        fc.Id = propiedad.Id;
-        fc.Valido = false;
-        this.filtros.push(fc);
+        this.propiedadesFiltro.push(propiedad);
+        if (filtro) {
+          this.filtros.push(filtro);
+        } else {
+          // añade un valor a la lista de filtros seleccioandos
+          const fc = new FiltroConsulta();
+          fc.Id = propiedad.Id;
+          fc.Valido = false;
+          this.filtros.push(fc);
+        }
       }
     }
   }
-}
 
-// Ontiene el maximo numero de campos en base al tipo de datoa
-maxCampos(p: Propiedad): number {
-  switch (p.TipoDatoId) {
-    case tDateTime:
-    case tDate:
-    case tTime:
-    case tDouble:
-    case tInt32:
-    case tInt64:
-      return 2;
+  // Ontiene el maximo numero de campos en base al tipo de datoa
+  maxCampos(p: Propiedad): number {
+    switch (p.TipoDatoId) {
+      case tDateTime:
+      case tDate:
+      case tTime:
+      case tDouble:
+      case tInt32:
+      case tInt64:
+        return 2;
+    }
+
+    return 1;
   }
 
-  return 1;
-}
-
-regenerarForma(): void {
-  // Onbtiene la lista de controles exietnets
-  const controls = Object.keys(this.group.controls);
-  // Obtiene los campos en la forma a aprtir de la configuracion
-  const configControls = [];
-  const Ids: string[] = [];
-  this.propiedadesFiltro.forEach((c) => {
-    configControls.push(CTL1_PREFIX + c.Id);
-    configControls.push(CTL_OP_PREFIX + c.Id);
-    configControls.push(CTL_NEG_PREFIX + c.Id);
-    configControls.push(CTL2_PREFIX + c.Id);
-    // if (this.maxCampos(c) === 2) configControls.push(CTL2_PREFIX + c.Id);
-  });
-  // Elimina los campos que ya no estan en ñla configuracion
-  // y que estaban en la forma
-  controls
-    .filter((control) => !configControls.includes(control))
-    .forEach((control) => {
-      this.group.removeControl(control);
+  regenerarForma(): void {
+    // Onbtiene la lista de controles exietnets
+    const controls = Object.keys(this.group.controls);
+    // Obtiene los campos en la forma a aprtir de la configuracion
+    const configControls = [];
+    const Ids: string[] = [];
+    this.propiedadesFiltro.forEach((c) => {
+      configControls.push(CTL1_PREFIX + c.Id);
+      configControls.push(CTL_OP_PREFIX + c.Id);
+      configControls.push(CTL_NEG_PREFIX + c.Id);
+      configControls.push(CTL2_PREFIX + c.Id);
+      // if (this.maxCampos(c) === 2) configControls.push(CTL2_PREFIX + c.Id);
     });
+    // Elimina los campos que ya no estan en ñla configuracion
+    // y que estaban en la forma
+    controls
+      .filter((control) => !configControls.includes(control))
+      .forEach((control) => {
+        this.group.removeControl(control);
+      });
 
-  // Crea los comtroles faltantes
-  this.propiedadesFiltro.forEach((c) => {
-    let n = CTL_OP_PREFIX + c.Id;
-    if (!controls.includes(n)) {
-      this.group.addControl(CTL_OP_PREFIX + c.Id, this.createControl(c));
+    // Crea los comtroles faltantes
+    this.propiedadesFiltro.forEach((c) => {
+      let n = CTL_OP_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.group.addControl(CTL_OP_PREFIX + c.Id, this.createControl(c));
+      }
+
+      n = CTL_NEG_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.group.addControl(CTL_NEG_PREFIX + c.Id, this.createControl(c));
+      }
+
+      n = CTL1_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.group.addControl(CTL1_PREFIX + c.Id, this.createControl(c));
+      }
+
+      n = CTL2_PREFIX + c.Id;
+      if (!controls.includes(n)) {
+        this.group.addControl(CTL2_PREFIX + c.Id, this.createControl(c));
+      }
+
+
+    });
+  }
+
+  createControl(p: Propiedad) {
+    return this.fb.control({ disabled: false, value: null }, []);
+  }
+
+  filtrar(): void {
+    if (
+      this.filtros.findIndex((x) => x.Valido === false) >= 0
+    ) {
+      this.applog.AdvertenciaT(
+        'editor-pika.mensajes.warn-sin-filtros-busqueda',
+      );
+      return;
     }
+    this.EventoFiltrar.emit(this.filtros);
+  }
 
-    n = CTL_NEG_PREFIX + c.Id;
-    if (!controls.includes(n)) {
-      this.group.addControl(CTL_NEG_PREFIX + c.Id, this.createControl(c));
+  EstadoFiltro(filtro: FiltroConsulta) {
+    const index = this.filtros.findIndex((x) => x.Id === filtro.Id);
+    if (index < 0) {
+      this.filtros.push(filtro);
+    } else {
+      this.filtros[index] = filtro;
     }
+  }
 
-    n = CTL1_PREFIX + c.Id;
-    if (!controls.includes(n)) {
-      this.group.addControl(CTL1_PREFIX + c.Id, this.createControl(c));
-    }
-
-    n = CTL2_PREFIX + c.Id;
-    if (!controls.includes(n)) {
-      this.group.addControl(CTL2_PREFIX + c.Id, this.createControl(c));
-    }
+  EliminarFiltro(filtro: FiltroConsulta) {
+    this._EliminarFiltro(filtro);
+  }
 
 
-  });
-}
-
-createControl(p: Propiedad) {
-  return this.fb.control({ disabled: false, value: null }, []);
-}
-
-filtrar(): void {
-  if (
-    this.filtros.findIndex((x) => x.Valido === false) >= 0
-  ) {
-    this.applog.AdvertenciaT(
-      'editor-pika.mensajes.warn-sin-filtros-busqueda',
+  private _EliminarTodosFiltros() {
+    this.propiedadesFiltro.forEach(
+      p => {
+        this.group.removeControl(CTL1_PREFIX + p.Id);
+        this.group.removeControl(CTL_NEG_PREFIX + p.Id);
+        this.group.removeControl(CTL_OP_PREFIX + p.Id);
+        if (this.maxCampos(p) === 2) {
+          this.group.removeControl(CTL2_PREFIX + p.Id);
+        }
+      }
     );
-    return;
+    this.propiedadesFiltro = [];
   }
-  this.EventoFiltrar.emit(this.filtros);
-}
 
-EstadoFiltro(filtro: FiltroConsulta) {
-  const index = this.filtros.findIndex((x) => x.Id === filtro.Id);
-  if (index < 0) {
-    this.filtros.push(filtro);
-  } else {
-    this.filtros[index] = filtro;
-  }
-}
-
-EliminarFiltro(filtro: FiltroConsulta) {
-  this._EliminarFiltro(filtro);
-}
-
-
-private _EliminarTodosFiltros() {
-  this.propiedadesFiltro.forEach(
-    p => {
+  private _EliminarFiltro(filtro: FiltroConsulta) {
+    const index = this.propiedadesFiltro.findIndex((x) => x.Id === filtro.Id);
+    if (index >= 0) {
+      const p = this.propiedadesFiltro[index];
       this.group.removeControl(CTL1_PREFIX + p.Id);
       this.group.removeControl(CTL_NEG_PREFIX + p.Id);
       this.group.removeControl(CTL_OP_PREFIX + p.Id);
       if (this.maxCampos(p) === 2) {
         this.group.removeControl(CTL2_PREFIX + p.Id);
       }
-    }
-  );
-  this.propiedadesFiltro = [];
-}
+      this.propiedadesFiltro.splice(index, 1);
 
-private _EliminarFiltro(filtro: FiltroConsulta) {
-  const index = this.propiedadesFiltro.findIndex((x) => x.Id === filtro.Id);
-  if (index >= 0) {
-    const p = this.propiedadesFiltro[index];
-    this.group.removeControl(CTL1_PREFIX + p.Id);
-    this.group.removeControl(CTL_NEG_PREFIX + p.Id);
-    this.group.removeControl(CTL_OP_PREFIX + p.Id);
-    if (this.maxCampos(p) === 2) {
-      this.group.removeControl(CTL2_PREFIX + p.Id);
-    }
-    this.propiedadesFiltro.splice(index, 1);
-
-    const findex = this.filtros.findIndex((x) => x.Id === filtro.Id);
-    if (findex >= 0) {
-      this.filtros.splice(findex, 1);
+      const findex = this.filtros.findIndex((x) => x.Id === filtro.Id);
+      if (findex >= 0) {
+        this.filtros.splice(findex, 1);
+      }
     }
   }
-}
 
-ngOnInit(): void {
-  this.T.ObtenerTraducciones();
-  this.ProcesaConfiguracion();
-}
+  ngOnInit(): void {
+    this.T.ObtenerTraducciones();
+    this.ProcesaConfiguracion();
+  }
 }

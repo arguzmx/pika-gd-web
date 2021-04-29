@@ -5,10 +5,9 @@ import { SesionQuery } from '../@pika/pika-module';
   selector: 'ngx-ui-root',
   styleUrls: ['ui-root-component.scss'],
   template: `
-    <ngx-one-column-layout>
-      <nb-menu [items]='menu'></nb-menu>
+    <ngx-empty-layout>
       <router-outlet></router-outlet>
-    </ngx-one-column-layout>
+    </ngx-empty-layout>
   `,
 })
 export class UIRootComponent implements OnInit {

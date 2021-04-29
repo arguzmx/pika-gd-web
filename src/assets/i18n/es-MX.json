@@ -8,6 +8,8 @@
         "subtitulo401": "No cuenta con los privilegios para acceder a esta sección, si nuevos permisos le han sido asignados debe salir e iniciar sesión nuevamente"
     },
     "ui": {
+        "salir-app": "¿Desea abandonar la aplicación?",
+        "advertencia": "Advertencia",
         "ubicacion-org": "Ubicación",
         "modulo": "Módulo",
         "confirmar": "Confirmar operación",
@@ -75,7 +77,8 @@
         "bmetadatos": "Busrca por plantilla",
         "bpropiedades": "Buscar por propiedades",
         "bfolder": "Buscar por carpeta",
-        "btexto": "Buscar por contenido"
+        "btexto": "Buscar por contenido",
+        "buscar": "Buscar"
     },
     "entidades": {
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",

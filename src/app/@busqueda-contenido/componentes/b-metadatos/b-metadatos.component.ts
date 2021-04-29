@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { first } from 'rxjs/operators';
-import { ConfiguracionEntidad } from '../../../@editor-entidades/editor-entidades.module';
+import { ConfiguracionEntidad, OfflineMetadataBuscadorComponent } from '../../../@editor-entidades/editor-entidades.module';
+import { FiltroConsulta } from '../../../@pika/consulta';
 import { MetadataInfo, tList } from '../../../@pika/metadata';
 import { ServicioBusquedaAPI } from '../../services/servicio-busqueda-api';
 
@@ -17,10 +18,22 @@ export class BMetadatosComponent implements OnInit {
   metadata: MetadataInfo;
   lateral: boolean = true;
 
+  @ViewChild('buscador') buscador: OfflineMetadataBuscadorComponent;
 
   ngOnInit(): void {
     this.ObtienePlantillas();
   }
+
+
+  public Filtros(): FiltroConsulta[] {
+    const filtros: FiltroConsulta[] = [];
+    this.buscador.filtros.filter(x=>x.Valido == true).forEach( f=> {
+        f.Valor = null;
+        filtros.push(f);
+    });
+    return filtros;
+  }
+
 
   // Obtiene las plantillas disponibles para el documento
   private ObtienePlantillas(): void {

@@ -23,8 +23,31 @@
       <nb-user [nbContextMenu]="userMenu"
                [onlyPicture]="userPictureOnly"
                [name]="user?.name"
-               [picture]="user?.picture">
+               [picture]="user?.picture"
+               nbContextMenuTag="user-menu"
+               >
       </nb-user>
     </nb-action>
   </nb-actions>
 </div>
+
+<ng-template #logout let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>{{ t["ui.advertencia"] }}</nb-card-header>
+    <nb-card-body>
+      {{ t["ui.salir-app"] }}
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="float-right">
+            <button nbButton (click)="ref.close()">{{ t["ui.cancelar"] }}</button>
+            <button nbButton status="danger" (click)="salir()">
+              {{ t["ui.aceptar"] }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

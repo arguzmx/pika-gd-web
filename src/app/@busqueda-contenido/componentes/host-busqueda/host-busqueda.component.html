@@ -9,7 +9,17 @@
                 Buscar en : NOMBRE REPO
 
             </span>
-            <span class="toolbar-spacer"></span>
+            <span class="toolbar-spacer">
+            </span>
+            
+
+            <!-- Separadador -->
+            <button style="width:fit-content;" mat-icon-button on-click="buscar()" [nbTooltip]="T.t['busqueda.buscar']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.buscar']">
+                <mat-icon class="text-danger">search</mat-icon> {{T.t['busqueda.buscar']}}
+            </button>
+
+            <mat-icon class="gray-icon">more_vert</mat-icon>
 
             <!-- Mostrar busqueda propieddes -->
             <button mat-icon-button on-click="alternarPropiedades()" [nbTooltip]="T.t['busqueda.bpropiedades']"
@@ -38,8 +48,6 @@
             </button>
 
 
-            <!-- Separadador -->
-            <mat-icon class="gray-icon">more_vert</mat-icon>
 
         </mat-toolbar>
     </div>
@@ -53,13 +61,13 @@
                                 <nb-accordion-item *ngIf="MostrarPropiedades">
                                     <nb-accordion-item-header>Propiedades</nb-accordion-item-header>
                                     <nb-accordion-item-body>
-                                        <ngx-b-propiedades></ngx-b-propiedades>
+                                        <ngx-b-propiedades #propiedades></ngx-b-propiedades>
                                     </nb-accordion-item-body>
                                 </nb-accordion-item>
                                 <nb-accordion-item *ngIf="MotrarMetadatos">
                                     <nb-accordion-item-header>Plantillas</nb-accordion-item-header>
                                     <nb-accordion-item-body>
-                                        <ngx-b-metadatos></ngx-b-metadatos>
+                                        <ngx-b-metadatos #metadatos></ngx-b-metadatos>
                                     </nb-accordion-item-body>
                                 </nb-accordion-item>
                             </nb-accordion>
