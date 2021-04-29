@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
               this.storageService.remove('returnurl')
               this.route.navigateByUrl(urlValue);
             } else {
-              this.route.navigateByUrl('/pages/buscador?OrigenId=bd03c5b8-e1a1-4f5f-bbde-d8bd9ba99b32&OrigenTipo=puntomontaje');
+              this.route.navigateByUrl('/pages/inicio');
             }
           }
         }
