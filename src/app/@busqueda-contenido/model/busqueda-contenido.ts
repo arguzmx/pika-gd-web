@@ -10,6 +10,13 @@ export interface BusquedaContenido {
     Fecha: Date;
     FechaFinalizado: Date;
     Estado: EstadoBusqueda;
+    PuntoMontajeId: string;
+    indice: number;
+    tamano: number;
+    consecutivo: number;
+    ord_columna: string;
+    ord_direccion: string;
+    recalcular_totales: boolean;
 }
 
 export interface Busqueda {

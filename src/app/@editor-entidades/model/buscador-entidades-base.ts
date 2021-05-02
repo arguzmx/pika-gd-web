@@ -80,6 +80,7 @@ export class BuscadorEntidadesBase {
   }
 
   inputChange(value: any) {
+    if(this.filtro.Valor == null) this.filtro.Valor = [];
     if (this.filtro.Valor.length === 0) {
       this.filtro.Valor.push(value);
     } else {
@@ -89,6 +90,7 @@ export class BuscadorEntidadesBase {
   }
 
   input2Change(value: any) {
+    if(this.filtro.Valor == null) this.filtro.Valor = [];
     if (this.filtro.Valor.length === 0) {
       this.filtro.Valor.push(null);
       this.filtro.Valor.push(value);

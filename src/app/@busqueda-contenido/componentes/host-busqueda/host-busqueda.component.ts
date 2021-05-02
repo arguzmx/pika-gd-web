@@ -8,9 +8,10 @@ import { takeUntil, first } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService } from '../../../@pika/servicios';
-import { ServicioListaMetadatos, Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { EditorBootTabularComponent, MetadataTablaComponent, ServicioListaMetadatos, Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { ServicioBusquedaAPI } from '../../services/servicio-busqueda-api';
 import { Busqueda, BusquedaContenido, EstadoBusqueda } from '../../model/busqueda-contenido';
+import { Operacion } from '../../../@pika/consulta';
 
 @Component({
   selector: 'ngx-host-busqueda',
@@ -23,11 +24,22 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
 
   @ViewChild("propiedades") propiedades: BPropiedadesComponent;
   @ViewChild("metadatos") metadatos: BMetadatosComponent;
+  @ViewChild('tabla') tabla: EditorBootTabularComponent;
 
+  IdRepositorio: string = '';
+  ElementoBusquedaActivo = false;
   MostrarRegresar: boolean = true;
   VistaTrasera: boolean = false;
   MotrarMetadatos: boolean = false;
   MostrarPropiedades: boolean = false;
+  mostrarBarra: boolean = false;
+  busuedaPersonalizada: boolean = true;
+  totalRegistros: number = 0;
+  documentoSeleccionado: any;
+  contenidoSeleccionado: boolean = false;
+
+  DesdeRuta = false;
+  Tipo = 'Elemento';
 
   public T: Traductor;
 
@@ -55,6 +67,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((params) => {
+        this.IdRepositorio = params.OrigenId;
         this.CargaTraducciones();
       }, (e) => {
         this.router.navigateByUrl('/pages/sinacceso');
@@ -69,7 +82,9 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       'busqueda.bpropiedades',
       'busqueda.bfolder',
       'busqueda.btexto',
-      'busqueda.buscar'
+      'busqueda.buscar',
+      'ui.total-regitros',
+      'vistas.visorcontenido'
     ];
     this.T.ObtenerTraducciones();
   }
@@ -87,35 +102,48 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
 
   alternarMetadatos(): void {
     this.MotrarMetadatos = !this.MotrarMetadatos;
+    this.actualizaUI();
   }
 
+  actualizaUI() {
+    this.ElementoBusquedaActivo = this.MostrarPropiedades || this.MotrarMetadatos;
+  }
 
   public alternarPropiedades() {
     this.MostrarPropiedades = !this.MostrarPropiedades;
-
-    if (this.MostrarPropiedades) {
-
-    } else {
-
-    }
-
+    this.actualizaUI();
   }
 
+  public NewGuid(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
 
   public buscar(): void {
 
-    var esValida:  boolean = false;
+    var esValida: boolean = false;
 
     const b: BusquedaContenido = {
-      Id: '',
+      Id: this.NewGuid(),
       Elementos: [],
       Fecha: new Date(),
       FechaFinalizado: new Date(),
-      Estado: EstadoBusqueda.Nueva
+      Estado: EstadoBusqueda.Nueva,
+      PuntoMontajeId: this.IdRepositorio,
+      indice: 0,
+      tamano: 50,
+      consecutivo: 0,
+      ord_columna: '',
+      ord_direccion: '',
+      recalcular_totales: true
     };
 
     if (this.MostrarPropiedades) {
-      if (this.propiedades.Filtros().length > 0) {
+
+      if (this.propiedades.Filtros().length >= 0) {
         const propiedes: Busqueda = {
           Tag: 'propiedades',
           Topico: 'propiedades',
@@ -123,7 +151,9 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
             Filtros: this.propiedades.Filtros()
           }
         }
+
         b.Elementos.push(propiedes);
+
         esValida = true;
       }
     }
@@ -133,7 +163,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       if (this.metadatos.Filtros().length > 0) {
         const metadatos: Busqueda = {
           Tag: 'metadatos',
-          Topico: 'metadatos',
+          Topico: this.metadatos.Topic,
           Consulta: {
             Filtros: this.metadatos.Filtros()
           }
@@ -143,17 +173,35 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       }
 
     }
- 
-    console.log(b);
+
     if (esValida) {
-        this.api.Buscar(b).pipe(first())
-        .subscribe( r => {
-            console.log(r);
-        }, (err) => { console.error(err)});
+      this.tabla.obtenerPaginaDatosPersonalizada(true, 'api/v1.0/contenido/Busqueda', b);
+    } else {
+      this.applog.AdvertenciaT(
+        'busqueda.busqueda-novalida',
+        null,
+        null,
+      );
     }
 
-    
+  }
 
+  handlerEventoResultadoBusqueda(data: unknown) {
+    this.totalRegistros = data["ConteoTotal"];
+  }
+  handlerEventNuevaSeleccion(data: unknown) {
+    this.documentoSeleccionado = data;
+    
+    this.contenidoSeleccionado = data != null;
+
+  }
+
+  private URLDocumento(doc: unknown): string {
+    return `pages/visor?Id=${doc["Id"]}8&Nombre=${doc["Nombre"]}&VolumenId=${doc["VolumenId"]}&VersionId=${doc["VersionId"]}8&PuntoMontajeId=${doc["PuntoMontajeId"]}`;
+  }
+
+  public NavegarAVisor() {
+    this.tabla.NavegarLinkPorTag('visorcontenido', true);
   }
 
 }

@@ -34,18 +34,22 @@
                 <mat-icon>turned_in_not</mat-icon>
             </button>
 
-
+            <mat-icon class="gray-icon">more_vert</mat-icon>
+            <button *ngIf="contenidoSeleccionado" mat-icon-button on-click="NavegarAVisor()" [nbTooltip]="T.t['vistas.visorcontenido']"
+                nbTooltipPlacement="bottom" aria-label="T.t['vistas.visorcontenido']">
+                <mat-icon>preview</mat-icon>
+            </button>
             <!-- Mostrar busqueda folder -->
-            <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bfolder']"
+            <!-- <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bfolder']"
                 nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bfolder']">
                 <mat-icon>folder_open</mat-icon>
-            </button>
+            </button> -->
 
             <!-- Mostrar busqueda folder -->
-            <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.btexto']"
+            <!-- <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.btexto']"
                 nbTooltipPlacement="bottom" aria-label="T.t['busqueda.btexto']">
                 <mat-icon>text_fields</mat-icon>
-            </button>
+            </button> -->
 
 
 
@@ -56,25 +60,38 @@
             <nb-card-front>
                 <nb-card accent="info" size="large">
                     <nb-card-body>
-                        <div class="col-lg-6">
-                            <nb-accordion>
-                                <nb-accordion-item *ngIf="MostrarPropiedades">
-                                    <nb-accordion-item-header>Propiedades</nb-accordion-item-header>
-                                    <nb-accordion-item-body>
-                                        <ngx-b-propiedades #propiedades></ngx-b-propiedades>
-                                    </nb-accordion-item-body>
-                                </nb-accordion-item>
-                                <nb-accordion-item *ngIf="MotrarMetadatos">
-                                    <nb-accordion-item-header>Plantillas</nb-accordion-item-header>
-                                    <nb-accordion-item-body>
-                                        <ngx-b-metadatos #metadatos></ngx-b-metadatos>
-                                    </nb-accordion-item-body>
-                                </nb-accordion-item>
-                            </nb-accordion>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <span *ngIf="!ElementoBusquedaActivo">&nbsp;</span>
+                                <nb-accordion>
+                                    <nb-accordion-item *ngIf="MostrarPropiedades">
+                                        <nb-accordion-item-header>Propiedades</nb-accordion-item-header>
+                                        <nb-accordion-item-body>
+                                            <ngx-b-propiedades #propiedades></ngx-b-propiedades>
+                                        </nb-accordion-item-body>
+                                    </nb-accordion-item>
+                                    <nb-accordion-item *ngIf="MotrarMetadatos">
+                                        <nb-accordion-item-header>Plantillas</nb-accordion-item-header>
+                                        <nb-accordion-item-body>
+                                            <ngx-b-metadatos #metadatos></ngx-b-metadatos>
+                                        </nb-accordion-item-body>
+                                    </nb-accordion-item>
+                                </nb-accordion>
+                            </div>
+                            <div class="col-lg-8">
+                                <ngx-editor-boot-tabular #tabla 
+                                [tipo]='Tipo' 
+                                [busuedaPersonalizada] = "busuedaPersonalizada"
+                                (EventoResultadoBusqueda) = "handlerEventoResultadoBusqueda($event)" 
+                                (EventNuevaSeleccion) = "handlerEventNuevaSeleccion($event)"
+                                [desdeRuta]='DesdeRuta' [mostrarBarra]='mostrarBarra'>
+                                </ngx-editor-boot-tabular>
+                            </div>
                         </div>
                     </nb-card-body>
                     <nb-card-footer>
-
+                        <span class="text-danger">{{ totalRegistros }}</span>
+                        <span class="text-hint">&nbsp;{{ T.t["ui.total-regitros"] }}</span>
                     </nb-card-footer>
                 </nb-card>
             </nb-card-front>

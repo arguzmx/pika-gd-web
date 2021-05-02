@@ -14,8 +14,8 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
   },
-  { path: '', redirectTo: 'ui/bienvenida', pathMatch: 'full' },
-  { path: 'index.html', redirectTo: 'ui/bienvenida', pathMatch: 'full' },
+  { path: '', redirectTo: 'pages/inicio', pathMatch: 'full' },
+  { path: 'index.html', redirectTo: 'pages/inicio', pathMatch: 'full' },
   { path: '**', redirectTo: 'pages/404' },
 ];
 

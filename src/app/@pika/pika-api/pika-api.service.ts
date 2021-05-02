@@ -41,7 +41,6 @@ export class PikaApiService<T, U> {
 
   private CrearEndpoint(TipoEntidad: string): string {
     let url = '';
-
     // Las rutas de las entidades se obtienen desde el servidor
     if (this.sessionQ.RutasEntidades.length === 0) return url;
 
@@ -50,12 +49,13 @@ export class PikaApiService<T, U> {
       url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
       url = url + r.Ruta.replace('{version:apiVersion}', this.app.config.apiVersion).toLocaleLowerCase() + '/';
     }
-
     return url;
   }
 
 
-
+  private CrearEndpointPersonalizado(path: string): string {
+    return this.app.config.pikaApiUrl.replace(/\/$/, '') + '/' + path;
+  }
 
 
   GetMetadata(entidad: string): Observable<MetadataInfo> {
@@ -116,6 +116,14 @@ export class PikaApiService<T, U> {
     const qs = this.getQueryStringConsulta(consulta);
 
     return this.http.get<Paginado<T>>(endpoint + 'page' + qs)
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  PostPagePersonalizada(consulta: unknown, path: string): Observable<Paginado<T>> {
+    const endpoint = this.CrearEndpointPersonalizado(path);
+    return this.http.post<Paginado<T>>(endpoint, consulta)
       .pipe(
         retry(retryCount),
       );

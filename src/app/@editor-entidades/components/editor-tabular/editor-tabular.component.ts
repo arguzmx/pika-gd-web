@@ -1,7 +1,7 @@
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
-import { FiltroConsulta, IProveedorReporte, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { NbDialogService } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { AppLogService } from '../../../@pika/pika-module';
@@ -43,7 +43,6 @@ OnDestroy, OnChanges {
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
   @ViewChild('dialogLinkPicker', { static: true }) dialogLinks: TemplateRef<any>;
   @ViewChild('dialogReportPicker', { static: true }) dialogReportPicker: TemplateRef<any>;
-
   @ViewChildren(MetadataTablaComponent) tablas: QueryList<MetadataTablaComponent>;
 
   private dialogComnfirmDelRef: any;
@@ -51,11 +50,18 @@ OnDestroy, OnChanges {
   private dialogReportPickerRef: any;
 
   @Input() config: ConfiguracionEntidad;
+  @Input() mostrarBarra: boolean = true;
+  @Input() busuedaPersonalizada: boolean = false;
+  @Output() eventoConteoRegistros = new EventEmitter();
+  @Output() EventoResultadoBusqueda = new EventEmitter();
+  @Output() EventNuevaSeleccion = new EventEmitter();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.setAlturaPanelLateral(event.target.innerHeight);
   }
+
+  accent: string = "info";
 
   public alturaComponente = '500px';
 
@@ -135,6 +141,9 @@ OnDestroy, OnChanges {
     if (this.dialogLinkPickRef) this.dialogLinkPickRef.close();
   }
 
+  public ResultadoBusquedaHandler(data: unknown) {
+    this.EventoResultadoBusqueda.emit(data);
+  }
 
   public regresar() {
     this.location.back();
@@ -209,6 +218,7 @@ OnDestroy, OnChanges {
 private  ProcesaCambiosConfiguracion(): void {
   if (this.config && this.config.TipoEntidad)  {
     this._Reset();
+    this.accent = this.mostrarBarra ? 'info' : 'basic';
     this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
     .pipe(first())
     .subscribe( m => {
@@ -350,6 +360,8 @@ private  ProcesaCambiosConfiguracion(): void {
 
     this.vinculosActivos = tmp;
     this.vincularActivo = (this.InstanciaSeleccionada && this.tieneVinculos && (this.vinculosActivos.length > 0));
+
+    this.EventNuevaSeleccion.emit(entidad);
   }
 
   public EntidadActualizada(entidad: any) {
@@ -560,6 +572,33 @@ private  ProcesaCambiosConfiguracion(): void {
     '.' + reporte.FormatosDisponibles[0].Id;
 
     this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
+  }
+
+  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void { 
+    this.tablas.first.obtenerPaginaDatosPersonalizada(notificar, path, consulta);
+  }
+
+  public navegarVistaPoTag(tag: string, newWindow: boolean = false) {
+    const link =   this.botonesLinkVista.find(x=>x.Vista == tag);
+    if(link){
+      this.procesaNavegarVista(link, newWindow);
+    }
+  }
+
+  public procesaNavegarVista(link: LinkVista, newWindow: boolean = false) {
+    if (link.RequiereSeleccion) {
+      if (this.InstanciaSeleccionada) {
+        this.ejecutaNavegarVista(link, this.entidad, this.metadata, newWindow);
+      } else {
+        this.applog.AdvertenciaT(
+          'editor-pika.mensajes.warn-sin-seleccion',
+          null,
+          null,
+        );
+      }
+    } else {
+      // Sólo aplica para navegación jerárquica
+    }
   }
 
 }

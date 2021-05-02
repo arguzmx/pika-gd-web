@@ -204,18 +204,32 @@ export class EditorEntidadesBase {
     throw new Error('El método procesaNavegarVista se encuentra sin implementarse');
   }
 
-  public ejecutaNavegarVista(link: LinkVista, entidad: any, metadata: MetadataInfo) {
+
+  public ejecutaNavegarVistaTag(tag: string){
+    
+  }
+
+  public ejecutaNavegarVista(link: LinkVista, entidad: any, metadata: MetadataInfo, newWindow: boolean = false) {
       const parametros = {};
+      var parametrosString = '';
       if(entidad!=null){
         metadata.Propiedades.forEach( p => {
           if (p.ParametroLinkVista) {
             parametros[p.Id] = entidad[p.Id];
+            if (parametrosString != '') parametrosString += '&';
+            parametrosString +=  encodeURIComponent(p.Id) + '=' + encodeURIComponent(entidad[p.Id]);
           }
         });
       } 
       const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
+      parametrosString = url + '?' + parametrosString;
+      
       if (url) {
-        this.router.navigate([url], { queryParams: parametros});
+        if (newWindow) {
+          window.open(parametrosString, 'blank');
+        } else {
+          this.router.navigate([url], { queryParams: parametros});
+        }
       } else {
         this.applog.FallaT(
           'editor-pika.mensajes.err-config-vinculo',

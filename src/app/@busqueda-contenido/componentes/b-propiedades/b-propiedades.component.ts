@@ -35,6 +35,7 @@ export class BPropiedadesComponent implements OnInit {
   public Filtros(): FiltroConsulta[] {
     const filtros: FiltroConsulta[] = [];
     this.buscador.filtros.filter(x=>x.Valido == true).forEach( f=> {
+      // mantener el nulo es para compatibilidad con el backend
         f.Valor = null;
         filtros.push(f);
     });

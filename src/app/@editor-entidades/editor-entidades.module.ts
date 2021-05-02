@@ -186,7 +186,7 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
     EditorBootTabularComponent, EditorBootJerarquicoComponent, 
     MetadataEditorComponent, OfflineMetadataEditorComponent, 
     OfflineMetadataVisorComponent, MetadataBuscadorComponent, 
-    OfflineMetadataBuscadorComponent ],
+    OfflineMetadataBuscadorComponent, MetadataTablaComponent ],
   declarations: [
     EditorJerarquicoComponent,
     EditorTabularComponent,
@@ -224,4 +224,4 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
  export {MetadataBuscadorComponent, EditorEntidadesModule, EditorTabularComponent, EditorJerarquicoComponent,
   EditorBootTabularComponent, EditorBootJerarquicoComponent, MetadataEditorComponent,
   IDiccionarioNavegacion, DiccionarioNavegacion, Traductor, CacheEntidadesService, ConfiguracionEntidad,
-  CacheFiltrosBusqueda, ServicioListaMetadatos, OfflineMetadataBuscadorComponent};
+  CacheFiltrosBusqueda, ServicioListaMetadatos, OfflineMetadataBuscadorComponent, MetadataTablaComponent};

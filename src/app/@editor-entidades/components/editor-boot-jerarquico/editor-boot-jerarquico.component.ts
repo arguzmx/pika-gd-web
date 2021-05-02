@@ -53,7 +53,6 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
       this.route.queryParams
         .pipe(takeUntil(this.onDestroy$))
         .subscribe((params) => {
-
         this.paramTipoArbolJerarquico = (params[PARAM_TIPO_ARBOL_JERARQUICO] || '').toLowerCase();
         this.paramTipoContenidoJerarquico = (params[PARAM_TIPO_CONTENIDO_JERARQUICO] || '').toLowerCase();
         this.paramTipoJerarquico = (params[PARAM_TIPO_JERARQUICO] || '').toLowerCase();

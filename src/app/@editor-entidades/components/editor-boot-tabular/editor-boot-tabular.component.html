@@ -1,3 +1,7 @@
-<ngx-editor-tabular
-    [config] = "config"
+<ngx-editor-tabular #editor
+    [config] = "config" 
+    [mostrarBarra]="mostrarBarra"
+    [busuedaPersonalizada]="busuedaPersonalizada"
+    (EventoResultadoBusqueda) = "handlerEventoResultadoBusqueda($event)" 
+    (EventNuevaSeleccion) = "handlerEventNuevaSeleccion($event)"
 ></ngx-editor-tabular>

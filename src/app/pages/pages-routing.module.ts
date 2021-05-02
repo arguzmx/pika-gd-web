@@ -41,6 +41,9 @@ const routes: Routes = [{
     {
       path: 'buscador',
       component: HostBusquedaContenidoComponent,
+      resolve: {
+        entidadesResolver: EntidadesResolver,
+      }
     },
     {
       path: '404',

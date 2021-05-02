@@ -601,6 +601,31 @@ export class EntidadesService {
 
 
   // realiza una consulta de pagina no relacional
+  public ObtenerPaginaPersonalizada(Entidad: string,
+    consulta: unknown, url: string): Observable<Paginado<unknown>> {
+
+    const subject = new AsyncSubject<Paginado<any>>();
+
+    this.cliente.PostPagePersonalizada(consulta, url).pipe(
+      debounceTime(500), first(),
+    ).subscribe(data => {
+      this.BuscaTextoDeIdentificadores(Entidad, data).pipe(first())
+        .subscribe(isok => {
+          subject.next(data);
+        });
+      subject.next(data);
+      subject.complete();
+    }, (error) => {
+      this.handleHTTPError(error, 'pagina-resultados', '');
+      subject.next(null);
+      subject.complete();
+    },
+      () => {
+      });
+
+    return subject;
+  }
+  
   public ObtenerPagina(Entidad: string,
     consulta: Consulta): Observable<Paginado<any>> {
 

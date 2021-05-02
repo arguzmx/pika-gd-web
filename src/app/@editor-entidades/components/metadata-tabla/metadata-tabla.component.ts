@@ -41,9 +41,11 @@ implements ITablaMetadatos, OnInit, OnChanges {
   // Parámetros de configuración
   @Input() config: ConfiguracionEntidad;
   @Input() metadata: MetadataInfo;
+  @Input() busuedaPersonalizada: boolean = false;
   @Output() NuevaSeleccion = new EventEmitter();
   @Output() EditarSeleccion = new EventEmitter();
   @Output() ConteoRegistros = new EventEmitter();
+  @Output() EventoResultadoBusqueda = new EventEmitter();
 
   // Determina si la entidad en edición se elimina de manera lógica
   public eliminarLogico: boolean = false;
@@ -156,7 +158,9 @@ implements ITablaMetadatos, OnInit, OnChanges {
       }
       this.columnasBase = this.GetColumnasTabla();
       this.EstableceColumnas(this.columnasBase);
-      this.obtenerPaginaDatos(false);
+      if (!this.busuedaPersonalizada) {
+        this.obtenerPaginaDatos(false);
+      } 
     }
   }
 
@@ -246,6 +250,43 @@ implements ITablaMetadatos, OnInit, OnChanges {
         });
      }
   }
+
+  // Obtiene una nueva página de datos
+  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void {
+
+    this.AnularSeleccion();
+    this.data = [];
+    this.configuration.isLoading = true;
+    if (this.columns.length > 4) {
+      this.configuration.horizontalScroll = true;
+    } else {
+      this.configuration.horizontalScroll = false;
+    }
+
+    this.entidades.ObtenerPaginaPersonalizada(this.config.TipoEntidad, consulta, path)
+      .pipe(first())
+      .subscribe(data => {
+        if (data) {
+          
+          this.data = data.Elementos || [];
+
+          data.Elementos= [];
+          this.EventoResultadoBusqueda.emit(data);
+          this.ConteoRegistros.emit(data.ConteoTotal);
+          if (notificar) this.NotificarConteo(data.ConteoTotal);
+
+          this.configuration.isLoading = false;
+
+        } else {
+
+          this.EventoResultadoBusqueda.emit(null);
+          this.ConteoRegistros.emit(0);
+          this.NotificarErrorDatos(data.ConteoTotal);
+          this.configuration.isLoading = false;
+        }
+      });
+
+    }
 
   private NotificarErrorDatos(cantidad: number): void {
     this.applog.FallaT('editor-pika.mensajes.err-pagina-datos', null,
@@ -441,13 +482,17 @@ implements ITablaMetadatos, OnInit, OnChanges {
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
-    this.obtenerPaginaDatos(false);
+    if(this.busuedaPersonalizada) {
+      
+    } else {
+      this.obtenerPaginaDatos(false);
+    }
   }
 
  ///  Inicializa las opciones para la tabla
  ConfiguraTabla(): void {
   this.configuration = { ...DefaultConfig };
-  this.configuration.isLoading = true;
+  this.configuration.isLoading = false;
   this.configuration.serverPagination = true;
   this.configuration.threeWaySort = false;
   this.configuration.tableLayout.style = 'normal';

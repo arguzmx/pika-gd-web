@@ -24,64 +24,65 @@ export class AppComponent implements OnInit {
     private route: Router
   ) {
 
+    translate.addLangs(['es-MX']);
+    translate.setDefaultLang('es-MX');
 
-    if (!this.ValidToken()) {
-      route.navigateByUrl('/bienvenida');
-    } else {
-      translate.addLangs(['es-MX']);
-      translate.setDefaultLang('es-MX');
-
-      auth.issuer = this.config.config.authUrl;
-      auth.skipIssuerCheck = true;
-      auth.clientId = 'api-pika-gd-angular';
-      auth.redirectUri = window.location.origin + '/index.html'
-      auth.silentRefreshRedirectUri = window.location.origin + '/silent-refresh.html';
-      auth.scope = 'openid profile pika-gd';
-      auth.useSilentRefresh = true;
-      auth.sessionChecksEnabled = false;
-      auth.showDebugInformation = true;
-      auth.clearHashAfterLogin = false;
-      auth.requireHttps = false;
-      auth.setStorage(sessionStorage);
-
-      auth.events.subscribe(e => {
-        if (e instanceof OAuthSuccessEvent) {
-          if (e.type == 'token_received') {
-            var urlValue = this.storageService.get('returnurl') == null ? '' : atob(this.storageService.get('returnurl'));
-            console.log(urlValue);
-            if (urlValue != '' && urlValue != '/') {
-              this.storageService.remove('returnurl')
-              this.route.navigateByUrl(urlValue);
-            } else {
-              this.route.navigateByUrl('/pages/inicio');
-            }
-          }
-        }
-        if (e instanceof OAuthErrorEvent) {
-          route.navigateByUrl('/bienvenida');
-        }
-      }
-      );
-
-      if (window.location.toString().indexOf('index.html') < 0
-        && window.location.toString().indexOf('pages/inicio') < 0
-        && window.location.toString().indexOf('bienvenida') < 0
-      ) {
-        this.storageService.set('returnurl', btoa(this.GetLocation()));
-      }
-
-      let url = auth.issuer + '.well-known/openid-configuration';
-      this.auth.loadDiscoveryDocument(url).then(() => {
-
-        this.auth.tryLogin({}).then(r => {
-          if (!r) {
-            this.auth.initImplicitFlow();
-          }
-        }).catch((err) => {
-          this.auth.initImplicitFlow();
-        });
-      }).catch((err) => { console.error(err) });
+    if (window.location.toString().indexOf('index.html') < 0) {
+      this.storageService.set('returnurl', btoa(this.GetLocation()));
     }
+
+    auth.issuer = this.config.config.authUrl;
+    auth.skipIssuerCheck = true;
+    auth.clientId = 'api-pika-gd-angular';
+    auth.redirectUri = window.location.origin + '/index.html'
+    auth.silentRefreshRedirectUri = window.location.origin + '/silent-refresh.html';
+    auth.scope = 'openid profile pika-gd';
+    auth.useSilentRefresh = true;
+    auth.sessionChecksEnabled = false;
+    auth.showDebugInformation = true;
+    auth.clearHashAfterLogin = false;
+    auth.requireHttps = false;
+    auth.setStorage(sessionStorage);
+
+    auth.events.subscribe(e => {
+      if (e instanceof OAuthSuccessEvent) {
+
+        var ensesion = this.storageService.get('ensesion') == null ? 0 : this.storageService.get('ensesion');
+        if (ensesion == 0 && e.type == 'token_received') {
+          this.storageService.set('ensesion', 1);
+
+          var urlValue = this.storageService.get('returnurl') == null ? '' : atob(this.storageService.get('returnurl'));
+          console.log(urlValue);
+          if (urlValue != '' && urlValue != '/') {
+            this.storageService.remove('returnurl')
+            this.route.navigateByUrl(urlValue);
+          } else {
+            this.route.navigateByUrl('/pages/inicio');
+          }
+        }
+      }
+      if (e instanceof OAuthErrorEvent) {
+        route.navigateByUrl('/bienvenida');
+      }
+    }
+    );
+
+
+
+    let url = auth.issuer + '.well-known/openid-configuration';
+    this.auth.loadDiscoveryDocument(url).then(() => {
+
+      this.auth.tryLogin({}).then(r => {
+        if (!r) {
+          this.storageService.set('ensesion', 0);
+          this.auth.initImplicitFlow();
+        }
+      }).catch((err) => {
+        this.storageService.set('ensesion', 0);
+        this.auth.initImplicitFlow();
+      });
+    }).catch((err) => { console.error(err) });
+
   }
 
 

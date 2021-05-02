@@ -14,6 +14,7 @@ export class BMetadatosComponent implements OnInit {
 
   constructor(private servicio: ServicioBusquedaAPI) { }
   public plantillas: unknown[] = [];
+  public Topic: string;
   config: ConfiguracionEntidad;
   metadata: MetadataInfo;
   lateral: boolean = true;
@@ -28,7 +29,8 @@ export class BMetadatosComponent implements OnInit {
   public Filtros(): FiltroConsulta[] {
     const filtros: FiltroConsulta[] = [];
     this.buscador.filtros.filter(x=>x.Valido == true).forEach( f=> {
-        f.Valor = null;
+      // mantener el nulo es para compatibilidad con el backend  
+      f.Valor = null;
         filtros.push(f);
     });
     return filtros;
@@ -44,6 +46,7 @@ export class BMetadatosComponent implements OnInit {
   }
 
   public opChange(id: string): void {
+    this.Topic = id;
     this.servicio.ObtieneMetadataPlantilla(id)
     .pipe(first()).subscribe( m => {
       this.config = { 
@@ -65,6 +68,7 @@ export class BMetadatosComponent implements OnInit {
       });
     }, (ex) => {
       console.error(ex);
+      this.Topic = null;
     }, () => {} );
   }
 

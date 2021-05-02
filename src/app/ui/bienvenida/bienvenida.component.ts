@@ -39,7 +39,7 @@ export class BienvenidaComponent implements OnInit {
       .then(() => {
         if (!this.auth.hasValidAccessToken()) {
           this.auth.initImplicitFlow();
-        };
+        }
       });
   }
 }

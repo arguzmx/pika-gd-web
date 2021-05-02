@@ -78,7 +78,8 @@
         "bpropiedades": "Buscar por propiedades",
         "bfolder": "Buscar por carpeta",
         "btexto": "Buscar por contenido",
-        "buscar": "Buscar"
+        "buscar": "Buscar",
+        "busqueda-novalida": "No ha especificado condiciones de búsqueda válidas"
     },
     "entidades": {
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",

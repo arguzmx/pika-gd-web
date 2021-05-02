@@ -76,8 +76,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     if(this.auth.hasValidAccessToken()) {
       const claims = this.auth.getIdentityClaims();
-      console.log(claims);
-      console.log(claims['preferred_username']);
       this.user['name'] = claims['preferred_username'] ;
     }
 
