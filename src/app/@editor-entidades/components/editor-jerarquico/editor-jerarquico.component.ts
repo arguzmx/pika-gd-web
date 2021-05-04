@@ -811,12 +811,9 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   }
 
   public procesaNavegarVista(link: LinkVista) {
-    console.log(link);
+
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionadaC) {
-        console.log(link);
-        console.log(this.entidadC);
-        console.log(this.metadataC);
         this.ejecutaNavegarVista(link, this.entidadC, this.metadataC);
       } else {
         this.applog.AdvertenciaT(

@@ -103,8 +103,7 @@ export class SesionStore extends Store<SesionState> {
 
     this.auth.events.subscribe(event => {
       if (event instanceof OAuthSuccessEvent) {
-        console.log(this.auth.getAccessToken());
-        
+
         if (this.auth.hasValidAccessToken()){
 
           this.setPropiedad(PropiedadesSesion.isLoggedIn, true);

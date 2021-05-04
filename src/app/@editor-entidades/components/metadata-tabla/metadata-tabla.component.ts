@@ -233,6 +233,16 @@ implements ITablaMetadatos, OnInit, OnChanges {
               this.ConteoRegistros.emit(0);
               this.NotificarErrorDatos(data.ConteoTotal);
             }
+
+            this.pagination.count =
+            this.pagination.count === -1
+              ? data
+                ? data.Elementos.length
+                : 0
+              : this.pagination.count;
+
+          this.pagination = { ...this.pagination };
+
           });
      } else {
       this.entidades.ObtenerPagina( this.config.TipoEntidad, this.consulta)
@@ -243,8 +253,8 @@ implements ITablaMetadatos, OnInit, OnChanges {
             this.configuration.isLoading = false;
             this.ConteoRegistros.emit(data.ConteoTotal);
             if (notificar) this.NotificarConteo(data.ConteoTotal);
+            this.pagination.count = data.Paginas;
           } else {
-            this.ConteoRegistros.emit(0);
             this.NotificarErrorDatos(data.ConteoTotal);
           }
         });
@@ -463,25 +473,21 @@ implements ITablaMetadatos, OnInit, OnChanges {
 
   // evalua el evento de paginacdo
   private onPagination(obj: TablaEventObject): void {
-    this.pagination.limit = obj.value.limit
-      ? obj.value.limit
-      : this.pagination.limit;
-    this.pagination.offset = obj.value.page
-      ? obj.value.page
-      : this.pagination.offset;
-    this.pagination.sort = !!obj.value.key
-      ? obj.value.key
-      : this.pagination.sort;
-    this.pagination.order = !!obj.value.order
-      ? obj.value.order
-      : this.pagination.order;
+    
+    this.pagination.limit = obj.value.limit ? obj.value.limit : this.pagination.limit;
+    this.pagination.offset = obj.value.page ? obj.value.page : this.pagination.offset;
+    this.pagination.sort = !!obj.value.key ? obj.value.key : this.pagination.sort;
+    this.pagination.order = !!obj.value.order ? obj.value.order: this.pagination.order;
+    
     this.pagination = { ...this.pagination };
+
     this.consulta.consecutivo = 0;
     this.consulta.indice = this.pagination.offset - 1;
     this.consulta.tamano = this.pagination.limit;
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
+    
     if(this.busuedaPersonalizada) {
       
     } else {

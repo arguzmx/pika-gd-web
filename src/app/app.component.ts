@@ -52,7 +52,6 @@ export class AppComponent implements OnInit {
           this.storageService.set('ensesion', 1);
 
           var urlValue = this.storageService.get('returnurl') == null ? '' : atob(this.storageService.get('returnurl'));
-          console.log(urlValue);
           if (urlValue != '' && urlValue != '/') {
             this.storageService.remove('returnurl')
             this.route.navigateByUrl(urlValue);

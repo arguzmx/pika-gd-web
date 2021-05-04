@@ -345,18 +345,21 @@ private  ProcesaCambiosConfiguracion(): void {
     (this.config.TipoDespliegue.toString() !== TipoDespliegueVinculo.Membresia.toString());
 
     const tmp: EntidadVinculada[] =[]; 
-    this.vinculos.forEach( v => {
-      if (v.FiltroUI === '') {
-        tmp.push(v);
-      } else {
-        const exp = v.FiltroUI.replace(/\[/g, 'entidad[');
-        const vv = {...v};
-        vv.Activo = eval(exp);    
-        if(vv.Activo){
-          tmp.push(vv);
+
+    if(entidad!=null) {
+      this.vinculos.forEach( v => {
+        if (v.FiltroUI === '') {
+          tmp.push(v);
+        } else {
+          const exp = v.FiltroUI.replace(/\[/g, 'entidad[');
+          const vv = {...v};
+          vv.Activo = eval(exp);    
+          if(vv.Activo){
+            tmp.push(vv);
+          }
         }
-      }
-    });
+      });
+    }
 
     this.vinculosActivos = tmp;
     this.vincularActivo = (this.InstanciaSeleccionada && this.tieneVinculos && (this.vinculosActivos.length > 0));
