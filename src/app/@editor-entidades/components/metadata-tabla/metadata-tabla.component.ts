@@ -224,6 +224,9 @@ implements ITablaMetadatos, OnInit, OnChanges {
           this.config.OrigenId, this.config.TipoEntidad, this.consulta)
           .pipe(first())
           .subscribe( data => {
+
+            console.log(data.ConteoTotal);
+
             if (data) {
               this.data = data.Elementos || [];
               this.configuration.isLoading = false;
@@ -234,7 +237,6 @@ implements ITablaMetadatos, OnInit, OnChanges {
               this.NotificarErrorDatos(data.ConteoTotal);
             }
 
-            console.log(data.ConteoTotal);
 
             this.pagination.count =
             this.pagination.count === -1
@@ -250,7 +252,11 @@ implements ITablaMetadatos, OnInit, OnChanges {
       this.entidades.ObtenerPagina( this.config.TipoEntidad, this.consulta)
       .pipe(first())
       .subscribe( data => {
+
+        console.log(data.ConteoTotal);
+        
           if (data) {
+            console.log(data.ConteoTotal);
             this.data = data.Elementos  || [];
             this.configuration.isLoading = false;
             this.ConteoRegistros.emit(data.ConteoTotal);
@@ -259,6 +265,16 @@ implements ITablaMetadatos, OnInit, OnChanges {
           } else {
             this.NotificarErrorDatos(data.ConteoTotal);
           }
+
+          this.pagination.count =
+          this.pagination.count === -1
+            ? data
+              ? data.ConteoTotal
+              : 0
+            : this.pagination.count;
+
+          this.pagination = { ...this.pagination };
+
         });
      }
   }
