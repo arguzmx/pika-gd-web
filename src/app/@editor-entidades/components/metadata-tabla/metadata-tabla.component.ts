@@ -234,6 +234,8 @@ implements ITablaMetadatos, OnInit, OnChanges {
               this.NotificarErrorDatos(data.ConteoTotal);
             }
 
+            console.log(data.ConteoTotal);
+
             this.pagination.count =
             this.pagination.count === -1
               ? data

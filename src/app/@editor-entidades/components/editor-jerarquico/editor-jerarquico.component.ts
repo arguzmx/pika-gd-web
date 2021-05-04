@@ -814,7 +814,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionadaC) {
-        this.ejecutaNavegarVista(link, this.entidadC, this.metadataC);
+        this.ejecutaNavegarVista(link, this.entidadC, this.metadataC, true);
       } else {
         this.applog.AdvertenciaT(
           'editor-pika.mensajes.warn-sin-seleccion',
