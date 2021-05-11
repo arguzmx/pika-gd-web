@@ -39,6 +39,7 @@ import { ValorPropiedad } from './metadata/valor-propiedad';
 import { DocumentoPlantilla } from './metadata/documeto-plantilla';
 import { VinculoDocumentoPlantilla, VinculosObjetoPlantilla } from './metadata/vinculos-objeto-plantilla';
 import { RequestValoresPlantilla } from './metadata/request-valores-plantilla';
+import { PropiedadesExtendidas, PropiedadExtendida, ValoresEntidad } from './consulta/propiedades-extendidas';
 
 @NgModule({
   imports: [],
@@ -61,5 +62,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
   LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
   PESCRIBIR, PLEER, PADMINISTRAR, ValorPropiedad, DocumentoPlantilla, VinculosObjetoPlantilla, VinculoDocumentoPlantilla,
-  RequestValoresPlantilla, RespuestaPermisos
+  RequestValoresPlantilla, RespuestaPermisos, PropiedadesExtendidas, ValoresEntidad, PropiedadExtendida
 };

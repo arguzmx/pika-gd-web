@@ -10,7 +10,7 @@
 
 <!-- Tmplate para despliegue de fechas-->
 <ng-template #fechaTpl let-row let-rowIndex="rowIndex" let-column="column">
-    <span >{{EtiquetasFecha(row[column.key], column.key)}}</span>
+    <span >{{EtiquetasFecha(row[column.key], column.key, column, rowIndex)}}</span>
 </ng-template>
 
 <!-- Template para columnas ID -->

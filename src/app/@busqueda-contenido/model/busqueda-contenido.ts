@@ -4,6 +4,8 @@ export enum EstadoBusqueda {
     Nueva = 0, EnEjecucion = 1, Finaliza = 3, FinalizadaError = 10
 }
 
+
+
 export interface BusquedaContenido {
     Id: string;
     Elementos: Busqueda[];

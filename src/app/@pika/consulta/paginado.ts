@@ -1,3 +1,5 @@
+import { PropiedadesExtendidas } from "./propiedades-extendidas";
+
 /** Extrcutura para el paginado de listas de elementos */
 export class Paginado<T> {
   Desde: number;
@@ -8,4 +10,5 @@ export class Paginado<T> {
   Elementos: T[];
   TienePrevio: boolean;
   TieneSiguiente: boolean;
+  PropiedadesExtendidas?: PropiedadesExtendidas;
 }

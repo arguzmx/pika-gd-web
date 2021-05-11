@@ -22,7 +22,7 @@ export class BienvenidaComponent implements OnInit {
     auth.scope = 'openid profile pika-gd';
     auth.useSilentRefresh = true;
     auth.sessionChecksEnabled = false;
-    auth.showDebugInformation = true;
+    auth.showDebugInformation = false;
     auth.clearHashAfterLogin = false;
     auth.requireHttps = false;
     auth.setStorage(sessionStorage);

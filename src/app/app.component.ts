@@ -27,7 +27,8 @@ export class AppComponent implements OnInit {
     translate.addLangs(['es-MX']);
     translate.setDefaultLang('es-MX');
 
-    if (window.location.toString().indexOf('index.html') < 0) {
+    if (window.location.toString().indexOf('index.html') < 0
+        && window.location.toString().indexOf('inicio') < 0) {
       this.storageService.set('returnurl', btoa(this.GetLocation()));
     }
 
@@ -39,7 +40,7 @@ export class AppComponent implements OnInit {
     auth.scope = 'openid profile pika-gd';
     auth.useSilentRefresh = true;
     auth.sessionChecksEnabled = false;
-    auth.showDebugInformation = true;
+    auth.showDebugInformation = false;
     auth.clearHashAfterLogin = false;
     auth.requireHttps = false;
     auth.setStorage(sessionStorage);

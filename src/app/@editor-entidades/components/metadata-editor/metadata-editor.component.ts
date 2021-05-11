@@ -47,7 +47,6 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'ngx-metadata-editor',
@@ -303,7 +302,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     const controls = Object.keys(this.formGroup.controls);
 
     // Obtiene los objetos de la configuración en base a la lista de nombres
-    const configControls = this.metadata.Propiedades.map((item) => item.Id);
+    const configControls = this.metadata.Propiedades.sort(x=>x.IndiceOrdenamiento).map((item) => item.Id);
 
     // Para cada control que no se encuentre en la lista de existentes
     // Elimina cada control que spertenezca a la configurcion actual

@@ -10,4 +10,5 @@ export interface ColumnaTabla {
   EsLista: boolean;
   EsFecha: boolean;
   EsCatalogoVinculado: boolean;
+  EsPropiedadExtendida: boolean;
 }

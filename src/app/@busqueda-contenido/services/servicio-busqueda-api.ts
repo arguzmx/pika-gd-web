@@ -10,6 +10,7 @@ import { Plantilla } from '../model/plantilla';
 export class ServicioBusquedaAPI  {
   
   private endpointPlantilla: string;
+  private endpointContenido: string;
 
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
@@ -18,6 +19,7 @@ export class ServicioBusquedaAPI  {
   
   constructor(private http: HttpClient, private config: AppConfig) {
     this.endpointPlantilla = this.DepuraUrl(config.config.apiUrl) + `metadatos/`;
+    this.endpointContenido = this.DepuraUrl(config.config.apiUrl) + `contenido/`;
   }
 
 
@@ -26,6 +28,11 @@ export class ServicioBusquedaAPI  {
     return this.http.get<Plantilla[]>(url);
   }
 
+  
+  public ObtieneDatosRepositorio(id: string): Observable<unknown> {
+    const url = this.DepuraUrl(this.endpointContenido ) + 'PuntoMontaje/' + id;
+    return this.http.get<unknown>(url);
+  }
 
   public ObtieneMetadataPlantilla(id: string): Observable<MetadataInfo> {
 

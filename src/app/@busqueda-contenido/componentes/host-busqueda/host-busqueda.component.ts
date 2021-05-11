@@ -37,6 +37,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   totalRegistros: number = 0;
   documentoSeleccionado: any;
   contenidoSeleccionado: boolean = false;
+  nombreRepo: string;
 
   DesdeRuta = false;
   Tipo = 'Elemento';
@@ -68,12 +69,21 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((params) => {
         this.IdRepositorio = params.OrigenId;
+        this.cargaRepo();
         this.CargaTraducciones();
       }, (e) => {
         this.router.navigateByUrl('/pages/sinacceso');
       }, () => { });
 
   }
+
+private cargaRepo() {
+  this.api.ObtieneDatosRepositorio(this.IdRepositorio).subscribe(
+    r => {
+      this.nombreRepo = r["Nombre"];
+    }
+  )
+}
 
   private CargaTraducciones() {
     this.T.ts = [
@@ -125,6 +135,8 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   public buscar(): void {
 
     var esValida: boolean = false;
+
+ // const b: BusquedaContenido =  JSON.parse('{"Id":"f752be38-696e-4ccf-9498-45199d65a0f5","Elementos":[{"Tag":"metadatos","Topico":"1b391fb6-05e9-4fd2-9fc7-4d4995d8f31f","Consulta":{"Filtros":[{"Negacion":false,"Propiedad":"89a52f0d-9ddc-4deb-8ced-d6ef62ccee5d","Operador":"eq","Valor":null,"Id":"89a52f0d-9ddc-4deb-8ced-d6ef62ccee5d","ValorString":"false","Valido":true}]}}],"Fecha":"2021-05-09T23:21:35.170Z","FechaFinalizado":"2021-05-09T23:21:35.170Z","Estado":0,"PuntoMontajeId":"bd03c5b8-e1a1-4f5f-bbde-d8bd9ba99b32","indice":0,"tamano":50,"consecutivo":0,"ord_columna":"","ord_direccion":"","recalcular_totales":true}');
 
     const b: BusquedaContenido = {
       Id: this.NewGuid(),

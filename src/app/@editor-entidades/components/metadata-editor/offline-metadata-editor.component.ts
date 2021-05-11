@@ -214,7 +214,7 @@ export class OfflineMetadataEditorComponent
     const controls = Object.keys(this.formGroup.controls);
 
     // Obtiene los objetos de la configuración en base a la lista de nombres
-    const configControls = this.metadata.Propiedades.map((item) => item.Id);
+    const configControls = this.metadata.Propiedades.sort(x=>x.IndiceOrdenamiento).map((item) => item.Id);
 
     // Para cada control que no se encuentre en la lista de existentes
     // Elimina cada control que spertenezca a la configurcion actual
