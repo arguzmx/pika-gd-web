@@ -94,7 +94,8 @@ private cargaRepo() {
       'busqueda.btexto',
       'busqueda.buscar',
       'ui.total-regitros',
-      'vistas.visorcontenido'
+      'vistas.visorcontenido',
+      'ui.selcol'
     ];
     this.T.ObtenerTraducciones();
   }
@@ -136,8 +137,6 @@ private cargaRepo() {
 
     var esValida: boolean = false;
 
- // const b: BusquedaContenido =  JSON.parse('{"Id":"f752be38-696e-4ccf-9498-45199d65a0f5","Elementos":[{"Tag":"metadatos","Topico":"1b391fb6-05e9-4fd2-9fc7-4d4995d8f31f","Consulta":{"Filtros":[{"Negacion":false,"Propiedad":"89a52f0d-9ddc-4deb-8ced-d6ef62ccee5d","Operador":"eq","Valor":null,"Id":"89a52f0d-9ddc-4deb-8ced-d6ef62ccee5d","ValorString":"false","Valido":true}]}}],"Fecha":"2021-05-09T23:21:35.170Z","FechaFinalizado":"2021-05-09T23:21:35.170Z","Estado":0,"PuntoMontajeId":"bd03c5b8-e1a1-4f5f-bbde-d8bd9ba99b32","indice":0,"tamano":50,"consecutivo":0,"ord_columna":"","ord_direccion":"","recalcular_totales":true}');
-
     const b: BusquedaContenido = {
       Id: this.NewGuid(),
       Elementos: [],
@@ -148,9 +147,10 @@ private cargaRepo() {
       indice: 0,
       tamano: 50,
       consecutivo: 0,
-      ord_columna: '',
-      ord_direccion: '',
-      recalcular_totales: true
+      ord_columna: 'Nombre',
+      ord_direccion: 'asc',
+      recalcular_totales: true, 
+      PlantillaId : ''
     };
 
     if (this.MostrarPropiedades) {
@@ -173,6 +173,7 @@ private cargaRepo() {
     if (this.MotrarMetadatos) {
 
       if (this.metadatos.Filtros().length > 0) {
+        b.PlantillaId = this.metadatos.Topic;
         const metadatos: Busqueda = {
           Tag: 'metadatos',
           Topico: this.metadatos.Topic,
@@ -208,12 +209,12 @@ private cargaRepo() {
 
   }
 
-  private URLDocumento(doc: unknown): string {
-    return `pages/visor?Id=${doc["Id"]}8&Nombre=${doc["Nombre"]}&VolumenId=${doc["VolumenId"]}&VersionId=${doc["VersionId"]}8&PuntoMontajeId=${doc["PuntoMontajeId"]}`;
-  }
-
   public NavegarAVisor() {
     this.tabla.NavegarLinkPorTag('visorcontenido', true);
   }
+
+ public mostrarSelectorColumnas() {
+   this.tabla.mostrarSelectorColumnas();
+ }
 
 }

@@ -13,6 +13,7 @@ export class MetadataInfo {
     EntidadesVinculadas?: EntidadVinculada[];
     CatalogosVinculados?: CatalogoVinculado [];
     VistasVinculadas?: LinkVista[];
+    AsociadoMetadatos: boolean;
     Propiedades: Propiedad[];
     Reportes?:  IProveedorReporte[];
     TokenMod?: string;

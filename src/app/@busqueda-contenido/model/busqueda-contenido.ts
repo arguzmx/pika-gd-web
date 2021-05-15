@@ -19,6 +19,7 @@ export interface BusquedaContenido {
     ord_columna: string;
     ord_direccion: string;
     recalcular_totales: boolean;
+    PlantillaId?: string;
 }
 
 export interface Busqueda {

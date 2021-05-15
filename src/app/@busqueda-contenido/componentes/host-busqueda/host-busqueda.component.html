@@ -6,11 +6,11 @@
                 <mat-icon color="primary">reply</mat-icon>
             </button>
             <span>
-                Buscar en : <span class="text-primary">{{nombreRepo}}</span> 
+                Buscar en : <span class="text-primary">{{nombreRepo}}</span>
             </span>
             <span class="toolbar-spacer">
             </span>
-            
+
 
             <!-- Separadador -->
             <button style="width:fit-content;" mat-icon-button on-click="buscar()" [nbTooltip]="T.t['busqueda.buscar']"
@@ -26,7 +26,7 @@
                 <mat-icon>fingerprint</mat-icon>
             </button>
 
-            
+
             <!-- Mostrar busqueda meatdatos -->
             <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bmetadatos']"
                 nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bmetadatos']">
@@ -34,10 +34,17 @@
             </button>
 
             <mat-icon class="gray-icon">more_vert</mat-icon>
-            <button *ngIf="contenidoSeleccionado" mat-icon-button on-click="NavegarAVisor()" [nbTooltip]="T.t['vistas.visorcontenido']"
-                nbTooltipPlacement="bottom" aria-label="T.t['vistas.visorcontenido']">
+            <button *ngIf="contenidoSeleccionado" mat-icon-button on-click="NavegarAVisor()"
+                [nbTooltip]="T.t['vistas.visorcontenido']" nbTooltipPlacement="bottom"
+                aria-label="T.t['vistas.visorcontenido']">
                 <mat-icon>preview</mat-icon>
             </button>
+
+            <button mat-icon-button on-click="mostrarSelectorColumnas()" [nbTooltip]="T.t['ui.selcol']"
+                nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
+                <mat-icon>view_comfy</mat-icon>
+            </button>
+
             <!-- Mostrar busqueda folder -->
             <!-- <button mat-icon-button on-click="alternarMetadatos()" [nbTooltip]="T.t['busqueda.bfolder']"
                 nbTooltipPlacement="bottom" aria-label="T.t['busqueda.bfolder']">
@@ -78,12 +85,11 @@
                                 </nb-accordion>
                             </div>
                             <div class="col-lg-8">
-                                <ngx-editor-boot-tabular #tabla 
-                                [tipo]='Tipo' 
-                                [busuedaPersonalizada] = "busuedaPersonalizada"
-                                (EventoResultadoBusqueda) = "handlerEventoResultadoBusqueda($event)" 
-                                (EventNuevaSeleccion) = "handlerEventNuevaSeleccion($event)"
-                                [desdeRuta]='DesdeRuta' [mostrarBarra]='mostrarBarra'>
+                                <ngx-editor-boot-tabular #tabla [tipo]='Tipo'
+                                    [busuedaPersonalizada]="busuedaPersonalizada"
+                                    (EventoResultadoBusqueda)="handlerEventoResultadoBusqueda($event)"
+                                    (EventNuevaSeleccion)="handlerEventNuevaSeleccion($event)" [desdeRuta]='DesdeRuta'
+                                    [mostrarBarra]='mostrarBarra'>
                                 </ngx-editor-boot-tabular>
                             </div>
                         </div>

@@ -1,3 +1,4 @@
+import { ValorListaOrdenada } from './../../../@pika/metadata/valor-lista';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { EntidadesService } from './../../services/entidades.service';
 import { first } from 'rxjs/operators';
@@ -16,7 +17,7 @@ import { ColumnaTabla } from '../../model/columna-tabla';
 import { Propiedad, MetadataInfo } from '../../../@pika/pika-module';
 import { TablaEventObject } from '../../model/tabla-event-object';
 import { AppLogService } from '../../../@pika/pika-module';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
 import { format } from 'date-fns';
@@ -39,6 +40,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('fechaTpl', { static: true }) fechaTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
+  @ViewChild('listaplantilla') listaplantilla: NbSelectComponent;
+
   private dialogColPickRef: any;
 
 
@@ -60,6 +63,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // Define si el paginao de la entidad es relacional
   private usarPaginadoRelacional: boolean = false;
 
+
+  // Plantillas de datos disponibles
+  public plantillas: ValorListaOrdenada[] = [];
+  public plantillaSeleccionada: string = '';
+
   // Datos y columnas para EasyTables en el template
   public entidadseleccionada: any = null;
   public renglonSeleccionado: number = -1;
@@ -68,6 +76,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   public columns: Columns[] = [];
   public columnasBase: ColumnaTabla[] = [];
   public columnasExtendias: string[] = [];
+  public AsociadoMetadatos: boolean = false;
   private tmpcolumnas: ColumnaTabla[] = [];
   public pagination = {
     limit: 10,
@@ -82,6 +91,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   public _Reset(): void {
+    this.plantillaSeleccionada = '';
+    this.AsociadoMetadatos = false;
     this._CerrarDialogos();
     this.entidadseleccionada = null;
     this.renglonSeleccionado = -1;
@@ -152,6 +163,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   ngOnInit(): void {
     this.ConfiguraTabla();
     this.CargaTraducciones();
+    this.ObtienePlantillas();
   }
 
 
@@ -191,7 +203,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   private CargaTraducciones(): void {
-    this.T.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades'];
+    this.T.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades', 'ui.plantillas'];
     this.T.ObtenerTraducciones();
   }
 
@@ -204,12 +216,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       m.PaginadoRelacional = true;
     }
 
-    // const cachekeys =  Object.keys(this.PropCache.items);
-    // for ( let i = 0; i < m.Propiedades.length; i++ ) {
-    //   if (cachekeys.indexOf(m.Propiedades[i].Id) >= 0 ) {
-    //     m.Propiedades[i].ValorDefault = this.PropCache.get(m.Propiedades[i].Id);
-    //   }
-    // }
+    this.AsociadoMetadatos = m.AsociadoMetadatos;
 
     if (m.PaginadoRelacional && m.PaginadoRelacional === true) {
       this.usarPaginadoRelacional = true;
@@ -261,7 +268,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     return Id;
   }
 
-  public EtiquetasFecha(f: Date, EntidadId: string,  column: any, rowIndex: any) {
+  public EtiquetasFecha(f: Date, EntidadId: string, column: any, rowIndex: any) {
 
     if (!this.metadata) return '';
 
@@ -386,11 +393,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     });
 
     pllantillas.forEach(pid => {
+      this.plantillaSeleccionada = pid;
       if (this.columnasExtendias.indexOf(pid) < 0) {
         props.Propiedades.forEach(p => {
-          
+
           if (p.PlantillaId == pid) {
-            
+
             columnas.push({
               Id: p.Id,
               Nombre: p.Nombre,
@@ -407,7 +415,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             });
 
 
-            this.metadata.Propiedades.push({ 
+            this.metadata.Propiedades.push({
               Id: p.Id,
               Nombre: p.Nombre,
               NombreI18n: p.Nombre,
@@ -432,7 +440,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               ValidadorNumero: null,
               Atributos: null,
               AtributoLista: null,
-              AtributosVistaUI: [ {
+              AtributosVistaUI: [{
                 PropiedadId: p.Id,
                 Control: this.ControlHTMLDePropiedadExtendida(p),
                 Accion: Acciones.search,
@@ -440,7 +448,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               }],
               AtributosEvento: null,
               ValoresLista: null,
-              OrdenarValoresListaPorNombre:  false,
+              OrdenarValoresListaPorNombre: false,
               Valor: null,
               MostrarEnTabla: true,
               AlternarEnTabla: true,
@@ -451,7 +459,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               CatalogoVinculado: false,
               EmitirCambiosValor: false,
               ParametroLinkVista: null
-            } );
+            });
           }
         });
         this.columnasExtendias.push(pid);
@@ -461,9 +469,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if (columnas.length > 0) {
       columnas.forEach(c => {
-        this.columnasBase.push(c);
+        this.columnasBase.push({... c});
       });
-       
       this.EstableceColumnas(this.columnasBase);
     }
   }
@@ -504,8 +511,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   private TipoDatoDePropiedadExtendida(p: PropiedadExtendida): TipoDato {
-    return {   Id: p.Id,
-              Nombre: ""}
+    return {
+      Id: p.Id,
+      Nombre: ""
+    }
   }
 
   eventosTabla($event: { event: string; value: any }): void {
@@ -564,35 +573,26 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.pagination = { ...this.pagination };
 
-    // Id: string;
-    // Elementos: Busqueda[];
-    // Fecha: Date;
-    // FechaFinalizado: Date;
-    // Estado: EstadoBusqueda;
-    // PuntoMontajeId: string;
-    // indice: number;
-    // tamano: number;
-    // consecutivo: number;
-    // ord_columna: string;
-    // ord_direccion: string;
-    // recalcular_totales: boolean;
-
     if (this.busuedaPersonalizada) {
-      this.consultaPersonalizada["consecutivo"] = 0;
-      this.consultaPersonalizada["indice"] = this.pagination.offset - 1;
-      this.consultaPersonalizada["tamano"] = this.pagination.limit;
-      this.consultaPersonalizada["ord_columna"] = this.pagination.sort;
-      this.consultaPersonalizada["ord_direccion"] = this.pagination.order;
-      this.obtenerPaginaDatosPersonalizada(false, this.urlPersonalizado, this.consultaPersonalizada);
-      
+      if (this.consultaPersonalizada) {
+        this.consultaPersonalizada["consecutivo"] = 0;
+        this.consultaPersonalizada["indice"] = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+        this.consultaPersonalizada["tamano"] = this.pagination.limit;
+        this.consultaPersonalizada["ord_columna"] = this.pagination.sort;
+        this.consultaPersonalizada["ord_direccion"] = this.pagination.order;
+        this.consultaPersonalizada["recalcular_totales"] = false;
+        this.obtenerPaginaDatosPersonalizada(false, this.urlPersonalizado, this.consultaPersonalizada);
+      }
     } else {
-      this.consulta.consecutivo = 0;
-      this.consulta.indice = this.pagination.offset - 1;
-      this.consulta.tamano = this.pagination.limit;
-      this.consulta.ord_columna = this.pagination.sort;
-      this.consulta.ord_direccion = this.pagination.order;
-      this.consulta = { ...this.consulta };
-      this.obtenerPaginaDatos(false);
+      if (this.consulta) {
+        this.consulta.consecutivo = 0;
+        this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+        this.consulta.tamano = this.pagination.limit;
+        this.consulta.ord_columna = this.pagination.sort;
+        this.consulta.ord_direccion = this.pagination.order;
+        this.consulta = { ...this.consulta };
+        this.obtenerPaginaDatos(false);
+      }
     }
   }
 
@@ -697,13 +697,13 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.data = data.Elementos || [];
           }
 
-      
+
           this.cdr.detectChanges();
           data.Elementos = [];
           this.EventoResultadoBusqueda.emit(data);
           this.ConteoRegistros.emit(data.ConteoTotal);
           if (notificar) this.NotificarConteo(data.ConteoTotal);
-          
+
           this.configuration.isLoading = false;
           this.cdr.detectChanges();
 
@@ -768,22 +768,76 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     const color_par = '#FFFFFF';
     const color_non = '#f6f7f9';
     let color: string;
-    for (let index = 0; index < this.data.length; index++) {
-      if (((index + 1) % 2) === 0) {
-        color = color_par;
-      } else {
-        color = color_non;
+    if (this.data) {
+      for (let index = 0; index < this.data.length; index++) {
+        if (((index + 1) % 2) === 0) {
+          color = color_par;
+        } else {
+          color = color_non;
+        }
+        const val = { row: index + 1, attr: 'background-color', value: color };
+        this.table.apiEvent({
+          type: API.setRowStyle,
+          value: val,
+        });
       }
-      const val = { row: index + 1, attr: 'background-color', value: color };
-      this.table.apiEvent({
-        type: API.setRowStyle,
-        value: val,
-      });
     }
   }
 
   public elementoSeleccionado(): any {
     return this.entidadseleccionada;
   }
+
+  public elminaColumnasMetadatos() {
+    const columnas = [];
+    this.columnasBase.forEach( c=> {
+        if(!c.EsPropiedadExtendida){
+          columnas.push(c);
+        }
+    });     
+    this.columnasBase = columnas;
+    this.tmpcolumnas = columnas;
+  }
+
+
+  public cambioPlantilla(id: string) {
+
+    this.elminaColumnasMetadatos();
+    const propiedades: PropiedadesExtendidas = {
+      Propiedades: []
+    };
+    this.columnasExtendias = [];
+    if(id!='') {
+      this.entidades.ObtieneMetadataInfo(id).pipe(first())
+      .subscribe((data) => {
+        data.Propiedades.forEach( p=> {
+          propiedades.Propiedades.push({ 
+            PlantillaId: id,
+            Id: p.Id,
+            Nombre: p.Nombre,
+            TipoDatoId: p.TipoDatoId
+          });
+        });
+        this.EstableceColumnasMetadatos(propiedades);
+      }, (e) => { }, () => { });
+    }
+    
+  }
+
+  // Obtiene las plantillas disponibles para el documento
+  private ObtienePlantillas(): void {
+    this.entidades.ObtienePlantillas().pipe(first())
+      .subscribe((data) => {
+        const lista : ValorListaOrdenada[] = [];
+        lista.push({Id: '', Texto: 'Ninguno', Indice: 0 });
+        
+        data.forEach(d=> {
+          lista.push({... d});
+        });
+
+        this.plantillas = lista;
+      }, (e) => { }, () => { });
+  }
+
 
 }

@@ -137,6 +137,31 @@ export class EntidadesService {
   }
 
 
+
+  /// Gestion de plantillas
+  // ---------------------------------------
+  // ---------------------------------------
+
+  private DepuraUrl(url: string): string {
+    return url.replace(/\/$/, '') + '/';
+  }
+
+  public ObtienePlantillas(): Observable<ValorListaOrdenada[]> {
+    const url = this.DepuraUrl(this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`) + 'plantillas/' ;
+    return this.http.get<ValorListaOrdenada[]>(url);
+  }
+
+
+  public ObtieneMetadataInfo(id: string): Observable<MetadataInfo> {
+    const subject = new AsyncSubject<MetadataInfo>();
+      const url = this.DepuraUrl(this.DepuraUrl(this.app.config.apiUrl) + `metadatos/` ) + id;
+      this.http.get<MetadataInfo>(url).pipe(first())
+      .subscribe(m=> {
+        subject.next(m);
+      }, (e)=>{}, ()=>{subject.complete()})
+    return subject;
+  }
+
   // Getsion de jerarquias
   // ---------------------------------------
   // ---------------------------------------

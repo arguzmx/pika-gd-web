@@ -1,6 +1,6 @@
 export interface PropiedadesExtendidas {
     Propiedades: PropiedadExtendida[];
-    ValoresEntidad: ValoresEntidad[];
+    ValoresEntidad?: ValoresEntidad[];
 }
 
 export interface PropiedadExtendida {

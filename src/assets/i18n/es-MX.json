@@ -44,7 +44,8 @@
         "elegir-ellipsis": "Elegir ...",
         "reportes": "Reportes",
         "elementoseleccionado": "la selección",
-        "busqueda-lateral": "Mostrar/ocultar pánel de búsqueda"
+        "busqueda-lateral": "Mostrar/ocultar pánel de búsqueda",
+        "plantillas": "Plantilla"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",

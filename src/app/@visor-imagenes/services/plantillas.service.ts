@@ -7,7 +7,7 @@ import { DocumentosService } from './documentos.service';
 export class PlantillasService {
 
   constructor(private docService: DocumentosService) {
-    console.info('Servicio de plantillas IP');
+    
   }
 
   public ObtienePlantillas(): Observable<Plantilla[]> {

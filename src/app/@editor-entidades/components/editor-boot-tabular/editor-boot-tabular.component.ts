@@ -167,4 +167,8 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
     this.editor.navegarVistaPoTag(tag, newWindow);
   }
 
+  public mostrarSelectorColumnas() {
+    this.editor.mostrarSelectorColumnas();
+  }
+
 }
