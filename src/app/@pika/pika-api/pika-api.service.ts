@@ -11,6 +11,7 @@ import {  retry } from 'rxjs/operators';
 import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
+import { ContenidoVinculado } from '../conteido/contenido-vinculado';
 
 const retryCount: number = 0;
 
@@ -33,9 +34,7 @@ export class PikaApiService<T, U> {
     let url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
     url = url + 'api/v{version:apiversion}/sistema/appconfig/ruteotipos';
     url = url.replace('{version:apiversion}', this.app.config.apiVersion);
-
     return this.http.get<RutaTipo[]>(url);
-
   }
 
 
@@ -56,6 +55,21 @@ export class PikaApiService<T, U> {
   private CrearEndpointPersonalizado(path: string): string {
     return this.app.config.pikaApiUrl.replace(/\/$/, '') + '/' + path;
   }
+
+
+  GetContenidoVinculado(entidad: string, id: string): Observable<ContenidoVinculado> {
+    const endpoint = this.CrearEndpoint(entidad);
+    return this.http.get<any>(endpoint + id + '/contenido');
+  }
+
+  VinculaElmentoContenido(entidad: string, id: string, contenidoId: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad);
+    return this.http.post<any>(endpoint + id + '/contenido/' + contenidoId, null);
+  }
+  public CreaCarpeta(entidad: string, PuntoMontajeId: string, ruta ): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + "ruta";
+    return this.http.post<MetadataInfo>(endpoint, { UsuarioId: '', Ruta: ruta, PuntoMontajeId: PuntoMontajeId });
+ }
 
 
   GetMetadata(entidad: string): Observable<MetadataInfo> {

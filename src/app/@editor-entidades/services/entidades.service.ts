@@ -9,7 +9,6 @@ import { MetadataInfo, tString } from '../../@pika/pika-module';
 import { PikaApiService } from '../../@pika/pika-module';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { TraduccionEntidad } from '../../@pika/pika-module';
 import { AppLogService } from '../../@pika/pika-module';
 import { TextoDesdeId } from '../model/texto-desde-id';
@@ -21,6 +20,7 @@ import { SesionQuery } from '../../@pika/pika-module';
 import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
+
 
 export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
@@ -50,7 +50,8 @@ export class EntidadesService {
     private app: AppConfig,
     private sesion: SesionQuery,
     private cache: CacheEntidadesService, private http: HttpClient,
-    private ts: TranslateService, private router: Router, private applog: AppLogService) {
+    private ts: TranslateService, 
+    private applog: AppLogService) {
     this.Init();
   }
 
@@ -161,6 +162,7 @@ export class EntidadesService {
       }, (e)=>{}, ()=>{subject.complete()})
     return subject;
   }
+
 
   // Getsion de jerarquias
   // ---------------------------------------
@@ -325,10 +327,14 @@ export class EntidadesService {
   public ObtenerNombreEntidad(tipo: string, entidad: any): string {
     const key = this.cache.ClaveMetadatos(tipo);
     const m: MetadataInfo = this.cache.get(key);
-    const index = m.Propiedades.findIndex(x => x.Etiqueta === true);
-    if (index >= 0) {
-      return String(entidad[m.Propiedades[index].Id]);
+
+    if(m && m.Propiedades) {
+      const index = m.Propiedades.findIndex(x => x.Etiqueta === true);
+      if (index >= 0) {
+        return String(entidad[m.Propiedades[index].Id]);
+      }
     }
+
 
     if (entidad['Nombre']) return entidad['Nombre'];
 

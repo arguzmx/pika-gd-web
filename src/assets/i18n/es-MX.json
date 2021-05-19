@@ -72,7 +72,8 @@
     },
     "vistas": {
         "visorcontenido": "Visor de contenido",
-        "buscarcontenido": "Buscar contenido"
+        "buscarcontenido": "Buscar contenido",
+        "crearcontenidoactivo": "Contenido"
     },
     "busqueda": {
         "bmetadatos": "Busrca por plantilla",
@@ -289,6 +290,8 @@
                 "Nombre": "Nombre",
                 "Eliminada": "Eliminado",
                 "TipoArchivoId": "Tipo",
+                "VolumenDefaultId": "Volumen",
+                "PuntoMontajeId": "Repositorio",
                 "TipoOrigenId": "TipoOrigenId",
                 "OrigenId": "OrigenId"
             },
@@ -363,5 +366,10 @@
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado será permanente y no podrá ser revertido.",
             "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido."
         }
+    },
+    "link-contenido": {
+        "titulo": "Contenido",
+        "errorconfiguracion": "El archivo no tiene asociado un repositorio válido de contenido",
+        "sincontenido": "No hay contenido asociado al elemento ¿Desea crearlo?"
     }
 }

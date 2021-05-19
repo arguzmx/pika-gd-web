@@ -373,13 +373,15 @@ export const MetadataElemento: MetadataInfo =
             "Vista": "visorcontenido",
             "Icono": "preview",
             "Titulo": "visor",
-            "RequiereSeleccion": true
+            "RequiereSeleccion": true,
+            "Tipo": 0
         },
         {
             "Vista": "buscarcontenido",
             "Icono": "manage_search",
             "Titulo": "buscarcontenido",
-            "RequiereSeleccion": false
+            "RequiereSeleccion": false,
+            "Tipo": 0
         }
     ],
     "Reportes": []

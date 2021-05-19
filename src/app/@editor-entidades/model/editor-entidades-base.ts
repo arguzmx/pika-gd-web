@@ -209,8 +209,8 @@ export class EditorEntidadesBase {
     
   }
 
-  public ejecutaNavegarVista(link: LinkVista, entidad: any, metadata: MetadataInfo, newWindow: boolean = false) {
-      const parametros = {};
+  public ejecutaNavegarVista(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo, newWindow: boolean = false) {
+      const parametros = { tipo: TipoEntidad };
       var parametrosString = '';
       if(entidad!=null){
         metadata.Propiedades.forEach( p => {
@@ -223,7 +223,6 @@ export class EditorEntidadesBase {
       } 
       const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
       parametrosString = url + '?' + parametrosString;
-      
       if (url) {
         if (newWindow) {
           window.open(parametrosString, 'blank');
@@ -239,7 +238,8 @@ export class EditorEntidadesBase {
       }
   }
 
-  public ejecutaNavegarVistaParametros(link: LinkVista, parametros: unknown) {
+  public ejecutaNavegarVistaParametros(TipoEntidad: string, link: LinkVista, parametros: unknown) {
+    parametros['tipo'] = TipoEntidad;
     const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
     if (url) {
       this.router.navigate([url], { queryParams: parametros});

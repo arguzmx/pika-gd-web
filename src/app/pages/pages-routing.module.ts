@@ -1,3 +1,4 @@
+import { LinkContenidoGenericoComponent } from './../@editor-entidades/components/link-contenido-generico/link-contenido-generico.component';
 import { SinAccesoComponent } from './comunes/sin-acceso/sin-acceso.component';
 import { InicioComponent } from './comunes/inicio/inicio.component';
 import { DesconocidoComponent } from './comunes/desconocido/desconocido.component';
@@ -41,6 +42,13 @@ const routes: Routes = [{
     {
       path: 'buscador',
       component: HostBusquedaContenidoComponent,
+      resolve: {
+        entidadesResolver: EntidadesResolver,
+      }
+    },
+    {
+      path: 'linkcontenidogenerico',
+      component: LinkContenidoGenericoComponent,
       resolve: {
         entidadesResolver: EntidadesResolver,
       }

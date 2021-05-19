@@ -290,3 +290,32 @@
     </nb-card-footer>
   </nb-card>
 </ng-template>
+
+<template #dialogVistaCommandoContainer></template>
+
+<ng-template #dialogVistaCommando let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>{{ T.t["ui.reportes"] }}</nb-card-header>
+    <nb-card-body>
+      
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="float-right">
+            <button nbButton size="medium" (click)="ref.close()">
+              {{ T.t["ui.cerrar"] }}
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="float-right">
+            <button nbButton size="medium" (click)="ref.close()">
+              {{ T.t["ui.cerrar"] }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

@@ -1,13 +1,16 @@
+import { LinkContenidoGenericoComponent } from './../link-contenido-generico/link-contenido-generico.component';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
-import { NbDialogService } from '@nebular/theme';
+import { NbDialogService, NbDialogRef } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { AppLogService } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
-import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
-  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
+  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, HostListener, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ComponentRef
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { EntidadesService } from '../../services/entidades.service';
 import { Subject } from 'rxjs';
@@ -17,13 +20,16 @@ import { EditorEntidadesBase } from '../../model/editor-entidades-base';
 import { TranslateService } from '@ngx-translate/core';
 import { Operacion } from '../../../@pika/pika-module';
 import { MetadataBuscadorComponent } from '../metadata-buscador/metadata-buscador.component';
-import { EntidadVinculada,
+import {
+  EntidadVinculada,
   TipoCardinalidad,
 } from '../../../@pika/pika-module';
 import { Location } from '@angular/common';
 import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { TipoVista } from '../../../@pika/metadata';
+import { fixFileOrientationByMeta } from 'angular-file/file-upload/fileTools';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -35,7 +41,7 @@ const CONTENIDO_MOSTRAR = 'mostrar';
   styleUrls: ['./editor-tabular.component.scss'],
 })
 export class EditorTabularComponent extends EditorEntidadesBase implements OnInit,
-OnDestroy, OnChanges {
+  OnDestroy, OnChanges {
   private onDestroy$: Subject<void> = new Subject<void>();
 
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<MetadataEditorComponent>;
@@ -43,11 +49,14 @@ OnDestroy, OnChanges {
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
   @ViewChild('dialogLinkPicker', { static: true }) dialogLinks: TemplateRef<any>;
   @ViewChild('dialogReportPicker', { static: true }) dialogReportPicker: TemplateRef<any>;
+  @ViewChild('dialogVistaCommando', { static: true }) dialogVistaCommando: TemplateRef<any>;
+  @ViewChild("dialogVistaCommandoContainer", { read: ViewContainerRef }) containerVistaComando;
   @ViewChildren(MetadataTablaComponent) tablas: QueryList<MetadataTablaComponent>;
 
   private dialogComnfirmDelRef: any;
   private dialogLinkPickRef: any;
   private dialogReportPickerRef: any;
+  private dialogCommandRef: NbDialogRef<any>;
 
   @Input() config: ConfiguracionEntidad;
   @Input() mostrarBarra: boolean = true;
@@ -59,6 +68,14 @@ OnDestroy, OnChanges {
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.setAlturaPanelLateral(event.target.innerHeight);
+  }
+
+  componenteLinkContenidoGenerico(id: string, tipo: string) {
+    this.containerVistaComando.clear();
+    const componentFactory = this.resolver.resolveComponentFactory(LinkContenidoGenericoComponent);
+    const component: ComponentRef<LinkContenidoGenericoComponent> = this.containerVistaComando.createComponent(componentFactory);
+    component.instance.id = id;
+    component.instance.tipo = tipo;
   }
 
   accent: string = "info";
@@ -119,12 +136,13 @@ OnDestroy, OnChanges {
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
+    private resolver: ComponentFactoryResolver,
     private dialogService: NbDialogService,
     private location: Location,
     diccionarioNavegacion: DiccionarioNavegacion,
-    ) {
+  ) {
     super(entidades, applog, router, diccionarioNavegacion);
-    this.T  = new Traductor(ts);
+    this.T = new Traductor(ts);
     this.Permiso = this.entidades.permisoSinAcceso;
     this.setAlturaPanelLateral(window.innerHeight);
   }
@@ -159,32 +177,32 @@ OnDestroy, OnChanges {
   }
 
   public _Reset(): void {
-      if (this.tablas && this.tablas.first) this.tablas.first._Reset();
-      this.Permiso = this.entidades.permisoSinAcceso;
-      this._CerrarDialogos();
-      this.busquedaLateral = false;
-      this.tieneReportes = false;
-      this.InstanciaSeleccionada = false;
-      this.editarDisponible = false;
-      this.configTmp = null;
-      this.metadata = null;
-      this.metadataTmp = null;
-      this.entidad = null;
-      this.entidadTmp = null;
-      this.totalRegistros = 0;
-      this.filtrosActivos = false;
-      this.EliminarLogico = false;
-      this.NombreInstanciaDisponible = false;
-      this.NombreEntidad = '';
-      this.NombreInstancia = '';
-      this.vincularActivo = false;
-      this.tieneVinculos = false;
-      this.vinculos = [];
-      this.vinculosActivos = [];
-      this.EtiequetaTarjetaTrasera = '';
-      this.ContenidoTarjetaTrasera = '';
-      this.VistaTrasera = false;
-      this.MostrarRegresar = false;
+    if (this.tablas && this.tablas.first) this.tablas.first._Reset();
+    this.Permiso = this.entidades.permisoSinAcceso;
+    this._CerrarDialogos();
+    this.busquedaLateral = false;
+    this.tieneReportes = false;
+    this.InstanciaSeleccionada = false;
+    this.editarDisponible = false;
+    this.configTmp = null;
+    this.metadata = null;
+    this.metadataTmp = null;
+    this.entidad = null;
+    this.entidadTmp = null;
+    this.totalRegistros = 0;
+    this.filtrosActivos = false;
+    this.EliminarLogico = false;
+    this.NombreInstanciaDisponible = false;
+    this.NombreEntidad = '';
+    this.NombreInstancia = '';
+    this.vincularActivo = false;
+    this.tieneVinculos = false;
+    this.vinculos = [];
+    this.vinculosActivos = [];
+    this.EtiequetaTarjetaTrasera = '';
+    this.ContenidoTarjetaTrasera = '';
+    this.VistaTrasera = false;
+    this.MostrarRegresar = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -199,12 +217,12 @@ OnDestroy, OnChanges {
     }
   }
 
-   private CargaTraducciones() {
+  private CargaTraducciones() {
     this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes', 'ui.busqueda-lateral',
-    'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
-    'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
+      'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
+      'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
     this.T.ObtenerTraducciones();
-   }
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
@@ -215,18 +233,18 @@ OnDestroy, OnChanges {
     this.CargaTraducciones();
   }
 
-private  ProcesaCambiosConfiguracion(): void {
-  if (this.config && this.config.TipoEntidad)  {
-    this._Reset();
-    this.accent = this.mostrarBarra ? 'info' : 'basic';
-    this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
-    .pipe(first())
-    .subscribe( m => {
-      this.metadata = m;
-      this.ProcesaConfiguracion();
-    });
+  private ProcesaCambiosConfiguracion(): void {
+    if (this.config && this.config.TipoEntidad) {
+      this._Reset();
+      this.accent = this.mostrarBarra ? 'info' : 'basic';
+      this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
+        .pipe(first())
+        .subscribe(m => {
+          this.metadata = m;
+          this.ProcesaConfiguracion();
+        });
+    }
   }
-}
   private GetFiltrosDeafault(): FiltroConsulta[] {
     const filtros: FiltroConsulta[] = [];
     if (this.EliminarLogico) {
@@ -235,7 +253,7 @@ private  ProcesaCambiosConfiguracion(): void {
     return filtros;
   }
 
-  private  Procesaentidad() {
+  private Procesaentidad() {
 
     this.Permiso = this.config.Permiso ? this.config.Permiso : this.entidades.permisoSinAcceso;
 
@@ -244,7 +262,7 @@ private  ProcesaCambiosConfiguracion(): void {
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
 
     this.tieneVinculos = this.metadata.EntidadesVinculadas
-    && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
+      && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
 
     this.tieneReportes = (this.metadata.Reportes && this.metadata.Reportes.length > 0);
 
@@ -252,25 +270,25 @@ private  ProcesaCambiosConfiguracion(): void {
 
     // Establece entidades vinculadas
     if (this.metadata.EntidadesVinculadas) {
-      this.metadata.EntidadesVinculadas.forEach( e => {
-          // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
-          e.Etiqueta = e.EntidadHijo.split(',')[0];
-          if(e.FiltroUI===''){
-            e.Activo = true;
-          } else {
-            e.Activo = false;
-          }
-          this.vinculos.push(e);
-          e.EntidadHijo.split(',').forEach( entidad => {
-            if (entidad) this.T.ts.push('entidades.' + entidad.toLowerCase());
-          });
+      this.metadata.EntidadesVinculadas.forEach(e => {
+        // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
+        e.Etiqueta = e.EntidadHijo.split(',')[0];
+        if (e.FiltroUI === '') {
+          e.Activo = true;
+        } else {
+          e.Activo = false;
+        }
+        this.vinculos.push(e);
+        e.EntidadHijo.split(',').forEach(entidad => {
+          if (entidad) this.T.ts.push('entidades.' + entidad.toLowerCase());
+        });
       });
       this.vinculosActivos = this.vinculos;
     }
 
     if (this.metadata.VistasVinculadas) {
-      this.metadata.VistasVinculadas.forEach( link => {
-          this.T.ts.push(`vistas.${link.Vista}`);
+      this.metadata.VistasVinculadas.forEach(link => {
+        this.T.ts.push(`vistas.${link.Vista}`);
       });
       this.tieneBotonesVista = this.metadata.VistasVinculadas.length > 0;
     }
@@ -279,16 +297,16 @@ private  ProcesaCambiosConfiguracion(): void {
 
     this.botonesLinkVista = this.metadata.VistasVinculadas ?? [];
 
-    this.T.translate.get([ KeyNombreEntidad ]).pipe(first())
-    .subscribe( t => {
+    this.T.translate.get([KeyNombreEntidad]).pipe(first())
+      .subscribe(t => {
         this.NombreEntidad = this.T.ObtienePlural(t[KeyNombreEntidad]);
-    });
+      });
   }
 
   private ProcesaConfiguracion(): void {
 
     // Es una entidad vinculada
-    if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '' ) {
+    if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '') {
       this.NombreInstanciaDisponible = false;
       this.NombreInstancia = '';
       this.MostrarRegresar = false;
@@ -342,19 +360,19 @@ private  ProcesaCambiosConfiguracion(): void {
     this.entidad = entidad;
     this.InstanciaSeleccionada = entidad !== null ? true : false;
     this.editarDisponible = this.InstanciaSeleccionada &&
-    (this.config.TipoDespliegue.toString() !== TipoDespliegueVinculo.Membresia.toString());
+      (this.config.TipoDespliegue.toString() !== TipoDespliegueVinculo.Membresia.toString());
 
-    const tmp: EntidadVinculada[] =[]; 
+    const tmp: EntidadVinculada[] = [];
 
-    if(entidad!=null) {
-      this.vinculos.forEach( v => {
+    if (entidad != null) {
+      this.vinculos.forEach(v => {
         if (v.FiltroUI === '') {
           tmp.push(v);
         } else {
           const exp = v.FiltroUI.replace(/\[/g, 'entidad[');
-          const vv = {...v};
-          vv.Activo = eval(exp);    
-          if(vv.Activo){
+          const vv = { ...v };
+          vv.Activo = eval(exp);
+          if (vv.Activo) {
             tmp.push(vv);
           }
         }
@@ -382,9 +400,9 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   public mostrarVinculos(): void {
-    if(this.vincularActivo){
+    if (this.vincularActivo) {
       this.dialogLinkPickRef = this.dialogService
-      .open(this.dialogLinks, { context: '' });
+        .open(this.dialogLinks, { context: '' });
     }
   }
 
@@ -410,8 +428,8 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   public MostrarTarjetaTrasera(op: string) {
-      this.ContenidoTarjetaTrasera = op;
-      this.VistaTrasera = true;
+    this.ContenidoTarjetaTrasera = op;
+    this.VistaTrasera = true;
   }
 
   private OcultarTarjetaTrasera() {
@@ -427,64 +445,66 @@ private  ProcesaCambiosConfiguracion(): void {
 
   public mostrarEditar(): void {
     this.EditandoVinculada = false;
-      if (this.InstanciaSeleccionada) {
-        this.MostrarTarjetaTrasera('editar');
-      } else {
-        this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
-      }
+    if (this.InstanciaSeleccionada) {
+      this.MostrarTarjetaTrasera('editar');
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
+    }
   }
 
   public eliminarEntidades(): void {
     if (this.InstanciaSeleccionada) {
       this.ConfirmarEliminarEntidades();
     } else {
-      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
     }
   }
 
   public ConfirmarEliminarEntidades(): void {
     const msg = this.metadata.ElminarLogico ?
       'editor-pika.mensajes.warn-crud-eliminar-logico' : 'editor-pika.mensajes.warn-crud-eliminar';
-      let nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
-       nombre = (nombre === '') ? this.T.t['ui.elementoseleccionado'] : '\'' + nombre + '\'';
-      this.T.translate.get(msg, { nombre:
-        nombre})
-        .pipe(first())
-      .subscribe( m =>  {
+    let nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
+    nombre = (nombre === '') ? this.T.t['ui.elementoseleccionado'] : '\'' + nombre + '\'';
+    this.T.translate.get(msg, {
+      nombre:
+        nombre
+    })
+      .pipe(first())
+      .subscribe(m => {
         this.dialogComnfirmDelRef = this.dialogService
-        .open(this.dialogConfirmDelete, { context: m });
+          .open(this.dialogConfirmDelete, { context: m });
       });
   }
 
   // LLamdado desde el dialogo de confirmación en el teplate
   private eliminarSeleccionados() {
     this.dialogComnfirmDelRef.close();
-    const Id  = this.entidades.ObtenerIdEntidad(this.config.TipoEntidad, this.entidad);
+    const Id = this.entidades.ObtenerIdEntidad(this.config.TipoEntidad, this.entidad);
     const nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
 
     switch (this.config.TipoDespliegue.toString()) {
       case TipoDespliegueVinculo.Membresia.toString():
         this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
-        .subscribe( m => {
-          const vinculo = m.EntidadesVinculadas.find(x =>
-            x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()
-            && x.TipoDespliegue === TipoDespliegueVinculo.Membresia);
+          .subscribe(m => {
+            const vinculo = m.EntidadesVinculadas.find(x =>
+              x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()
+              && x.TipoDespliegue === TipoDespliegueVinculo.Membresia);
 
-          this.entidades.EliminarEntidadMiembros(this.config.TipoEntidad,
-            this.entidad[vinculo.PropiedadHijo], [
-            this.entidad[vinculo.PropiedadIdMiembro]]).pipe(first())
-            .subscribe( resultado => {
-              if (resultado) this.tablas.first.obtenerPaginaDatos(false);
-            });
-        });
+            this.entidades.EliminarEntidadMiembros(this.config.TipoEntidad,
+              this.entidad[vinculo.PropiedadHijo], [
+              this.entidad[vinculo.PropiedadIdMiembro]]).pipe(first())
+              .subscribe(resultado => {
+                if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+              });
+          });
         break;
 
-        default:
-          this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
-          .pipe(first()).subscribe( resultado => {
-              if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+      default:
+        this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
+          .pipe(first()).subscribe(resultado => {
+            if (resultado) this.tablas.first.obtenerPaginaDatos(false);
           });
-          break;
+        break;
     }
   }
 
@@ -492,15 +512,15 @@ private  ProcesaCambiosConfiguracion(): void {
     const cache: FiltroConsulta[] = [];
     let conteoFiltrosDefault: number = 0;
     const defaults: FiltroConsulta[] = this.GetFiltrosDeafault();
-    filtros.forEach ( f => {
-        if (f.Valido) {
-          defaults.forEach( fd => {
-            if (fd === f) {
-              conteoFiltrosDefault ++;
-            }
-          });
-          cache.push(f);
-        }
+    filtros.forEach(f => {
+      if (f.Valido) {
+        defaults.forEach(fd => {
+          if (fd === f) {
+            conteoFiltrosDefault++;
+          }
+        });
+        cache.push(f);
+      }
     });
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
@@ -509,7 +529,7 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   public ConteoRegistros(total: number): void {
-      this.totalRegistros = total;
+    this.totalRegistros = total;
   }
 
   public mostrarBuscar(): void {
@@ -538,19 +558,19 @@ private  ProcesaCambiosConfiguracion(): void {
   }
 
   private FiltroEliminadas(): FiltroConsulta {
-    return  {
-          Negacion: false, Operador: Operacion.OP_EQ,
-          ValorString: 'false', Propiedad: 'Eliminada', Id: 'Eliminada',
-          Valor: [false],
-        };
+    return {
+      Negacion: false, Operador: Operacion.OP_EQ,
+      ValorString: 'false', Propiedad: 'Eliminada', Id: 'Eliminada',
+      Valor: [false],
+    };
   }
 
   mostrarReportes() {
     if (this.entidad) {
       this.dialogReportPickerRef = this.dialogService
-      .open(this.dialogReportPicker, { context: '' });
+        .open(this.dialogReportPicker, { context: '' });
     } else {
-      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null , null);
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
     }
   }
 
@@ -571,27 +591,71 @@ private  ProcesaCambiosConfiguracion(): void {
     });
 
     const nombre = reporte.Nombre + ' ' +
-    this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) +
-    '.' + reporte.FormatosDisponibles[0].Id;
+      this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) +
+      '.' + reporte.FormatosDisponibles[0].Id;
 
     this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
   }
 
-  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void { 
+  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void {
     this.tablas.first.obtenerPaginaDatosPersonalizada(notificar, path, consulta);
   }
 
   public navegarVistaPoTag(tag: string, newWindow: boolean = false) {
-    const link =   this.botonesLinkVista.find(x=>x.Vista == tag);
-    if(link){
+    const link = this.botonesLinkVista.find(x => x.Vista == tag);
+    if (link) {
       this.procesaNavegarVista(link, newWindow);
     }
   }
 
+
+  private NavegarVistaComando(link: LinkVista, newWindow: boolean) {
+    switch (link.Vista) {
+      case "crearcontenidoactivo":
+        this.ComandoContenidoVinculado(link, true);
+        break;
+    }
+  }
+
+
+  private ComandoContenidoVinculado(link: LinkVista, newWindow: boolean ) {
+    this.dialogService
+    .open(LinkContenidoGenericoComponent, { context: { id: this.entidad['Id'], tipo: this.metadata.Tipo } })
+    .onClose.subscribe(e => {
+      if (e != null) {
+        if(newWindow) {
+          const url = `/pages/visor?Id=${e['Id']}&Nombre=${e['Nombre']}&VolumenId=${e['VolumenId']}&VersionId=${e['VersionId']}&PuntoMontajeId=${e['PuntoMontajeId']}&TipoOrigenId=&OrigenId=`;
+          window.open(url, 'blank');
+        } else {
+          const parametros = {};
+          parametros['Id'] = e['Id'];
+          parametros['Nombre'] = e['Nombre'];
+          parametros['VolumenId'] = e['VolumenId'];
+          parametros['VersionId'] = e['VersionId'];
+          parametros['PuntoMontajeId'] = e['PuntoMontajeId'];
+          this.router.navigate(['/pages/visor'], { queryParams: parametros});
+        }
+      }
+    });
+  }
+
+  
+
   public procesaNavegarVista(link: LinkVista, newWindow: boolean = false) {
+
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionada) {
-        this.ejecutaNavegarVista(link, this.entidad, this.metadata, newWindow);
+
+        switch (link.Tipo) {
+          case TipoVista.Vista:
+            this.ejecutaNavegarVista(this.metadata.Tipo, link, this.entidad, this.metadata, newWindow);
+            break;
+
+          case TipoVista.Comando:
+            this.NavegarVistaComando(link, newWindow);
+            break;
+        }
+
       } else {
         this.applog.AdvertenciaT(
           'editor-pika.mensajes.warn-sin-seleccion',

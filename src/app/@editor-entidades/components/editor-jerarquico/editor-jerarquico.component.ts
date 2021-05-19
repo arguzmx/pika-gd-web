@@ -37,6 +37,7 @@ import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
+import { TipoVista } from '../../../@pika/metadata';
 
 
 const CONTENIDO_BUSCAR = 'buscar';
@@ -67,7 +68,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
     super(entidades, applog, router, diccionarioNavegacion);
-    this.T  = new Traductor(ts);
+    this.T = new Traductor(ts);
     this.PermisoJ = this.entidades.permisoSinAcceso;
     this.PermisoC = this.entidades.permisoSinAcceso;
   }
@@ -240,7 +241,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
     if (this.config && this.config.ConfiguracionJerarquia.TipoEntidad) {
 
-      
+
       this._Reset();
       // Esta debe ser la perimera linea del método
 
@@ -254,18 +255,18 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       this.configC = this.config.ConfiguracionContenido;
 
       const mJ = this.entidades
-      .ObtieneMetadatos(this.configJ.TipoEntidad)
-      .pipe(first());
+        .ObtieneMetadatos(this.configJ.TipoEntidad)
+        .pipe(first());
 
       const mC = this.entidades
-      .ObtieneMetadatos(this.configC.TipoEntidad)
-      .pipe(first());
+        .ObtieneMetadatos(this.configC.TipoEntidad)
+        .pipe(first());
 
-      forkJoin([mJ, mC]).subscribe( resultados => {
+      forkJoin([mJ, mC]).subscribe(resultados => {
         this.metadataJ = resultados[0];
         this.metadataC = resultados[1];
         this.ProcesaConfiguracion();
-      } );
+      });
     }
   }
 
@@ -348,7 +349,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
     this.tieneVinculosC =
       this.metadataC.EntidadesVinculadas &&
-      this.metadataC.EntidadesVinculadas.length > 0
+        this.metadataC.EntidadesVinculadas.length > 0
         ? true
         : false;
 
@@ -363,19 +364,19 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     this.T.ts.push(KeyNombreEntidadJ);
 
     if (this.metadataC.EntidadesVinculadas) {
-      this.metadataC.EntidadesVinculadas.forEach( e => {
-          // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
-          e.Etiqueta = e.EntidadHijo.split(',')[0];
-          this.vinculos.push(e);
-          e.EntidadHijo.split(',').forEach( entidad => {
-            if (entidad) this.T.ts.push('entidades.' + entidad.toLowerCase());
-          });
+      this.metadataC.EntidadesVinculadas.forEach(e => {
+        // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
+        e.Etiqueta = e.EntidadHijo.split(',')[0];
+        this.vinculos.push(e);
+        e.EntidadHijo.split(',').forEach(entidad => {
+          if (entidad) this.T.ts.push('entidades.' + entidad.toLowerCase());
+        });
       });
     }
 
     if (this.metadataC.VistasVinculadas) {
-      this.metadataC.VistasVinculadas.forEach( link => {
-          this.T.ts.push(`vistas.${link.Vista}`);
+      this.metadataC.VistasVinculadas.forEach(link => {
+        this.T.ts.push(`vistas.${link.Vista}`);
       });
       this.tieneBotonesVista = this.metadataC.VistasVinculadas.length > 0;
     }
@@ -497,12 +498,12 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   }
 
   EjecutarIrALink(link: EntidadVinculada): void {
-    this.IrALink(link, this.entidadC, this.configC );
+    this.IrALink(link, this.entidadC, this.configC);
   }
 
 
 
-  CerrarDialogos(): void {}
+  CerrarDialogos(): void { }
 
   public mostrarCrearJerarquia(raiz: boolean): void {
     this.MostrarTituloCrear(this.configJ);
@@ -623,9 +624,9 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
         });
         this.NodoArbolSeleccionado = null;
         this.InstanciaSeleccionadaJ = false;
-      }, (err)=> {
+      }, (err) => {
         console.error(err);
-      }, ()=> {
+      }, () => {
 
       });
   }
@@ -812,9 +813,17 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   public procesaNavegarVista(link: LinkVista) {
 
+
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionadaC) {
-        this.ejecutaNavegarVista(link, this.entidadC, this.metadataC, true);
+
+        switch (link.Tipo) {
+          case TipoVista.Vista:
+            this.ejecutaNavegarVista(this.metadataC.Tipo, link, this.entidadC, this.metadataC, true);
+            break;
+        }
+
+
       } else {
         this.applog.AdvertenciaT(
           'editor-pika.mensajes.warn-sin-seleccion',
@@ -823,8 +832,14 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
         );
       }
     } else {
-      this.ejecutaNavegarVistaParametros(link, { OrigenId: this.configJ.OrigenId, OrigenTipo: this.configJ.OrigenTipo } );
+      
+      switch (link.Tipo) {
+        case TipoVista.Vista:
+          this.ejecutaNavegarVistaParametros(this.metadataC.Tipo, link, { OrigenId: this.configJ.OrigenId, OrigenTipo: this.configJ.OrigenTipo });
+          break;
+      }
+      
     }
   }
-  
+
 }

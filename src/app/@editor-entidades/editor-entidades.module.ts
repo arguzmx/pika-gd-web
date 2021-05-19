@@ -19,6 +19,7 @@ import {
   NbMenuModule,
   NbTooltipModule,
   NbAccordionModule,
+  NbSpinnerModule,
 } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -104,6 +105,7 @@ import { CacheEntidadesService } from './services/cache-entidades.service';
 import { ConfiguracionEntidad } from './model/configuracion-entidad';
 import { OfflineMetadataBuscadorComponent } from './components/offline-metadata-buscador/offline-metadata-buscador.component';
 import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
+import { LinkContenidoGenericoComponent } from './components/link-contenido-generico/link-contenido-generico.component';
 
 @NgModule({
   imports: [
@@ -156,6 +158,7 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     NgxMaskModule.forRoot(),
+    NbSpinnerModule,
     NbPopoverModule,
     NbToggleModule,
     NbInputModule,
@@ -186,7 +189,8 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
     EditorBootTabularComponent, EditorBootJerarquicoComponent, 
     MetadataEditorComponent, OfflineMetadataEditorComponent, 
     OfflineMetadataVisorComponent, MetadataBuscadorComponent, 
-    OfflineMetadataBuscadorComponent, MetadataTablaComponent ],
+    OfflineMetadataBuscadorComponent, MetadataTablaComponent, 
+    LinkContenidoGenericoComponent ],
   declarations: [
     EditorJerarquicoComponent,
     EditorTabularComponent,
@@ -217,6 +221,7 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
     OfflineMetadataEditorComponent,
     OfflineMetadataVisorComponent,
     OfflineMetadataBuscadorComponent,
+    LinkContenidoGenericoComponent,
   ],
 })
  class EditorEntidadesModule { }
