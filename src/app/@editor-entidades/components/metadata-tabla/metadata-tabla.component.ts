@@ -72,7 +72,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   public entidadseleccionada: any = null;
   public renglonSeleccionado: number = -1;
   public configuration: Config;
-  public data: any;
+  public data: any[];
   public columns: Columns[] = [];
   public columnasBase: ColumnaTabla[] = [];
   public columnasExtendias: string[] = [];
@@ -140,7 +140,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   constructor(
     private cdr: ChangeDetectorRef,
     private cacheFilros: CacheFiltrosBusqueda,
-    entidades: EntidadesService, translate: TranslateService,
+    entidades: EntidadesService,
+    translate: TranslateService,
     diccionarioNavegacion: DiccionarioNavegacion,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
     super(entidades, applog, router, diccionarioNavegacion);
@@ -252,7 +253,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   public EtiquetaDeId(Id: string, EntidadId: string) {
     // El texto para ls etiqeutas viene desde el servicio de entidades
     // Y se carga tras el paginado
-
     if (this.metadata) {
       const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
       let e = '';
@@ -469,7 +469,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if (columnas.length > 0) {
       columnas.forEach(c => {
-        this.columnasBase.push({... c});
+        this.columnasBase.push({ ...c });
       });
       this.EstableceColumnas(this.columnasBase);
     }
@@ -596,6 +596,75 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     }
   }
 
+  public ObtenerIdEntidad(entidad: any): string {
+    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
+    if (index >= 0) {
+      return String(entidad[this.metadata.Propiedades[index].Id]);
+    }
+    if (entidad['Id']) return entidad['Id'];
+    if (entidad['id']) return entidad['id'];
+    return '';
+  }
+
+  public ObtenerCampoIdEntidad(): string {
+    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
+    if (index >= 0) {
+      return this.metadata.Propiedades[index].Id;
+    }
+    return '';
+  }
+
+
+  private ActualizarDatosPlantilla(pagedata: unknown[]): void {
+    const newpage: any[] = [];
+    this.entidades.ObtenerIdEntidad
+
+    if (this.plantillaSeleccionada != '') {
+
+      const ids: string[] = [];
+      pagedata.forEach(r => {
+        ids.push(this.ObtenerIdEntidad(r));
+      });
+      this.entidades.POSTURLPersonalizada({ Ids: ids }, `api/v1.0/Metadatos/${this.plantillaSeleccionada}/lista/${this.metadata.FullName}/id`).pipe(first())
+        .subscribe(metadata => {
+          if (metadata) {
+            const CampoId = this.ObtenerCampoIdEntidad();
+            // rcorre cada renglon de los metadatos 
+            for (var i = 0; i < metadata['length']; i++) {
+              // busca el renglon de datos por id
+
+              for (var j = 0; j < pagedata.length; j++) {
+                if (metadata[i]['DatoId'] == pagedata[j][CampoId]) {
+                  // toma los valores de los metadatos
+                  const valores = metadata[i]['Valores'];
+                  // registro encontrado
+                  const r = {};
+
+                  this.columnasBase.forEach(p => {
+                    if (!p.EsPropiedadExtendida) {
+                      r[p.Id] = pagedata[j][p.Id];
+                    }
+                  });
+
+                  for(var v=0;v<valores['length'];v++) {
+                    r[valores[v]['PropiedadId']]=valores[v]['Valor'];
+                  }
+                  newpage.push(r);
+                  break;
+                }
+              }
+            }
+
+            this.data = newpage;
+            console.log(this.data);
+            console.log(this.metadata);
+
+          } else {
+            this.data = pagedata;
+          }
+        }, (err) => {this.data = []; });
+    }
+  }
 
   // Obtiene una nueva página de datos
   public obtenerPaginaDatos(notificar: boolean): void {
@@ -614,7 +683,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         .pipe(first())
         .subscribe(data => {
           if (data) {
-            this.data = data.Elementos || [];
+            this.ActualizarDatosPlantilla(data.Elementos || []);
             this.configuration.isLoading = false;
             this.ConteoRegistros.emit(data.ConteoTotal);
             if (notificar) this.NotificarConteo(data.ConteoTotal);
@@ -634,7 +703,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
           if (data) {
 
-            this.data = data.Elementos || [];
+            this.ActualizarDatosPlantilla(data.Elementos || []);
             this.configuration.isLoading = false;
             this.ConteoRegistros.emit(data.ConteoTotal);
             if (notificar) this.NotificarConteo(data.ConteoTotal);
@@ -674,30 +743,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.consultaPersonalizada = consulta;
 
         if (data) {
-
-          if (data.PropiedadesExtendidas.Propiedades.length > 0) {
-            this.EstableceColumnasMetadatos(data.PropiedadesExtendidas);
-            const elementos = [];
-            data.Elementos.forEach(e => {
-              const metadata = data.PropiedadesExtendidas.ValoresEntidad.find(x => x.Id == e["Id"]);
-              var index = 0;
-              data.PropiedadesExtendidas.Propiedades.forEach(p => {
-                if (metadata) {
-                  e[p.Id] = metadata.Valores[index];
-                } else {
-                  e[p.Id] = '';
-                }
-                index++;
-              });
-              elementos.push(e);
-            });
-
-            this.data = elementos || [];
-          } else {
-            this.data = data.Elementos || [];
-          }
-
-
+          
+          this.ActualizarDatosPlantilla(data.Elementos || []);
+          
           this.cdr.detectChanges();
           data.Elementos = [];
           this.EventoResultadoBusqueda.emit(data);
@@ -790,11 +838,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   public elminaColumnasMetadatos() {
     const columnas = [];
-    this.columnasBase.forEach( c=> {
-        if(!c.EsPropiedadExtendida){
-          columnas.push(c);
-        }
-    });     
+    this.columnasBase.forEach(c => {
+      if (!c.EsPropiedadExtendida) {
+        columnas.push(c);
+      }
+    });
     this.columnasBase = columnas;
     this.tmpcolumnas = columnas;
   }
@@ -807,32 +855,32 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       Propiedades: []
     };
     this.columnasExtendias = [];
-    if(id!='') {
+    if (id != '') {
       this.entidades.ObtieneMetadataInfo(id).pipe(first())
-      .subscribe((data) => {
-        data.Propiedades.forEach( p=> {
-          propiedades.Propiedades.push({ 
-            PlantillaId: id,
-            Id: p.Id,
-            Nombre: p.Nombre,
-            TipoDatoId: p.TipoDatoId
+        .subscribe((data) => {
+          data.Propiedades.forEach(p => {
+            propiedades.Propiedades.push({
+              PlantillaId: id,
+              Id: p.Id,
+              Nombre: p.Nombre,
+              TipoDatoId: p.TipoDatoId
+            });
           });
-        });
-        this.EstableceColumnasMetadatos(propiedades);
-      }, (e) => { }, () => { });
+          this.EstableceColumnasMetadatos(propiedades);
+        }, (e) => { }, () => { });
     }
-    
+
   }
 
   // Obtiene las plantillas disponibles para el documento
   private ObtienePlantillas(): void {
     this.entidades.ObtienePlantillas().pipe(first())
       .subscribe((data) => {
-        const lista : ValorListaOrdenada[] = [];
-        lista.push({Id: '', Texto: 'Ninguno', Indice: 0 });
-        
-        data.forEach(d=> {
-          lista.push({... d});
+        const lista: ValorListaOrdenada[] = [];
+        lista.push({ Id: '', Texto: 'Ninguno', Indice: 0 });
+
+        data.forEach(d => {
+          lista.push({ ...d });
         });
 
         this.plantillas = lista;

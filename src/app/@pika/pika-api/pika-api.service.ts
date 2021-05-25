@@ -135,6 +135,14 @@ export class PikaApiService<T, U> {
       );
   }
 
+  PostPersonalizada(consulta: unknown, path: string): Observable<unknown> {
+    const endpoint = this.CrearEndpointPersonalizado(path);
+    return this.http.post<unknown>(endpoint, consulta)
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
   PostPagePersonalizada(consulta: unknown, path: string): Observable<Paginado<T>> {
     const endpoint = this.CrearEndpointPersonalizado(path);
     return this.http.post<Paginado<T>>(endpoint, consulta)

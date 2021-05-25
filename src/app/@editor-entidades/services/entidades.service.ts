@@ -630,6 +630,25 @@ export class EntidadesService {
     return subject;
   }
 
+   // realiza una consulta de pagina no relacional
+   public POSTURLPersonalizada(body: unknown, url: string): Observable<unknown> {
+
+    const subject = new AsyncSubject<unknown>();
+
+    this.cliente.PostPersonalizada(body, url).pipe(
+      debounceTime(500), first(),
+    ).subscribe(data => {
+      subject.next(data);
+      subject.complete();
+    }, (error) => {
+      this.handleHTTPError(error, 'pagina-resultados', '');
+      subject.next(null);
+      subject.complete();
+    },
+      () => {
+      });
+    return subject;
+  }
 
   // realiza una consulta de pagina no relacional
   public ObtenerPaginaPersonalizada(Entidad: string,
@@ -653,7 +672,6 @@ export class EntidadesService {
     },
       () => {
       });
-
     return subject;
   }
   
