@@ -240,6 +240,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     data.Id = this.config.ElementoId;
     data.Tipo = this.TipoObjetoMetadatos;
     data.Filtro = this.config.PuntoMontajeId;
+    data.FiltroJerarquico =  this.config.CarpetaId;
 
     this.servicioPlantilla.ActualizaMetadatosPlantilla(doc.PlantillaId, doc.Id,
       data).subscribe( x => {
@@ -258,7 +259,8 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     data.Id = this.config.ElementoId;
     data.Tipo = this.TipoObjetoMetadatos;
     data.Filtro = this.config.PuntoMontajeId;
-
+    data.FiltroJerarquico =  this.config.CarpetaId;
+    
     this.servicioPlantilla.CreaMetadatosPlantilla(this.listaplantilla.selected,
       data).subscribe( doc => {
 

@@ -47,4 +47,5 @@ export interface Propiedad {
     CatalogoVinculado?: boolean;
     EmitirCambiosValor?: boolean;
     ParametroLinkVista?: ParametroLinkVista;
+    VinculoMetadatos?: string;
 }

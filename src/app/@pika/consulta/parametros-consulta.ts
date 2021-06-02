@@ -27,4 +27,5 @@ export class ParametrosConsulta {
     // Permite llevar un consecutivo de las peticiiones para refrescar los datos
     // Con la finalidad de mantener el orden el operaciones asincronas
     consecutivo: number;
+
 }

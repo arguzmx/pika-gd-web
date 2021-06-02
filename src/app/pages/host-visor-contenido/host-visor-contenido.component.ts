@@ -24,9 +24,8 @@ export class HostVisorContenidoComponent implements OnInit {
         Nombre: params['Nombre'],
         TransactionId: UploadService.NewGuid(),
         VersionId: params['VersionId'],
+        CarpetaId: params['CarpetaId']
        };
-
-       
       });
   }
 

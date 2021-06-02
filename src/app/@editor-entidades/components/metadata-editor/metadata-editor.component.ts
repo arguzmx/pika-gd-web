@@ -138,6 +138,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   // Se llama desde el template
   private CreaEntidad(cerrar: boolean): void {
+    console.log(this.formGroup);
     if (this.formGroup.status !== 'VALID') {
       this.applog.AdvertenciaT('editor-pika.mensajes.err-datos-novalidos');
       return;

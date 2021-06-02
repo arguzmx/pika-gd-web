@@ -1,4 +1,4 @@
-import { FiltroConsulta } from "../../@pika/consulta";
+import { FiltroConsulta, FiltroConsultaBackend } from "../../@pika/consulta";
 
 export enum EstadoBusqueda {
     Nueva = 0, EnEjecucion = 1, Finaliza = 3, FinalizadaError = 10
@@ -20,6 +20,7 @@ export interface BusquedaContenido {
     ord_direccion: string;
     recalcular_totales: boolean;
     PlantillaId?: string;
+    FiltrosBase?: FiltroConsultaBackend[];
 }
 
 export interface Busqueda {

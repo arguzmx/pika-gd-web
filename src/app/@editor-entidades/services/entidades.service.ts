@@ -1,3 +1,4 @@
+import { DocumentoPlantilla } from './../../@pika/metadata/documeto-plantilla';
 import { environment } from './../../../environments/environment.prod';
 import { AppConfig } from './../../app-config';
 import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR } from './../../@pika/seguridad/permiso-acl';
@@ -20,6 +21,8 @@ import { SesionQuery } from '../../@pika/pika-module';
 import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
+import { ConsultaBackend } from '../../@pika/consulta';
+
 
 
 export const CONTEXTO = 'CONTEXTO';
@@ -160,6 +163,28 @@ export class EntidadesService {
       .subscribe(m=> {
         subject.next(m);
       }, (e)=>{}, ()=>{subject.complete()})
+    return subject;
+  }
+
+
+  public ObtienePaginaMetadatos(plantillaId:string, q: ConsultaBackend ): Observable<Paginado<DocumentoPlantilla>> {
+    const url = this.DepuraUrl(this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`) + `${plantillaId}/pagina` ;
+    return this.http.post<Paginado<DocumentoPlantilla>>(url, q);
+  }
+
+
+  public ObtenerPaginaPorIds(tipo: string, q: ConsultaBackend) {
+    const subject = new AsyncSubject<any>();
+    this.cliente.ObtenerPaginaPorIds(tipo, q).pipe(
+      debounceTime(500),
+    ).subscribe(resultado => {
+      subject.next(resultado);
+    }, (error) => {
+      this.handleHTTPError(error, tipo, '');
+      subject.next([]);
+    }, () => {
+      subject.complete();
+    });
     return subject;
   }
 
@@ -632,15 +657,14 @@ export class EntidadesService {
 
    // realiza una consulta de pagina no relacional
    public POSTURLPersonalizada(body: unknown, url: string): Observable<unknown> {
-
     const subject = new AsyncSubject<unknown>();
-
     this.cliente.PostPersonalizada(body, url).pipe(
       debounceTime(500), first(),
     ).subscribe(data => {
       subject.next(data);
       subject.complete();
     }, (error) => {
+      console.log(error);
       this.handleHTTPError(error, 'pagina-resultados', '');
       subject.next(null);
       subject.complete();
@@ -649,6 +673,7 @@ export class EntidadesService {
       });
     return subject;
   }
+
 
   // realiza una consulta de pagina no relacional
   public ObtenerPaginaPersonalizada(Entidad: string,
@@ -812,14 +837,17 @@ export class EntidadesService {
     return buscar;
   }
 
-  private BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>):
+  public BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>, metadata?: MetadataInfo):
     Observable<boolean> {
     const subject = new AsyncSubject<boolean>();
     const key = this.cache.ClaveMetadatos(tipoentidad);
-    if (this.cache.has(key)) {
-      const metadata: MetadataInfo = this.cache.get(key);
+    
+    if (this.cache.has(key) && metadata == null) {
+      metadata = this.cache.get(key);
+    }
+    
+    if (metadata) {
       const buscar: string[] = [];
-
       // Inicia el proes deo busqeda
       metadata.Propiedades.forEach(p => {
         // realiza el análisis si la priedad es atributlo de lista

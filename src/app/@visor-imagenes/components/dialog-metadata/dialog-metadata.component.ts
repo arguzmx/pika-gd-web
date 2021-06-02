@@ -91,7 +91,8 @@ export class DialogMetadataComponent implements OnInit, AfterViewInit {
       Tipo: '',
       Id: '',
       Filtro: '',
-      Valores: []
+      Valores: [],
+      FiltroJerarquico: ''
     };
 
     if (this.documento!=null) {

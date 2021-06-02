@@ -33,7 +33,7 @@ ICampoBuscable {
     if (this.filtro.Operador == null) valid = false;
 
     if (valid) {
-      if (this.filtro.Valor.length === 0) {
+      if (this.filtro.Valor == null || this.filtro.Valor.length === 0) {
         valid = false;
       } else {
         if ( (this.filtro.Valor[0] === null) || (this.filtro.Valor[0] === '' )) {

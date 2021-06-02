@@ -77,13 +77,13 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
 
   }
 
-private cargaRepo() {
-  this.api.ObtieneDatosRepositorio(this.IdRepositorio).subscribe(
-    r => {
-      this.nombreRepo = r["Nombre"];
-    }
-  )
-}
+  private cargaRepo() {
+    this.api.ObtieneDatosRepositorio(this.IdRepositorio).subscribe(
+      r => {
+        this.nombreRepo = r["Nombre"];
+      }
+    )
+  }
 
   private CargaTraducciones() {
     this.T.ts = [
@@ -149,9 +149,20 @@ private cargaRepo() {
       consecutivo: 0,
       ord_columna: 'Nombre',
       ord_direccion: 'asc',
-      recalcular_totales: true, 
-      PlantillaId : ''
+      recalcular_totales: true,
+      PlantillaId: '',
+      FiltrosBase: []
+
     };
+
+    b.FiltrosBase.push({
+      Propiedad: 'PuntoMontajeId',
+      Operador: Operacion.OP_EQ,
+      Negacion: false,
+      NivelFuzzy: -1,
+      Valor: this.IdRepositorio,
+      ValorString: this.IdRepositorio
+    })
 
     if (this.MostrarPropiedades) {
 
@@ -204,7 +215,7 @@ private cargaRepo() {
   }
   handlerEventNuevaSeleccion(data: unknown) {
     this.documentoSeleccionado = data;
-    
+
     this.contenidoSeleccionado = data != null;
 
   }
@@ -213,8 +224,8 @@ private cargaRepo() {
     this.tabla.NavegarLinkPorTag('visorcontenido', true);
   }
 
- public mostrarSelectorColumnas() {
-   this.tabla.mostrarSelectorColumnas();
- }
+  public mostrarSelectorColumnas() {
+    this.tabla.mostrarSelectorColumnas();
+  }
 
 }

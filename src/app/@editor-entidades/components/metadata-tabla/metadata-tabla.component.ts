@@ -1,3 +1,4 @@
+import { Paginado } from './../../../@pika/consulta/paginado';
 import { ValorListaOrdenada } from './../../../@pika/metadata/valor-lista';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { EntidadesService } from './../../services/entidades.service';
@@ -11,7 +12,7 @@ import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { ITablaMetadatos } from '../../model/i-tabla-metadatos';
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
 import { TranslateService } from '@ngx-translate/core';
-import { FiltroConsulta, Operacion, Consulta, HTML_DATE, HTML_DATETIME, HTML_TIME, PropiedadesExtendidas, tTime, tDate, tDateTime, tString, PropiedadExtendida } from '../../../@pika/pika-module';
+import { FiltroConsulta, Operacion, Consulta, HTML_DATE, HTML_DATETIME, HTML_TIME, PropiedadesExtendidas, tTime, tDate, tDateTime, tString, PropiedadExtendida, DocumentoPlantilla } from '../../../@pika/pika-module';
 import { EntidadVinculada } from '../../../@pika/pika-module';
 import { ColumnaTabla } from '../../model/columna-tabla';
 import { Propiedad, MetadataInfo } from '../../../@pika/pika-module';
@@ -23,7 +24,7 @@ import { Traductor } from '../../services/traductor';
 import { format } from 'date-fns';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { Acciones, HTML_CHECKBOX, HTML_NUMBER, HTML_TEXT, tBinaryData, tBoolean, tDouble, tIndexedString, tInt32, tInt64, TipoDato, tList } from '../../../@pika/metadata';
-
+import { ConsultaBackend } from '../../../@pika/consulta';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -57,8 +58,14 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // Determina si la entidad en edición se elimina de manera lógica
   public eliminarLogico: boolean = false;
 
+  // Instancia de i18n
+  public T: Traductor;
+
   // Entidades vinculadas para la edición
   private vinculos: EntidadVinculada[] = [];
+
+
+  private IdBusquedaPersonalizada: string = '';
 
   // Define si el paginao de la entidad es relacional
   private usarPaginadoRelacional: boolean = false;
@@ -90,7 +97,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     if (this.dialogColPickRef && !this.dialogColPickRef.closed) this.dialogColPickRef.close();
   }
 
+  // Inicializa el espacio de tabla
   public _Reset(): void {
+    this.IdBusquedaPersonalizada = '';
     this.plantillaSeleccionada = '';
     this.AsociadoMetadatos = false;
     this._CerrarDialogos();
@@ -114,7 +123,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       sort: '',
       order: '',
     };
-    this.consulta = {
+    this.consulta =  this.GetConsultaInicial();
+  }
+
+
+  private GetConsultaInicial(): Consulta {
+    return {
       indice: 0,
       tamano: 10,
       ord_columna: '',
@@ -123,20 +137,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       consecutivo: 0,
       FiltroConsulta: [],
     };
-  }
+  } 
 
   // Consulta base para el despliegue de datos
-  public consulta: Consulta = {
-    indice: 0,
-    tamano: 10,
-    ord_columna: '',
-    ord_direccion: '',
-    recalcular_totales: true,
-    consecutivo: 0,
-    FiltroConsulta: [],
-  };
+  public consulta: Consulta;
+  public consultaIds: ConsultaBackend;
 
-  public T: Traductor;
   constructor(
     private cdr: ChangeDetectorRef,
     private cacheFilros: CacheFiltrosBusqueda,
@@ -145,6 +151,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     diccionarioNavegacion: DiccionarioNavegacion,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
     super(entidades, applog, router, diccionarioNavegacion);
+    this.consulta = this.GetConsultaInicial();
     this.T = new Traductor(translate);
   }
 
@@ -189,7 +196,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       this.columnasBase = this.GetColumnasTabla();
       this.EstableceColumnas(this.columnasBase);
       if (!this.busuedaPersonalizada) {
-        this.obtenerPaginaDatos(false);
+        this.GetDataPage(false);
       }
     }
   }
@@ -380,7 +387,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
 
-
   private EstableceColumnasMetadatos(props: PropiedadesExtendidas) {
     const columnas: ColumnaTabla[] = [];
 
@@ -517,6 +523,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     }
   }
 
+
+  // listener para eventos de la tabla
   eventosTabla($event: { event: string; value: any }): void {
     this.LimpiarSeleccion();
     switch ($event.event) {
@@ -546,6 +554,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
 
+  // GEstion de contenido de la tabla
+  
   ///  Inicializa las opciones para la tabla
   ConfiguraTabla(): void {
     this.configuration = { ...DefaultConfig };
@@ -559,116 +569,218 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.configuration.checkboxes = false;
   }
 
-  AlternarCheckboxes(): void {
-    this.configuration.checkboxes = !this.configuration.checkboxes;
-  }
-
-
+  
   // evalua el evento de paginacdo
   private onPagination(obj: TablaEventObject): void {
+
     this.pagination.limit = obj.value.limit ? obj.value.limit : this.pagination.limit;
     this.pagination.offset = obj.value.page ? obj.value.page : this.pagination.offset;
     this.pagination.sort = !!obj.value.key ? obj.value.key : this.pagination.sort;
     this.pagination.order = !!obj.value.order ? obj.value.order : this.pagination.order;
 
     this.pagination = { ...this.pagination };
-
     if (this.busuedaPersonalizada) {
-      if (this.consultaPersonalizada) {
-        this.consultaPersonalizada["consecutivo"] = 0;
-        this.consultaPersonalizada["indice"] = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
-        this.consultaPersonalizada["tamano"] = this.pagination.limit;
-        this.consultaPersonalizada["ord_columna"] = this.pagination.sort;
-        this.consultaPersonalizada["ord_direccion"] = this.pagination.order;
-        this.consultaPersonalizada["recalcular_totales"] = false;
-        this.obtenerPaginaDatosPersonalizada(false, this.urlPersonalizado, this.consultaPersonalizada);
-      }
+        this.obtenerPaginaPeronalizada(false);
     } else {
-      if (this.consulta) {
-        this.consulta.consecutivo = 0;
-        this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
-        this.consulta.tamano = this.pagination.limit;
-        this.consulta.ord_columna = this.pagination.sort;
-        this.consulta.ord_direccion = this.pagination.order;
-        this.consulta = { ...this.consulta };
-        this.obtenerPaginaDatos(false);
-      }
+      this.obtenerPaginaDatos(false);
     }
+
   }
 
-  public ObtenerIdEntidad(entidad: any): string {
-    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
-    if (index >= 0) {
-      return String(entidad[this.metadata.Propiedades[index].Id]);
-    }
-    if (entidad['Id']) return entidad['Id'];
-    if (entidad['id']) return entidad['id'];
-    return '';
-  }
+  // Obtiene una nueva página de datos
+  public obtenerPaginaPeronalizada(notificar: boolean): void {
 
-  public ObtenerCampoIdEntidad(): string {
-    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
-    if (index >= 0) {
-      return this.metadata.Propiedades[index].Id;
-    }
-    return '';
-  }
+    this.consultaIds.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+    this.consultaIds.tamano = this.pagination.limit;
+    this.consultaIds.ord_columna = this.pagination.sort;
+    this.consultaIds.ord_direccion = this.pagination.order;
 
-
-  private ActualizarDatosPlantilla(pagedata: unknown[]): void {
-    const newpage: any[] = [];
-    this.entidades.ObtenerIdEntidad
-
-    if (this.plantillaSeleccionada != '') {
-
-      const ids: string[] = [];
-      pagedata.forEach(r => {
-        ids.push(this.ObtenerIdEntidad(r));
-      });
-      this.entidades.POSTURLPersonalizada({ Ids: ids }, `api/v1.0/Metadatos/${this.plantillaSeleccionada}/lista/${this.metadata.FullName}/id`).pipe(first())
-        .subscribe(metadata => {
-          if (metadata) {
-            const CampoId = this.ObtenerCampoIdEntidad();
-            // rcorre cada renglon de los metadatos 
-            for (var i = 0; i < metadata['length']; i++) {
-              // busca el renglon de datos por id
-
-              for (var j = 0; j < pagedata.length; j++) {
-                if (metadata[i]['DatoId'] == pagedata[j][CampoId]) {
-                  // toma los valores de los metadatos
-                  const valores = metadata[i]['Valores'];
-                  // registro encontrado
-                  const r = {};
-
-                  this.columnasBase.forEach(p => {
-                    if (!p.EsPropiedadExtendida) {
-                      r[p.Id] = pagedata[j][p.Id];
-                    }
-                  });
-
-                  for(var v=0;v<valores['length'];v++) {
-                    r[valores[v]['PropiedadId']]=valores[v]['Valor'];
-                  }
-                  newpage.push(r);
-                  break;
-                }
-              }
-            }
-
-            this.data = newpage;
-            console.log(this.data);
-            console.log(this.metadata);
-
-          } else {
-            this.data = pagedata;
-          }
-        }, (err) => {this.data = []; });
-    }
+    if (this.plantillaSeleccionada) {
+       if(this.EsPropiedadExtendida(this.pagination.sort)) {
+          this.RealizaPaginadoMetadatosPersonalizada();
+          return;
+       } 
+    } 
+    this.creaPaginaDatosPersonalizada(this.consultaIds);
   }
 
   // Obtiene una nueva página de datos
   public obtenerPaginaDatos(notificar: boolean): void {
+
+    if (this.plantillaSeleccionada) {
+       if(this.EsPropiedadExtendida(this.pagination.sort)) {
+          this.RealizaPaginadoMetadatos();
+          return;
+       } 
+    } 
+    this.GetDataPage(notificar);
+  }
+
+
+  // ONtiene una pagina de datis a partir de los metadtos
+  private RealizaPaginadoMetadatosPersonalizada() {
+    
+    const consultameta: Consulta = {
+      indice: (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1,
+      tamano: this.pagination.limit,
+      ord_columna: this.pagination.sort,
+      ord_direccion: this.pagination.order,
+      recalcular_totales: true,
+      consecutivo: 0,
+      FiltroConsulta: [],
+      IdCache:  this.IdBusquedaPersonalizada
+    };
+    
+
+    const cache = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
+    cache.forEach(c => {
+      this.metadata.Propiedades.forEach(p => {
+        if (p.VinculoMetadatos) {
+          if (c.Id == p.Id) {
+            if (c.ValorString) {
+              consultameta.FiltroConsulta.push({
+                Id: p.VinculoMetadatos,
+                Negacion: false,
+                Propiedad: p.VinculoMetadatos,
+                Operador: Operacion.OP_EQ,
+                Valor: c.Valor,
+                ValorString: c.ValorString,
+                Valido: true
+              });
+            }
+          }
+        }
+      });
+    })
+
+    consultameta.FiltroConsulta.push({
+      Id: 'TDID',
+      Negacion: false,
+      Propiedad: "TDID",
+      Operador: Operacion.OP_EQ,
+      Valor: [this.metadata.FullName],
+      ValorString: this.metadata.FullName,
+      Valido: true
+    });
+
+    this.consulta.consecutivo = 0;
+    this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+    this.consulta.tamano = this.pagination.limit;
+    this.consulta.ord_columna = this.pagination.sort;
+    this.consulta.ord_direccion = this.pagination.order;
+    this.consulta = { ...this.consulta };
+
+
+    this.entidades.ObtienePaginaMetadatos(this.plantillaSeleccionada, this.GeneraConsultaBackend(consultameta))
+      .pipe(first()).subscribe(metadatos => {
+        console.log(metadatos);
+        const ids = [];
+        metadatos.Elementos.forEach(e=> {
+            ids.push(e.DatoId);
+        });
+        
+        console.log(ids);
+
+        const consultaIds =this.GeneraConsultaBackend(this.consulta);
+        consultaIds.Ids = ids;
+
+        this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
+        .pipe(first()).subscribe( elementos => {
+          console.log(elementos);
+          this.ActualizarDatosElemento(elementos, metadatos);
+        }, (err) => { console.error(err); })
+
+      }, (err) => { console.error(err); });
+
+
+  }
+
+
+  // ONtiene una pagina de datis a partir de los metadtos
+  private RealizaPaginadoMetadatos() {
+    
+    const consultameta: Consulta = {
+      indice: (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1,
+      tamano: this.pagination.limit,
+      ord_columna: this.pagination.sort,
+      ord_direccion: this.pagination.order,
+      recalcular_totales: true,
+      consecutivo: 0,
+      FiltroConsulta: [],
+    };
+    
+
+    const cache = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
+    cache.forEach(c => {
+      this.metadata.Propiedades.forEach(p => {
+        if (p.VinculoMetadatos) {
+          if (c.Id == p.Id) {
+            if (c.ValorString) {
+              consultameta.FiltroConsulta.push({
+                Id: p.VinculoMetadatos,
+                Negacion: false,
+                Propiedad: p.VinculoMetadatos,
+                Operador: Operacion.OP_EQ,
+                Valor: c.Valor,
+                ValorString: c.ValorString,
+                Valido: true
+              });
+            }
+          }
+        }
+      });
+    })
+
+    consultameta.FiltroConsulta.push({
+      Id: 'TDID',
+      Negacion: false,
+      Propiedad: "TDID",
+      Operador: Operacion.OP_EQ,
+      Valor: [this.metadata.FullName],
+      ValorString: this.metadata.FullName,
+      Valido: true
+    });
+
+    this.consulta.consecutivo = 0;
+    this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+    this.consulta.tamano = this.pagination.limit;
+    this.consulta.ord_columna = this.pagination.sort;
+    this.consulta.ord_direccion = this.pagination.order;
+    this.consulta = { ...this.consulta };
+
+
+    this.entidades.ObtienePaginaMetadatos(this.plantillaSeleccionada, this.GeneraConsultaBackend(consultameta))
+      .pipe(first()).subscribe(metadatos => {
+        const ids = [];
+        metadatos.Elementos.forEach(e=> {
+            ids.push(e.DatoId);
+        });
+        
+        const consultaIds =this.GeneraConsultaBackend(this.consulta);
+        consultaIds.Ids = ids;
+
+        this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
+        .pipe(first()).subscribe( elementos => {
+          console.error(elementos);
+          this.ActualizarDatosElemento(elementos, metadatos);
+        }, (err) => { console.error(err); })
+
+      }, (err) => { console.error(err); });
+
+}
+
+
+ // Ontiene una página de datos a partir de las entidades de la tabla
+  private GetDataPage(notificar: boolean) {
+
     this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
+    this.consulta.consecutivo = 0;
+    this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+    this.consulta.tamano = this.pagination.limit;
+    this.consulta.ord_columna = this.pagination.sort;
+    this.consulta.ord_direccion = this.pagination.order;
+    this.consulta = { ...this.consulta };
+
     this.AnularSeleccion();
     this.data = [];
     this.configuration.isLoading = true;
@@ -691,6 +803,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.ConteoRegistros.emit(0);
             this.NotificarErrorDatos(data.ConteoTotal);
           }
+
+          this.pagination.offset = 0;
+          this.pagination.limit = 10
           this.pagination.count = data.ConteoTotal;
           this.pagination = { ...this.pagination };
           this.cdr.detectChanges();
@@ -702,7 +817,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         .subscribe(data => {
 
           if (data) {
-
             this.ActualizarDatosPlantilla(data.Elementos || []);
             this.configuration.isLoading = false;
             this.ConteoRegistros.emit(data.ConteoTotal);
@@ -710,7 +824,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
           } else {
             this.NotificarErrorDatos(data.ConteoTotal);
           }
-
 
           this.pagination.count = data.ConteoTotal;
           this.pagination = { ...this.pagination };
@@ -720,11 +833,181 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
 
+
+
+  private RealizaPaginadoPorObjeto() {
+    if (this.busuedaPersonalizada) {
+      if (this.consultaPersonalizada) {
+        this.consultaPersonalizada["consecutivo"] = 0;
+        this.consultaPersonalizada["indice"] = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+        this.consultaPersonalizada["tamano"] = this.pagination.limit;
+        this.consultaPersonalizada["ord_columna"] = this.pagination.sort;
+        this.consultaPersonalizada["ord_direccion"] = this.pagination.order;
+        this.consultaPersonalizada["recalcular_totales"] = false;
+        this.obtenerPaginaDatosPersonalizada(false, this.urlPersonalizado, this.consultaPersonalizada);
+      }
+    } else {
+      if (this.consulta) {
+        this.consulta.consecutivo = 0;
+        this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+        this.consulta.tamano = this.pagination.limit;
+        this.consulta.ord_columna = this.pagination.sort;
+        this.consulta.ord_direccion = this.pagination.order;
+        this.consulta = { ...this.consulta };
+        this.GetDataPage(false);
+      }
+    }
+  }
+
+
+
+ private ActualizarDatosElemento(pagedata: unknown[], metadatos: Paginado<DocumentoPlantilla>): void {
+    const newpage: any[] = [];
+
+    const ids: string[] = [];
+      metadatos.Elementos.forEach(r => {
+        ids.push(r.DatoId);
+      });
+
+      const idEntidad = this.ObtenerCampoIdEntidad();
+      var index = 0;
+      const encontrados: string[] = [];
+      
+      ids.forEach(id => {
+        for(var i=0; i<pagedata.length;i++){
+          if(id==pagedata[i][idEntidad]){
+            const valores = metadatos.Elementos[i]['Valores'];
+            const r = {};
+                      
+            this.columnasBase.forEach(p => {
+              if (!p.EsPropiedadExtendida) {
+                r[p.Id] = pagedata[i][p.Id];
+              }
+            });
+
+            for (var v = 0; v < valores['length']; v++) {
+              r[valores[v]['PropiedadId']] = valores[v]['Valor'];
+            }
+            newpage.push(r);
+            encontrados.push(id)
+            break;
+          }
+        }
+      });
+
+      pagedata.forEach( r => {
+        const i = encontrados.indexOf(r[idEntidad]);
+        if (i<0) {
+          const e = {};
+          this.columnasBase.forEach(p => {
+            if (!p.EsPropiedadExtendida) {
+              e[p.Id] = r[p.Id];
+            }
+          });
+          newpage.push(e);
+        }
+      });
+
+      this.data = newpage;
+      this.cdr.detectChanges();
+  }
+
+
+  // Muestra los datos de la plantilla seleccionada en las columnas de metadatos
+  private ActualizarDatosPlantilla(pagedata: unknown[]): void {
+    const newpage: any[] = [];
+
+    if (this.plantillaSeleccionada != '') {
+      
+      const ids: string[] = [];
+      pagedata.forEach(r => {
+        ids.push(this.ObtenerIdEntidad(r));
+      });
+
+      this.entidades.POSTURLPersonalizada({ Ids: ids }, `api/v1.0/Metadatos/${this.plantillaSeleccionada}/lista/${this.metadata.FullName}/id`).pipe(first())
+        .subscribe(metadata => {
+
+          if (metadata) {
+          
+            var index = 0;
+            // Para cada Id de la página
+            ids.forEach(id => {
+
+              if (metadata) {
+
+                var encontrada = false;
+
+                for (var i = 0; i < metadata['length']; i++) {
+                  
+                  if (metadata[i]['DatoId'] == id) {
+                      // toma los valores de los metadatos
+                      const valores = metadata[i]['Valores'];
+                      // registro encontrado
+                      const r = {};
+                      
+                      this.columnasBase.forEach(p => {
+                        if (!p.EsPropiedadExtendida) {
+                          r[p.Id] = pagedata[index][p.Id];
+                        }
+                      });
+
+                      for (var v = 0; v < valores['length']; v++) {
+                        r[valores[v]['PropiedadId']] = valores[v]['Valor'];
+                      }
+
+                      newpage.push(r);
+                      encontrada = true;
+                      break;
+                  }
+
+                }
+
+                if (!encontrada) newpage.push( pagedata[index] );
+
+              } else {
+                newpage.push( pagedata[index] );
+              }
+
+              index ++;
+            });
+            // rcorre cada renglon de los metadatos 
+            this.data = newpage;
+            this.cdr.detectChanges();
+
+          } else {
+            this.data = pagedata;
+            this.cdr.detectChanges();
+          }
+
+        }, (err) => { this.data = []; this.cdr.detectChanges(); });
+
+    } else {
+      // no hay una plantilla seleccionada
+      this.data = pagedata;
+      this.cdr.detectChanges();
+    }
+  }
+
+
+
   private urlPersonalizado: string;
   private consultaPersonalizada: unknown;
 
-  // Obtiene una nueva página de datos
-  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void {
+  private APaginado(elementos: any[]) : Paginado<any> {
+    return {
+      Elementos: elementos,
+      Desde: 0,
+      Indice: 0,
+      Tamano: 0,
+      ConteoTotal: 0,
+      Paginas: 0,
+      TienePrevio: false,
+      TieneSiguiente: false
+    }
+  }
+
+
+  private creaPaginaDatosPersonalizada(consultaIds: ConsultaBackend) {
 
     this.AnularSeleccion();
     this.data = [];
@@ -735,37 +1018,58 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       this.configuration.horizontalScroll = false;
     }
 
-    this.entidades.ObtenerPaginaPersonalizada(this.config.TipoEntidad, consulta, path)
+    this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, {... consultaIds} )
+    .pipe(first()).subscribe( elementos => {
+
+      if (elementos) {
+        this.entidades.BuscaTextoDeIdentificadores(this.metadata.Tipo, this.APaginado(elementos), this.metadata)
+        .pipe(first()).subscribe( ok => {
+          this.ActualizarDatosPlantilla(elementos || []);
+          this.configuration.isLoading = false;
+        });
+
+      } else {
+        this.NotificarErrorDatos(0);
+      }
+
+    }, (err) => { this.configuration.isLoading = false; })
+  }
+
+  // Obtiene una nueva página de datos
+  public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void {
+
+    this.entidades.POSTURLPersonalizada(consulta, path)
       .pipe(first())
       .subscribe(data => {
 
-        this.urlPersonalizado = path;
-        this.consultaPersonalizada = consulta;
+        // Obtiene el id de la consylta
+        this.IdBusquedaPersonalizada = data["Elementos"][0];
+        this.busuedaPersonalizada = true;
+        const conteo = data["ConteoTotal"];
 
-        if (data) {
-          
-          this.ActualizarDatosPlantilla(data.Elementos || []);
-          
-          this.cdr.detectChanges();
-          data.Elementos = [];
-          this.EventoResultadoBusqueda.emit(data);
-          this.ConteoRegistros.emit(data.ConteoTotal);
-          if (notificar) this.NotificarConteo(data.ConteoTotal);
+        const consultaBase = this.GetConsultaInicial();
+        consultaBase.IdCache = this.IdBusquedaPersonalizada;
 
-          this.configuration.isLoading = false;
-          this.cdr.detectChanges();
+        this.consulta.FiltroConsulta = consulta["FiltrosBase"];
+        this.consultaIds = this.GeneraConsultaBackend(consultaBase);
+        this.consultaIds.IdCache = this.IdBusquedaPersonalizada;
+        this.consultaIds.Filtros = consulta["FiltrosBase"];
+        
+        this.creaPaginaDatosPersonalizada(this.consultaIds);
 
-        } else {
+        this.ConteoRegistros.emit(conteo);
 
-          this.cdr.detectChanges();
-          this.EventoResultadoBusqueda.emit(null);
-          this.ConteoRegistros.emit(0);
-          this.NotificarErrorDatos(data.ConteoTotal);
-          this.cdr.detectChanges();
-          this.configuration.isLoading = false;
-        }
+        this.NotificarConteo(conteo);
+        this.pagination.limit = 10;
+        this.pagination.offset = 0;
+        this.pagination.count = conteo;
+        this.pagination = { ...this.pagination };
+        this.cdr.detectChanges();
+  
+
       });
 
+    
   }
 
 
@@ -867,6 +1171,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             });
           });
           this.EstableceColumnasMetadatos(propiedades);
+          this.ActualizarDatosPlantilla(this.data);
         }, (e) => { }, () => { });
     }
 
@@ -885,6 +1190,73 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
         this.plantillas = lista;
       }, (e) => { }, () => { });
+  }
+
+
+  private GeneraConsultaBackend(c: Consulta): ConsultaBackend {
+    const q :ConsultaBackend = {
+      consecutivo: c.consecutivo,
+      indice: c.indice,
+      ord_columna: c.ord_columna,
+      ord_direccion: c.ord_direccion,
+      recalcular_totales: c.recalcular_totales,
+      tamano: c.tamano,
+      Filtros: [],
+      Ids: [],
+      IdCache: c.IdCache
+    };
+
+    c.FiltroConsulta.forEach(f => {
+      
+      // var s = "";
+      // if(f.Valor ) {
+      //   f.Valor.forEach(v => {
+      //     s += v;
+      //   });
+      // }
+      q.Filtros.push(
+        {
+          Propiedad: f.Propiedad,
+          Negacion: f.Negacion,
+          Operador: f.Operador,
+          Valor: "",
+          ValorString: f.ValorString,
+          NivelFuzzy: -1
+        }
+      );
+    });
+
+    return q;
+  }
+
+  public ObtenerIdEntidad(entidad: any): string {
+    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
+    if (index >= 0) {
+      return String(entidad[this.metadata.Propiedades[index].Id]);
+    }
+    if (entidad['Id']) return entidad['Id'];
+    if (entidad['id']) return entidad['id'];
+    return '';
+  }
+
+  public ObtenerCampoIdEntidad(): string {
+    const index = this.metadata.Propiedades.findIndex(x => x.EsIdRegistro === true);
+    if (index >= 0) {
+      return this.metadata.Propiedades[index].Id;
+    }
+    return '';
+  }
+
+  private EsPropiedadExtendida(id: string): boolean {
+    const col = this.columnasBase.find(x => x.Id == id)
+    if (col) {
+      return col.EsPropiedadExtendida;
+    }
+    return false;
+  }
+
+  AlternarCheckboxes(): void {
+    this.configuration.checkboxes = !this.configuration.checkboxes;
   }
 
 

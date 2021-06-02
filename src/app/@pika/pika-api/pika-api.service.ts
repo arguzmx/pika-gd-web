@@ -1,3 +1,4 @@
+import { ConsultaBackend } from './../consulta/consulta';
 import { AppConfig } from './../../app-config';
 import { RutaTipo } from '../state/configuracion/ruta-tipo';
 import { IProveedorReporte } from './../metadata/iproveedor-reporte';
@@ -12,6 +13,7 @@ import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
 import { ContenidoVinculado } from '../conteido/contenido-vinculado';
+import { RequestListaIds } from '../consulta/request-paginado-ids';
 
 const retryCount: number = 0;
 
@@ -56,6 +58,15 @@ export class PikaApiService<T, U> {
     return this.app.config.pikaApiUrl.replace(/\/$/, '') + '/' + path;
   }
 
+
+  public ObtenerPaginaPorIds(entidad: string, q: ConsultaBackend): Observable<unknown[]> {
+    const endpoint = this.CrearEndpoint(entidad) + "page/ids";
+    if(!q.IdCache) {
+      q.ord_columna = '';
+      q.ord_direccion = '';
+    }
+    return this.http.post<unknown[]>(endpoint, q);
+  }
 
   GetContenidoVinculado(entidad: string, id: string): Observable<ContenidoVinculado> {
     const endpoint = this.CrearEndpoint(entidad);
@@ -216,7 +227,7 @@ export class PikaApiService<T, U> {
 
   private getQueryStringConsulta(consulta: Consulta): string {
     let qs: string = `?i=${consulta.indice}&t=${consulta.tamano}`;
-    qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}`;
+    qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}&idcache=${consulta.IdCache}`;
 
     let index: number = 0;
     if (consulta.FiltroConsulta) {
