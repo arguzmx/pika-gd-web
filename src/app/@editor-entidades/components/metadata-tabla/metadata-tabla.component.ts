@@ -609,10 +609,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if (this.plantillaSeleccionada) {
        if(this.EsPropiedadExtendida(this.pagination.sort)) {
+         console.log("Metad");
           this.RealizaPaginadoMetadatos();
           return;
        } 
     } 
+    console.log("NOrmal");
     this.GetDataPage(notificar);
   }
 
@@ -673,20 +675,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.entidades.ObtienePaginaMetadatos(this.plantillaSeleccionada, this.GeneraConsultaBackend(consultameta))
       .pipe(first()).subscribe(metadatos => {
-        console.log(metadatos);
         const ids = [];
         metadatos.Elementos.forEach(e=> {
             ids.push(e.DatoId);
         });
         
-        console.log(ids);
-
         const consultaIds =this.GeneraConsultaBackend(this.consulta);
         consultaIds.Ids = ids;
-
+        // indica al backend que no debe completarse la página con elementos adicionales
+        consultaIds.tamano = 0;
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
-          console.log(elementos);
+
           this.ActualizarDatosElemento(elementos, metadatos);
         }, (err) => { console.error(err); })
 
@@ -748,20 +748,26 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
 
+    console.log(this.GeneraConsultaBackend(consultameta));
 
     this.entidades.ObtienePaginaMetadatos(this.plantillaSeleccionada, this.GeneraConsultaBackend(consultameta))
       .pipe(first()).subscribe(metadatos => {
+        
+        console.log(metadatos);
+        
         const ids = [];
         metadatos.Elementos.forEach(e=> {
             ids.push(e.DatoId);
         });
         
+        console.log(ids);
+
         const consultaIds =this.GeneraConsultaBackend(this.consulta);
         consultaIds.Ids = ids;
 
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
-          console.error(elementos);
+          console.log(elementos);
           this.ActualizarDatosElemento(elementos, metadatos);
         }, (err) => { console.error(err); })
 
