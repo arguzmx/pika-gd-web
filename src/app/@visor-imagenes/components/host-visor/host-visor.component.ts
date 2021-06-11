@@ -75,6 +75,7 @@ AfterViewInit, OnChanges {
     this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( doc =>  {
+      console.log(doc);
         this.documento = doc;
         this.paginas = this.documento.Paginas;
     });

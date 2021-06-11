@@ -1,7 +1,7 @@
 <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
   <span>{{Titulo}}</span>
   <span class="example-spacer"></span>
-  <ngx-header-visor (callUpload)="callUpload()" (eventMuestraInfo)="eventMuestraInfo()"></ngx-header-visor>
+  <ngx-header-visor (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()"></ngx-header-visor>
 </mat-toolbar>
 <nb-reveal-card [showToggleButton]="false"  [revealed]="VistaTrasera">
   <nb-card-front>

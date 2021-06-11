@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { DocumentosService } from './../../services/documentos.service';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Pagina, OperacionHeader } from '../../model/pagina';
+import { Documento } from '../../model/documento';
 
 
 @Component({
@@ -13,13 +15,15 @@ import { Pagina, OperacionHeader } from '../../model/pagina';
 export class HeaderVisorComponent implements OnInit, OnDestroy {
   @Output() callUpload = new  EventEmitter();
   @Output() eventMuestraInfo = new  EventEmitter();
+  @Input() documento: Documento;
+  
   pagina: Pagina = null;
   operaciones = OperacionHeader;
   soloImagenes: boolean = false;
   estadoMuestraInfo: boolean = false;
 
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private servicioVisor: VisorImagenesService) { }
+  constructor(private servicioVisor: VisorImagenesService, private docService: DocumentosService) { }
 
   ngOnInit(): void {
     this.EscuchaPaginaActiva();
@@ -55,4 +59,14 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
   doUpload() {
     this.callUpload.emit();
   }
+
+  doZipDownload() {
+    console.log( this.documento.Nombre + ".zip");
+    this.docService.ObtieneZIP(this.documento.Id, this.documento.VersionId);
+  }
+
+  doPDFDownload() {
+    this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId);
+  }
+
 }

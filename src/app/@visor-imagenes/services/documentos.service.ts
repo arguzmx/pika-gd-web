@@ -4,7 +4,7 @@ import { MetadataInfo } from './../../@pika/metadata/metadata-info';
 import { Plantilla } from './../model/plantilla';
 import { AsyncSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Documento } from '../model/documento';
 import { IDocumentoService } from '../model/i-documento-service';
 import { DocumentoPlantilla, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
@@ -26,6 +26,50 @@ export class DocumentosService implements IDocumentoService {
     this.endpointPlantilla = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
     this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
 
+  }
+
+  ObtieneZIP(id: string, version: string) {
+    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;
+    const headers = new HttpHeaders();
+    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+      (response: HttpResponse<Blob>) => {
+        const binaryData = [];
+        binaryData.push(response.body);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
+        downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      },
+      (err) => {
+        console.warn(err);
+      },
+    );
+  }
+
+  ObtienePDF(id: string, version: string) {
+    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}`;
+    const headers = new HttpHeaders();
+    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+      (response: HttpResponse<Blob>) => {
+        const binaryData = [];
+        binaryData.push(response.body);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
+        downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      },
+      (err) => {
+        console.warn(err);
+      },
+    );
+  }
+
+  private getFileNameFromHttpResponse(httpResponse: HttpResponse<Blob>): string {
+    var contentDispositionHeader = httpResponse.headers.get('Content-Disposition');
+    var result = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+    return result.replace(/"/g, '');
   }
 
   public ObtieneDocumento(documentoId: string ): Observable<Documento> {

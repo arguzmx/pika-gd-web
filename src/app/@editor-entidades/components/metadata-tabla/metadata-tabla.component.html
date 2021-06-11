@@ -2,6 +2,14 @@
     (event)="eventosTabla($event)">
 </ngx-table>
 
+
+<!-- Tmplate para despliegue de booleanos-->
+<ng-template #indexStrTpl let-row let-rowIndex="rowIndex" let-column="column">
+            <textarea readonly style="width: 300px; border: none; background-color: transparent;">
+                {{row[column.key]}}
+            </textarea>
+</ng-template>
+
 <!-- Tmplate para despliegue de booleanos-->
 <ng-template #boolTpl let-row let-rowIndex="rowIndex" let-column="column">
     <nb-checkbox *ngIf="!(row[column.key] == null )"  [checked]="row[column.key]" [disabled]="true"></nb-checkbox>

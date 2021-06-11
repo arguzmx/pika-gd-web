@@ -16,6 +16,6 @@ export class HostThumbnailsComponent implements OnInit {
   constructor(private servicioVisor: VisorImagenesService) {}
 
   ngOnInit(): void {
-    this.documento = { Nombre: '', Paginas: [] };
+    this.documento = { Nombre: '', Paginas: [], Id: '', VersionId: '' };
   }
 }

@@ -40,6 +40,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('cataloLinkTpl', { static: true }) cataloLinkTpl: TemplateRef<any>;
   @ViewChild('fechaTpl', { static: true }) fechaTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
+  @ViewChild('indexStrTpl', { static: true }) indexStrTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
   @ViewChild('listaplantilla') listaplantilla: NbSelectComponent;
 
@@ -328,16 +329,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     for (let i = 0; i < columnas.length; i++) {
       if (columnas[i].Visible) {
         let template = null;
+        if (columnas[i].Tipo === tIndexedString) template = this.indexStrTpl;
         if (columnas[i].EsFecha) template = this.fechaTpl;
         if (columnas[i].Tipo === 'bool') template = this.boolTpl;
         if (columnas[i].EsLista) template = this.listTpl;
         if (columnas[i].EsCatalogoVinculado) template = this.cataloLinkTpl;
+
         this.columns.push({
           key: columnas[i].Id,
           title: columnas[i].NombreI18n,
           orderEnabled: columnas[i].Ordenable,
           searchEnabled: columnas[i].Buscable,
-          cellTemplate: template,
+          cellTemplate: template
         });
       }
     }
@@ -408,7 +411,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             columnas.push({
               Id: p.Id,
               Nombre: p.Nombre,
-              Ordenable: true,
+              Ordenable: (p.TipoDatoId == tIndexedString) ? false : true,
               Buscable: true,
               Visible: true,
               Alternable: true,
@@ -429,7 +432,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               ValorDefault: null,
               IndiceOrdenamiento: 0,
               Buscable: false,
-              Ordenable: true,
+              Ordenable: (p.TipoDatoId == tIndexedString) ? false : true,
               Visible: true,
               EsIdClaveExterna: false,
               EsIdRegistro: false,
@@ -560,6 +563,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   ConfiguraTabla(): void {
     this.configuration = { ...DefaultConfig };
     this.configuration.isLoading = false;
+    this.configuration.fixedColumnWidth  = false;
     this.configuration.serverPagination = true;
     this.configuration.threeWaySort = false;
     this.configuration.tableLayout.style = 'normal';
