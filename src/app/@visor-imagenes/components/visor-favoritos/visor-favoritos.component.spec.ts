@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FileDropComponent } from './file-drop.component';
+import { VisorFavoritosComponent } from './visor-favoritos.component';
 
-describe('FileDropComponent', () => {
-  let component: FileDropComponent;
-  let fixture: ComponentFixture<FileDropComponent>;
+describe('VisorFavoritosComponent', () => {
+  let component: VisorFavoritosComponent;
+  let fixture: ComponentFixture<VisorFavoritosComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileDropComponent ]
+      declarations: [ VisorFavoritosComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FileDropComponent);
+    fixture = TestBed.createComponent(VisorFavoritosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

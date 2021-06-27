@@ -16,6 +16,7 @@ export interface Pagina {
     TieneMiniatura: boolean;
     Indexada: boolean;
     VolumenId: string;
+    ElementoId?: string;
 }
 
 export enum OperacionHeader {

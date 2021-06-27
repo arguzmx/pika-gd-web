@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { Paginado } from './../../../@pika/consulta/paginado';
 import { ValorListaOrdenada } from './../../../@pika/metadata/valor-lista';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
@@ -145,13 +146,14 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   public consultaIds: ConsultaBackend;
 
   constructor(
+    appeventBus: AppEventBus,
     private cdr: ChangeDetectorRef,
     private cacheFilros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
     translate: TranslateService,
     diccionarioNavegacion: DiccionarioNavegacion,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.consulta = this.GetConsultaInicial();
     this.T = new Traductor(translate);
   }
@@ -613,12 +615,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if (this.plantillaSeleccionada) {
        if(this.EsPropiedadExtendida(this.pagination.sort)) {
-         console.log("Metad");
           this.RealizaPaginadoMetadatos();
           return;
        } 
     } 
-    console.log("NOrmal");
     this.GetDataPage(notificar);
   }
 
@@ -752,26 +752,19 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.consulta.ord_direccion = this.pagination.order;
     this.consulta = { ...this.consulta };
 
-    console.log(this.GeneraConsultaBackend(consultameta));
-
     this.entidades.ObtienePaginaMetadatos(this.plantillaSeleccionada, this.GeneraConsultaBackend(consultameta))
       .pipe(first()).subscribe(metadatos => {
-        
-        console.log(metadatos);
         
         const ids = [];
         metadatos.Elementos.forEach(e=> {
             ids.push(e.DatoId);
         });
-        
-        console.log(ids);
 
         const consultaIds =this.GeneraConsultaBackend(this.consulta);
         consultaIds.Ids = ids;
 
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
-          console.log(elementos);
           this.ActualizarDatosElemento(elementos, metadatos);
         }, (err) => { console.error(err); })
 

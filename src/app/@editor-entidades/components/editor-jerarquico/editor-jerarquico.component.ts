@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { ConfiguracionEntidad } from './../../model/configuracion-entidad';
 import { EntidadesService, CONTEXTO } from './../../services/entidades.service';
 import {
@@ -59,6 +60,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   // Cosntructor del componente
   constructor(
     private cacheFilros: CacheFiltrosBusqueda,
+    appeventBus: AppEventBus,
     entidades: EntidadesService,
     ts: TranslateService,
     applog: AppLogService,
@@ -67,7 +69,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     private location: Location,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.PermisoJ = this.entidades.permisoSinAcceso;
     this.PermisoC = this.entidades.permisoSinAcceso;
@@ -813,7 +815,6 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   public procesaNavegarVista(link: LinkVista) {
 
-
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionadaC) {
 
@@ -821,6 +822,11 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
           case TipoVista.Vista:
             this.ejecutaNavegarVista(this.metadataC.Tipo, link, this.entidadC, this.metadataC, true);
             break;
+
+          case TipoVista.EventoApp:
+            this.ejecutaNavegarAppEvento(this.metadataC.Tipo, link, this.entidadC, this.metadataC);
+            break;
+
         }
 
 
@@ -832,13 +838,13 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
         );
       }
     } else {
-      
+
       switch (link.Tipo) {
         case TipoVista.Vista:
           this.ejecutaNavegarVistaParametros(this.metadataC.Tipo, link, { OrigenId: this.configJ.OrigenId, OrigenTipo: this.configJ.OrigenTipo });
           break;
       }
-      
+
     }
   }
 

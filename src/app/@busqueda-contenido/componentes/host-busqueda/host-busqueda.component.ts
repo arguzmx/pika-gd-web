@@ -1,3 +1,4 @@
+import { AppEventBus, EventoCerrarPlugins, VISOR } from './../../../@pika/state/app-event-bus';
 import { BMetadatosComponent } from './../b-metadatos/b-metadatos.component';
 import { BPropiedadesComponent } from './../b-propiedades/b-propiedades.component';
 import { CacheFiltrosBusqueda } from './../../../@editor-entidades/services/cache-filtros-busqueda';
@@ -38,6 +39,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   documentoSeleccionado: any;
   contenidoSeleccionado: boolean = false;
   nombreRepo: string;
+  contenidoVisible: boolean = true
 
   DesdeRuta = false;
   Tipo = 'Elemento';
@@ -46,12 +48,26 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
 
   constructor(
     ts: TranslateService,
+    private appEventBus:AppEventBus,
     private api: ServicioBusquedaAPI,
     private applog: AppLogService,
     private location: Location,
     private route: ActivatedRoute,
     private router: Router) {
     this.T = new Traductor(ts);
+
+    this.appEventBus.LeeEventos().subscribe(ev => {
+      switch (ev.tema) {
+        case VISOR:
+          this.contenidoVisible = false;
+          break;
+
+        case EventoCerrarPlugins.tema:
+          this.contenidoVisible = true;
+          break;
+
+      }
+    });
   }
 
   ngOnDestroy(): void {

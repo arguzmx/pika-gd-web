@@ -53,6 +53,7 @@ export function createInitialState(): SesionState {
       MenuItems: [],
       MenuApp: null,
       ACL: null,
+      ModoVisorActivado: false
     },
     preferencias: { Dominio: '', UnidadOrganizacional: '' },
     configuracion: { RutasEntidades: [] },
@@ -205,6 +206,12 @@ export class SesionStore extends Store<SesionState> {
       }
     }
     return p;
+  }
+
+  setVisorActivo() {
+    const conf = { ...this.getValue().sesion };
+    conf.ModoVisorActivado = !conf.ModoVisorActivado;
+    this.update({ sesion: conf });
   }
 
   setRutasTipo(rutas: RutaTipo[]) {

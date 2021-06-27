@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UploaderComponent } from './uploader.component';
+import { HeaderThumbsComponent } from './header-thumbs.component';
 
-describe('UploaderComponent', () => {
-  let component: UploaderComponent;
-  let fixture: ComponentFixture<UploaderComponent>;
+describe('HeaderThumbsComponent', () => {
+  let component: HeaderThumbsComponent;
+  let fixture: ComponentFixture<HeaderThumbsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploaderComponent ]
+      declarations: [ HeaderThumbsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UploaderComponent);
+    fixture = TestBed.createComponent(HeaderThumbsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

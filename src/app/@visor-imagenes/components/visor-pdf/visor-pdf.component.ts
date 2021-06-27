@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Pagina } from '../../model/pagina';
 
 @Component({
@@ -6,14 +6,18 @@ import { Pagina } from '../../model/pagina';
   templateUrl: './visor-pdf.component.html',
   styleUrls: ['./visor-pdf.component.scss']
 })
-export class VisorPdfComponent implements OnInit {
+export class VisorPdfComponent implements OnInit, OnChanges {
   @Input() pagina: Pagina;
   public url: string = '';
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.muestraPDF();
+  }
+
+  ngOnInit(): void {
+    //this.muestraPDF();
   }
 
   muestraPDF() {

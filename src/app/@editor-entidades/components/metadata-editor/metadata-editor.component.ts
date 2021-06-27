@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { Traductor } from './../../services/traductor';
 import { MetadataInfo, Evento, Eventos, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { AppLogService } from '../../../@pika/pika-module';
@@ -88,13 +89,14 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   // Cosntructor del componente
   constructor(
     entidades: EntidadesService,
+    appeventBus: AppEventBus,
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
     diccionarioNavegacion: DiccionarioNavegacion,
     private fb: FormBuilder,
   ) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.transaccionId = (new Date()).getMilliseconds().toString();
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
@@ -138,7 +140,6 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   // Se llama desde el template
   private CreaEntidad(cerrar: boolean): void {
-    console.log(this.formGroup);
     if (this.formGroup.status !== 'VALID') {
       this.applog.AdvertenciaT('editor-pika.mensajes.err-datos-novalidos');
       return;

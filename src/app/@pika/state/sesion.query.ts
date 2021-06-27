@@ -17,6 +17,9 @@ export class SesionQuery extends Query<SesionState> {
   public preferencias$ = this.select(({  preferencias }) => preferencias);
 
   public menus$ = this.select(state => state.sesion.MenuItems);
+  
+  public modoVisorActivado$ = this.select(state => state.sesion.ModoVisorActivado);
+
 
   public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
 

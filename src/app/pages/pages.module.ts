@@ -1,3 +1,4 @@
+import { VisorFavoritosComponent } from './../@visor-imagenes/components/visor-favoritos/visor-favoritos.component';
 import { busquedaContenidoModule } from './../@busqueda-contenido/busqueda-contenido.module';
 import { NgModule } from '@angular/core';
 import { NbButtonModule, NbCardModule, NbMenuModule } from '@nebular/theme';

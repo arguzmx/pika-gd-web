@@ -16,5 +16,6 @@ export interface Sesion {
     Dominios: DominioActivo[];
     ACL: ACLUsuario;
     MenuApp: MenuAplicacion;
+    ModoVisorActivado: boolean;
 }
 

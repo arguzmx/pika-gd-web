@@ -1,3 +1,4 @@
+<span [ngClass]="{ 'oculto': !contenidoVisible }">
 <div *ngIf="mostrarBarra; then thenBlock else elseBlock"></div>
 <ng-template #thenBlock>
 
@@ -203,7 +204,7 @@
   (NuevaSeleccion)="NuevaSeleccion($event)" (EditarSeleccion)="EditarSeleccion($event)">
 </ngx-metadata-tabla>
 </ng-template>
-
+</span>
 
 <ng-template #dialogConfirmDelete let-data let-ref="dialogRef">
   <nb-card>

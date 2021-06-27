@@ -8,8 +8,8 @@ import { Component, OnInit, ViewChild, AfterViewInit, Input, OnChanges, SimpleCh
 import { NbDialogRef, NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { DocumentosService } from '../../services/documentos.service';
 import { AppLogService } from '../../../@pika/servicios';
-import { IUploadConfig } from '../../../@uploader/uploader.module';
 import { DocumentoPlantilla, RequestValoresPlantilla, VinculoDocumentoPlantilla, VinculosObjetoPlantilla } from '../../../@pika/pika-module';
+import { IUploadConfig } from '../../model/i-upload-config';
 
 @Component({
   selector: 'ngx-editor-plantilla',

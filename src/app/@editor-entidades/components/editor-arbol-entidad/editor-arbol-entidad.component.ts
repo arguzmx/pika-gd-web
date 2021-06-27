@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { first, takeUntil } from 'rxjs/operators';
 import {
   Component, OnInit, Output, EventEmitter, OnChanges,
@@ -33,12 +34,13 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
 
   constructor(
     private database: DynamicDatabase,
+    appeventBus: AppEventBus,
     entidades: EntidadesService,
     router: Router,
     applog: AppLogService,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new DynamicDataSource(this.treeControl, database);
     this.escuchaCambiosArbol();

@@ -1,30 +1,7 @@
 <div class="row">
     <div class="col-lg-12">
-        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+        <mat-toolbar class="mat-toolbar-white">
             <span class="toolbar-spacer"></span>
-                <button mat-icon-button [nbTooltip]="soloImagenes ? 'Todos los documentos' : 'Sólo imágenes'"
-                    on-click="EstableceSoloImaganes(!soloImagenes)">
-                    <mat-icon [ngClass]="soloImagenes ? 'text-primary' : ''">perm_media</mat-icon>
-                </button>
-                <!-- Separadador -->
-                <mat-icon class="gray-icon">more_vert</mat-icon>
-                <button mat-icon-button on-click="doUpload()" nbTooltip="Subir archivos">
-                    <mat-icon>cloud_upload</mat-icon>
-                </button>
-                <button mat-icon-button on-click="doZipDownload()" nbTooltip="Descargar archivos">
-                    <mat-icon>cloud_download</mat-icon>
-                </button>
-                <button mat-icon-button on-click="doPDFDownload()" nbTooltip="Descargar PDF">
-                    <mat-icon>picture_as_pdf</mat-icon>
-                </button>
-                <!-- Separadador -->
-                <mat-icon class="gray-icon">more_vert</mat-icon>
-                <button mat-icon-button on-click="muestraInfo()" nbTooltip="Muestra la información del documento">
-                    <mat-icon [ngClass]="estadoMuestraInfo ? 'text-primary' : ''">grading</mat-icon>
-                </button>
-                <!-- Separadador -->
-                <mat-icon class="gray-icon">more_vert</mat-icon>
-                <!-- actialziar lista de elemento -->
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.REFLEJO_VER)"
                     nbTooltip="Reflejo vertical">
                     <mat-icon>swap_vert</mat-icon>

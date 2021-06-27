@@ -3,7 +3,8 @@ import {
   OnInit,
   OnDestroy,
   ViewChild, 
-  Input} from '@angular/core';
+  Input,
+  AfterViewInit} from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { fabric } from 'fabric';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -11,19 +12,20 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { Pagina, OperacionHeader } from '../../model/pagina';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { is } from 'date-fns/locale';
 
 @Component({
   selector: 'ngx-visor',
   templateUrl: './visor.component.html',
   styleUrls: ['./visor.component.scss'],
 })
-export class VisorComponent implements OnInit, OnDestroy {
+export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
 @ViewChild('imgPag') domImg;
 @ViewChild('emptyCanvas') emptyCanvas;
 @ViewChild("contenedorImg") contenedorImg;
 @Input() alturaComponente: string;
 
-
+  canvasId = 'canvas' + (new Date()).getMilliseconds().toString();
   canvas: any;
   paginaVisible: Pagina = null;
   oImg: any = null;
@@ -41,12 +43,17 @@ export class VisorComponent implements OnInit, OnDestroy {
               private domSanitizer: DomSanitizer) {}
 
 
+  ngAfterViewInit(): void {
+    this.IniciaCanvas();
+    this.CanvasInicial();
+  }
+
 
   ngOnInit(): void {
-    this.IniciaCanvas();
+    
     this.EscuchaCambiosPagina();
     this.EscuchaCambiosHeader();
-
+    
     this.dataUrl$ = this.src$
     .pipe(takeUntil(this.onDestroy$))
     .pipe(
@@ -76,18 +83,18 @@ export class VisorComponent implements OnInit, OnDestroy {
   }
 
   private IniciaCanvas() {
-    this.canvas = new fabric.Canvas('canvas', {backgroundColor : "#000"});
+    this.canvas = new fabric.Canvas(this.canvasId, {backgroundColor : "#000"});
     
-    const canvas = this.canvas;
+    //const canvas = this.canvas;
     
     // ====== zoom ======
     this.canvas.on('mouse:wheel', function (opt) {
       const delta = opt.e.deltaY;
-      let zoom = canvas.getZoom();
+      let zoom = this.canvas.getZoom();
       zoom *= 0.999 ** delta;
       if (zoom > 20) zoom = 20;
       if (zoom < 0.01) zoom = 0.01;
-      canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
@@ -143,11 +150,24 @@ export class VisorComponent implements OnInit, OnDestroy {
     event.stopPropagation();
   }
 
+  private AlturaCanvas(): number {
+    return parseInt(this.alturaComponente.replace('px','')) - 75;
+  }
+
+  private AlturaCanvasPx(): string {
+    return this.AlturaCanvas().toString() + 'px';
+  }
+
+  private CanvasInicial() {
+    const anchura = parseInt(this.contenedorImg.nativeElement.clientWidth)-100;
+    this.canvas.clear();
+    this.canvas.setDimensions({ width: anchura , height: this.AlturaCanvas() });
+  }
+
   private MuestraPaginaVisible() {
    
     if (this.paginaVisible.EsImagen && this.canvas !== null) {
 
-      const altura = parseInt(this.alturaComponente.replace('px',''));
       const anchura = parseInt(this.contenedorImg.nativeElement.clientWidth);
 
       // para cargar la img segura, fue necesario añadirla en un elemento img en el dom
@@ -156,10 +176,9 @@ export class VisorComponent implements OnInit, OnDestroy {
       const instanciaImg = new fabric.Image(domImg, { selectable: false })
                           .set({ originX:  'middle', originY: 'middle' });
       
-
-
+      this.oImg = instanciaImg;
       this.canvas.clear();
-      this.canvas.setDimensions({ width: anchura , height: altura });
+      this.canvas.setDimensions({ width: anchura , height: this.AlturaCanvas() });
       this.canvas.add(instanciaImg);
       this.canvas.renderAll();
       
@@ -168,7 +187,7 @@ export class VisorComponent implements OnInit, OnDestroy {
       if (instanciaImg.width > instanciaImg.height) {
         z = anchura/instanciaImg.width;
       } else {
-        z = altura/instanciaImg.height;
+        z = this.AlturaCanvas()/instanciaImg.height;
       }
       
       if(z!=Infinity){

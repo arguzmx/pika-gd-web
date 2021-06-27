@@ -1,3 +1,5 @@
+import { EventoAplicacion, PayloadItem } from './../../@pika/eventos/evento-aplicacion';
+import { AppEventBus, EventoCerrarPlugins, VISOR } from './../../@pika/state/app-event-bus';
 import { EntidadesService, CONTEXTO } from './../services/entidades.service';
 import { first } from 'rxjs/operators';
 import {
@@ -30,16 +32,33 @@ export class EditorEntidadesBase {
   public T: Traductor;
   // Determina si la entida den edición es una entidad vinculada
   public EditandoVinculada = false;
+  public contenidoVisible: boolean = true;
 
   public botonesLinkVista: LinkVista[] = [];
   public tieneBotonesVista: boolean = false;
 
   constructor(
+    public appEventBus: AppEventBus,
     public entidades: EntidadesService,
     public applog: AppLogService,
     public router: Router,
     public diccionarioNavegacion: DiccionarioNavegacion,
-  ) {}
+  ) {
+
+    this.appEventBus.LeeEventos().subscribe(ev => {
+      switch (ev.tema) {
+        case VISOR:
+          this.contenidoVisible = false;
+          break;
+
+        case EventoCerrarPlugins.tema:
+          this.contenidoVisible = true;
+          break;
+
+      }
+    });
+
+   }
 
   // Gestion de vínculose
   // -------------------------------------------------------------
@@ -205,44 +224,66 @@ export class EditorEntidadesBase {
   }
 
 
-  public ejecutaNavegarVistaTag(tag: string){
-    
+  public ejecutaNavegarVistaTag(tag: string) {
+
+  }
+
+  public ejecutaNavegarAppEvento(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo) {
+    const parametros: PayloadItem[] = [];
+    if (entidad != null) {
+      metadata.Propiedades.forEach(p => {
+        if (p.ParametroLinkVista) {
+          parametros.push({ id: p.Id, valor: entidad[p.Id], valores: [] });
+        }
+      });
+    }
+
+    this.entidades.ObtenerIdEntidad
+
+    const evento: EventoAplicacion = {
+      id:  this.ObtenerIdEntidad(metadata, entidad), tema: link.Vista, payload: parametros
+    };
+
+    this.appEventBus.EmiteEvento(evento);
+  }
+
+
+
+
+  public ObtenerIdEntidad(m: MetadataInfo, entidad: any): string {
+    const index = m.Propiedades.findIndex(x => x.EsIdRegistro === true);
+
+    if (index >= 0) {
+      return String(entidad[m.Propiedades[index].Id]);
+    }
+
+    if (entidad['Id']) return entidad['Id'];
+
+    if (entidad['id']) return entidad['id'];
+
+    return '';
   }
 
   public ejecutaNavegarVista(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo, newWindow: boolean = false) {
-      const parametros = { tipo: TipoEntidad };
-      var parametrosString = '';
-      if(entidad!=null){
-        metadata.Propiedades.forEach( p => {
-          if (p.ParametroLinkVista) {
-            parametros[p.Id] = entidad[p.Id];
-            if (parametrosString != '') parametrosString += '&';
-            parametrosString +=  encodeURIComponent(p.Id) + '=' + encodeURIComponent(entidad[p.Id]);
-          }
-        });
-      } 
-      const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
-      parametrosString = url + '?' + parametrosString;
-      if (url) {
-        if (newWindow) {
-          window.open(parametrosString, 'blank');
-        } else {
-          this.router.navigate([url], { queryParams: parametros});
+    const parametros = { tipo: TipoEntidad };
+    var parametrosString = '';
+    if (entidad != null) {
+      metadata.Propiedades.forEach(p => {
+        if (p.ParametroLinkVista) {
+          parametros[p.Id] = entidad[p.Id];
+          if (parametrosString != '') parametrosString += '&';
+          parametrosString += encodeURIComponent(p.Id) + '=' + encodeURIComponent(entidad[p.Id]);
         }
-      } else {
-        this.applog.FallaT(
-          'editor-pika.mensajes.err-config-vinculo',
-          null,
-          null,
-        );
-      }
-  }
-
-  public ejecutaNavegarVistaParametros(TipoEntidad: string, link: LinkVista, parametros: unknown) {
-    parametros['tipo'] = TipoEntidad;
+      });
+    }
     const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
+    parametrosString = url + '?' + parametrosString;
     if (url) {
-      this.router.navigate([url], { queryParams: parametros});
+      if (newWindow) {
+        window.open(parametrosString, 'blank');
+      } else {
+        this.router.navigate([url], { queryParams: parametros });
+      }
     } else {
       this.applog.FallaT(
         'editor-pika.mensajes.err-config-vinculo',
@@ -250,7 +291,21 @@ export class EditorEntidadesBase {
         null,
       );
     }
-}
+  }
+
+  public ejecutaNavegarVistaParametros(TipoEntidad: string, link: LinkVista, parametros: unknown) {
+    parametros['tipo'] = TipoEntidad;
+    const url = this.diccionarioNavegacion.urlPorNombre(link.Vista);
+    if (url) {
+      this.router.navigate([url], { queryParams: parametros });
+    } else {
+      this.applog.FallaT(
+        'editor-pika.mensajes.err-config-vinculo',
+        null,
+        null,
+      );
+    }
+  }
 
   public tituloNavegarLista(link: LinkVista) {
     return this.T.t[`vistas.${link.Vista}`];

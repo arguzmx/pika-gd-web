@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -76,6 +77,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
   // Cosntructor del componente
   constructor(
     private cacheFiltros: CacheFiltrosBusqueda,
+    appeventBus: AppEventBus,
     entidades: EntidadesService,
     ts: TranslateService,
     applog: AppLogService,
@@ -83,7 +85,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     private fb: FormBuilder,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
     this.group = this.fb.group({});

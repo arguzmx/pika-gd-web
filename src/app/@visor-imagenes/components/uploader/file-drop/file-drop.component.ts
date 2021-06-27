@@ -7,7 +7,6 @@ import {
 import { forkJoin, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
-import { VisorImagenesService } from '../../../services/visor-imagenes.service';
 
 @Component({
   selector: 'ngx-file-drop',
@@ -42,6 +41,9 @@ export class FileDropComponent implements OnInit, OnDestroy {
 
   //#endregion
 
+
+  private uploadService: UploadService;
+
   // Claves para obtener la traducción
   ts: string[];
 
@@ -51,11 +53,11 @@ export class FileDropComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor( private ref: ChangeDetectorRef,
               private translate: TranslateService,
-              public uploadService: UploadService,
               public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.accept = data.accept;
     this.maxSize = data.maxSize;
+    this.uploadService = data.uploadService;
   }
 
   ngOnInit(): void {

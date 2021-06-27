@@ -5,7 +5,7 @@ import { Observable, AsyncSubject, BehaviorSubject, Subject } from 'rxjs';
 import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
-import { IUploadConfig } from '../../@uploader/uploader.module';
+import { IUploadConfig } from '../model/i-upload-config';
 
 @Injectable()
 export class VisorImagenesService {
@@ -28,7 +28,8 @@ export class VisorImagenesService {
 
   constructor(
     private app: AppConfig,
-    private docService: DocumentosService) {}
+    private docService: DocumentosService) {
+    }
 
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
@@ -102,7 +103,8 @@ export class VisorImagenesService {
     return this.subjectOpenUpload.asObservable();
   }
 
-  public EstableceActualizarPaginas(paginas: Pagina[]) {
+  public EstableceActualizarPaginas(paginas: Pagina[], ElementoId: string) {
+    paginas.forEach( p => p.ElementoId = ElementoId);
     this.subjecActualizarPaginas.next(paginas);
   }
 

@@ -8,12 +8,12 @@ import {
   HttpResponseBase,
 } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
-import { IUploadConfig } from '../components/uploader/model/i-upload-config';
 import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
 import { VisorImagenesService } from './visor-imagenes.service';
 import { Pagina } from '../model/pagina';
+import { IUploadConfig } from '../model/i-upload-config';
 
 
 
@@ -24,9 +24,10 @@ export class UploadService {
   private url: string;
   constructor(
     private app: AppConfig,
-    private http: HttpClient, private applog: AppLogService,
-              private ts: TranslateService,
-              private servicioVisor: VisorImagenesService) {
+    private http: HttpClient, 
+    private applog: AppLogService,
+    private ts: TranslateService,
+    private servicioVisor: VisorImagenesService) {
     this.indiceCarga = 1;
     this.url = this.app.config.uploadUrl;
   }
@@ -39,7 +40,12 @@ export class UploadService {
     });
   }
 
-  public config: IUploadConfig;
+  public uConfig: IUploadConfig;
+
+
+  public SetConfig(config: IUploadConfig) {
+    this. uConfig = config;
+  }
 
   public upload(files: any[] = []): { [key: string]:
       { progress: Observable<{progreso: number, status: number}> } } {
@@ -51,12 +57,12 @@ export class UploadService {
       const file = files[i];
       this.indiceCarga++;
       const formData: FormData = new FormData();
-      formData.append('VolumenId', this.config.VolumenId);
-      formData.append('PuntoMontajeId', this.config.PuntoMontajeId);
-      formData.append('ElementoId', this.config.ElementoId);
-      formData.append('TransaccionId', this.config.TransactionId);
+      formData.append('VolumenId', this.uConfig.VolumenId);
+      formData.append('PuntoMontajeId', this.uConfig.PuntoMontajeId);
+      formData.append('ElementoId', this.uConfig.ElementoId);
+      formData.append('TransaccionId', this.uConfig.TransactionId);
       formData.append('Indice', this.indiceCarga.toString());
-      formData.append('VersionId', this.config.VersionId);
+      formData.append('VersionId', this.uConfig.VersionId);
       formData.append('file', file, file.name);
 
       const req = new HttpRequest('POST', this.url, formData, {
@@ -75,11 +81,11 @@ export class UploadService {
           total--;
           if (total === 0) {
             this.http
-              .post<Pagina[]>(this.url + `/completar/${this.config.TransactionId}`, null)
+              .post<Pagina[]>(this.url + `/completar/${this.uConfig.TransactionId}`, null)
               .pipe(first())
               .subscribe((paginasNuevas) => {
                 if (paginasNuevas) {
-                  this.servicioVisor.EstableceActualizarPaginas(paginasNuevas);
+                  this.servicioVisor.EstableceActualizarPaginas(paginasNuevas, this.uConfig.ElementoId);
                   this.applog.ExitoT('editor-pika.mensajes.msg-exito', null, {});
                 }
               });

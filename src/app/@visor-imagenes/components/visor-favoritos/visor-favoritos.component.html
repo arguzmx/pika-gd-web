@@ -1,0 +1,13 @@
+<nb-card>
+  <nb-card-body>
+    <nb-tabset #tabsetelementos>
+      <nb-tab tabid="{{e.ElementoId}}" *ngFor="let e of elementos" 
+      tabTitle="{{e.Nombre}}" [active]="true">
+        <ngx-host-visor
+        (cerrarVista) = "evCerrarVista()"
+        (cerrarDocumento) = "evCerrarDocumento($event)"
+        [config]="e"></ngx-host-visor>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>

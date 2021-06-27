@@ -1,3 +1,4 @@
+import { VisorLayoutComponent } from './layouts/visor-layout/visor.layout';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -71,6 +72,7 @@ const COMPONENTS = [
   TwoColumnsLayoutComponent,
   EmptyLayoutComponent,
   OrgSelectorComponent,
+  VisorLayoutComponent
 ];
 const PIPES = [
   CapitalizePipe,

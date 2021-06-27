@@ -1,3 +1,4 @@
+import { AppEventBus } from './state/app-event-bus';
 import { PEJECUTAR, PELIMINAR, PESCRIBIR, PLEER, PADMINISTRAR } from './seguridad/permiso-acl';
 import { EntidadesResolver } from './servicios/resolvers/entidades-resolver';
 import { PikaSesionService } from './pika-api/pika-sesion-service';
@@ -45,7 +46,7 @@ import { PropiedadesExtendidas, PropiedadExtendida, ValoresEntidad } from './con
   imports: [],
   declarations: [],
   exports: [],
-  providers: [],
+  providers: [AppEventBus],
 })
 class PikaModule {
 }

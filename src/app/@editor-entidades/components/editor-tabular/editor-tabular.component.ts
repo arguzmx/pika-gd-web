@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { LinkContenidoGenericoComponent } from './../link-contenido-generico/link-contenido-generico.component';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
@@ -131,6 +132,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   // Cosntructor del componente
   constructor(
+    appeventBus: AppEventBus,
     private cacheFiltros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
     ts: TranslateService,
@@ -141,7 +143,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     private location: Location,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.Permiso = this.entidades.permisoSinAcceso;
     this.setAlturaPanelLateral(window.innerHeight);
@@ -654,6 +656,11 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
           case TipoVista.Comando:
             this.NavegarVistaComando(link, newWindow);
             break;
+
+          case TipoVista.EventoApp:
+            this.ejecutaNavegarAppEvento(this.metadata.Tipo, link, this.entidad, this.metadata);
+            break;
+  
         }
 
       } else {

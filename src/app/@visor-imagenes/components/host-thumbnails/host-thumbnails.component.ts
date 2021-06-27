@@ -2,8 +2,9 @@ import {
   Component,
   OnInit,
   Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
-import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Documento } from '../../model/documento';
 
 @Component({
@@ -13,8 +14,8 @@ import { Documento } from '../../model/documento';
 })
 export class HostThumbnailsComponent implements OnInit {
   @Input() documento: Documento;
-  constructor(private servicioVisor: VisorImagenesService) {}
-
+  constructor() {}
+  
   ngOnInit(): void {
     this.documento = { Nombre: '', Paginas: [], Id: '', VersionId: '' };
   }

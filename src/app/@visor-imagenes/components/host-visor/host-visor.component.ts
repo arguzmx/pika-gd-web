@@ -2,21 +2,26 @@
 import { Documento } from './../../model/documento';
 import { DocumentosService } from './../../services/documentos.service';
 import { VisorImagenesService } from './../../services/visor-imagenes.service';
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChildren,
-  QueryList, HostListener, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, Input, OnChanges, SimpleChanges, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import { IUploadConfig } from '../../../@uploader/uploader.module';
-import { FileDropComponent } from '../../../@uploader/file-drop/file-drop.component';
 import { Pagina } from '../../model/pagina';
 import { UploadService } from '../../services/uploader.service';
 import { CacheEntidadesService } from '../../../@editor-entidades/editor-entidades.module';
+import { UploaderComponent } from '../uploader/uploader.component';
+import { IUploadConfig } from '../../model/i-upload-config';
+
 
 @Component({
   selector: 'ngx-host-visor',
   templateUrl: './host-visor.component.html',
   styleUrls: ['./host-visor.component.scss'],
-  providers: [DocumentosService, CacheEntidadesService],
+  providers: [
+    DocumentosService, 
+    CacheEntidadesService, 
+    VisorImagenesService, 
+    UploadService, 
+    DocumentosService],
 })
 export class HostVisorComponent implements OnInit, OnDestroy,
 AfterViewInit, OnChanges {
@@ -25,9 +30,14 @@ AfterViewInit, OnChanges {
   public Titulo: string = '';
   public alturaComponente = '500px';
   public VistaTrasera: boolean;
+  public EsImagen: boolean = true;
 
+  @Output() cerrarDocumento = new  EventEmitter();
+  @Output() cerrarVista = new  EventEmitter();
+  
   @Input() config: IUploadConfig;
-  @ViewChildren(FileDropComponent) uploaders: QueryList<FileDropComponent>;
+  // @ViewChildren(FileDropComponent) uploaders: QueryList<FileDropComponent>;
+  @ViewChild("uploader") uploader: UploaderComponent;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -35,7 +45,9 @@ AfterViewInit, OnChanges {
   }
 
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private servicioVisor: VisorImagenesService, private uploadService: UploadService) { }
+  constructor(
+    private servicioVisor: VisorImagenesService, 
+    private uploadService: UploadService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -52,6 +64,7 @@ AfterViewInit, OnChanges {
   private procesaConfiguracion() {
     this.Titulo = this.config.Nombre;
     this.servicioVisor.config = this.config;
+    this.uploadService.SetConfig(this.config);
   }
 
   ngOnInit(): void {
@@ -66,6 +79,7 @@ AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.CargaDocumento();
+    this.EscuchaCambiosPagina();
     this.EscuchaFiltroPaginas();
     this.EscuchaCambiarPaginaVisible();
     this.EscuchaActualizarPaginas();
@@ -75,7 +89,6 @@ AfterViewInit, OnChanges {
     this.servicioVisor.ObtieneDocumento(this.config.ElementoId)
     .pipe(takeUntil(this.onDestroy$))
     .subscribe( doc =>  {
-      console.log(doc);
         this.documento = doc;
         this.paginas = this.documento.Paginas;
     });
@@ -87,6 +100,17 @@ AfterViewInit, OnChanges {
     .subscribe(soloImagenes => {
       if (this.documento) this.documento.Paginas = soloImagenes ? this.paginas.filter(x => x.EsImagen) : this.paginas;
     });
+  }
+
+  private EscuchaCambiosPagina() {
+    this.servicioVisor
+      .ObtienePaginaVisible()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((p) => {
+        if (p) {
+          this.EsImagen = p.EsImagen          
+        }
+      });
   }
 
   EscuchaCambiarPaginaVisible () {
@@ -120,9 +144,11 @@ AfterViewInit, OnChanges {
     .pipe(takeUntil(this.onDestroy$))
     .subscribe(paginasNuevas => {
       if (this.documento) {
-        this.documento.Paginas = this.documento.Paginas.concat(paginasNuevas);
-        this.documento.Paginas = this.servicioVisor.GeneraUrlPaginas();
-      }
+        if(this.documento.Id == paginasNuevas[0].ElementoId) {
+          this.documento.Paginas = this.documento.Paginas.concat(paginasNuevas);
+          this.documento.Paginas = this.servicioVisor.GeneraUrlPaginas();
+        }
+       }
     });
 
   }
@@ -135,16 +161,7 @@ AfterViewInit, OnChanges {
     this.alturaComponente = a;
   }
 
-  // Ejemplo de como se obtienen los cambios en las p�ginas seleccinadas
-  private ObtieneCambiosPaginasSeleccioandas() {
-    this.servicioVisor.ObtienePaginasSeleccionadas()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe( paginas => {
-        // console.log(paginas);
-    });
-  }
-
-
+  
   // Envia el  input para mostrar el tarahet trasera del panel del visor
   public eventMuestraInfo() {
     this.VistaTrasera = !this.VistaTrasera;
@@ -152,6 +169,14 @@ AfterViewInit, OnChanges {
 
   public callUpload() {
     this.servicioVisor.EstableceAbrirUpload(true);
+  }
+
+  evCerrarDocumento($event: Documento) {
+    this.cerrarDocumento.emit($event);
+  }
+
+  evCerrarVista() {
+    this.cerrarVista.emit();
   }
 
   @HostListener('window:keydown', ['$event'])

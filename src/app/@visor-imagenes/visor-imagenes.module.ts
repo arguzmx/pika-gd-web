@@ -77,7 +77,6 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import { AngularSplitModule } from 'angular-split';
 import { HostThumbnailsComponent } from './components/host-thumbnails/host-thumbnails.component';
 import { HeaderVisorComponent } from './components/header-visor/header-visor.component';
-import { UploaderModule } from '../@uploader/uploader.module';
 import { VisorTifComponent } from './components/visor-tif/visor-tif.component';
 import { VisorPdfComponent } from './components/visor-pdf/visor-pdf.component';
 import { VisorAudioComponent } from './components/visor-audio/visor-audio.component';
@@ -89,13 +88,14 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FileDropComponent } from './components/uploader/file-drop/file-drop.component';
 import { UploaderComponent } from './components/uploader/uploader.component';
 import { ngfModule } from 'angular-file';
-import { UploadService } from './services/uploader.service';
-import { VisorImagenesService } from './services/visor-imagenes.service';
 import { EditorPlantillaComponent } from './components/editor-plantilla/editor-plantilla.component';
 import { PlantillasService } from './services/plantillas.service';
 import { DialogMetadataComponent } from './components/dialog-metadata/dialog-metadata.component';
 import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { VisorFavoritosComponent } from './components/visor-favoritos/visor-favoritos.component';
+import { IUploadConfig } from './model/i-upload-config';
+import { HeaderThumbsComponent } from './components/header-thumbs/header-thumbs.component';
 
 @NgModule({
   imports: [
@@ -172,7 +172,6 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     NbMenuModule,
     RouterModule,
     MatSliderModule,
-    UploaderModule,
     NbTabsetModule,
     NgScrollbarModule,
     NbEvaIconsModule, 
@@ -182,15 +181,17 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
-            PieVisorComponent, HostThumbnailsComponent],
-  providers: [PlantillasService, UploadService, VisorImagenesService, CacheEntidadesService,
+            PieVisorComponent, HostThumbnailsComponent, VisorFavoritosComponent],
+  providers: [PlantillasService,,
      {
     provide: HTTP_INTERCEPTORS, useClass: MyHttpInterceptor, multi: true,
   }],
 })
-export class VisorImagenesModule { }
+class VisorImagenesModule { }
+
+export {VisorImagenesModule, IUploadConfig } 
 
 

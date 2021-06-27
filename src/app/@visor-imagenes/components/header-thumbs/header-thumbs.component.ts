@@ -1,45 +1,34 @@
-import { DocumentosService } from './../../services/documentos.service';
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
-import { VisorImagenesService } from '../../services/visor-imagenes.service';
+import { Component, OnInit, OnDestroy, Output, Input, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Pagina, OperacionHeader } from '../../model/pagina';
 import { Documento } from '../../model/documento';
-
+import { DocumentosService } from '../../services/documentos.service';
+import { VisorImagenesService } from '../../services/visor-imagenes.service';
 
 @Component({
-  selector: 'ngx-header-visor',
-  templateUrl: './header-visor.component.html',
-  styleUrls: ['./header-visor.component.scss']
+  selector: 'ngx-header-thumbs',
+  templateUrl: './header-thumbs.component.html',
+  styleUrls: ['./header-thumbs.component.scss']
 })
-export class HeaderVisorComponent implements OnInit, OnDestroy {
+export class HeaderThumbsComponent implements OnInit, OnDestroy {
   @Output() callUpload = new  EventEmitter();
+  @Output() cerrarDocumento = new  EventEmitter();
+  @Output() cerrarVista = new  EventEmitter();
   @Output() eventMuestraInfo = new  EventEmitter();
   @Input() documento: Documento;
   
-  pagina: Pagina = null;
-  operaciones = OperacionHeader;
   soloImagenes: boolean = false;
   estadoMuestraInfo: boolean = false;
-
+  
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioVisor: VisorImagenesService, private docService: DocumentosService) { }
 
   ngOnInit(): void {
-    this.EscuchaPaginaActiva();
   }
 
+  
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
-  }
-
-  EscuchaPaginaActiva() {
-    this.servicioVisor.ObtienePaginaVisible()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((p) => {
-      this.pagina = p;
-    });
   }
 
   EstableceSoloImaganes(soloImagenes: boolean) {
@@ -47,14 +36,11 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
     this.servicioVisor.EstableceFiltroPaginas(soloImagenes);
   }
 
-  EstableceOperacionPagina(operacion: OperacionHeader) {
-    this.servicioVisor.EstableceOperacionHeader(operacion);
-  }
-
   muestraInfo() {
     this.estadoMuestraInfo = !this.estadoMuestraInfo
     this.eventMuestraInfo.emit();
   }
+
 
   doUpload() {
     this.callUpload.emit();
@@ -66,6 +52,14 @@ export class HeaderVisorComponent implements OnInit, OnDestroy {
 
   doPDFDownload() {
     this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId);
+  }
+
+  CerrarDocumento() {
+    this.cerrarDocumento.emit(this.documento);
+  }
+
+  CerraVista()  {
+    this.cerrarVista.emit();
   }
 
 }

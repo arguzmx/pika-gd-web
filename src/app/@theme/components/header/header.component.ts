@@ -1,3 +1,5 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
+import { SesionStore } from './../../../@pika/state/sesion.store';
 import { Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NbContextMenuComponent, NbDialogService, NbMediaBreakpointsService, NbMenuItem, NbMenuService, NbSidebarService,
   NbThemeService, 
@@ -54,6 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
    @ViewChild('logout') public logoutRef: TemplateRef<any>;
 
   constructor(
+              private sesion: SesionStore,
               private translate: TranslateService,
               private dialog: NbDialogService,
               private auth: OAuthService,
@@ -167,6 +170,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   salir():void {
     this.auth.logOut();
+  }
+
+  alternaVisor(): void {
+    this.sesion.setVisorActivo();
   }
 
 }

@@ -1,3 +1,4 @@
+import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input } from '@angular/core';
@@ -21,10 +22,10 @@ implements IVisorMetadatos, OnInit {
 
   // Cosntructor del componente
   constructor(entidades: EntidadesService,
-    ts: TranslateService, applog: AppLogService,
+    ts: TranslateService, applog: AppLogService, appeventBus:AppEventBus,
     diccionarioNavegacion: DiccionarioNavegacion,
     router: Router) {
-    super(entidades, applog, router, diccionarioNavegacion);
+    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
   }
 
 
