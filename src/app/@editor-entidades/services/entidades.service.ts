@@ -45,7 +45,7 @@ export class EntidadesService {
   // CLiente APi PIKA
   public cliente: PikaApiService<any, string>;
 
-    private BusContexto = new BehaviorSubject(null);
+  private BusContexto = new BehaviorSubject(null);
   private BusArbol = new BehaviorSubject(null);
   private BusFiltros = new BehaviorSubject<EventosFiltrado>(EventosFiltrado.Ninguno);
 
@@ -961,7 +961,108 @@ export class EntidadesService {
 
   }
 
+  TemaSeleccionObtener(entidad: string): Observable<ValorListaOrdenada[]> {
+    const subject = new AsyncSubject<ValorListaOrdenada[]>();
+
+    const key = this.cache.ClaveSeleccion(entidad);
+    const seleccion: ValorListaOrdenada[] = this.cache.get(key);
+
+    if (seleccion != null) {
+      subject.next(seleccion);
+      subject.complete();
+    } else {
+      this.cliente.TemaSeleccionObtener(entidad).pipe(
+        first()
+      ).subscribe(resultado => {
+        this.cache.set(key, resultado);
+        subject.next(resultado);
+      }, (err) => {
+        this.handleHTTPError(err, entidad, '');
+        subject.next(null);
+      }, () => {
+        subject.complete();
+      });
+    }
+    return subject;
+  }
 
 
+  SeleccionActualizaCache(seleccion: ValorListaOrdenada[], entidad: string) {
+    const key = this.cache.ClaveSeleccion(entidad);
+    this.cache.set(key, seleccion);
+  }
+
+  TemaSeleccionAdicionar(nombre: string, entidad: string): Observable<ValorListaOrdenada[]> {
+    const subject = new AsyncSubject<ValorListaOrdenada[]>();
+    this.cliente.TemaSeleccionAdicionar(nombre, entidad).pipe(first())
+    .subscribe(resultado => {
+      const key = this.cache.ClaveSeleccion(entidad);
+      var seleccion: ValorListaOrdenada[] = this.cache.get(key);
+      if (seleccion == null) {
+        seleccion = [];
+      };
+      seleccion.push(resultado);
+      seleccion = seleccion
+      .sort((a, b) => a.Texto < b.Texto ? -1 : a.Texto > b.Texto ? 1 : 0);
+      this.cache.set(key, seleccion);
+      subject.next(seleccion);
+      this.applog.ExitoT('editor-pika.mensajes.ok-tema-add', null, null);
+    }, (err) => {
+      this.applog.FallaT('editor-pika.mensajes.err-tema-add', null, null);
+      subject.next(null);
+    }, () => {
+      subject.complete();
+    });
+    return subject;
+  }
+
+  SeleccionAdicionar(temaid: string, Ids: string[], tipo: string,): Observable<any> {
+    const subject = new AsyncSubject<any>();
+    this.cliente.SeleccionAdicionar(temaid, Ids, tipo).pipe(
+      first()
+    ).subscribe(resultado => {
+      console.log(resultado);
+      this.applog.ExitoT('editor-pika.mensajes.ok-seleccion-add', null, null);
+    }, (err) => {
+      this.handleHTTPError(err, tipo, '');
+      subject.next(null);
+    }, () => {
+      subject.complete();
+    });
+    return subject;
+  }
+
+  SeleccionEliminar(temaid: string, tipo: string, Ids: string[]): Observable<any> {
+    const subject = new AsyncSubject<boolean>();
+    this.cliente.SeleccionEliminar(temaid, Ids, tipo).pipe(
+      first()
+    ).subscribe(resultado => {
+      this.applog.ExitoT('editor-pika.mensajes.ok-seleccion-del', null, null);
+      subject.next(true);
+    }, (err) => {
+      this.handleHTTPError(err, tipo, '');
+      subject.next(false);
+    }, () => {
+      subject.complete();
+    });
+    return subject;
+  }
+
+  SeleccionVaciar(temaid: string, tipo: string): Observable<any> {
+    const subject = new AsyncSubject<boolean>();
+    this.cliente.SeleccionVaciar(temaid, tipo).pipe(
+      first()
+    ).subscribe(resultado => {
+      this.applog.ExitoT('editor-pika.mensajes.ok-seleccion-empty', null, null);
+      subject.next(true);
+    }, (err) => {
+      this.handleHTTPError(err, tipo, '');
+      subject.next(false);
+    }, () => {
+      subject.complete();
+    });
+    return subject;
+  }
+  
 
 }

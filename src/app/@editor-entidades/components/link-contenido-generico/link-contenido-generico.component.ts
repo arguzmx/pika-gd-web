@@ -70,6 +70,8 @@ export class LinkContenidoGenericoComponent implements OnInit {
         if (el.Id == null) {
           if (el.PuntoMontajeId == null || el.VolumenId == null) {
             this.valido = false;
+            this.loading = false;
+            this.existente = false;
           } else {
             this.elemento = el;
             this.loading = false;

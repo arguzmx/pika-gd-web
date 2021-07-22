@@ -2,7 +2,7 @@ import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
 import { MetadataInfo } from './../../@pika/metadata/metadata-info';
 import { Plantilla } from './../model/plantilla';
-import { AsyncSubject, Observable } from 'rxjs';
+import { AsyncSubject, Observable, BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Documento } from '../model/documento';
@@ -14,7 +14,6 @@ export class DocumentosService implements IDocumentoService {
 
   private endpointPlantilla: string;
   private endpointMetadatos: string;
-
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
   }
@@ -25,8 +24,8 @@ export class DocumentosService implements IDocumentoService {
     private http: HttpClient) {
     this.endpointPlantilla = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
     this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
-
   }
+  
 
   ObtieneZIP(id: string, version: string) {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;

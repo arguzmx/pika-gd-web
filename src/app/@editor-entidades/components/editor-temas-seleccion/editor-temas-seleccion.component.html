@@ -1,0 +1,46 @@
+<nb-card>
+    <nb-card-header>{{ T.t["entidades.temas-seleccion"] }}</nb-card-header>
+    <nb-card-body>
+
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8">
+                <label for="nombre" class="label">&nbsp;{{T.t['entidades.temas-seleccion-nombre']}}</label>
+                <input nbInput type="text" fieldSize="medium" fullWidth="true" id="nombre" class="form-control"
+                    [(ngModel)]="nuevoTema" />
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="pt-25">
+                    <button nbButton id="btnCrear" size="medium" (click)="crearTema()">
+                        {{ T.t["ui.crear"] }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-10">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <nb-select size="medium" fullWidth="true" hero="true" id="listaTemas" #listaTemas
+                    (selectedChange)="cambioSeleccion($event)">
+                    <nb-option *ngFor="let item of temas" [value]="item.Id">{{item.Texto}}</nb-option>
+                </nb-select>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="row">
+            <div class="col-lg-6">
+                <div>
+                    <button nbButton size="medium" (click)="cerrar()">
+                        {{ T.t["ui.cancelar"] }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="float-right">
+                    <button nbButton size="medium" status="primary" (click)="SelecionarTema()">
+                        {{ T.t["ui.aceptar"] }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>

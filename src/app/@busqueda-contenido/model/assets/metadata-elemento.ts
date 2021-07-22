@@ -1,6 +1,7 @@
 import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 export const MetadataElemento: MetadataInfo =
 {
+    "HabilitarSeleccion": true,
     "AsociadoMetadatos": true,
     "TokenApp": "PIKA-GD-CONTENIDO",
     "TokenMod": "ESTRUCTURA-CONTENIDO",

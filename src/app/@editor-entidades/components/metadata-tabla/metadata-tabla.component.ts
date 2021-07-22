@@ -50,9 +50,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   // Parámetros de configuración
   @Input() config: ConfiguracionEntidad;
+  @Input() idSeleccion: string;
   @Input() metadata: MetadataInfo;
   @Input() busuedaPersonalizada: boolean = false;
   @Output() NuevaSeleccion = new EventEmitter();
+  @Output() NuevaSeleccionMultiple = new EventEmitter();
   @Output() EditarSeleccion = new EventEmitter();
   @Output() ConteoRegistros = new EventEmitter();
   @Output() EventoResultadoBusqueda = new EventEmitter();
@@ -77,9 +79,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   public plantillas: ValorListaOrdenada[] = [];
   public plantillaSeleccionada: string = '';
 
+  
   // Datos y columnas para EasyTables en el template
   public entidadseleccionada: any = null;
+  public entidadesseleccionadas: any[] = [];
   public renglonSeleccionado: number = -1;
+  public renglonesSeleccionados = new Set();;
   public configuration: Config;
   public data: any[];
   public columns: Columns[] = [];
@@ -106,6 +111,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.AsociadoMetadatos = false;
     this._CerrarDialogos();
     this.entidadseleccionada = null;
+    this.entidadesseleccionadas = [];
     this.renglonSeleccionado = -1;
     this.data = null;
     this.columnasExtendias = [];
@@ -126,6 +132,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       order: '',
     };
     this.consulta =  this.GetConsultaInicial();
+    this.configuration.checkboxes = false;
+    this.idSeleccion = '';
   }
 
 
@@ -159,12 +167,17 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     for (const propName in changes) {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
           case 'metadata':
             this.ProcesaConfiguracion();
             break;
+
+          case 'idSeleccion':
+              this.GetDataPage(true);
+              break;            
         }
       }
     }
@@ -254,9 +267,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   private AnularSeleccion(): void {
+    this.entidadesseleccionadas = [];
     this.entidadseleccionada = null;
     this.renglonSeleccionado = -1;
     this.NuevaSeleccion.emit(this.entidadseleccionada);
+    this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas)
   }
 
   // Otiene la etqueta para una celda con un Id
@@ -528,6 +543,22 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     }
   }
 
+  public ObtieneIdsSeleccionados(): string[] {
+    const lista: string[] = [];
+    const campoId = this.ObtenerCampoIdEntidad();
+    if(this.configuration.checkboxes) {
+      if(this.entidadesseleccionadas.length>0){
+        this.entidadesseleccionadas.forEach(item=> {
+          lista.push(item[campoId]);
+        });
+      } 
+    } else {
+      if(this.entidadseleccionada!=null){
+        lista.push(this.entidadseleccionada[campoId]);
+      } 
+    }
+    return lista;
+  }
 
   // listener para eventos de la tabla
   eventosTabla($event: { event: string; value: any }): void {
@@ -535,24 +566,58 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     switch ($event.event) {
       case 'onOrder':
       case 'onPagination':
-        this.onPagination($event);
-        this.renglonSeleccionado = -1;
-        this.entidadseleccionada = null;
-        this.NuevaSeleccion.emit(this.entidadseleccionada);
+        this.onPagination($event);  
+        if (this.configuration.checkboxes) {
+          this.renglonesSeleccionados.clear()
+          this.entidadesseleccionadas = [];
+          this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas);
+        } else {
+          this.renglonSeleccionado = -1;
+          this.entidadseleccionada = null;
+          this.NuevaSeleccion.emit(this.entidadseleccionada);
+        }
         break;
 
       case 'onClick':
-        this.renglonSeleccionado = $event.value.rowId;
-        this.entidadseleccionada = $event.value.row;
-        this.NuevaSeleccion.emit(this.entidadseleccionada);
-        this.SetSeleccion(this.renglonSeleccionado);
+        if (!this.configuration.checkboxes) {
+          this.renglonSeleccionado = $event.value.rowId;
+          this.entidadseleccionada = $event.value.row;
+          this.NuevaSeleccion.emit(this.entidadseleccionada);
+          this.SetSeleccion(this.renglonSeleccionado);        
+        } 
         break;
 
       case 'onDoubleClick':
-        this.renglonSeleccionado = $event.value.rowId;
-        this.entidadseleccionada = $event.value.row;
-        this.EditarSeleccion.emit(this.entidadseleccionada);
-        this.SetSeleccion(this.renglonSeleccionado);
+        if (!this.configuration.checkboxes) {
+          this.renglonSeleccionado = $event.value.rowId;
+          this.entidadseleccionada = $event.value.row;
+          this.EditarSeleccion.emit(this.entidadseleccionada);
+          this.SetSeleccion(this.renglonSeleccionado);
+        }
+
+        case 'onCheckboxSelect':
+          if (this.renglonesSeleccionados.has($event.value.rowId)) {
+            const campoId = this.ObtenerCampoIdEntidad();
+            const index = this.entidadesseleccionadas.findIndex(x=>x[campoId] == $event.value.row[campoId]);
+            if(index>=0) this.entidadesseleccionadas.splice(index,1);
+            this.renglonesSeleccionados.delete($event.value.rowId);
+          } else {
+            this.renglonesSeleccionados.add($event.value.rowId);
+            this.entidadesseleccionadas.push($event.value.row)
+          }
+          break;
+
+        case 'onSelectAll':
+          this.entidadesseleccionadas = [];
+          this.data.forEach((_, key) => {
+            if (this.renglonesSeleccionados.has(key)) {
+              this.renglonesSeleccionados.delete(key);
+            } else {
+              this.renglonesSeleccionados.add(key);
+              this.entidadesseleccionadas = this.data;
+            }
+          });
+          break;      
         break;
     }
 
@@ -774,16 +839,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
 
  // Ontiene una página de datos a partir de las entidades de la tabla
-  private GetDataPage(notificar: boolean) {
+  public GetDataPage(notificar: boolean) {
 
     this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
+    this.consulta.IdSeleccion = this.idSeleccion ? this.idSeleccion:  null;
     this.consulta.consecutivo = 0;
     this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
     this.consulta.tamano = this.pagination.limit;
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
+    
     this.consulta = { ...this.consulta };
-
+    console.log(this.consulta);
     this.AnularSeleccion();
     this.data = [];
     this.configuration.isLoading = true;
@@ -793,6 +860,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       this.configuration.horizontalScroll = false;
     }
     if (this.usarPaginadoRelacional) {
+      console.log("aaaaa");
       this.entidades.ObtenerPaginaRelacional(this.config.OrigenTipo,
         this.config.OrigenId, this.config.TipoEntidad, this.consulta)
         .pipe(first())
@@ -815,6 +883,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
         });
     } else {
+      console.log("bbbbbb");
       this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
         .pipe(first())
         .subscribe(data => {
@@ -1143,6 +1212,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     return this.entidadseleccionada;
   }
 
+  public elementosSeleccionados(): any[] {
+    return this.entidadesseleccionadas;
+  }
+
   public elminaColumnasMetadatos() {
     const columnas = [];
     this.columnasBase.forEach(c => {
@@ -1261,6 +1334,5 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   AlternarCheckboxes(): void {
     this.configuration.checkboxes = !this.configuration.checkboxes;
   }
-
 
 }

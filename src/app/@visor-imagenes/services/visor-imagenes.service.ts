@@ -13,6 +13,7 @@ export class VisorImagenesService {
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
   private subjectFiltroPaginas = new BehaviorSubject<boolean>(null);
+  private subjLeyendoPaginas = new BehaviorSubject<boolean>(false);
   private subjectCambiarPagina = new BehaviorSubject<{anterior: boolean, siguiente: boolean, indice: number}>(null);
 
   private subjecActualizarPaginas = new BehaviorSubject<Pagina[]>(null);
@@ -36,6 +37,7 @@ export class VisorImagenesService {
   }
 
   public ObtieneDocumento(DocumentoId: string): Observable<Documento> {
+    this.subjLeyendoPaginas.next(true);
     // Un AsyncSubject devuelve el último valor obtenido ccuando se completa (subject.complete)
     const subject = new AsyncSubject<Documento>();
     this.docService
@@ -47,10 +49,12 @@ export class VisorImagenesService {
           this.GeneraUrlPaginas();
 
           subject.next(this.documento); // con .next asigamos un nuevo valor a nuestro subject
+          this.subjLeyendoPaginas.next(false);
         },
         (error) => {
           // En caso de que ocurra un error asignamos el valor null a nuestrp subject
           subject.next(null);
+          this.subjLeyendoPaginas.next(false);
         },
         () => {
           // Una vez que se recie el primer valor u ocurre un error completamos el subjet
@@ -112,6 +116,13 @@ export class VisorImagenesService {
     return this.subjecActualizarPaginas.asObservable();
   }
 
+  public SetLeyendoPaginas(leyendo: boolean) {
+    this.subjLeyendoPaginas.next(leyendo);
+  }
+
+  public LeyendoPaginas(): Observable<boolean> {
+    return this.subjLeyendoPaginas;
+  }
 
   //#endregion
   // --------------------------------------------------------------

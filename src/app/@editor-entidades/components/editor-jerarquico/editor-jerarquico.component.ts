@@ -154,6 +154,8 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   public editandoJerarquica: boolean = true;
 
   public NodoArbolSeleccionado: DynamicFlatNode = null;
+  
+  public mostrarSeleccion: boolean = false;
 
   public PermisoC: PermisoAplicacion;
   public PermisoJ: PermisoAplicacion;
@@ -193,6 +195,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     this.VistaTrasera = false;
     this.MostrarRegresar = false;
     this.botonesLinkVista = [];
+    this.mostrarSeleccion = false;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -226,6 +229,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       'ui.total-regitros',
       'ui.nodocrear',
       'ui.tabularcrear',
+      'ui.alternar-selector-checkbox'
     ];
     this.T.ObtenerTraducciones();
   }
@@ -768,6 +772,10 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     this.VistaTrasera = false;
     this.tablas.first.obtenerPaginaDatos(true);
   }
+
+public AlternatCheckboxes() {
+  this.tablas.first.AlternarCheckboxes();
+}
 
   public ConteoRegistrosC(total: number): void {
     this.totalRegistros = total;

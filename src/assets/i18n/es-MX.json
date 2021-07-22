@@ -16,6 +16,7 @@
         "editar": "Editar",
         "cerrar": "Cerrar",
         "eliminar": "Eliminar",
+        "vaciar": "Vaciar",
         "eliminar-todo": "Eliminar todo",
         "guardar": "Guardar",
         "regresar": "Regresar",
@@ -45,7 +46,14 @@
         "reportes": "Reportes",
         "elementoseleccionado": "la selección",
         "busqueda-lateral": "Mostrar/ocultar pánel de búsqueda",
-        "plantillas": "Plantilla"
+        "plantillas": "Plantilla",
+        "alternar-selector-checkbox": "Altenar modo de selección",
+        "seleccionados": "Elementos seleccionados",
+        "seleccionados-mostrar": "Mostrar",
+        "seleccionados-adicionar": "Adicionar",
+        "seleccionados-eliminar": "Eliminar",
+        "seleccionados-vaciar": "Vaciar",
+        "seleccionados-temas": "Selecciones"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -83,7 +91,22 @@
         "buscar": "Buscar",
         "busqueda-novalida": "No ha especificado condiciones de búsqueda válidas"
     },
+    "permisos": {
+        "nombre": "Permisos",
+        "buscar-u": "Buscar por nombre ...",
+        "usuarios": "Usuarios",
+        "roles": "Roles",
+        "guardar": "Guardar",
+        "todos": "Establecer todos",
+        "ninguno": "Eliminar todos",
+        "obtenidos": "La lista de permisos ha sido obtenida",
+        "obtenidos-0": "El elemento seleccionado no tiene permisos asignados"
+    },
     "entidades": {
+        "temas-seleccion": "Elegir tema",
+        "temas-seleccion-nombre": "Tema selección",
+        "vaciar-seleccion": "¿Eliminar la selección y todo su contenido?",
+        "borrar-seleccion": "¿Eliminar del tema los elementos seleccionados?",
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",
         "entidad-unica": "Entidad|Entidades|la|las|menu-outline",
         "pagina-resultados": "Página de resultados|Páginas de resultados|la|las|menu-outline",
@@ -204,8 +227,8 @@
                 "updated_at": "Actualizado",
                 "email_verified": "Email Verificado",
                 "generoid": "Género",
-                "paisid": "Pais",
-                "estadoid": "Estado",
+                "PaisId": "Pais",
+                "EstadoId": "Estado",
                 "gmt": "Zona horaria",
                 "gmt_offset": "GMT",
                 "Ultimoacceso": "Acceso",
@@ -352,9 +375,14 @@
             "warn-filtros-existente": "El filtro ya ha sido añadido previamente",
             "warn-sin-columnas": "Debe seleccionar al menos una columna para el despliegue",
             "warn-sin-seleccion": "Debe seleccionar un registro para la operación",
+            "warn-sin-seleccion-tema": "Debe seleccionar un tema para la operación",
+            "warn-sin-teme": "Debe especificar un tema para la selección",
             "ok-entidad-add": "El elemento {{nombre}} ha sido adicionado satisfactoriamente",
             "ok-entidad-act": "El elemento {{nombre}} ha sido actualizado satisfactoriamente",
             "ok-entidad-del": "El elemento {{nombre}} ha sido eliminado satisfactoriamente",
+            "ok-seleccion-add": "Los elementos han sido adicionados a la selección",
+            "ok-seleccion-del": "Los elementos han sido eliminados de la selección",
+            "ok-seleccion-empty": "La lista de seleción ha sido eliminada",
             "err-entidad-act": "Error al actualizar el elemento '{{nombre}}', {{error}} ",
             "err-datos-servidor": "Error al procesar la solicitud para {{prefijo}} {{entidad}}: {{error}} ",
             "err-datos-novalidos": "Algunos datos de la entidad son incorrectos",
@@ -364,7 +392,9 @@
             "err-id-vinculo": "No existe identificador de vinculo para la entidad",
             "err-config-vinculo": "La configuración del vínculo no es válida",
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado será permanente y no podrá ser revertido.",
-            "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido."
+            "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido.",
+            "ok-tema-add": "El tema ha sido adicionado",
+            "err-tema-add": "Error al añadir tema"
         }
     },
     "link-contenido": {

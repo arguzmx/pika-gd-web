@@ -85,6 +85,12 @@
         <mat-icon>search</mat-icon>
       </button>
 
+            <!-- Mostrar selector multiple-->
+            <button *ngIf="PermisoC.Leer" mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
+            <mat-icon>check_box</mat-icon>
+          </button>
+
       <!-- seleccionar columnas contenido tabular -->
       <button *ngIf="PermisoC.Leer" mat-icon-button on-click="mostrarSelectorColumnas()" [nbTooltip]="T.t['ui.selcol']"
         nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
@@ -122,7 +128,8 @@
                       <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                           <div class="padded">
-                            <ngx-metadata-tabla [config]="configC" [metadata]="metadataC"
+                            <ngx-metadata-tabla 
+                              [config]="configC" [metadata]="metadataC"
                               (ConteoRegistros)="ConteoRegistrosC($event)" (NuevaSeleccion)="NuevaSeleccionC($event)"
                               (EditarSeleccion)="EditarSeleccionC($event)">
                             </ngx-metadata-tabla>

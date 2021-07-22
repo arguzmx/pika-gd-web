@@ -14,6 +14,7 @@ export class MetadataInfo {
     CatalogosVinculados?: CatalogoVinculado [];
     VistasVinculadas?: LinkVista[];
     AsociadoMetadatos: boolean;
+    HabilitarSeleccion: boolean;
     Propiedades: Propiedad[];
     Reportes?:  IProveedorReporte[];
     TokenMod?: string;

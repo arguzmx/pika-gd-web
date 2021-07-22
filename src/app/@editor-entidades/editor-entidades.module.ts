@@ -106,6 +106,8 @@ import { ConfiguracionEntidad } from './model/configuracion-entidad';
 import { OfflineMetadataBuscadorComponent } from './components/offline-metadata-buscador/offline-metadata-buscador.component';
 import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
 import { LinkContenidoGenericoComponent } from './components/link-contenido-generico/link-contenido-generico.component';
+import { EditorTemasSeleccionComponent } from './components/editor-temas-seleccion/editor-temas-seleccion.component';
+import { ConfirmacionComponent } from './components/confirmacion/confirmacion.component';
 
 @NgModule({
   imports: [
@@ -222,6 +224,8 @@ import { LinkContenidoGenericoComponent } from './components/link-contenido-gene
     OfflineMetadataVisorComponent,
     OfflineMetadataBuscadorComponent,
     LinkContenidoGenericoComponent,
+    EditorTemasSeleccionComponent,
+    ConfirmacionComponent,
   ],
 })
  class EditorEntidadesModule { }

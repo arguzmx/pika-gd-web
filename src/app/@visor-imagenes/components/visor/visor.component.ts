@@ -203,7 +203,6 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private GiraPagina(dir: OperacionHeader) {
     const angulo = this.oImg.angle;
-
     if (dir === OperacionHeader.GIRAR_DER) this.oImg.angle = angulo + 90;
     if (dir === OperacionHeader.GIRAR_IZQ) this.oImg.angle = angulo - 90;
     if (dir === OperacionHeader.GIRAR_180) this.oImg.angle = angulo + 180;
@@ -234,12 +233,14 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     .ObtieneOperacionHeader()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe((op) => {
-      switch (op) {
-        case OperacionHeader.GIRAR_DER :
-        case OperacionHeader.GIRAR_IZQ :
-        case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
-        case OperacionHeader.REFLEJO_HOR :
-        case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
+      if (this.oImg ) {
+        switch (op) {
+          case OperacionHeader.GIRAR_DER :
+          case OperacionHeader.GIRAR_IZQ :
+          case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
+          case OperacionHeader.REFLEJO_HOR :
+          case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
+        }
       }
     });
   }

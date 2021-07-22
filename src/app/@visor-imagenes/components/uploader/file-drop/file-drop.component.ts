@@ -105,13 +105,14 @@ export class FileDropComponent implements OnInit, OnDestroy {
     if (this.files.length > 0) {
       let i = 0;
       let subido = false;
+
+      // El servivio emite el evento de actualización de páginas al finalizar
       this.progress = this.uploadService.upload(this.files);
 
       // tslint:disable-next-line: forin
       for (const key in this.progress) {
         i++;
         this.progress[key].progress.subscribe((val) => {
-          // console.log(`${key} ${val}`);
           this.progresoGlobal = Math.round((val.progreso * i) / this.files.length);
           if (val.progreso === 100 && val.status === 200)
             subido = true;

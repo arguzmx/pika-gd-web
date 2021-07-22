@@ -229,6 +229,10 @@ export class PikaApiService<T, U> {
     let qs: string = `?i=${consulta.indice}&t=${consulta.tamano}`;
     qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}&idcache=${consulta.IdCache}`;
 
+    if(consulta.IdSeleccion) {
+      qs = qs + `&sel=${consulta.IdSeleccion}`;
+    }
+
     let index: number = 0;
     if (consulta.FiltroConsulta) {
       consulta.FiltroConsulta.forEach((f) => {
@@ -311,6 +315,75 @@ export class PikaApiService<T, U> {
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.delete(endpoint + ids, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+
+  //Obtiene los temas de selección para la entidad y usuario actual
+  TemaSeleccionObtener(entidad: string): Observable<ValorListaOrdenada[]> {
+    const endpoint = this.CrearEndpoint(entidad) + 'tema';
+    
+    return this.http.get<ValorListaOrdenada[]>(endpoint)
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  // Crea un tema de seleccion para el tipo de entidad
+  TemaSeleccionAdicionar(nombre: string, entidad: string): Observable<ValorListaOrdenada> {
+    const endpoint = this.CrearEndpoint(entidad) + 'tema/' + nombre;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.post<ValorListaOrdenada>(endpoint, null, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  // Elimina un tema de seleccion para la entidad y usuario
+  TemaSeleccionEliminar(id: string, entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + 'tema/' + id;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.delete<any>(endpoint, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  SeleccionAdicionar(temaid: string,  Ids: string[], entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + `tema/${temaid}/seleccion`;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    const lista = {
+      Ids: Ids
+    }
+    return this.http.post(endpoint, lista, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  SeleccionEliminar(temaid: string, Ids: string[], entidad: string): Observable<any>  {
+    const endpoint = this.CrearEndpoint(entidad) + `tema/${temaid}seleccion/eliminar`;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    const lista = {
+      Ids: Ids
+    }
+    return this.http.post(endpoint, lista, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  SeleccionVaciar(temaid: string, entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + `tema/${temaid}/seleccion/vaciar`;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.delete(endpoint, { 'headers': headers })
       .pipe(
         retry(retryCount),
       );

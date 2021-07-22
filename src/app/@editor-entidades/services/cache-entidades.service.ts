@@ -27,6 +27,9 @@ export class CacheEntidadesService {
     return `entity-${entidad.toLowerCase()}-${id.toLowerCase()}`;
   }
 
+  public ClaveSeleccion(entidad: string): string {
+    return `seleccion-${entidad.toLowerCase()}`;
+  }
 
   public ClaveLista(entidad: string, query: string ): string {
     return `list-${query.toLowerCase()}-${entidad.toLowerCase()}`;

@@ -4,7 +4,7 @@ import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
-import { NbDialogService, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbDialogRef, NbMenuItem, NbSelectComponent } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { AppLogService } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
@@ -29,12 +29,15 @@ import { Location } from '@angular/common';
 import { Traductor } from '../../services/traductor';
 import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.component';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
-import { TipoVista } from '../../../@pika/metadata';
-import { fixFileOrientationByMeta } from 'angular-file/file-upload/fileTools';
+import { TipoVista, ValorListaOrdenada } from '../../../@pika/metadata';
+import { EventoAplicacion, PayloadItem } from '../../../@pika/eventos/evento-aplicacion';
+import { EditorTemasSeleccionComponent } from '../editor-temas-seleccion/editor-temas-seleccion.component';
+import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
 const CONTENIDO_MOSTRAR = 'mostrar';
+const EMPTYGUID = '00000000-0000-0000-0000-000000000000';
 
 @Component({
   selector: 'ngx-editor-tabular',
@@ -44,7 +47,7 @@ const CONTENIDO_MOSTRAR = 'mostrar';
 export class EditorTabularComponent extends EditorEntidadesBase implements OnInit,
   OnDestroy, OnChanges {
   private onDestroy$: Subject<void> = new Subject<void>();
-
+  
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<MetadataEditorComponent>;
   @ViewChildren(MetadataBuscadorComponent) buscadorMetadatos: QueryList<MetadataBuscadorComponent>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
@@ -52,12 +55,15 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   @ViewChild('dialogReportPicker', { static: true }) dialogReportPicker: TemplateRef<any>;
   @ViewChild('dialogVistaCommando', { static: true }) dialogVistaCommando: TemplateRef<any>;
   @ViewChild("dialogVistaCommandoContainer", { read: ViewContainerRef }) containerVistaComando;
+  @ViewChild('dialogoTemasSeleccion', { static: true }) dialogoTemasSeleccion: TemplateRef<any>;
   @ViewChildren(MetadataTablaComponent) tablas: QueryList<MetadataTablaComponent>;
-
+  @ViewChild('listaTemas', { static: true }) listaTemas: NbSelectComponent;
+  
   private dialogComnfirmDelRef: any;
   private dialogLinkPickRef: any;
   private dialogReportPickerRef: any;
   private dialogCommandRef: NbDialogRef<any>;
+  private dialogoTemasSeleccionRef: NbDialogRef<any>;
 
   @Input() config: ConfiguracionEntidad;
   @Input() mostrarBarra: boolean = true;
@@ -80,6 +86,25 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
   accent: string = "info";
+
+  items: NbMenuItem[] = [
+    {
+      title: 'Profile',
+      icon: 'person-outline',
+    },
+    {
+      title: 'Change Password',
+      icon: 'lock-outline',
+    },
+    {
+      title: 'Privacy Policy',
+      icon: { icon: 'checkmark-outline', pack: 'eva' },
+    },
+    {
+      title: 'Logout',
+      icon: 'unlock-outline',
+    },
+  ];
 
   public alturaComponente = '500px';
 
@@ -129,6 +154,15 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   public tieneReportes: boolean = false;
 
   public Permiso: PermisoAplicacion;
+
+  // Determina si la entidad puede almacenar selecciones del usuario
+  public HabilitarSeleccion: boolean = false;
+  public temas: ValorListaOrdenada[] = [];
+
+
+  public barraEntidades: boolean = true;
+  public barraSeleccion: boolean = false;
+  public idSeleccion: string = null;
 
   // Cosntructor del componente
   constructor(
@@ -205,6 +239,11 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.ContenidoTarjetaTrasera = '';
     this.VistaTrasera = false;
     this.MostrarRegresar = false;
+    this.HabilitarSeleccion = false;
+    this.temas = [];
+    this.barraEntidades = true;
+    this.barraSeleccion = false;
+    this.idSeleccion = null;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -219,10 +258,25 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     }
   }
 
+
+  private setBarras( entidades:boolean, seleccion: boolean ) {
+    this.barraEntidades = entidades;
+    this.barraSeleccion = seleccion;
+  }
+
   private CargaTraducciones() {
     this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes', 'ui.busqueda-lateral',
       'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
-      'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros'];
+      'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros', 'ui.alternar-selector-checkbox',
+      'ui.seleccionados',
+      'ui.seleccionados-mostrar',
+      'ui.seleccionados-adicionar',
+      'ui.seleccionados-eliminar',
+      'ui.seleccionados-vaciar',
+      'entidades.temas-seleccion',
+      'ui.seleccionados-temas',
+      'entidades.temas-seleccion-nombre','entidades.borrar-seleccion',
+      'ui.vaciar', 'entidades.vaciar-seleccion','editor-pika.mensajes.warn-sin-seleccion-tema'];
     this.T.ObtenerTraducciones();
   }
 
@@ -242,6 +296,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
         .pipe(first())
         .subscribe(m => {
+          console.log(m);
           this.metadata = m;
           this.ProcesaConfiguracion();
         });
@@ -262,7 +317,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
 
     this.EliminarLogico = this.metadata.ElminarLogico ? true : false;
-
+    this.HabilitarSeleccion = this.metadata.HabilitarSeleccion;
     this.tieneVinculos = this.metadata.EntidadesVinculadas
       && this.metadata.EntidadesVinculadas.length > 0 ? true : false;
 
@@ -324,6 +379,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
           .ObtieneMetadatos(this.config.OrigenTipo)
           .pipe(first())
           .subscribe((m) => {
+            this.HabilitarSeleccion = m.HabilitarSeleccion;
             this.entidades
               .ObtieneEntidadUnica(
                 this.config.OrigenTipo,
@@ -620,28 +676,30 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
 
-  private ComandoContenidoVinculado(link: LinkVista, newWindow: boolean ) {
+  private ComandoContenidoVinculado(link: LinkVista, newWindow: boolean) {
     this.dialogService
-    .open(LinkContenidoGenericoComponent, { context: { id: this.entidad['Id'], tipo: this.metadata.Tipo } })
-    .onClose.subscribe(e => {
-      if (e != null) {
-        if(newWindow) {
-          const url = `/pages/visor?Id=${e['Id']}&Nombre=${e['Nombre']}&VolumenId=${e['VolumenId']}&VersionId=${e['VersionId']}&PuntoMontajeId=${e['PuntoMontajeId']}&TipoOrigenId=&OrigenId=`;
-          window.open(url, 'blank');
-        } else {
-          const parametros = {};
-          parametros['Id'] = e['Id'];
-          parametros['Nombre'] = e['Nombre'];
-          parametros['VolumenId'] = e['VolumenId'];
-          parametros['VersionId'] = e['VersionId'];
-          parametros['PuntoMontajeId'] = e['PuntoMontajeId'];
-          this.router.navigate(['/pages/visor'], { queryParams: parametros});
+      .open(LinkContenidoGenericoComponent, { context: { id: this.entidad['Id'], tipo: this.metadata.Tipo } })
+      .onClose.subscribe(e => {
+        if (e != null) {
+          const payload: PayloadItem[] = [];
+          payload.push({ id: 'Id', valor: e['Id'], valores: [] });
+          payload.push({ id: 'Nombre', valor: e['Nombre'], valores: [] });
+          payload.push({ id: 'VolumenId', valor: e['VolumenId'], valores: [] });
+          payload.push({ id: 'VersionId', valor: e['VersionId'], valores: [] });
+          payload.push({ id: 'PuntoMontajeId', valor: e['PuntoMontajeId'], valores: [] });
+          payload.push({ id: 'TipoOrigenId', valor: '', valores: [] });
+          payload.push({ id: 'CarpetaId', valor: e['CarpetaId'], valores: [] });
+          payload.push({ id: 'OrigenId', valor: '', valores: [] });
+
+          const evento: EventoAplicacion = {
+            id: e['Id'], tema: 'visorcontenido', payload: payload
+          };
+          this.ejecutaVavegarContenidoVinculado(evento);
         }
-      }
-    });
+      });
   }
 
-  
+
 
   public procesaNavegarVista(link: LinkVista, newWindow: boolean = false) {
 
@@ -660,7 +718,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
           case TipoVista.EventoApp:
             this.ejecutaNavegarAppEvento(this.metadata.Tipo, link, this.entidad, this.metadata);
             break;
-  
+
         }
 
       } else {
@@ -674,5 +732,129 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       // Sólo aplica para navegación jerárquica
     }
   }
+
+
+  AlternatCheckboxes() {
+    this.tablas.first.AlternarCheckboxes();
+  }
+
+
+  seleccionAdicionar() {
+    const seleccion = this.tablas.first.ObtieneIdsSeleccionados();
+    if (seleccion.length > 0) {
+      this.AdicionarATema(seleccion);
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
+    }
+  }
+
+
+  AdicionarATema(ids: string[]) {
+    this.dialogService
+      .open(EditorTemasSeleccionComponent, { 
+        context: {
+        entidades: this.entidades,
+        metadata: this.metadata
+      } })
+      .onClose.subscribe(data=> {
+        if(data!=null){
+          this.AdicionaSeleccion(data, ids);
+        } else {
+          this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-teme', null, null);
+        }
+      });
+  }
+
+
+  private AdicionaSeleccion(temaId: string, ids: string[]) {
+    this.entidades.SeleccionAdicionar(temaId, ids, this.metadata.Tipo).pipe(first())
+    .subscribe(resp => {
+
+    })
+  }
+
+  ocultarSeleccion() {
+    this.setBarras(true, false);
+    this.ObtieneTemas();
+    this.idSeleccion = null;
+  }
+
+  seleccionMostrar() {
+    this.setBarras(false, true);
+    this.ObtieneTemas();
+    this.idSeleccion = EMPTYGUID;
+  }
+  
+  private ObtieneTemas() {
+    this.temas = [];
+    this.entidades.TemaSeleccionObtener(this.metadata.Tipo).pipe(first())
+    .subscribe( resultado => {
+      this.temas = resultado;
+    }, (err)=> {});
+  }
+
+  cambioSeleccion(id) {
+    // this.idSeleccion = id;
+  }
+
+  seleccionElminar() {
+    if (this.idSeleccion != EMPTYGUID) {
+      const ids = this.tablas.first.ObtieneIdsSeleccionados();
+      if (ids.length > 0) {
+        this.dialogService
+          .open(ConfirmacionComponent, {
+            context: {
+              entidades: this.entidades,
+              metadata: this.metadata,
+              texto: this.T.t['entidades.borrar-seleccion']
+            }
+          })
+          .onClose.subscribe(confirmacion => {
+            if (confirmacion) {
+              this.entidades.SeleccionEliminar(this.idSeleccion, this.metadata.Tipo, ids).pipe(first())
+                .subscribe(eliminada => {
+                  if (eliminada) {
+                    this.tablas.first.GetDataPage(true);
+                  }
+                });
+            }
+          });
+      } else {
+        this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
+      }
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion-tema', null, null);
+    }
+  }
+
+  seleccionVaciar() {
+    if(this.idSeleccion != EMPTYGUID) {
+      this.dialogService
+      .open(ConfirmacionComponent, { 
+        context: {
+        entidades: this.entidades,
+        metadata: this.metadata,
+        texto: this.T.t['entidades.vaciar-seleccion']
+      } })
+      .onClose.subscribe(confirmado=> {
+        if (confirmado) {
+          this.entidades.SeleccionVaciar(this.idSeleccion , this.metadata.Tipo).pipe(first())
+          .subscribe(eliminada => {
+              if (eliminada) {
+                const idx = this.temas.findIndex(x=>x.Id == this.idSeleccion);
+                this.temas.splice(idx, 1);
+                this.entidades.SeleccionActualizaCache(this.temas, this.metadata.Tipo);
+                this.idSeleccion = EMPTYGUID;
+              }
+          });
+        }
+      });
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion-tema', null, null);
+    }
+  }
+
+
+  
 
 }

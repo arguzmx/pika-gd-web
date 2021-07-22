@@ -1,0 +1,28 @@
+<nb-card>
+    <nb-card-header>{{ T.t["ui.confirmar"] }}</nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                {{texto}}
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="row">
+            <div class="col-lg-6">
+                <div>
+                    <button nbButton size="medium" (click)="cerrar()">
+                        {{ T.t["ui.cancelar"] }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="float-right">
+                    <button nbButton size="medium" status="primary" (click)="aceptar()">
+                        {{ T.t["ui.aceptar"] }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>

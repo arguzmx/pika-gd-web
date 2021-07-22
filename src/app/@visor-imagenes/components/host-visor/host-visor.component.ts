@@ -25,6 +25,8 @@ import { IUploadConfig } from '../../model/i-upload-config';
 })
 export class HostVisorComponent implements OnInit, OnDestroy,
 AfterViewInit, OnChanges {
+
+  private onDestroy$: Subject<void> = new Subject<void>();
   public documento: Documento;
   private paginas: Pagina[] = [];
   public Titulo: string = '';
@@ -34,9 +36,7 @@ AfterViewInit, OnChanges {
 
   @Output() cerrarDocumento = new  EventEmitter();
   @Output() cerrarVista = new  EventEmitter();
-  
   @Input() config: IUploadConfig;
-  // @ViewChildren(FileDropComponent) uploaders: QueryList<FileDropComponent>;
   @ViewChild("uploader") uploader: UploaderComponent;
 
   @HostListener('window:resize', ['$event'])
@@ -44,12 +44,12 @@ AfterViewInit, OnChanges {
     this.setAlturaPanel(event.target.innerHeight);
   }
 
-  private onDestroy$: Subject<void> = new Subject<void>();
   constructor(
     private servicioVisor: VisorImagenesService, 
     private uploadService: UploadService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
     for (const propName in changes) {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {

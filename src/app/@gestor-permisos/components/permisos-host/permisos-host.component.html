@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
             <div class="col-3">
-                <span>Permisos</span>
+                <span>{{ T.t["permisos.nombre"] }}</span>
             </div>
             <div class="col-4">
                 <nb-form-field>
@@ -10,7 +10,7 @@
                     (click)="focusInput=!focusInput; focusInput ? inputEntidad.focus() : inputEntidad.focusOut() ">
                         <nb-icon [icon]="!focusInput ? 'chevron-down-outline' : 'chevron-up-outline'"></nb-icon>
                     </button>
-                    <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder="Buscar usuarios"
+                    <input #inputEntidad nbInput fullWidth status="info" type="text" placeholder='{{ T.t["permisos.buscar-u"] }}'
                         (keyup)="ObtieneUsuarios($event.target.value)"
                         [nbAutocomplete]="auto" [value]="textoEntidadSeleccionada" />
                     <button nbSuffix nbButton ghost (click)="inputEntidad.value=''; inputEntidad.focus(); focusInput=true">
@@ -18,12 +18,12 @@
                     </button>
                 </nb-form-field>
                 <nb-autocomplete #auto (selectedChange)="ActualizaPermisosEntidad($event);">
-                    <nb-option-group title="Roles">
+                    <nb-option-group title='{{ T.t["permisos.roles"] }}'>
                         <nb-option *ngFor="let r of roles" [value]="r.Id">
                             {{r.Nombre}}
                         </nb-option>
                     </nb-option-group>
-                    <nb-option-group title="Usuarios">
+                    <nb-option-group title='{{ T.t["permisos.usuarios"] }}'>
                         <nb-option *ngFor="let u of usuarios" [value]="u.Id">
                             {{u.Texto}}
                         </nb-option>
@@ -32,13 +32,13 @@
 
             </div>
             <div class="col-5 d-flex justify-content-end">
-                <button mat-icon-button nbTooltip="Guardar" on-click="GuardaPermisos()"  [disabled]="EsAdmin">
+                <button mat-icon-button nbTooltip='{{ T.t["permisos.guardar"] }}' on-click="GuardaPermisos()"  [disabled]="EsAdmin">
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-icon-button nbTooltip="Establecer todos" on-click="MarcaTodos()" [disabled]="EsAdmin">
+                <button mat-icon-button nbTooltip='{{ T.t["permisos.todos"] }}' on-click="MarcaTodos()" [disabled]="EsAdmin">
                     <mat-icon>check_box</mat-icon>
                 </button>
-                <button mat-icon-button nbTooltip="Borrar todos" on-click="DesmarcaTodos()" [disabled]="EsAdmin">
+                <button mat-icon-button nbTooltip='{{ T.t["permisos.ninguno"] }}' on-click="DesmarcaTodos()" [disabled]="EsAdmin">
                     <mat-icon>check_box_outline_blank</mat-icon>
                 </button>
             </div>
@@ -72,7 +72,7 @@
             <nb-card-back>
                 <nb-card accent="danger" size="large">
                     <nb-card-header>
-                        <label>Atras</label>
+                        <label>{{ T.t["ui.regresar"] }}</label>
                     </nb-card-header>
                     <nb-card-body>
                         <div class="row">

@@ -1,5 +1,8 @@
-<div class="row">
-    <cdk-virtual-scroll-viewport [itemSize]="documento.Paginas.length">
+<div class="row" [nbSpinner]="cargandoPaginas"
+             nbSpinnerStatus="danger"
+             nbSpinnerSize="large"
+             nbSpinnerMessage="">
+    <cdk-virtual-scroll-viewport #scroller [itemSize]="documento.Paginas.length">
         <div class="row" style="padding-left: 5%; padding-bottom: 15%;">
             <span *cdkVirtualFor="let p of documento.Paginas; let i=index;">
                 <ngx-thumbnail [pagina]="p" [srcThumb]="p.UrlThumbnail"></ngx-thumbnail>

@@ -4,7 +4,43 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+      <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraSeleccion">
+        <span>
+          {{ NombreEntidad }}
+          <span *ngIf="NombreInstanciaDisponible">:&nbsp;
+            <span class="text-primary">{{T.t['ui.seleccionados-temas']}}</span>
+          </span>
+        </span>
+        <span class="toolbar-spacer"></span>
+
+        <!-- Mostrar selector multiple-->
+        <button mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
+          nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
+          <mat-icon>check_box</mat-icon>
+        </button>
+
+        <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+
+        <!-- Eliminar el elemento seleccionado -->
+      <button mat-icon-button on-click="seleccionVaciar()"
+        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.vaciar']">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
+
+        <!-- Eliminar el elemento seleccionado -->
+        <button mat-icon-button on-click="seleccionElminar()"
+        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
+        <mat-icon>delete_outline</mat-icon>
+        </button>
+
+        <!-- Cerrar seecciones -->
+        <button mat-icon-button on-click="ocultarSeleccion()"
+          [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.buscar']">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-toolbar>
+
+      <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraEntidades">
         <button *ngIf="MostrarRegresar" mat-icon-button [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
           on-click="regresar()" aria-label="T.t['ui.regresar']">
           <mat-icon color="primary">reply</mat-icon>
@@ -65,10 +101,34 @@
           [nbTooltip]="T.t['ui.busqueda-lateral']" nbTooltipPlacement="bottom" aria-label="T.t['ui.busqueda-lateral']">
           <mat-icon>vertical_split</mat-icon>
         </button>
+
+        <!-- Mostrar selector multiple-->
+        <button *ngIf="Permiso.Leer" mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
+          nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
+          <mat-icon>check_box</mat-icon>
+        </button>
+
+        <button *ngIf="HabilitarSeleccion" mat-icon-button [matMenuTriggerFor]="menuseleccion" 
+            [nbTooltip]="T.t['ui.seleccionados']"
+            nbTooltipPlacement="bottom"
+            aria-label="T.t['ui.seleccionados']">
+          <mat-icon>favorite_border</mat-icon>
+          <!-- <mat-icon matBadge="15" matBadgeColor="warn">favorite_border</mat-icon> -->
+        </button>
+        <mat-menu #menuseleccion="matMenu">
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="seleccionMostrar()">
+            <span>{{T.t['ui.seleccionados-mostrar']}}</span>
+          </button>
+          <button mat-menu-item (click)="seleccionAdicionar()">
+            <span>{{T.t['ui.seleccionados-adicionar']}}</span>
+          </button>
+        </mat-menu>
+
         <!-- Mostrar selector columnas -->
         <button *ngIf="Permiso.Leer" mat-icon-button on-click="mostrarSelectorColumnas()" [nbTooltip]="T.t['ui.selcol']"
           nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
-          <mat-icon>view_comfy</mat-icon>
+          <mat-icon>view_column</mat-icon>
         </button>
 
         <!-- Mostrar reportes -->
@@ -89,11 +149,20 @@
         <nb-card-front>
           <nb-card [accent]="accent" size="giant">
             <nb-card-body>
-              <div class="row">
-
+              <div class="row" *ngIf="barraSeleccion">
+                <div class="col-lg-4">
+                  <label for="listaTemas" class="label">&nbsp;{{T.t['entidades.temas-seleccion-nombre']}}</label>
+                  <nb-select size="medium" fullWidth="true" hero="true" id="listaTemas" #listaTemas [(selected)]="idSeleccion"
+                    >
+                    <nb-option *ngFor="let item of temas" [value]="item.Id">{{item.Texto}}</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div [ngClass]="{'row pt-10': barraSeleccion, 'row': !barraSeleccion}" >
                 <div [ngClass]="{'col-lg-8': busquedaLateral, 'col-lg-12': !busquedaLateral}">
                   <ngx-metadata-tabla #tablaeditor 
                     [config]="config" 
+                    [idSeleccion]="idSeleccion" 
                     [metadata]="metadata"
                     [busuedaPersonalizada]='busuedaPersonalizada' 
                     (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" 
@@ -319,4 +388,9 @@
       </div>
     </nb-card-footer>
   </nb-card>
+</ng-template>
+
+
+<ng-template #dialogoTemasSeleccion let-data let-ref="dialogRef">
+  <ngx-editor-temas-seleccion [metadata]="metadata"></ngx-editor-temas-seleccion>
 </ng-template>

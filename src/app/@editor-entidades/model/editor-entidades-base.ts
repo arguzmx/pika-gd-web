@@ -238,16 +238,15 @@ export class EditorEntidadesBase {
       });
     }
 
-    this.entidades.ObtenerIdEntidad
-
     const evento: EventoAplicacion = {
       id:  this.ObtenerIdEntidad(metadata, entidad), tema: link.Vista, payload: parametros
     };
-
     this.appEventBus.EmiteEvento(evento);
   }
 
-
+  public ejecutaVavegarContenidoVinculado(event: any) {
+    this.appEventBus.EmiteEvento(event);
+  }
 
 
   public ObtenerIdEntidad(m: MetadataInfo, entidad: any): string {

@@ -4,6 +4,7 @@ import { FiltroConsulta, FiltroConsultaBackend } from './filtro-consulta';
 export class Consulta extends ParametrosConsulta {
   FiltroConsulta: FiltroConsulta[] = [];
   IdCache?: string;
+  IdSeleccion?: string;
 }
 
 export class ConsultaBackend extends ParametrosConsulta {

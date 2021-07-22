@@ -52,7 +52,7 @@ export class UploadService {
     files = files.filter(x => !x.subido);
     const status: { [key: string]: { progress: Observable<{progreso: number, status: number}> } } = {};
     let total: number = files.length;
-
+    this.servicioVisor.SetLeyendoPaginas(true);
     for (let i = total - 1; i >= 0; i--) {
       const file = files[i];
       this.indiceCarga++;
@@ -88,6 +88,9 @@ export class UploadService {
                   this.servicioVisor.EstableceActualizarPaginas(paginasNuevas, this.uConfig.ElementoId);
                   this.applog.ExitoT('editor-pika.mensajes.msg-exito', null, {});
                 }
+                this.servicioVisor.SetLeyendoPaginas(false);
+              }, (err) => {
+                this.servicioVisor.SetLeyendoPaginas(false);
               });
           }
         }
