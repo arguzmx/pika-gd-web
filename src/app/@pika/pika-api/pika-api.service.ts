@@ -2,7 +2,7 @@ import { ConsultaBackend } from './../consulta/consulta';
 import { AppConfig } from './../../app-config';
 import { RutaTipo } from '../state/configuracion/ruta-tipo';
 import { IProveedorReporte } from './../metadata/iproveedor-reporte';
-import { FiltroConsulta } from './../consulta/filtro-consulta';
+import { FiltroConsulta, FiltroConsultaBackend } from './../consulta/filtro-consulta';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -14,6 +14,8 @@ import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
 import { ContenidoVinculado } from '../conteido/contenido-vinculado';
 import { RequestListaIds } from '../consulta/request-paginado-ids';
+import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
+import { RespuestaComandoWeb } from '../pika-module';
 
 const retryCount: number = 0;
 
@@ -91,11 +93,29 @@ export class PikaApiService<T, U> {
       );
   }
 
+  GetFiltroBusqueda(entidad: string, id: string): Observable<FiltroConsultaPropiedad[]> {
+    const endpoint = this.CrearEndpoint(entidad);
+    return this.http.get<FiltroConsultaPropiedad[]>(endpoint + `filtrobusqueda/${id}`)
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
   Post(entity: T, entidad: string) {
     const endpoint = this.CrearEndpoint(entidad);
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.post(endpoint, entity, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  PostCommand(entidad: string, command: string, body: unknown): Observable<RespuestaComandoWeb> {
+    const endpoint = this.CrearEndpoint(entidad) + `webcommand/${command}`;
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.post<RespuestaComandoWeb>(endpoint, body, { 'headers': headers })
       .pipe(
         retry(retryCount),
       );
@@ -170,15 +190,23 @@ export class PikaApiService<T, U> {
       consulta.tamano = 50;
     }
     const endpoint = this.CrearEndpoint(lista.Entidad);
- 
-    const qs = this.getQueryStringConsulta(consulta);
-    return this.http.get<ValorListaOrdenada[]>(endpoint + 'pares' + qs)
-      .pipe(
-        retry(retryCount),
-      );
+    
+    if (lista.EsListaTemas) {
+      const qs = this.getQueryStringConsulta(consulta);
+      return this.http.get<ValorListaOrdenada[]>(endpoint + 'tema' + qs)
+        .pipe(
+          retry(retryCount),
+        );
+    } else {
+      const qs = this.getQueryStringConsulta(consulta);
+      return this.http.get<ValorListaOrdenada[]>(endpoint + 'pares' + qs)
+        .pipe(
+          retry(retryCount),
+        );
+    }
   }
 
-  PairListTypeAhead(lista: AtributoLista, texto: string): Observable<ValorListaOrdenada[]> {
+  PairListTypeAhead(lista: AtributoLista, texto: string, filtros: FiltroConsulta[] =[]): Observable<ValorListaOrdenada[]> {
     const consulta: Consulta = new Consulta();
     const filtro: FiltroConsulta = new FiltroConsulta();
     consulta.indice = 0;
@@ -189,6 +217,14 @@ export class PikaApiService<T, U> {
       filtro.Valor = [texto];
     filtro.ValorString = texto;
     consulta.FiltroConsulta.push(filtro);
+    
+    if (filtros.length>0) {
+      filtros.forEach(f=> {
+        consulta.FiltroConsulta.push(f);
+      });
+    }
+    
+
     const endpoint = this.CrearEndpoint(lista.Entidad);
     const qs = this.getQueryStringConsulta(consulta);
 
@@ -344,7 +380,7 @@ export class PikaApiService<T, U> {
 
   // Elimina un tema de seleccion para la entidad y usuario
   TemaSeleccionEliminar(id: string, entidad: string): Observable<any> {
-    const endpoint = this.CrearEndpoint(entidad) + 'tema/' + id;
+    const endpoint = this.CrearEndpoint(entidad) + 'tema/' + id; 
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.delete<any>(endpoint, { 'headers': headers })

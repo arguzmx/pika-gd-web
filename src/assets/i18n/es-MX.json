@@ -51,7 +51,7 @@
         "seleccionados": "Elementos seleccionados",
         "seleccionados-mostrar": "Mostrar",
         "seleccionados-adicionar": "Adicionar",
-        "seleccionados-eliminar": "Eliminar",
+        "seleccionados-eliminar": "Eliminar elementos",
         "seleccionados-vaciar": "Vaciar",
         "seleccionados-temas": "Selecciones"
     },
@@ -79,6 +79,10 @@
         "fulltext": "Texto"
     },
     "vistas": {
+        "gd-prestamo-entregar": "Entregar",
+        "gd-prestamo-entregar-conf": "¿Desea entregar el préstamo {{nombre}}?",
+        "gd-prestamo-devolver": "Devolver",
+        "gd-prestamo-devolver-conf": "Desea devolver el préstamo {{nombre}}",
         "visorcontenido": "Visor de contenido",
         "buscarcontenido": "Buscar contenido",
         "crearcontenidoactivo": "Contenido"
@@ -105,8 +109,9 @@
     "entidades": {
         "temas-seleccion": "Elegir tema",
         "temas-seleccion-nombre": "Tema selección",
-        "vaciar-seleccion": "¿Eliminar la selección y todo su contenido?",
+        "vaciar-seleccion": "¿Eliminar todo el contenido de la selección?",
         "borrar-seleccion": "¿Eliminar del tema los elementos seleccionados?",
+        "eliminar-seleccion": "¿Eliminar la selección y todo su contenido?",
         "tipogestoresid": "Configuracion Gestor|Configuraciones Gestor|la|las|options-2-outline",
         "entidad-unica": "Entidad|Entidades|la|las|menu-outline",
         "pagina-resultados": "Página de resultados|Páginas de resultados|la|las|menu-outline",
@@ -127,6 +132,8 @@
         "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|map-outline",
         "archivo":"Archivo|Archivo|el|los|archive-outline",
         "activo": "Activo acerco|Activos acervo|el|los|book-outline",
+        "prestamo": "Préstamo|Préstamos|el|los|person-done-outline",
+        "activoprestamo": "Expediente préstamo|Expedientes préstamo|el|los|book-outline",
         "ampliacion": "Ampliación|Ampliaciones|la|las|clock-outline",
         "tipoampliacion": "Tipo ampliación|Tipos ampliación|el|los|clock-outline",
         "tipodisposiciondocumental": "Tipo disposición|Tipos disposición|el|los|trash-outline",
@@ -318,6 +325,28 @@
                 "TipoOrigenId": "TipoOrigenId",
                 "OrigenId": "OrigenId"
             },
+            "prestamo": {
+                "Id": "Id",
+                "UsuarioDestinoId": "Recibe",
+                "FechaCreacion": "Creación",
+                "FechaDevolucion": "Devolución real",
+                "ArchivoId": "Archivo",
+                "FechaProgramadaDevolucion": "Fevolución programada",
+                "Eliminado": "Eliminado",
+                "Devuelto": "Devuelto",
+                "Descripcion": "Descripción",
+                "UsuarioOrigenId": "Autoriza",
+                "TieneDevolucionesParciales": "Parciales",
+                "CantidadActivos": "Expedientes",
+                "Folio": "Folio",
+                "TemaId": "Selección"
+            },
+            "activoprestamo": {
+                "PrestamoId": "Id",
+                "ActivoId": "Expediente",
+                "Devuelto": "Devuelto",
+                "FechaDevolucion": "Fecha Devolución"
+            },
             "activo": {
                 "Id": "Id",
                 "Nombre": "Expediente",
@@ -362,6 +391,15 @@
     },
     "editor-pika": {
         "mensajes": {
+            "comandoweb-500": "Error al procesar el comando",
+            "comandoweb-404": "Datos no encontrados para el comando",
+            "comandoweb-400": "Datos no válios para el comando",
+            "prestamo-entregado": "El préstamo ha sido marcado como entregado",
+            "prestamo-devuelto": "El préstamo ha sido marcado como devuelto",
+            "error-prestamo-entregado": "El préstamo no puede ser marcado como entregado",
+            "error-prestamo-devuelto": "El préstamo no puede ser marcado como devuelto",
+            "err-ejecutar-comandoweb": "Ocurrión un error al ejecutar el comando",
+            "warn-condicion-link": "La operación no es compatible con el elemento seleccionado",
             "msg-informacion": "Información",
             "msg-advertencia": "Advertencia",
             "msg-error": "Error",

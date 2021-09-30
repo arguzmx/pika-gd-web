@@ -49,7 +49,6 @@ AfterViewInit, OnChanges {
     private uploadService: UploadService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     for (const propName in changes) {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {

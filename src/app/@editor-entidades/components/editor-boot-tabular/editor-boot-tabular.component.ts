@@ -7,7 +7,7 @@ import { PARAM_TIPO, PARAM_TIPO_ORIGEN } from '../../model/constantes';
 import { Subject } from 'rxjs';
 import { takeUntil, first } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
-import { SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { PermisoAplicacion, SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { ServicioListaMetadatos } from '../../services/servicio-lista-metadatos';
 import { EditorTabularComponent } from '../editor-tabular/editor-tabular.component';
@@ -76,18 +76,21 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
 
         this.entidades.ObtieneMetadatos(params[PARAM_TIPO]).pipe(first())
           .subscribe(m => {
-            let pcontenido = null;
+            let pcontenido: PermisoAplicacion = null;
             let permisos = true;
 
             // console.log(m);
             // console.log(m.TokenMod);
             if (m.TokenApp && m.TokenMod) {
               pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
+              pcontenido.PermiteAltas = m.PermiteAltas;
+              pcontenido.PermiteCambios = m.PermiteCambios;
+              pcontenido.PermiteBajas = m.PermiteBajas;
               permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
             }
 
 
-            // console.log(pcontenido);
+            console.log(pcontenido);
             // console.log(permisos);
             if (permisos) {
               this.config = {

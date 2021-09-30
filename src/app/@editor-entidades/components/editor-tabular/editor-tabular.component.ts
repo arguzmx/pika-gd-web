@@ -273,8 +273,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       'ui.seleccionados-adicionar',
       'ui.seleccionados-eliminar',
       'ui.seleccionados-vaciar',
-      'entidades.temas-seleccion',
-      'ui.seleccionados-temas',
+      'entidades.temas-seleccion', 'ui.seleccionados-eliminar',
+      'ui.seleccionados-temas', 'entidades.eliminar-seleccion',
       'entidades.temas-seleccion-nombre','entidades.borrar-seleccion',
       'ui.vaciar', 'entidades.vaciar-seleccion','editor-pika.mensajes.warn-sin-seleccion-tema'];
     this.T.ObtenerTraducciones();
@@ -296,7 +296,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
         .pipe(first())
         .subscribe(m => {
-          console.log(m);
           this.metadata = m;
           this.ProcesaConfiguracion();
         });
@@ -702,7 +701,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
 
   public procesaNavegarVista(link: LinkVista, newWindow: boolean = false) {
-
+    
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionada) {
 
@@ -719,6 +718,35 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             this.ejecutaNavegarAppEvento(this.metadata.Tipo, link, this.entidad, this.metadata);
             break;
 
+          case  TipoVista.WebCommand:
+            console.log(link);
+            const validar = link.Condicion.split('[').join('this.entidad[');
+            if (validar!=''){
+              const valido = eval(validar);
+              if (!valido){
+                this.applog.AdvertenciaT(
+                  'editor-pika.mensajes.warn-condicion-link',
+                  null,
+                  null,
+                );
+                  return;
+              }
+            }
+
+            this.dialogService
+            .open(ConfirmacionComponent, {
+              context: {
+                entidades: this.entidades,
+                metadata: this.metadata,
+                texto: '¿Desea proceder con la operación?'
+              }
+            })
+            .onClose.subscribe(confirmacion => {
+              if (confirmacion) {
+                this.ejecutaNavegarWebCommand(link, this.entidad, this.metadata);
+              }
+            });
+            break;
         }
 
       } else {
@@ -841,6 +869,30 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
           this.entidades.SeleccionVaciar(this.idSeleccion , this.metadata.Tipo).pipe(first())
           .subscribe(eliminada => {
               if (eliminada) {
+                this.tablas.first.GetDataPage(true);
+              }
+          });
+        }
+      });
+    } else {
+      this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion-tema', null, null);
+    }
+  }
+
+  TemaEliminar() {
+    if(this.idSeleccion != EMPTYGUID) {
+      this.dialogService
+      .open(ConfirmacionComponent, { 
+        context: {
+        entidades: this.entidades,
+        metadata: this.metadata,
+        texto: this.T.t['entidades.eliminar-seleccion']
+      } })
+      .onClose.subscribe(confirmado=> {
+        if (confirmado) {
+          this.entidades.TemaEliminar(this.idSeleccion , this.metadata.Tipo).pipe(first())
+          .subscribe(eliminada => {
+              if (eliminada) {
                 const idx = this.temas.findIndex(x=>x.Id == this.idSeleccion);
                 this.temas.splice(idx, 1);
                 this.entidades.SeleccionActualizaCache(this.temas, this.metadata.Tipo);
@@ -853,7 +905,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion-tema', null, null);
     }
   }
-
 
   
 

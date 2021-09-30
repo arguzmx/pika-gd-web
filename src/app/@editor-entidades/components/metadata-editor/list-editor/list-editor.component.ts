@@ -17,10 +17,9 @@ import { EventosInterprocesoService } from '../../../services/eventos-interproce
   styleUrls: ['./list-editor.component.scss'],
 })
 export class ListEditorComponent extends EditorCampo
-  implements ICampoEditable, OnInit, OnDestroy {
+  implements ICampoEditable, OnInit, OnDestroy  {
     @ViewChild('ngSelect')
     ngSelect: MatSelect;
-
 
 
   list: ValorListaOrdenada[];
@@ -41,6 +40,17 @@ export class ListEditorComponent extends EditorCampo
     super(eventos);
   }
 
+
+  private GetFiltrosPropiedad(): FiltroConsulta[] {
+    const filtros = this.filtrosQ.find(x=>x.PropiedadId == this.propiedad.Id);
+    const r = [];
+    if (filtros) {
+      filtros.Filtros.forEach(fq=> {
+        r.push(fq);
+      });
+    }
+    return r;
+  }
 
   private eventoCambiarValor(valor: any) {
     if (this.propiedad.EmitirCambiosValor) {
@@ -65,6 +75,14 @@ export class ListEditorComponent extends EditorCampo
       if (this.Lista) {
         this.Lista.reset();
       }
+      
+      const filtros = this.GetFiltrosPropiedad();
+      if (filtros) {
+        filtros.forEach(fq=> {
+          consulta.FiltroConsulta.push(fq);
+        });
+      }
+      
       consulta.FiltroConsulta.push(f);
       this.ObtieneLista(
         this.propiedad.AtributoLista,
@@ -115,8 +133,11 @@ export class ListEditorComponent extends EditorCampo
     this.listInput$
     .pipe(
         distinctUntilChanged(),
-        tap(() => this.listaLoading = true),
-        switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term)
+        tap(() => {
+          this.listaLoading = true;
+          console.log(this.filtrosQ);
+        }),
+        switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term, this.GetFiltrosPropiedad())
         .pipe(
           catchError(() => of([])), // empty list on error
           tap(() => this.listaLoading = false),
@@ -134,6 +155,8 @@ export class ListEditorComponent extends EditorCampo
 
 
   ngOnInit(): void {
+    console.log(this.filtrosQ);
+    console.log(this.propiedad.Id);
     this.hookEscuchaEventos();
     let aheadval = '';
 
@@ -163,7 +186,7 @@ export class ListEditorComponent extends EditorCampo
             }
           }
 
-          if ( !tieneEventos && !this.isTypeAhead) {
+          if ( (!tieneEventos && !this.isTypeAhead) ||  (this.propiedad.AtributoLista.EsListaTemas) ) {
             // Los datos se obtienen em una sola llamada cuando no 
             // dependen de un evento y no es typeahead
             this.ObtieneLista(this.propiedad.AtributoLista,

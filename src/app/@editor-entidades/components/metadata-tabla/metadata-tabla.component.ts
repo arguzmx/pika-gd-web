@@ -167,7 +167,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     for (const propName in changes) {
       if (changes.hasOwnProperty(propName)) {
         switch (propName) {
@@ -850,7 +849,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.consulta.ord_direccion = this.pagination.order;
     
     this.consulta = { ...this.consulta };
-    console.log(this.consulta);
     this.AnularSeleccion();
     this.data = [];
     this.configuration.isLoading = true;
@@ -860,7 +858,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       this.configuration.horizontalScroll = false;
     }
     if (this.usarPaginadoRelacional) {
-      console.log("aaaaa");
       this.entidades.ObtenerPaginaRelacional(this.config.OrigenTipo,
         this.config.OrigenId, this.config.TipoEntidad, this.consulta)
         .pipe(first())
@@ -883,7 +880,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
         });
     } else {
-      console.log("bbbbbb");
       this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
         .pipe(first())
         .subscribe(data => {

@@ -4,6 +4,8 @@ export class AtributoLista {
     Entidad: string;
     DatosRemotos: boolean;
     TypeAhead: boolean;
+    EsListaTemas?: boolean;
+    FiltroBusqueda?: boolean;
     OrdenarAlfabetico: boolean;
     Default: string;
     ValoresCSV?: string;

@@ -1,278 +1,279 @@
 <span [ngClass]="{ 'oculto': !contenidoVisible }">
-<div *ngIf="mostrarBarra; then thenBlock else elseBlock"></div>
-<ng-template #thenBlock>
+  <div *ngIf="mostrarBarra; then thenBlock else elseBlock"></div>
+  <ng-template #thenBlock>
 
-  <div class="row">
-    <div class="col-lg-12">
-      <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraSeleccion">
-        <span>
-          {{ NombreEntidad }}
-          <span *ngIf="NombreInstanciaDisponible">:&nbsp;
-            <span class="text-primary">{{T.t['ui.seleccionados-temas']}}</span>
+    <div class="row">
+      <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraSeleccion">
+          <span>
+            {{ NombreEntidad }}
+            <span *ngIf="NombreInstanciaDisponible">:&nbsp;
+              <span class="text-primary">{{T.t['ui.seleccionados-temas']}}</span>
+            </span>
           </span>
-        </span>
-        <span class="toolbar-spacer"></span>
+          <span class="toolbar-spacer"></span>
 
-        <!-- Mostrar selector multiple-->
-        <button mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
-          <mat-icon>check_box</mat-icon>
-        </button>
+          <!-- Mostrar selector multiple-->
+          <button mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
+            <mat-icon>check_box</mat-icon>
+          </button>
 
-        <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+          <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+          
+          <!-- Eliminar el tema seleccionado -->
+          <button mat-icon-button on-click="TemaEliminar()" [nbTooltip]="T.t['ui.eliminar']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
+            <mat-icon>delete_forever</mat-icon>
+          </button>
 
-        <!-- Eliminar el elemento seleccionado -->
-      <button mat-icon-button on-click="seleccionVaciar()"
-        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.vaciar']">
-        <mat-icon>delete_sweep</mat-icon>
-      </button>
+          <!-- Eliminar el elemento seleccionado -->
+          <button mat-icon-button on-click="seleccionVaciar()" [nbTooltip]="T.t['ui.vaciar']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.vaciar']">
+            <mat-icon>delete_sweep</mat-icon>
+          </button>
 
-        <!-- Eliminar el elemento seleccionado -->
-        <button mat-icon-button on-click="seleccionElminar()"
-        [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
-        <mat-icon>delete_outline</mat-icon>
-        </button>
+          <!-- Eliminar el elemento seleccionado -->
+          <button mat-icon-button on-click="seleccionElminar()" [nbTooltip]="T.t['ui.seleccionados-eliminar']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.seleccionados-eliminar']">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
 
-        <!-- Cerrar seecciones -->
-        <button mat-icon-button on-click="ocultarSeleccion()"
-          [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.buscar']">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-toolbar>
+          <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+          <!-- Cerrar seecciones -->
+          <button mat-icon-button on-click="ocultarSeleccion()" [nbTooltip]="T.t['ui.cerrar']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.cerrar']">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-toolbar>
 
-      <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraEntidades">
-        <button *ngIf="MostrarRegresar" mat-icon-button [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
-          on-click="regresar()" aria-label="T.t['ui.regresar']">
-          <mat-icon color="primary">reply</mat-icon>
-        </button>
-        <span>
-          {{ NombreEntidad }}
-          <span *ngIf="NombreInstanciaDisponible">:&nbsp;
-            <span class="text-primary">{{ NombreInstancia }}</span>
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white" *ngIf="barraEntidades">
+          <button *ngIf="MostrarRegresar" mat-icon-button [nbTooltip]="T.t['ui.regresar']" nbTooltipPlacement="bottom"
+            on-click="regresar()" aria-label="T.t['ui.regresar']">
+            <mat-icon color="primary">reply</mat-icon>
+          </button>
+          <span>
+            {{ NombreEntidad }}
+            <span *ngIf="NombreInstanciaDisponible">:&nbsp;
+              <span class="text-primary">{{ NombreInstancia }}</span>
+            </span>
           </span>
-        </span>
-        <span class="toolbar-spacer"></span>
-        <button *ngFor="let link of botonesLinkVista" mat-icon-button on-click="navegarVista(link)"
-          [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom" aria-label="tituloNavegarLista(link)">
-          <mat-icon>{{link.Icono}}</mat-icon>
-        </button>
-
-        <!-- Separadador -->
-        <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
-
-        <!-- mostrar vínculos del elemento seleccionado -->
-        <button *ngIf="tieneVinculos" mat-icon-button on-click="mostrarVinculos()" [nbTooltip]="T.t['ui.propiedades']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.propiedades']">
-          <mat-icon>pending</mat-icon>
-        </button>
-
-
-        <!-- actialziar lista de elemento -->
-        <button mat-icon-button on-click="refrescarTabla()" [nbTooltip]="T.t['ui.actualizar']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.actualizar']">
-          <mat-icon>refresh</mat-icon>
-        </button>
-
-
-        <!-- crear un nuevo elemento -->
-        <button *ngIf="Permiso.Escribir" mat-icon-button on-click="mostrarCrear()" [nbTooltip]="T.t['ui.crear']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.crear']">
-          <mat-icon>add</mat-icon>
-        </button>
-
-        <!-- Edistar el elemento seleccionado -->
-        <button *ngIf="Permiso.Escribir && editarDisponible" mat-icon-button on-click="mostrarEditar()"
-          [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.editar']">
-          <mat-icon>edit</mat-icon>
-        </button>
-
-        <!-- Eliminar el elemento seleccionado -->
-        <button *ngIf="Permiso.Eliminar && InstanciaSeleccionada" mat-icon-button on-click="eliminarEntidades()"
-          [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
-          <mat-icon>delete_outline</mat-icon>
-        </button>
-
-        <!-- Mostrar búsqueda -->
-        <button *ngIf="Permiso.Leer && !busquedaLateral" mat-icon-button on-click="mostrarBuscar()"
-          [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.buscar']">
-          <mat-icon>search</mat-icon>
-        </button>
-        <button *ngIf="Permiso.Leer" mat-icon-button on-click="mostrarBuscarLateral()"
-          [nbTooltip]="T.t['ui.busqueda-lateral']" nbTooltipPlacement="bottom" aria-label="T.t['ui.busqueda-lateral']">
-          <mat-icon>vertical_split</mat-icon>
-        </button>
-
-        <!-- Mostrar selector multiple-->
-        <button *ngIf="Permiso.Leer" mat-icon-button on-click="AlternatCheckboxes()" [nbTooltip]="T.t['ui.alternar-selector-checkbox']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.alternar-selector-checkbox']">
-          <mat-icon>check_box</mat-icon>
-        </button>
-
-        <button *ngIf="HabilitarSeleccion" mat-icon-button [matMenuTriggerFor]="menuseleccion" 
-            [nbTooltip]="T.t['ui.seleccionados']"
-            nbTooltipPlacement="bottom"
-            aria-label="T.t['ui.seleccionados']">
-          <mat-icon>favorite_border</mat-icon>
-          <!-- <mat-icon matBadge="15" matBadgeColor="warn">favorite_border</mat-icon> -->
-        </button>
-        <mat-menu #menuseleccion="matMenu">
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="seleccionMostrar()">
-            <span>{{T.t['ui.seleccionados-mostrar']}}</span>
+          <span class="toolbar-spacer"></span>
+          <button *ngFor="let link of botonesLinkVista" mat-icon-button on-click="navegarVista(link)"
+            [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom" aria-label="tituloNavegarLista(link)">
+            <mat-icon>{{link.Icono}}</mat-icon>
           </button>
-          <button mat-menu-item (click)="seleccionAdicionar()">
-            <span>{{T.t['ui.seleccionados-adicionar']}}</span>
+
+          <!-- Separadador -->
+          <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
+
+          <!-- mostrar vínculos del elemento seleccionado -->
+          <button *ngIf="tieneVinculos" mat-icon-button on-click="mostrarVinculos()" [nbTooltip]="T.t['ui.propiedades']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.propiedades']">
+            <mat-icon>pending</mat-icon>
           </button>
-        </mat-menu>
 
-        <!-- Mostrar selector columnas -->
-        <button *ngIf="Permiso.Leer" mat-icon-button on-click="mostrarSelectorColumnas()" [nbTooltip]="T.t['ui.selcol']"
-          nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
-          <mat-icon>view_column</mat-icon>
-        </button>
 
-        <!-- Mostrar reportes -->
-        <button *ngIf="Permiso.Leer && tieneReportes" mat-icon-button on-click="mostrarReportes()"
-          [nbTooltip]="T.t['ui.reportes']" nbTooltipPlacement="bottom" aria-label="T.t['ui.reportes']">
-          <mat-icon>insert_chart_outlined</mat-icon>
-        </button>
+          <!-- actialziar lista de elemento -->
+          <button mat-icon-button on-click="refrescarTabla()" [nbTooltip]="T.t['ui.actualizar']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.actualizar']">
+            <mat-icon>refresh</mat-icon>
+          </button>
 
-        <!-- eleminar fisltros activos contenido tabular -->
-        <button *ngIf="filtrosActivos" mat-icon-button on-click="eliminarFiltros()"
-          [nbTooltip]="T.t['ui.eliminar-filtro']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar-filtro']">
-          <mat-icon color="warn">filter_alt</mat-icon>
-        </button>
-      </mat-toolbar>
-    </div>
-    <div class="col-lg-12">
-      <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
-        <nb-card-front>
-          <nb-card [accent]="accent" size="giant">
-            <nb-card-body>
-              <div class="row" *ngIf="barraSeleccion">
-                <div class="col-lg-4">
-                  <label for="listaTemas" class="label">&nbsp;{{T.t['entidades.temas-seleccion-nombre']}}</label>
-                  <nb-select size="medium" fullWidth="true" hero="true" id="listaTemas" #listaTemas [(selected)]="idSeleccion"
-                    >
-                    <nb-option *ngFor="let item of temas" [value]="item.Id">{{item.Texto}}</nb-option>
-                  </nb-select>
-                </div>
-              </div>
-              <div [ngClass]="{'row pt-10': barraSeleccion, 'row': !barraSeleccion}" >
-                <div [ngClass]="{'col-lg-8': busquedaLateral, 'col-lg-12': !busquedaLateral}">
-                  <ngx-metadata-tabla #tablaeditor 
-                    [config]="config" 
-                    [idSeleccion]="idSeleccion" 
-                    [metadata]="metadata"
-                    [busuedaPersonalizada]='busuedaPersonalizada' 
-                    (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" 
-                    (ConteoRegistros)="ConteoRegistros($event)"
-                    (NuevaSeleccion)="NuevaSeleccion($event)" (EditarSeleccion)="EditarSeleccion($event)">
-                  </ngx-metadata-tabla>
-                </div>
-                <div *ngIf="busquedaLateral" class="col-lg-4">
-                  <div class="barralateral" [ngStyle]="{'height': alturaComponente}">
-                    <ngx-metadata-buscador [lateral]="true" [config]="config" [metadata]="metadata"
-                      (EventoFiltrar)="EventoFiltrar($event)"></ngx-metadata-buscador>
+
+          <!-- crear un nuevo elemento -->
+          <button *ngIf="Permiso.Escribir && Permiso.PermiteAltas" mat-icon-button on-click="mostrarCrear()" [nbTooltip]="T.t['ui.crear']"
+            nbTooltipPlacement="bottom" aria-label="T.t['ui.crear']">
+            <mat-icon>add</mat-icon>
+          </button>
+
+          <!-- Edistar el elemento seleccionado -->
+          <button *ngIf="Permiso.Escribir && Permiso.PermiteCambios && editarDisponible" mat-icon-button on-click="mostrarEditar()"
+            [nbTooltip]="T.t['ui.editar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.editar']">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- Eliminar el elemento seleccionado -->
+          <button *ngIf="Permiso.Eliminar && Permiso.PermiteBajas && InstanciaSeleccionada" mat-icon-button on-click="eliminarEntidades()"
+            [nbTooltip]="T.t['ui.eliminar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar']">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+
+          <!-- Mostrar búsqueda -->
+          <button *ngIf="Permiso.Leer && !busquedaLateral" mat-icon-button on-click="mostrarBuscar()"
+            [nbTooltip]="T.t['ui.buscar']" nbTooltipPlacement="bottom" aria-label="T.t['ui.buscar']">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button *ngIf="Permiso.Leer" mat-icon-button on-click="mostrarBuscarLateral()"
+            [nbTooltip]="T.t['ui.busqueda-lateral']" nbTooltipPlacement="bottom"
+            aria-label="T.t['ui.busqueda-lateral']">
+            <mat-icon>vertical_split</mat-icon>
+          </button>
+
+          <!-- Mostrar selector multiple-->
+          <button *ngIf="Permiso.Leer" mat-icon-button on-click="AlternatCheckboxes()"
+            [nbTooltip]="T.t['ui.alternar-selector-checkbox']" nbTooltipPlacement="bottom"
+            aria-label="T.t['ui.alternar-selector-checkbox']">
+            <mat-icon>check_box</mat-icon>
+          </button>
+
+          <button *ngIf="HabilitarSeleccion" mat-icon-button [matMenuTriggerFor]="menuseleccion"
+            [nbTooltip]="T.t['ui.seleccionados']" nbTooltipPlacement="bottom" aria-label="T.t['ui.seleccionados']">
+            <mat-icon>favorite_border</mat-icon>
+            <!-- <mat-icon matBadge="15" matBadgeColor="warn">favorite_border</mat-icon> -->
+          </button>
+          <mat-menu #menuseleccion="matMenu">
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="seleccionMostrar()">
+              <span>{{T.t['ui.seleccionados-mostrar']}}</span>
+            </button>
+            <button mat-menu-item (click)="seleccionAdicionar()">
+              <span>{{T.t['ui.seleccionados-adicionar']}}</span>
+            </button>
+          </mat-menu>
+
+          <!-- Mostrar selector columnas -->
+          <button *ngIf="Permiso.Leer" mat-icon-button on-click="mostrarSelectorColumnas()"
+            [nbTooltip]="T.t['ui.selcol']" nbTooltipPlacement="bottom" aria-label="T.t['ui.selcol']">
+            <mat-icon>view_column</mat-icon>
+          </button>
+
+          <!-- Mostrar reportes -->
+          <button *ngIf="Permiso.Leer && tieneReportes" mat-icon-button on-click="mostrarReportes()"
+            [nbTooltip]="T.t['ui.reportes']" nbTooltipPlacement="bottom" aria-label="T.t['ui.reportes']">
+            <mat-icon>insert_chart_outlined</mat-icon>
+          </button>
+
+          <!-- eleminar fisltros activos contenido tabular -->
+          <button *ngIf="filtrosActivos" mat-icon-button on-click="eliminarFiltros()"
+            [nbTooltip]="T.t['ui.eliminar-filtro']" nbTooltipPlacement="bottom" aria-label="T.t['ui.eliminar-filtro']">
+            <mat-icon color="warn">filter_alt</mat-icon>
+          </button>
+        </mat-toolbar>
+      </div>
+      <div class="col-lg-12">
+        <nb-reveal-card [showToggleButton]="false" [revealed]="VistaTrasera">
+          <nb-card-front>
+            <nb-card [accent]="accent" size="giant">
+              <nb-card-body>
+                <div class="row" *ngIf="barraSeleccion">
+                  <div class="col-lg-4">
+                    <label for="listaTemas" class="label">&nbsp;{{T.t['entidades.temas-seleccion-nombre']}}</label>
+                    <nb-select size="medium" fullWidth="true" hero="true" id="listaTemas" #listaTemas
+                      [(selected)]="idSeleccion">
+                      <nb-option *ngFor="let item of temas" [value]="item.Id">{{item.Texto}}</nb-option>
+                    </nb-select>
                   </div>
                 </div>
-              </div>
-            </nb-card-body>
-            <nb-card-footer>
-              <span class="text-danger">{{ totalRegistros }}</span>
-              <span class="text-hint">&nbsp;{{ T.t["ui.total-regitros"] }}</span>
-            </nb-card-footer>
-          </nb-card>
-        </nb-card-front>
-
-        <nb-card-back>
-          <nb-card accent="danger" size="giant">
-            <nb-card-header>
-              <label>{{ EtiequetaTarjetaTrasera }}</label>
-              <span [ngSwitch]="ContenidoTarjetaTrasera" class="single-view-button">
-                <span *ngSwitchCase="'buscar'">
-                  <button class="single-view-button" nbButton size="small" on-click="borrarFiltrosBuscador()"
-                    [nbTooltip]="T.t['ui.borrarfiltros']" nbTooltipPlacement="bottom">
-                    <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
-                  </button>
-                  <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
-                    [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
-                    <nb-icon icon="close-outline" pack="eva"></nb-icon>
-                  </button>
-                </span>
-
-                <span *ngSwitchCase="'editar'">
-                  <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
-                    [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
-                    <nb-icon icon="close-outline" pack="eva"></nb-icon>
-                  </button>
-                </span>
-              </span>
-            </nb-card-header>
-            <nb-card-body>
-              <div class="row">
-                <div class="col-lg-12">
-                  <div [ngSwitch]="ContenidoTarjetaTrasera">
-                    <div *ngSwitchCase="'buscar'">
-                      <div class="row">
-                        <div class="col-lg-12">
-                          <ngx-metadata-buscador [lateral]="false" [config]="config" [metadata]="metadata"
-                            (EventoFiltrar)="EventoFiltrar($event)"></ngx-metadata-buscador>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-12">
-                          &nbsp;
-                        </div>
-                      </div>
+                <div [ngClass]="{'row pt-10': barraSeleccion, 'row': !barraSeleccion}">
+                  <div [ngClass]="{'col-lg-8': busquedaLateral, 'col-lg-12': !busquedaLateral}">
+                    <ngx-metadata-tabla #tablaeditor [config]="config" [idSeleccion]="idSeleccion" [metadata]="metadata"
+                      [busuedaPersonalizada]='busuedaPersonalizada'
+                      (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)"
+                      (ConteoRegistros)="ConteoRegistros($event)" (NuevaSeleccion)="NuevaSeleccion($event)"
+                      (EditarSeleccion)="EditarSeleccion($event)">
+                    </ngx-metadata-tabla>
+                  </div>
+                  <div *ngIf="busquedaLateral" class="col-lg-4">
+                    <div class="barralateral" [ngStyle]="{'height': alturaComponente}">
+                      <ngx-metadata-buscador [lateral]="true" [config]="config" [metadata]="metadata"
+                        (EventoFiltrar)="EventoFiltrar($event)"></ngx-metadata-buscador>
                     </div>
+                  </div>
+                </div>
+              </nb-card-body>
+              <nb-card-footer>
+                <span class="text-danger">{{ totalRegistros }}</span>
+                <span class="text-hint">&nbsp;{{ T.t["ui.total-regitros"] }}</span>
+              </nb-card-footer>
+            </nb-card>
+          </nb-card-front>
 
-                    <div *ngSwitchCase="'editar'">
-                      <div class="row">
-                        <div class="col-lg-12">
-                          <div *ngIf="EditandoVinculada; else noVinculada">
-                            <ngx-metadata-editor [entidad]="entidadTmp" [config]="configTmp" [metadata]="metadataTmp"
-                              (NuevaEntidad)="NuevaEntidad($event)" (CapturaFinalizada)="CapturaFinalizada($event)"
-                              (EntidadActualizada)="EntidadActualizada($event)"></ngx-metadata-editor>
+          <nb-card-back>
+            <nb-card accent="danger" size="giant">
+              <nb-card-header>
+                <label>{{ EtiequetaTarjetaTrasera }}</label>
+                <span [ngSwitch]="ContenidoTarjetaTrasera" class="single-view-button">
+                  <span *ngSwitchCase="'buscar'">
+                    <button class="single-view-button" nbButton size="small" on-click="borrarFiltrosBuscador()"
+                      [nbTooltip]="T.t['ui.borrarfiltros']" nbTooltipPlacement="bottom">
+                      <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+                    </button>
+                    <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                      [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
+                      <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                    </button>
+                  </span>
+
+                  <span *ngSwitchCase="'editar'">
+                    <button class="grid-view-button" nbButton size="small" on-click="OcultarTarjetaTrasera()"
+                      [nbTooltip]="T.t['ui.cerrar']" nbTooltipPlacement="bottom">
+                      <nb-icon icon="close-outline" pack="eva"></nb-icon>
+                    </button>
+                  </span>
+                </span>
+              </nb-card-header>
+              <nb-card-body>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div [ngSwitch]="ContenidoTarjetaTrasera">
+                      <div *ngSwitchCase="'buscar'">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <ngx-metadata-buscador [lateral]="false" [config]="config" [metadata]="metadata"
+                              (EventoFiltrar)="EventoFiltrar($event)"></ngx-metadata-buscador>
                           </div>
-                          <ng-template #noVinculada>
-                            <ngx-metadata-editor [entidad]="entidad" [config]="config" [metadata]="metadata"
-                              (NuevaEntidad)="NuevaEntidad($event)" (CapturaFinalizada)="CapturaFinalizada($event)"
-                              (EntidadActualizada)="EntidadActualizada($event)"></ngx-metadata-editor>
-                          </ng-template>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            &nbsp;
+                          </div>
                         </div>
                       </div>
-                      <div class="row">
-                        <div class="col-lg-12">
-                          &nbsp;
+
+                      <div *ngSwitchCase="'editar'">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div *ngIf="EditandoVinculada; else noVinculada">
+                              <ngx-metadata-editor [entidad]="entidadTmp" [config]="configTmp" [metadata]="metadataTmp"
+                                (NuevaEntidad)="NuevaEntidad($event)" (CapturaFinalizada)="CapturaFinalizada($event)"
+                                (EntidadActualizada)="EntidadActualizada($event)"></ngx-metadata-editor>
+                            </div>
+                            <ng-template #noVinculada>
+                              <ngx-metadata-editor [entidad]="entidad" [config]="config" [metadata]="metadata"
+                                (NuevaEntidad)="NuevaEntidad($event)" (CapturaFinalizada)="CapturaFinalizada($event)"
+                                (EntidadActualizada)="EntidadActualizada($event)"></ngx-metadata-editor>
+                            </ng-template>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            &nbsp;
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-12">
-                  &nbsp;
+                <div class="row">
+                  <div class="col-lg-12">
+                    &nbsp;
+                  </div>
                 </div>
-              </div>
-            </nb-card-body>
-          </nb-card>
-        </nb-card-back>
-      </nb-reveal-card>
+              </nb-card-body>
+            </nb-card>
+          </nb-card-back>
+        </nb-reveal-card>
+      </div>
     </div>
-  </div>
-</ng-template>
-<ng-template #elseBlock>
-  <ngx-metadata-tabla 
-  #tablaeditor 
-  [config]="config" 
-  [metadata]="metadata"
-  (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" 
-  [busuedaPersonalizada]='busuedaPersonalizada' (ConteoRegistros)="ConteoRegistros($event)"
-  (NuevaSeleccion)="NuevaSeleccion($event)" (EditarSeleccion)="EditarSeleccion($event)">
-</ngx-metadata-tabla>
-</ng-template>
+  </ng-template>
+  <ng-template #elseBlock>
+    <ngx-metadata-tabla #tablaeditor [config]="config" [metadata]="metadata"
+      (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" [busuedaPersonalizada]='busuedaPersonalizada'
+      (ConteoRegistros)="ConteoRegistros($event)" (NuevaSeleccion)="NuevaSeleccion($event)"
+      (EditarSeleccion)="EditarSeleccion($event)">
+    </ngx-metadata-tabla>
+  </ng-template>
 </span>
 
 <ng-template #dialogConfirmDelete let-data let-ref="dialogRef">
@@ -367,7 +368,7 @@
   <nb-card>
     <nb-card-header>{{ T.t["ui.reportes"] }}</nb-card-header>
     <nb-card-body>
-      
+
     </nb-card-body>
     <nb-card-footer>
       <div class="row">

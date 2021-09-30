@@ -103,7 +103,7 @@ export class UploadService {
 
       status[file.name] = {
         progress: progress.asObservable(),
-      }; // console.log(status);
+      }; 
     }
 
     return status;

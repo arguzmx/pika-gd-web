@@ -6,7 +6,8 @@ export enum TipoVista
 {
         Vista = 0,
         Comando = 1,
-        EventoApp = 2
+        EventoApp = 2,
+        WebCommand = 3
 }
 
 export interface LinkVista {
@@ -15,4 +16,5 @@ export interface LinkVista {
     Titulo: string;
     RequiereSeleccion: boolean;
     Tipo: TipoVista;
+    Condicion?: string;
 }

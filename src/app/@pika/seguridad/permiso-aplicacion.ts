@@ -11,4 +11,7 @@ export interface PermisoAplicacion {
     Admin: boolean;
     Ejecutar: boolean;
     Mascara: number;
+    PermiteAltas?: boolean;
+    PermiteBajas?: boolean;
+    PermiteCambios?: boolean;
 }

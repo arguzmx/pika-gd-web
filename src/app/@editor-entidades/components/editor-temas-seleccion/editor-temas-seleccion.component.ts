@@ -1,5 +1,5 @@
 import { first } from 'rxjs/operators';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MetadataInfo, ValorListaOrdenada } from '../../../@pika/metadata';
 import { AppLogService } from '../../../@pika/servicios';
@@ -12,7 +12,7 @@ import { NbDialogRef } from '@nebular/theme';
   templateUrl: './editor-temas-seleccion.component.html',
   styleUrls: ['./editor-temas-seleccion.component.scss']
 })
-export class EditorTemasSeleccionComponent implements OnInit, OnChanges, AfterViewInit {
+export class EditorTemasSeleccionComponent implements OnInit, AfterViewInit {
 
   public temas: ValorListaOrdenada[] = [];
   public T: Traductor;
@@ -30,10 +30,6 @@ export class EditorTemasSeleccionComponent implements OnInit, OnChanges, AfterVi
 
   ngAfterViewInit(): void {
     
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
   }
 
   ngOnInit(): void {

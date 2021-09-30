@@ -1,6 +1,9 @@
+import { FiltroConsultaPropiedad } from './../../../@pika/consulta/filtro.-consulta-propiedad';
+import { FiltroConsulta, FiltroConsultaBackend } from './../../../@pika/consulta/filtro-consulta';
+import { environment } from './../../../../environments/environment';
 import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { Traductor } from './../../services/traductor';
-import { MetadataInfo, Evento, Eventos, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { MetadataInfo, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
@@ -75,6 +78,8 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   public propiedadesActivas: Propiedad[] = [];
   public propiedadesHidden: Propiedad[] = [];
 
+  public filtrosQ: FiltroConsultaPropiedad[] = [];
+
   // Almacena las propiedades default del objeto
   public valoresDefault = {};
 
@@ -101,12 +106,12 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.T = new Traductor(ts);
     this.T.ts = ['ui.editar', 'ui.guardar', 'ui.guardar-adicionar'];
     this.formGroup = this.createGroup();
-    // if(!environment.production) {
-    //   this.formGroup.valueChanges
-    //   .subscribe( campos => {
-    //     console.debug(campos);
-    //   });
-    // }
+    if(!environment.production) {
+      this.formGroup.valueChanges
+      .subscribe( campos => {
+        console.debug(campos);
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -118,6 +123,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.propiedadesActivas = [];
     this.propiedadesHidden = [];
     this.valoresDefault = {};
+    this.filtrosQ = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -270,7 +276,10 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       this.modoEditar = true;
     }
 
+    this.LimpiarForma();
+    this.ObtieneValoresVinculados();
     if (this.metadata ) {
+      
       this.metadata.Propiedades.forEach( p => {
         if (p.AtributosEvento && p.AtributosEvento.length > 0){
             p.AtributosEvento.forEach( ev => {
@@ -286,9 +295,18 @@ export class MetadataEditorComponent extends EditorEntidadesBase
           p.EmitirCambiosValor = (this.propiedadesEvento.indexOf( p.Id.toLowerCase()) >= 0);
      });
 
-      this.ObtieneValoresVinculados();
-      this.LimpiarForma();
-      this.CrearForma();
+      const requiereFiltros = this.metadata.Propiedades.filter(x => x.AtributoLista?.FiltroBusqueda == true);
+      if (requiereFiltros.length > 0) {
+        this.entidades.GetFiltroBusqueda(this.metadata.Tipo, this.config.OrigenId).subscribe(
+          f => {
+            this.filtrosQ = f;
+            console.log(this.filtrosQ);
+            this.CrearForma();
+          }
+        )
+      } else {
+        this.CrearForma();    
+      }
     }
 
     if (this.entidad) {

@@ -23,6 +23,10 @@ export class CacheEntidadesService {
     return `metadata-${entidad.toLowerCase()}`;
   }
 
+  public ClaveFiltroBusqueda(entidad: string): string {
+    return `filtrobusqueda-${entidad.toLowerCase()}`;
+  }
+
   public ClaveEntidad(entidad: string, id: string ): string {
     return `entity-${entidad.toLowerCase()}-${id.toLowerCase()}`;
   }

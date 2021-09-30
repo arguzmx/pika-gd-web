@@ -29,8 +29,9 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
   constructor(private visorService: VisorImagenesService) {
     this.ListenerPaginas();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    
   }
 
 
@@ -39,7 +40,6 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((evento) => {
         this.cargandoPaginas = evento;
-        console.log(evento);
         this.virtualScrollViewport.scrollTo({
           bottom: 0,
           behavior: "auto"

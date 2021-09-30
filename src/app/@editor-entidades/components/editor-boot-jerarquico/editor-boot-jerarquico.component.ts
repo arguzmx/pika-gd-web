@@ -1,3 +1,4 @@
+import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { ConfiguracionEntidad } from './../../model/configuracion-entidad';
 import {
   PARAM_TIPO_JERARQUICO, PARAM_TIPO_ARBOL_JERARQUICO,
@@ -62,16 +63,22 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
             arbol: this.entidades.ObtieneMetadatos(this.paramTipoArbolJerarquico),
             contenido: this.entidades.ObtieneMetadatos(this.paramTipoContenidoJerarquico)  })
             .subscribe( datos => {
-              let parbol = null;
-              let pcontenido = null;
+              let parbol: PermisoAplicacion = null;
+              let pcontenido: PermisoAplicacion = null;
               let permisos = true;
               if (datos.arbol.TokenApp && datos.arbol.TokenMod) {
                 parbol = this.entidades.ObtienePermiso(datos.arbol.TokenApp, datos.arbol.TokenMod);
+                parbol.PermiteAltas = datos.arbol.PermiteAltas;
+                parbol.PermiteCambios = datos.arbol.PermiteCambios;
+                parbol.PermiteBajas = datos.arbol.PermiteBajas;
                 permisos = permisos &&  this.entidades.PermitirAccesoACL(parbol);
               }
 
               if (datos.contenido.TokenApp && datos.contenido.TokenMod) {
                 pcontenido = this.entidades.ObtienePermiso(datos.contenido.TokenApp, datos.contenido.TokenMod);
+                pcontenido.PermiteAltas = datos.contenido.PermiteAltas;
+                pcontenido.PermiteCambios = datos.contenido.PermiteCambios;
+                pcontenido.PermiteBajas = datos.contenido.PermiteBajas;
                 permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
               }
 

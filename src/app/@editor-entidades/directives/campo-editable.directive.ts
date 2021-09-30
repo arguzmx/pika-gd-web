@@ -1,3 +1,4 @@
+import { FiltroConsultaPropiedad } from './../../@pika/consulta/filtro.-consulta-propiedad';
 import { PasswordEditorComponent } from './../components/metadata-editor/password-editor/password-editor.component';
 import {
   Directive,
@@ -22,6 +23,7 @@ import { ListEditorComponent } from '../components/metadata-editor/list-editor/l
 import { HiddenEditorComponent } from '../components/metadata-editor/hidden-editor/hidden-editor.component';
 // tslint:disable-next-line: max-line-length
 import { CheckboxGroupEditorComponent } from '../components/metadata-editor/checkbox-group-editor/checkbox-group-editor.component';
+import { FiltroConsulta, FiltroConsultaBackend } from '../../@pika/consulta';
 
 const components: { [type: string]: Type<ICampoEditable> } = {
   textbox: StringEditorComponent,
@@ -59,6 +61,9 @@ export class CampoEditableDirective
   @Input()
   congiguracion: ConfiguracionEntidad;
 
+  @Input()
+  filtrosQ: FiltroConsultaPropiedad[];
+
   component: ComponentRef<ICampoEditable>;
 
   constructor(
@@ -66,13 +71,13 @@ export class CampoEditableDirective
     private container: ViewContainerRef,
   ) {}
 
-
   ngOnChanges() {
     if (this.component) {
       this.component.instance.propiedad = this.propiedad;
       this.component.instance.group = this.group;
       this.component.instance.isUpdate = this.isUpdate;
       this.component.instance.transaccionId = this.transaccionId;
+      this.component.instance.filtrosQ = this.filtrosQ;
     }
   }
 
@@ -89,6 +94,7 @@ export class CampoEditableDirective
       this.component.instance.propiedad = this.propiedad;
       this.component.instance.isUpdate = this.isUpdate;
       this.component.instance.transaccionId = this.transaccionId;
+      this.component.instance.filtrosQ = this.filtrosQ;
     }
   }
 }

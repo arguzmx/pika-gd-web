@@ -1,8 +1,9 @@
+import { FiltroConsultaPropiedad } from './../../@pika/consulta/filtro.-consulta-propiedad';
 import { DocumentoPlantilla } from './../../@pika/metadata/documeto-plantilla';
 import { environment } from './../../../environments/environment.prod';
 import { AppConfig } from './../../app-config';
 import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR } from './../../@pika/seguridad/permiso-acl';
-import { Propiedad, IProveedorReporte, PermisoAplicacion, PDENEGARACCESO } from '../../@pika/pika-module';
+import { Propiedad, IProveedorReporte, PermisoAplicacion, PDENEGARACCESO, RespuestaComandoWeb } from '../../@pika/pika-module';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import { CacheEntidadesService } from './cache-entidades.service';
 import { Injectable } from '@angular/core';
@@ -21,7 +22,7 @@ import { SesionQuery } from '../../@pika/pika-module';
 import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
-import { ConsultaBackend } from '../../@pika/consulta';
+import { ConsultaBackend, FiltroConsultaBackend } from '../../@pika/consulta';
 
 
 
@@ -407,6 +408,20 @@ export class EntidadesService {
   }
 
 
+  PostCommand(entidad: string, command: string, body: unknown): Observable<RespuestaComandoWeb> {
+    const subject = new AsyncSubject<any>();
+    this.cliente.PostCommand(entidad, command, body).pipe(first()).subscribe(
+      r=> {
+        subject.next(r);
+        subject.complete();
+      },
+    (err) => {
+      subject.next(null);
+      subject.complete();
+    });
+    return subject;
+  }
+
   CreaEntidad(tipo: string, entidad: any): Observable<any> {
     const subject = new AsyncSubject<any>();
     const nombre = this.ObtenerNombreEntidad(tipo, entidad);
@@ -494,6 +509,26 @@ export class EntidadesService {
   // Manuejo de listas
   // ---------------------------------------------------------------
   // ---------------------------------------------------------------
+  GetFiltroBusqueda(entidad: string, id: string): Observable<FiltroConsultaPropiedad[]> {
+    const subject = new AsyncSubject<FiltroConsultaPropiedad[]>();
+    const key = this.cache.ClaveFiltroBusqueda(entidad);
+
+    if (this.cache.has(key)) {
+      subject.next(this.cache.get(key));
+      subject.complete();
+    } else {
+      this.cliente.GetFiltroBusqueda(entidad, id).pipe(first())
+        .subscribe(m => {
+          this.cache.set(key, m);
+          subject.next(m);
+        },
+          () => {
+            subject.next([]);
+          },
+          () => { subject.complete(); });
+    }
+    return subject;
+  }
 
   public ValoresLista(ids: string[], entidad: string) {
     return this.cliente.PairListbyId(ids, entidad);
@@ -664,7 +699,6 @@ export class EntidadesService {
       subject.next(data);
       subject.complete();
     }, (error) => {
-      console.log(error);
       this.handleHTTPError(error, 'pagina-resultados', '');
       subject.next(null);
       subject.complete();
@@ -1021,7 +1055,6 @@ export class EntidadesService {
     this.cliente.SeleccionAdicionar(temaid, Ids, tipo).pipe(
       first()
     ).subscribe(resultado => {
-      console.log(resultado);
       this.applog.ExitoT('editor-pika.mensajes.ok-seleccion-add', null, null);
     }, (err) => {
       this.handleHTTPError(err, tipo, '');
@@ -1031,6 +1064,23 @@ export class EntidadesService {
     });
     return subject;
   }
+
+  TemaEliminar(temaid: string, tipo: string): Observable<any> {
+    const subject = new AsyncSubject<boolean>();
+    this.cliente.TemaSeleccionEliminar(temaid, tipo).pipe(
+      first()
+    ).subscribe(resultado => {
+      this.applog.ExitoT('editor-pika.mensajes.ok-seleccion-del', null, null);
+      subject.next(true);
+    }, (err) => {
+      this.handleHTTPError(err, tipo, '');
+      subject.next(false);
+    }, () => {
+      subject.complete();
+    });
+    return subject;
+  }
+
 
   SeleccionEliminar(temaid: string, tipo: string, Ids: string[]): Observable<any> {
     const subject = new AsyncSubject<boolean>();

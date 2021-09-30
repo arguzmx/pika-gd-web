@@ -109,6 +109,7 @@ export class EditorEntidadesBase {
     link: EntidadVinculada,
     entidad: any,
     config: ConfiguracionEntidad,
+    
   ) {
     const Id = this.entidades.ObtenerIdEntidad(config.TipoEntidad, entidad);
     if (Id) {
@@ -290,6 +291,49 @@ export class EditorEntidadesBase {
         null,
       );
     }
+  }
+
+  public refrescarTabla(): void {
+    // Debe estar presente en la clase derivada
+  }
+
+  public ejecutaNavegarWebCommand(link: LinkVista, entidad: any, metadata: MetadataInfo) {
+    const parametros = {};
+    if (entidad != null) {
+      metadata.Propiedades.forEach(p => {
+        if (p.ParametroLinkVista) {
+          parametros[p.Id] = entidad[p.Id];
+        }
+      });
+    }
+
+    this.entidades.PostCommand(metadata.Tipo, link.Vista, parametros)
+    .pipe(first())
+    .subscribe(r=> {
+      console.log(r)
+      if (r) {
+        if (r.Estatus) {
+          this.refrescarTabla();
+          this.applog.ExitoT(
+            `editor-pika.mensajes.${r.MensajeId}`,
+            null,
+            null,
+          );  
+        } else {
+          this.applog.AdvertenciaT(
+            `editor-pika.mensajes.${r.MensajeId}`,
+            null,
+            null,
+          );  
+        }
+      } else {
+        this.applog.FallaT(
+          'editor-pika.mensajes.err-ejecutar-comandoweb',
+          null,
+          null,
+        );  
+      }
+    }) 
   }
 
   public ejecutaNavegarVistaParametros(TipoEntidad: string, link: LinkVista, parametros: unknown) {

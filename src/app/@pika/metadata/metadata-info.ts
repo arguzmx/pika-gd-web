@@ -19,4 +19,7 @@ export class MetadataInfo {
     Reportes?:  IProveedorReporte[];
     TokenMod?: string;
     TokenApp?: string;
+    PermiteAltas: boolean = true;
+    PermiteBajas: boolean = true;
+    PermiteCambios: boolean = true;
 }

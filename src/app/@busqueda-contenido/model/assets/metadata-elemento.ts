@@ -10,6 +10,9 @@ export const MetadataElemento: MetadataInfo =
     "ElminarLogico": true,
     "PaginadoRelacional": false,
     "ColumaEliminarLogico": "Eliminada",
+    "PermiteAltas": true,
+    "PermiteBajas": true,
+    "PermiteCambios": true,
     "Propiedades": [
         {
             "Id": "Id",

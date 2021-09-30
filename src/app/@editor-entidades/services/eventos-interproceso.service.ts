@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AsyncSubject, BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, first } from 'rxjs/operators';
-import { Consulta } from '../../@pika/consulta';
+import { Consulta, FiltroConsulta } from '../../@pika/consulta';
 import { AtributoLista, Evento, ValorListaOrdenada } from '../../@pika/metadata';
 import { PikaApiService } from '../../@pika/pika-api';
 import { SesionQuery } from '../../@pika/state';
@@ -41,8 +41,8 @@ export class EventosInterprocesoService {
     return this.cliente.PairListbyId(ids, entidad);
   }
   
-  public TypeAhead(lista: AtributoLista, texto: string): Observable<ValorListaOrdenada[]> {
-    return this.cliente.PairListTypeAhead(lista, texto);
+  public TypeAhead(lista: AtributoLista, texto: string, filtros: FiltroConsulta[] = []): Observable<ValorListaOrdenada[]> {
+    return this.cliente.PairListTypeAhead(lista, texto, filtros);
   }
 
   SolicitarLista(lista: AtributoLista, consulta: Consulta): Observable<AtributoLista> {

@@ -202,8 +202,6 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
   ObtienePermisosEntidad(): void {
     this.servicioPermisos.ObtenerPermisos(this.tipoEntidadSeleccionada, this.entidadSeleccionadaId)
       .subscribe(respuesta => {
-        console.log(respuesta);
-
         if(respuesta.Permisos.length == 0) {
           this.applog.AdvertenciaT('permisos.obtenidos-0');
         } else {

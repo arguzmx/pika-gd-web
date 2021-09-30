@@ -3,6 +3,8 @@ import { Propiedad, Eventos, Evento, AtributoEvento, Operaciones } from '../../.
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
+import { FiltroConsulta, FiltroConsultaBackend } from '../../../@pika/consulta';
+import { FiltroConsultaPropiedad } from '../../../@pika/consulta/filtro.-consulta-propiedad';
 
 export class EditorCampo {
     transaccionId: string;
@@ -10,7 +12,8 @@ export class EditorCampo {
     group: FormGroup;
     isUpdate: boolean;
     onDestroy$: Subject<void>;
-
+    filtrosQ: FiltroConsultaPropiedad[];
+    
     oculto: boolean = false;
 
     constructor(public eventos: EventosInterprocesoService ) {}
