@@ -828,11 +828,11 @@ public AlternatCheckboxes() {
 
         switch (link.Tipo) {
           case TipoVista.Vista:
-            this.ejecutaNavegarVista(this.metadataC.Tipo, link, this.entidadC, this.metadataC, true);
+            this.ejecutaNavegarVista(this.metadataC.Tipo, link, this.entidadC, this.metadataC,null, true);
             break;
 
           case TipoVista.EventoApp:
-            this.ejecutaNavegarAppEvento(this.metadataC.Tipo, link, this.entidadC, this.metadataC);
+            this.ejecutaNavegarAppEvento(this.metadataC.Tipo, link, this.entidadC, this.metadataC, null);
             break;
 
         }

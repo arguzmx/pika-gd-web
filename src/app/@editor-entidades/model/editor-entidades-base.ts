@@ -239,9 +239,11 @@ export class EditorEntidadesBase {
       });
     }
 
-    params.forEach((value: string, key: string) => {
-      parametros.push({ id: key, valor: value, valores: [] });
-    });
+    if(params) {
+      params.forEach((value: string, key: string) => {
+        parametros.push({ id: key, valor: value, valores: [] });
+      });
+    }
 
     const evento: EventoAplicacion = {
       id:  this.ObtenerIdEntidad(metadata, entidad), tema: link.Vista, payload: parametros
