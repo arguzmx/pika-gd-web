@@ -216,11 +216,11 @@ export class EditorEntidadesBase {
   }
 
   public navegarVista(link: LinkVista) {
-    this.procesaNavegarVista(link);
+    this.procesaNavegarVista(link, null);
   }
 
   // Este medodo debe sobrescribirse en el control cliente
-  public procesaNavegarVista(link: LinkVista) {
+  public procesaNavegarVista(link: LinkVista, parametros: Map<string, string>) {
     throw new Error('El método procesaNavegarVista se encuentra sin implementarse');
   }
 
@@ -229,7 +229,7 @@ export class EditorEntidadesBase {
 
   }
 
-  public ejecutaNavegarAppEvento(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo) {
+  public ejecutaNavegarAppEvento(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo, params: Map<string, string>,) {
     const parametros: PayloadItem[] = [];
     if (entidad != null) {
       metadata.Propiedades.forEach(p => {
@@ -238,6 +238,10 @@ export class EditorEntidadesBase {
         }
       });
     }
+
+    params.forEach((value: string, key: string) => {
+      parametros.push({ id: key, valor: value, valores: [] });
+    });
 
     const evento: EventoAplicacion = {
       id:  this.ObtenerIdEntidad(metadata, entidad), tema: link.Vista, payload: parametros
@@ -264,7 +268,7 @@ export class EditorEntidadesBase {
     return '';
   }
 
-  public ejecutaNavegarVista(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo, newWindow: boolean = false) {
+  public ejecutaNavegarVista(TipoEntidad: string, link: LinkVista, entidad: any, metadata: MetadataInfo, params: Map<string, string>, newWindow: boolean = false) {
     const parametros = { tipo: TipoEntidad };
     var parametrosString = '';
     if (entidad != null) {

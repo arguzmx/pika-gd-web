@@ -36,6 +36,9 @@
       </as-split>
     </div>
   </div>
+    <div *ngIf="MostrarResultadosTexto" class="col-lg-12 col-md-12 col-sm-12">
+      <ngx-full-text-results [hit]="highlightHit" ></ngx-full-text-results>
+    </div>
 </div>
 <ngx-uploader #uploader
   [accept]="'.jpg,.doc,.docx,.pdf,.mp4,.mov,.avi,.mp3, .wav, .wmv,.ogg, .doc,.docx, .xls,.xlsx,.ppt,.pptx'"

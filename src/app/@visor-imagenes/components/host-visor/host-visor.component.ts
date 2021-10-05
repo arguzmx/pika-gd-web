@@ -1,15 +1,17 @@
+import { HighlightHit } from './../../../@busqueda-contenido/model/highlight-hit';
 
 import { Documento } from './../../model/documento';
 import { DocumentosService } from './../../services/documentos.service';
 import { VisorImagenesService } from './../../services/visor-imagenes.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, Input, OnChanges, SimpleChanges, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { first, take, takeUntil } from 'rxjs/operators';
 import { Pagina } from '../../model/pagina';
 import { UploadService } from '../../services/uploader.service';
 import { CacheEntidadesService } from '../../../@editor-entidades/editor-entidades.module';
 import { UploaderComponent } from '../uploader/uploader.component';
 import { IUploadConfig } from '../../model/i-upload-config';
+import { PayloadItem } from '../../../@pika/eventos/evento-aplicacion';
 
 
 @Component({
@@ -33,6 +35,8 @@ AfterViewInit, OnChanges {
   public alturaComponente = '500px';
   public VistaTrasera: boolean;
   public EsImagen: boolean = true;
+  public MostrarResultadosTexto: boolean = false;
+  public highlightHit: HighlightHit;
 
   @Output() cerrarDocumento = new  EventEmitter();
   @Output() cerrarVista = new  EventEmitter();
@@ -46,7 +50,7 @@ AfterViewInit, OnChanges {
 
   constructor(
     private servicioVisor: VisorImagenesService, 
-    private uploadService: UploadService) { }
+    private uploadService: UploadService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -64,6 +68,20 @@ AfterViewInit, OnChanges {
     this.Titulo = this.config.Nombre;
     this.servicioVisor.config = this.config;
     this.uploadService.SetConfig(this.config);
+    this.configuraBusquedaTexto();
+  }
+
+
+  private configuraBusquedaTexto() {
+      if(this.config.parametros.find(x=>x.id == 'texto').valor == '1'){
+        this.servicioVisor.ObtieneSinopsis(this.config.parametros.find(x=>x.id == 'searchid').valor, this.config.ElementoId)
+        .pipe(first()).subscribe(s=> {
+            if(s){
+              this.MostrarResultadosTexto = true;
+              this.highlightHit = s[0];
+            }
+        });
+      }
   }
 
   ngOnInit(): void {

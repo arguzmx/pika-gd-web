@@ -166,8 +166,8 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
     this.EventNuevaSeleccion.emit(data);
   }
   
-  public NavegarLinkPorTag(tag: string, newWindow: boolean = false) {
-    this.editor.navegarVistaPoTag(tag, newWindow);
+  public NavegarLinkPorTag(tag: string, parametros: Map<string, string>, newWindow: boolean = false) {
+    this.editor.navegarVistaPoTag(tag, parametros, newWindow);
   }
 
   public mostrarSelectorColumnas() {

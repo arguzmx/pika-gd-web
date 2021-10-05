@@ -1,3 +1,4 @@
+import { HighlightHit } from './../../@busqueda-contenido/model/highlight-hit';
 import { AppConfig } from './../../app-config';
 import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
@@ -34,6 +35,11 @@ export class VisorImagenesService {
 
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
+  }
+
+
+  public ObtieneSinopsis(busqeudaId: string, elementoId: string): Observable<HighlightHit[]> {
+      return this.docService.OntieneSinopsis(busqeudaId, elementoId);
   }
 
   public ObtieneDocumento(DocumentoId: string): Observable<Documento> {

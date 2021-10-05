@@ -96,6 +96,7 @@ import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { VisorFavoritosComponent } from './components/visor-favoritos/visor-favoritos.component';
 import { IUploadConfig } from './model/i-upload-config';
 import { HeaderThumbsComponent } from './components/header-thumbs/header-thumbs.component';
+import { FullTextResultsComponent } from './components/full-text-results/full-text-results.component';
 
 @NgModule({
   imports: [
@@ -181,7 +182,7 @@ import { HeaderThumbsComponent } from './components/header-thumbs/header-thumbs.
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent, VisorFavoritosComponent],

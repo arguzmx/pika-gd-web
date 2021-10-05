@@ -658,13 +658,12 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.tablas.first.obtenerPaginaDatosPersonalizada(notificar, path, consulta);
   }
 
-  public navegarVistaPoTag(tag: string, newWindow: boolean = false) {
+  public navegarVistaPoTag(tag: string,parametros: Map<string, string>, newWindow: boolean = false) {
     const link = this.botonesLinkVista.find(x => x.Vista == tag);
     if (link) {
-      this.procesaNavegarVista(link, newWindow);
+      this.procesaNavegarVista(link, parametros, newWindow);
     }
   }
-
 
   private NavegarVistaComando(link: LinkVista, newWindow: boolean) {
     switch (link.Vista) {
@@ -700,14 +699,12 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
 
 
-  public procesaNavegarVista(link: LinkVista, newWindow: boolean = false) {
-    
+  public procesaNavegarVista(link: LinkVista, parametros: Map<string, string>, newWindow: boolean = false) {
     if (link.RequiereSeleccion) {
       if (this.InstanciaSeleccionada) {
-
         switch (link.Tipo) {
           case TipoVista.Vista:
-            this.ejecutaNavegarVista(this.metadata.Tipo, link, this.entidad, this.metadata, newWindow);
+            this.ejecutaNavegarVista(this.metadata.Tipo, link, this.entidad, this.metadata, parametros, newWindow);
             break;
 
           case TipoVista.Comando:
@@ -715,7 +712,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             break;
 
           case TipoVista.EventoApp:
-            this.ejecutaNavegarAppEvento(this.metadata.Tipo, link, this.entidad, this.metadata);
+            this.ejecutaNavegarAppEvento(this.metadata.Tipo, link, this.entidad, this.metadata, parametros);
             break;
 
           case  TipoVista.WebCommand:

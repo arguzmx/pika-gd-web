@@ -43,7 +43,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   contenidoSeleccionado: boolean = false;
   nombreRepo: string;
   contenidoVisible: boolean = true
-
+  busquedaActual: BusquedaContenido;
   DesdeRuta = false;
   Tipo = 'Elemento';
 
@@ -239,6 +239,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     }
 
     if (esValida) {
+      this.busquedaActual = b;
       this.tabla.obtenerPaginaDatosPersonalizada(true, 'api/v1.0/contenido/Busqueda', b);
     } else {
       this.applog.AdvertenciaT(
@@ -261,7 +262,13 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   }
 
   public NavegarAVisor() {
-    this.tabla.NavegarLinkPorTag('visorcontenido', true);
+    const parametros = new Map<string,string>();
+    parametros.set('searchid', this.busquedaActual.Id);
+    if (this.busquedaActual.Elementos.find(x=>x.Tag == 'texto')){
+      parametros.set('texto', '1');
+    }
+
+    this.tabla.NavegarLinkPorTag('visorcontenido', parametros, true);
   }
 
   public mostrarSelectorColumnas() {

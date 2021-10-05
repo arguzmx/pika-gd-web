@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Documento } from '../model/documento';
 import { IDocumentoService } from '../model/i-documento-service';
 import { DocumentoPlantilla, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
+import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 
 @Injectable()
 export class DocumentosService implements IDocumentoService {
@@ -26,6 +27,11 @@ export class DocumentosService implements IDocumentoService {
     this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
   }
   
+  OntieneSinopsis(busqeudaId: string, elementoId: string): Observable<HighlightHit[]> {
+    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Busqueda/sinopsis/${busqeudaId}`;
+    return this.http.post<HighlightHit[]>(url, [elementoId]);
+  }
+
 
   ObtieneZIP(id: string, version: string) {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;

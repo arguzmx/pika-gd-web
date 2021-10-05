@@ -73,7 +73,8 @@ export class VisorFavoritosComponent implements OnInit, AfterViewInit {
       PuntoMontajeId: e.payload.find(x=>x.id == "PuntoMontajeId").valor,
       CarpetaId: e.payload.find(x=>x.id == "CarpetaId").valor,
       TransactionId: e.payload.find(x=>x.id == "Id").valor,
-      VersionId: e.payload.find(x=>x.id == "VersionId").valor
+      VersionId: e.payload.find(x=>x.id == "VersionId").valor,
+      parametros: e.payload
     }
     this.elementos.push(c);
     this.cdr.detectChanges();
