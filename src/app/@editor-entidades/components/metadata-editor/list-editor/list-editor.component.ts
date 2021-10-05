@@ -135,7 +135,7 @@ export class ListEditorComponent extends EditorCampo
         distinctUntilChanged(),
         tap(() => {
           this.listaLoading = true;
-          console.log(this.filtrosQ);
+          // console.log(this.filtrosQ);
         }),
         switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term, this.GetFiltrosPropiedad())
         .pipe(
@@ -155,8 +155,8 @@ export class ListEditorComponent extends EditorCampo
 
 
   ngOnInit(): void {
-    console.log(this.filtrosQ);
-    console.log(this.propiedad.Id);
+    // console.log(this.filtrosQ);
+    // console.log(this.propiedad.Id);
     this.hookEscuchaEventos();
     let aheadval = '';
 

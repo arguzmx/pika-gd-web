@@ -26,6 +26,7 @@ import { format } from 'date-fns';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { Acciones, HTML_CHECKBOX, HTML_NUMBER, HTML_TEXT, tBinaryData, tBoolean, tDouble, tIndexedString, tInt32, tInt64, TipoDato, tList } from '../../../@pika/metadata';
 import { ConsultaBackend } from '../../../@pika/consulta';
+import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/busqueda-contenido.module';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -42,6 +43,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('fechaTpl', { static: true }) fechaTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('indexStrTpl', { static: true }) indexStrTpl: TemplateRef<any>;
+  @ViewChild('strHTMLTpl', { static: true }) strHTMLTpl: TemplateRef<any>;
   @ViewChild('dialogColPicker', { static: true }) dialogColPicker: TemplateRef<any>;
   @ViewChild('listaplantilla') listaplantilla: NbSelectComponent;
 
@@ -81,12 +83,14 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   
   // Datos y columnas para EasyTables en el template
+  public muestraOCR: boolean = false;
   public entidadseleccionada: any = null;
   public entidadesseleccionadas: any[] = [];
   public renglonSeleccionado: number = -1;
   public renglonesSeleccionados = new Set();;
   public configuration: Config;
   public data: any[];
+  public HighlightHits: HighlightHit[];
   public columns: Columns[] = [];
   public columnasBase: ColumnaTabla[] = [];
   public columnasExtendias: string[] = [];
@@ -106,6 +110,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   // Inicializa el espacio de tabla
   public _Reset(): void {
+    this.HighlightHits = [];
+    this.muestraOCR = false;
     this.IdBusquedaPersonalizada = '';
     this.plantillaSeleccionada = '';
     this.AsociadoMetadatos = false;
@@ -346,6 +352,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       if (columnas[i].Visible) {
         let template = null;
         if (columnas[i].Tipo === tIndexedString) template = this.indexStrTpl;
+        if (columnas[i].Id === 'ocr') template = this.strHTMLTpl;
         if (columnas[i].EsFecha) template = this.fechaTpl;
         if (columnas[i].Tipo === 'bool') template = this.boolTpl;
         if (columnas[i].EsLista) template = this.listTpl;
@@ -405,9 +412,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     return columnas;
   }
 
-
   private EstableceColumnasMetadatos(props: PropiedadesExtendidas) {
     const columnas: ColumnaTabla[] = [];
+
+    if(this.muestraOCR){
+      this.columnasBase.splice(this.columnasBase.length-1,1)
+    }
 
     const pllantillas: string[] = []
 
@@ -491,6 +501,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       }
     });
 
+
+    if(this.muestraOCR) {
+      columnas.push( { Id: 'ocr', Nombre: 'Texto', Visible: true, Alternable: false, Ordenable:false, Buscable: false,
+      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false } )
+    }
 
     if (columnas.length > 0) {
       columnas.forEach(c => {
@@ -755,7 +770,34 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
 
-          this.ActualizarDatosElemento(elementos, metadatos);
+          if (this.muestraOCR) {
+            this.entidades.SinopisPorIds(this.consultaIds.IdCache, this.APaginado(elementos))
+            .pipe(first()).subscribe( sinopsis => {
+              this.HighlightHits = sinopsis;
+              const updated: unknown[] = JSON.parse(JSON.stringify(elementos));
+              updated.forEach(u=>{
+                const s = sinopsis.find(x=>x.ElementoId == u['Id']);
+                if (s) {
+                  let texto = '';
+                  s.Highlights.forEach(h=> {
+                    texto = `${texto}${h.Texto}... `
+                  });
+                  u['ocr'] = texto;
+                }
+              });
+              
+              this.ActualizarDatosElemento(updated, metadatos);
+              this.configuration.isLoading = false;
+              this.cdr.detectChanges();
+            })
+          } else {
+            
+            this.ActualizarDatosElemento(elementos, metadatos);
+            this.configuration.isLoading = false;
+            this.cdr.detectChanges();
+          }
+
+          
         }, (err) => { console.error(err); })
 
       }, (err) => { console.error(err); });
@@ -1088,12 +1130,34 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, {... consultaIds} )
     .pipe(first()).subscribe( elementos => {
-
+      
       if (elementos) {
         this.entidades.BuscaTextoDeIdentificadores(this.metadata.Tipo, this.APaginado(elementos), this.metadata)
         .pipe(first()).subscribe( ok => {
-          this.ActualizarDatosPlantilla(elementos || []);
-          this.configuration.isLoading = false;
+          if (this.muestraOCR) {
+            this.entidades.SinopisPorIds(this.consultaIds.IdCache, this.APaginado(elementos))
+            .pipe(first()).subscribe( sinopsis => {
+              this.HighlightHits = sinopsis;
+              const updated: unknown[] = JSON.parse(JSON.stringify(elementos));
+              updated.forEach(u=>{
+                const s = sinopsis.find(x=>x.ElementoId == u['Id']);
+                if (s) {
+                  let texto = '';
+                  s.Highlights.forEach(h=> {
+                    texto = `${texto}${h.Texto}... `
+                  });
+                  u['ocr'] = texto;
+                }
+              });
+              this.ActualizarDatosPlantilla(updated || []);
+              this.configuration.isLoading = false;
+              this.cdr.detectChanges();
+            })
+          } else {
+            this.ActualizarDatosPlantilla(elementos || []);
+            this.configuration.isLoading = false;
+            this.cdr.detectChanges();
+          }
         });
 
       } else {
@@ -1103,12 +1167,45 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     }, (err) => { this.configuration.isLoading = false; })
   }
 
+
+  private instanceOfBusquedaContenido(object: any): object is BusquedaContenido {
+    return 'Elementos' in object;
+  }
+
+
+  private EstableceColumnasBusquedaTexto() {
+    const columnas: ColumnaTabla[] = [];
+    if(this.columnasBase.find(x=>x.Id == 'ocr')){
+
+      return;
+    }
+
+    columnas.push( { Id: 'ocr', Nombre: 'Texto', Visible: true, Alternable: false, Ordenable:false, Buscable: false,
+      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false } )
+
+      if (columnas.length > 0) {
+        columnas.forEach(c => {
+          this.columnasBase.push({ ...c });
+        });
+        this.EstableceColumnas(this.columnasBase);
+      }
+  }
+
+
   // Obtiene una nueva página de datos
   public obtenerPaginaDatosPersonalizada(notificar: boolean, path: string, consulta: unknown): void {
 
     this.entidades.POSTURLPersonalizada(consulta, path)
       .pipe(first())
       .subscribe(data => {
+
+        if( this.instanceOfBusquedaContenido(consulta) ){
+          const bcont: BusquedaContenido = JSON.parse(JSON.stringify(consulta));
+          if (bcont.Elementos.find(x=>x.Tag=="texto")){
+            this.muestraOCR = true;
+            this.EstableceColumnasBusquedaTexto();
+          }
+        }
 
         // Obtiene el id de la consylta
         this.IdBusquedaPersonalizada = data["Elementos"][0];
@@ -1120,11 +1217,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
         this.consulta.FiltroConsulta = consulta["FiltrosBase"];
         this.consultaIds = this.GeneraConsultaBackend(consultaBase);
+
         this.consultaIds.IdCache = this.IdBusquedaPersonalizada;
         this.consultaIds.Filtros = consulta["FiltrosBase"];
         
         this.creaPaginaDatosPersonalizada(this.consultaIds);
-
         this.ConteoRegistros.emit(conteo);
 
         this.NotificarConteo(conteo);

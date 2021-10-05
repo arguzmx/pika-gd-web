@@ -16,6 +16,7 @@ import { ContenidoVinculado } from '../conteido/contenido-vinculado';
 import { RequestListaIds } from '../consulta/request-paginado-ids';
 import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
 import { RespuestaComandoWeb } from '../pika-module';
+import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 
 const retryCount: number = 0;
 
@@ -56,10 +57,18 @@ export class PikaApiService<T, U> {
   }
 
 
+  private RutaBase() : string {
+    return this.app.config.pikaApiUrl.replace(/\/$/, '') + '/api/v' + this.app.config.apiVersion;
+  }
+
   private CrearEndpointPersonalizado(path: string): string {
     return this.app.config.pikaApiUrl.replace(/\/$/, '') + '/' + path;
   }
 
+  public SinopisPorIds(consultaId: string, Ids: string[]) {
+    const endpoint = this.RutaBase() + "/contenido/busqueda/sinopsis/" + consultaId;
+    return this.http.post<HighlightHit[]>(endpoint, Ids);
+  }
 
   public ObtenerPaginaPorIds(entidad: string, q: ConsultaBackend): Observable<unknown[]> {
     const endpoint = this.CrearEndpoint(entidad) + "page/ids";

@@ -25,6 +25,8 @@ import { BCarpetaComponent } from './componentes/b-carpeta/b-carpeta.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { BusquedaContenido } from './model/busqueda-contenido';
+import { HighlightHit } from './model/highlight-hit';
 
 @NgModule({
   declarations: [HostBusquedaComponent, BMetadatosComponent, BPropiedadesComponent, BTextoComponent, BCarpetaComponent],
@@ -76,4 +78,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
    provide: HTTP_INTERCEPTORS, useClass: BusquedaInterceptor, multi: true,
  }],
 })
-export class busquedaContenidoModule { }
+class busquedaContenidoModule { }
+
+
+ export {busquedaContenidoModule, BusquedaContenido, HighlightHit};

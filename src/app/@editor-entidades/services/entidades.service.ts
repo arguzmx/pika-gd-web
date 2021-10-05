@@ -23,6 +23,7 @@ import { DescriptorNodo } from '../model/descriptor-nodo';
 import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
 import { ConsultaBackend, FiltroConsultaBackend } from '../../@pika/consulta';
+import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 
 
 
@@ -870,6 +871,20 @@ export class EntidadesService {
     }
     return buscar;
   }
+
+  private IdsParaCatalogos(pagina: Paginado<any>): string[] {
+    const buscar: string[] = [];
+    pagina.Elementos.forEach(item => {
+      buscar.push(item['Id'])
+    });
+    return buscar;
+  }
+
+  public SinopisPorIds(consultaId: string, pagina: Paginado<any>): Observable<HighlightHit[]>  {
+    const ids = this.IdsParaCatalogos(pagina);
+    return this.cliente.SinopisPorIds(consultaId, ids);
+  }
+
 
   public BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>, metadata?: MetadataInfo):
     Observable<boolean> {

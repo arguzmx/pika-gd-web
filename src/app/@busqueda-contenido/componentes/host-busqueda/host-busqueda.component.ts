@@ -13,6 +13,7 @@ import { EditorBootTabularComponent, MetadataTablaComponent, ServicioListaMetada
 import { ServicioBusquedaAPI } from '../../services/servicio-busqueda-api';
 import { Busqueda, BusquedaContenido, EstadoBusqueda } from '../../model/busqueda-contenido';
 import { Operacion } from '../../../@pika/consulta';
+import { BTextoComponent } from '../b-texto/b-texto.component';
 
 @Component({
   selector: 'ngx-host-busqueda',
@@ -23,6 +24,7 @@ import { Operacion } from '../../../@pika/consulta';
 export class HostBusquedaComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject<void>();
 
+  @ViewChild("ocr") ocr: BTextoComponent;
   @ViewChild("propiedades") propiedades: BPropiedadesComponent;
   @ViewChild("metadatos") metadatos: BMetadatosComponent;
   @ViewChild('tabla') tabla: EditorBootTabularComponent;
@@ -33,6 +35,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   VistaTrasera: boolean = false;
   MotrarMetadatos: boolean = false;
   MostrarPropiedades: boolean = false;
+  MostrarTexto: boolean = false;
   mostrarBarra: boolean = false;
   busuedaPersonalizada: boolean = true;
   totalRegistros: number = 0;
@@ -120,12 +123,18 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     this.MostrarRegresar = true;
     this.VistaTrasera = false;
     this.MotrarMetadatos = false;
+    this.MostrarTexto = false;
   }
 
   public regresar() {
     this.location.back();
   }
 
+
+  alternarTexto(): void {
+    this.MostrarTexto = !this.MostrarTexto;
+    this.actualizaUI();
+  }
 
   alternarMetadatos(): void {
     this.MotrarMetadatos = !this.MotrarMetadatos;
@@ -180,8 +189,24 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       ValorString: this.IdRepositorio
     })
 
-    if (this.MostrarPropiedades) {
 
+    if (this.MostrarTexto) {
+      if (this.ocr.Filtros().length >= 0) {
+        const propiedes: Busqueda = {
+          Tag: 'texto',
+          Topico: 'texto',
+          Consulta: {
+            Filtros: this.ocr.Filtros()
+          }
+        }
+
+        b.Elementos.push(propiedes);
+
+        esValida = true;
+      }
+    }
+
+    if (this.MostrarPropiedades) {
       if (this.propiedades.Filtros().length >= 0) {
         const propiedes: Busqueda = {
           Tag: 'propiedades',
@@ -198,7 +223,6 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     }
 
     if (this.MotrarMetadatos) {
-
       if (this.metadatos.Filtros().length > 0) {
         b.PlantillaId = this.metadatos.Topic;
         const metadatos: Busqueda = {

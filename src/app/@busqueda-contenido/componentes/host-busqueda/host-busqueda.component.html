@@ -33,6 +33,13 @@
                 <mat-icon>turned_in_not</mat-icon>
             </button>
 
+
+            <!-- Mostrar busqueda OCR -->
+            <button mat-icon-button on-click="alternarTexto()" [nbTooltip]="T.t['busqueda.btexto']"
+                nbTooltipPlacement="bottom" aria-label="T.t['busqueda.btexto']">
+                <mat-icon>text_fields</mat-icon>
+            </button>
+
             <mat-icon class="gray-icon">more_vert</mat-icon>
             <button *ngIf="contenidoSeleccionado" mat-icon-button on-click="NavegarAVisor()"
                 [nbTooltip]="T.t['vistas.visorcontenido']" nbTooltipPlacement="bottom"
@@ -80,6 +87,12 @@
                                         <nb-accordion-item-header>Plantillas</nb-accordion-item-header>
                                         <nb-accordion-item-body>
                                             <ngx-b-metadatos #metadatos></ngx-b-metadatos>
+                                        </nb-accordion-item-body>
+                                    </nb-accordion-item>
+                                    <nb-accordion-item *ngIf="MostrarTexto">
+                                        <nb-accordion-item-header>Texto</nb-accordion-item-header>
+                                        <nb-accordion-item-body>
+                                            <ngx-b-texto #ocr></ngx-b-texto>
                                         </nb-accordion-item-body>
                                     </nb-accordion-item>
                                 </nb-accordion>

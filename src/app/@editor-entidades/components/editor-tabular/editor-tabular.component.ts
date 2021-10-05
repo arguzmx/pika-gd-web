@@ -719,7 +719,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             break;
 
           case  TipoVista.WebCommand:
-            console.log(link);
+            // console.log(link);
             const validar = link.Condicion.split('[').join('this.entidad[');
             if (validar!=''){
               const valido = eval(validar);

@@ -88,12 +88,17 @@
         "crearcontenidoactivo": "Contenido"
     },
     "busqueda": {
-        "bmetadatos": "Busrca por plantilla",
+        "bmetadatos": "Buscar por plantilla",
         "bpropiedades": "Buscar por propiedades",
         "bfolder": "Buscar por carpeta",
         "btexto": "Buscar por contenido",
         "buscar": "Buscar",
-        "busqueda-novalida": "No ha especificado condiciones de búsqueda válidas"
+        "busqueda-novalida": "No ha especificado condiciones de búsqueda válidas",
+        "phocr": "Texto a buscar",
+        "fuzzy": "Similitud",
+        "fuzzy-exacta": "Exacta",
+        "fuzzy-alta": "Alta",
+        "fuzzy-media": "Media"
     },
     "permisos": {
         "nombre": "Permisos",

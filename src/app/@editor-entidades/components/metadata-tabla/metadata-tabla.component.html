@@ -3,7 +3,7 @@
 </ngx-table>
 
 
-<!-- Tmplate para despliegue de booleanos-->
+<!-- Tmplate para despliegue de cadenas de para áreas-->
 <ng-template #indexStrTpl let-row let-rowIndex="rowIndex" let-column="column">
             <textarea readonly style="width: 300px; border: none; background-color: transparent;">
                 {{row[column.key]}}
@@ -28,6 +28,11 @@
 <!-- Template para columnas con catálogo vinulado -->
 <ng-template #cataloLinkTpl let-row let-rowIndex="rowIndex" let-column="column">
     <span>{{EtiquetasDeCatalogo(row[column.key], column.key)}}</span>
+</ng-template>
+
+<!-- Template para columnas con codigo HTML -->
+<ng-template #strHTMLTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div style="font-size: small;white-space:normal;min-width: 400px;" innerHTML="{{row[column.key]}}"></div>
 </ng-template>
 
 <!-- Cuadro de dialogo para la selección de columnas-->

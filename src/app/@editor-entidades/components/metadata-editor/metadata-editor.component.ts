@@ -300,7 +300,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
         this.entidades.GetFiltroBusqueda(this.metadata.Tipo, this.config.OrigenId).subscribe(
           f => {
             this.filtrosQ = f;
-            console.log(this.filtrosQ);
+            // console.log(this.filtrosQ);
             this.CrearForma();
           }
         )

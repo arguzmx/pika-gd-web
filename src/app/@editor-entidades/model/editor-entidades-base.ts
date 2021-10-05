@@ -310,7 +310,7 @@ export class EditorEntidadesBase {
     this.entidades.PostCommand(metadata.Tipo, link.Vista, parametros)
     .pipe(first())
     .subscribe(r=> {
-      console.log(r)
+      // console.log(r)
       if (r) {
         if (r.Estatus) {
           this.refrescarTabla();
