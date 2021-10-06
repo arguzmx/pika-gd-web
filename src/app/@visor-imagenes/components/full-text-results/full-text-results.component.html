@@ -1,1 +1,6 @@
-<ngx-table [data]="highlights" [configuration]="configuration" [columns]="columns"> </ngx-table>
+<!-- Template para columnas con codigo HTML -->
+<ng-template #strHTMLTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div style="font-size: small;" innerHTML="{{row[column.key]}}"></div>
+</ng-template>
+
+<ngx-table #table [data]="highlights" [configuration]="configuration" [columns]="columns" (event)="eventosTabla($event)"> </ngx-table>

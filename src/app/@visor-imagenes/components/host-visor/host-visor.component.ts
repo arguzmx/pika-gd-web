@@ -12,6 +12,7 @@ import { CacheEntidadesService } from '../../../@editor-entidades/editor-entidad
 import { UploaderComponent } from '../uploader/uploader.component';
 import { IUploadConfig } from '../../model/i-upload-config';
 import { PayloadItem } from '../../../@pika/eventos/evento-aplicacion';
+import { HostThumbnailsComponent } from '../host-thumbnails/host-thumbnails.component';
 
 
 @Component({
@@ -37,7 +38,10 @@ AfterViewInit, OnChanges {
   public EsImagen: boolean = true;
   public MostrarResultadosTexto: boolean = false;
   public highlightHit: HighlightHit;
+  public Miniaturas: boolean = false;
 
+  @ViewChild('thumbnails', { static: true }) thumbnails: HostThumbnailsComponent;
+  
   @Output() cerrarDocumento = new  EventEmitter();
   @Output() cerrarVista = new  EventEmitter();
   @Input() config: IUploadConfig;
@@ -79,6 +83,7 @@ AfterViewInit, OnChanges {
             if(s){
               this.MostrarResultadosTexto = true;
               this.highlightHit = s[0];
+              this.Miniaturas = false;
             }
         });
       }
@@ -178,6 +183,11 @@ AfterViewInit, OnChanges {
     this.alturaComponente = a;
   }
 
+  public NuevaSeleccion(event) {
+    console.log(event);
+    this.thumbnails.SetPage(event['ParteId']);
+
+  }
   
   // Envia el  input para mostrar el tarahet trasera del panel del visor
   public eventMuestraInfo() {

@@ -34,6 +34,14 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
     
   }
 
+  public SetPage(id: string ){
+    const pagina =this.documento.Paginas.find(x=>x.Id == id);
+    if(pagina) {
+      this.visorService.EliminarSeleccion();
+      this.visorService.EstablecerPaginaActiva(pagina);
+      this.visorService.AdicionarPaginaSeleccion(pagina);
+    }
+  }
 
   private ListenerPaginas() {
     this.visorService.LeyendoPaginas()
