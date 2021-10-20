@@ -32,8 +32,7 @@ export class BienvenidaComponent implements OnInit {
   }
 
   login() {
-
-    let url = this.auth.issuer + '.well-known/openid-configuration';
+    let url = this.auth.issuer.replace(/\/$/, "") + '/.well-known/openid-configuration';
     this.auth.loadDiscoveryDocument(url)
       .then(() => this.auth.tryLogin())
       .then(() => {

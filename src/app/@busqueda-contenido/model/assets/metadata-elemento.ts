@@ -1,4 +1,4 @@
-import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
+import { MetadataInfo, TipoSeguridad } from './../../../@pika/metadata/metadata-info';
 export const MetadataElemento: MetadataInfo =
 {
     "HabilitarSeleccion": true,
@@ -175,7 +175,7 @@ export const MetadataElemento: MetadataInfo =
                 "TypeAhead": false,
                 "Default": "",
                 "ValoresCSV": "",
-                "Valores": [], 
+                "Valores": [],
                 "Endpoint": "api/v1.0/seguridad/usuarios/"
             },
             "AtributosEvento": [],
@@ -388,5 +388,6 @@ export const MetadataElemento: MetadataInfo =
             "Tipo": 0
         }
     ],
-    "Reportes": []
+    "Reportes": [],
+    "TipoSeguridad": TipoSeguridad.AlIngreso,
 }

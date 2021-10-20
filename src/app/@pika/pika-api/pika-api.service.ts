@@ -15,7 +15,7 @@ import { SesionQuery } from '../state';
 import { ContenidoVinculado } from '../conteido/contenido-vinculado';
 import { RequestListaIds } from '../consulta/request-paginado-ids';
 import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
-import { RespuestaComandoWeb } from '../pika-module';
+import { PermisoACL, RespuestaComandoWeb } from '../pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 
 const retryCount: number = 0;
@@ -100,6 +100,12 @@ export class PikaApiService<T, U> {
       .pipe(
         retry(retryCount),
       );
+  }
+
+  
+  GetACL(entidad: string, id: string ): Observable<number> {
+    const endpoint = this.CrearEndpoint(entidad);
+    return this.http.get<number>(endpoint + `acl/${id}`);
   }
 
   GetFiltroBusqueda(entidad: string, id: string): Observable<FiltroConsultaPropiedad[]> {
@@ -272,7 +278,7 @@ export class PikaApiService<T, U> {
 
   private getQueryStringConsulta(consulta: Consulta): string {
     let qs: string = `?i=${consulta.indice}&t=${consulta.tamano}`;
-    qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}&idcache=${consulta.IdCache}`;
+    qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}&idcache=${consulta.IdCache ?? ''}`;
 
     if(consulta.IdSeleccion) {
       qs = qs + `&sel=${consulta.IdSeleccion}`;

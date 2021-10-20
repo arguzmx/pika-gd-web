@@ -4,6 +4,15 @@ import { EntidadVinculada } from './entidad-vinculada';
 import { CatalogoVinculado } from './catelogo-vinculado';
 import { LinkVista } from './link-vista';
 
+
+export enum TipoSeguridad
+{
+    Default = 0,
+    AlIngreso = 1,
+    AlCambiar = 2,
+}
+
+
 export class MetadataInfo {
     Tipo: string;
     FullName: string;
@@ -22,4 +31,5 @@ export class MetadataInfo {
     PermiteAltas: boolean = true;
     PermiteBajas: boolean = true;
     PermiteCambios: boolean = true;
+    TipoSeguridad: TipoSeguridad = TipoSeguridad.Default;
 }

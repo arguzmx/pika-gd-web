@@ -7,7 +7,7 @@ import { PARAM_TIPO, PARAM_TIPO_ORIGEN } from '../../model/constantes';
 import { Subject } from 'rxjs';
 import { takeUntil, first } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
-import { PermisoAplicacion, SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { PermisoAplicacion, SesionStore, TipoDespliegueVinculo, TipoSeguridad } from '../../../@pika/pika-module';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { ServicioListaMetadatos } from '../../services/servicio-lista-metadatos';
 import { EditorTabularComponent } from '../editor-tabular/editor-tabular.component';
@@ -81,34 +81,49 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
 
             // console.log(m);
             // console.log(m.TokenMod);
-            if (m.TokenApp && m.TokenMod) {
-              pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
-              pcontenido.PermiteAltas = m.PermiteAltas;
-              pcontenido.PermiteCambios = m.PermiteCambios;
-              pcontenido.PermiteBajas = m.PermiteBajas;
-              permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
-            }
 
+            if(m.TipoSeguridad == TipoSeguridad.AlIngreso) { 
 
-            console.log(pcontenido);
-            // console.log(permisos);
-            if (permisos) {
-              this.config = {
-                TipoEntidad: this.paramTipo,
-                OrigenTipo: this.paramTipoOrigen,
-                OrigenId: params[PARAM_ID_ORIGEN] || '',
-                TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
-                TransactionId: this.entidades.NewGuid(),
-                Permiso: pcontenido,
-              };
+              this.entidades.GetACL(m.Tipo, params[PARAM_ID_ORIGEN]).pipe(first()).subscribe(mask => {
+                pcontenido = this.entidades.CreaPermiso(m.TokenApp,m.TokenMod, mask);
+                pcontenido.PermiteAltas = m.PermiteAltas;
+                pcontenido.PermiteCambios = m.PermiteCambios;
+                pcontenido.PermiteBajas = m.PermiteBajas;
+                permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
+                this.Navegar(permisos, pcontenido, params);
+
+              }, (err)=> {this.router.navigateByUrl('/pages/sinacceso');});              
+
             } else {
-              this.router.navigateByUrl('/pages/sinacceso');
+              if (m.TokenApp && m.TokenMod) {
+                pcontenido = this.entidades.ObtienePermiso(m.TokenApp, m.TokenMod);
+                pcontenido.PermiteAltas = m.PermiteAltas;
+                pcontenido.PermiteCambios = m.PermiteCambios;
+                pcontenido.PermiteBajas = m.PermiteBajas;
+                permisos = permisos && this.entidades.PermitirAccesoACL(pcontenido);
+              }
+              this.Navegar(permisos, pcontenido, params);
             }
 
           }, (e) => {
             this.router.navigateByUrl('/pages/sinacceso');
           }, () => { });
       });
+  }
+
+  private Navegar(permisos: boolean, pcontenido:PermisoAplicacion, params: unknown ): void {
+    if (permisos) {
+      this.config = {
+        TipoEntidad: this.paramTipo,
+        OrigenTipo: this.paramTipoOrigen,
+        OrigenId: params[PARAM_ID_ORIGEN] || '',
+        TipoDespliegue: params[PARAM_TIPO_DESPLIEGUE] || '',
+        TransactionId: this.entidades.NewGuid(),
+        Permiso: pcontenido,
+      };
+    } else {
+      this.router.navigateByUrl('/pages/sinacceso');
+    }
   }
 
   InicializarManual() {

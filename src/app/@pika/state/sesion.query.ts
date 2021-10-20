@@ -36,6 +36,7 @@ export class SesionQuery extends Query<SesionState> {
   }
 
   get RutasEntidades() {
+    // las rutas son obtenidas del backend desde ObtieneRutas() en la API
     return this.getValue().configuracion.RutasEntidades;
   }
 

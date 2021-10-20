@@ -184,9 +184,7 @@ AfterViewInit, OnChanges {
   }
 
   public NuevaSeleccion(event) {
-    console.log(event);
     this.thumbnails.SetPage(event['ParteId']);
-
   }
   
   // Envia el  input para mostrar el tarahet trasera del panel del visor

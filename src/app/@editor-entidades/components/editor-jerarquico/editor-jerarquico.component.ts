@@ -247,7 +247,6 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
     if (this.config && this.config.ConfiguracionJerarquia.TipoEntidad) {
 
-
       this._Reset();
       // Esta debe ser la perimera linea del método
 

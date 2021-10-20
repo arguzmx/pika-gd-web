@@ -1,3 +1,4 @@
+import { TipoSeguridad } from './metadata/metadata-info';
 import { AppEventBus } from './state/app-event-bus';
 import { PEJECUTAR, PELIMINAR, PESCRIBIR, PLEER, PADMINISTRAR } from './seguridad/permiso-acl';
 import { EntidadesResolver } from './servicios/resolvers/entidades-resolver';
@@ -60,7 +61,7 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   AppBusStore, PropiedadesBus,
   HTML_DATE, HTML_TIME, HTML_DATETIME, PikaSesionService, IProveedorReporte,
   DominioActivo, SesionStore, AppBusQuery, UnidadOrganizacionalActiva,
-  tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime,
+  tDate, tTime, tDouble, tBoolean, tString, tBinaryData, tList, tInt64, tInt32, tDateTime, TipoSeguridad,
   httpInterceptorProviders, Aplicacion, PermisoAplicacion, ModuloAplicacion, TipoModulo, TraduccionAplicacionModulo,
   LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
   PESCRIBIR, PLEER, PADMINISTRAR, ValorPropiedad, DocumentoPlantilla, VinculosObjetoPlantilla, VinculoDocumentoPlantilla,

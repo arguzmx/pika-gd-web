@@ -8,10 +8,10 @@ import { EntidadesService, CONTEXTO } from './../../services/entidades.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { ConfiguracionEntidadJerarquica } from '../../model/configuracion-entidad-jerarquica';
-import { SesionStore, TipoDespliegueVinculo } from '../../../@pika/pika-module';
+import { SesionStore, TipoDespliegueVinculo, TipoSeguridad } from '../../../@pika/pika-module';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { ServicioListaMetadatos } from '../../services/servicio-lista-metadatos';
 
@@ -66,51 +66,45 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
               let parbol: PermisoAplicacion = null;
               let pcontenido: PermisoAplicacion = null;
               let permisos = true;
-              if (datos.arbol.TokenApp && datos.arbol.TokenMod) {
-                parbol = this.entidades.ObtienePermiso(datos.arbol.TokenApp, datos.arbol.TokenMod);
-                parbol.PermiteAltas = datos.arbol.PermiteAltas;
-                parbol.PermiteCambios = datos.arbol.PermiteCambios;
-                parbol.PermiteBajas = datos.arbol.PermiteBajas;
-                permisos = permisos &&  this.entidades.PermitirAccesoACL(parbol);
-              }
-
-              if (datos.contenido.TokenApp && datos.contenido.TokenMod) {
-                pcontenido = this.entidades.ObtienePermiso(datos.contenido.TokenApp, datos.contenido.TokenMod);
-                pcontenido.PermiteAltas = datos.contenido.PermiteAltas;
-                pcontenido.PermiteCambios = datos.contenido.PermiteCambios;
-                pcontenido.PermiteBajas = datos.contenido.PermiteBajas;
-                permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
-              }
 
 
-              if (permisos) {
-                this.config = {
-                  ConfiguracionJerarquia: {
-                    OrigenTipo: this.paramTipoJerarquico,
-                    TipoEntidad: this.paramTipoArbolJerarquico,
-                    OrigenId: params[PARAM_ID_JERARQUICO] || '',
-                    TransactionId: this.entidades.NewGuid(),
-                    TipoDespliegue: this.paramTipoDespliegue,
-                    Permiso: parbol,
-                  },
-                  ConfiguracionContenido: {
-                    TipoEntidad: this.paramTipoContenidoJerarquico,
-                    OrigenTipo: '',
-                    OrigenId: '',
-                    TransactionId: this.entidades.NewGuid(),
-                    TipoDespliegue: this.paramTipoDespliegue,
-                    Permiso: pcontenido,
-                  },
-                };
+              if(datos.contenido.TipoSeguridad == TipoSeguridad.AlIngreso) {
+                this.entidades.GetACL(datos.contenido.Tipo, params[PARAM_ID_JERARQUICO]).pipe(first()).subscribe(mask => {
+                  parbol = this.entidades.CreaPermiso(datos.arbol.TokenApp, datos.arbol.TokenMod, mask);
+                  pcontenido = this.entidades.CreaPermiso(datos.contenido.TokenApp, datos.contenido.TokenMod, mask);
+              
+                  parbol.PermiteAltas = datos.arbol.PermiteAltas;
+                  parbol.PermiteCambios = datos.arbol.PermiteCambios;
+                  parbol.PermiteBajas = datos.arbol.PermiteBajas;
+                  pcontenido.PermiteAltas = datos.contenido.PermiteAltas;
+                  pcontenido.PermiteCambios = datos.contenido.PermiteCambios;
+                  pcontenido.PermiteBajas = datos.contenido.PermiteBajas;
+                  
+                  permisos = permisos &&  this.entidades.PermitirAccesoACL(parbol);
+                  permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
+                  
+                  this.GotoEntidad(permisos, parbol, pcontenido, params[PARAM_ID_JERARQUICO] || '');
 
-              this.entidades
-                .SetCachePropiedadContextual('PadreId', CONTEXTO, '', null);
-              this.EstablecePropiedadContextual(this.config.ConfiguracionJerarquia);
-              this.EstablecePropiedadContextual(this.config.ConfiguracionContenido);
-
+                }, (err)=> {this.router.navigateByUrl('/pages/sinacceso');});
               } else {
-                this.router.navigateByUrl('/pages/sinacceso');
+                if (datos.arbol.TokenApp && datos.arbol.TokenMod) {
+                  parbol = this.entidades.ObtienePermiso(datos.arbol.TokenApp, datos.arbol.TokenMod);
+                  parbol.PermiteAltas = datos.arbol.PermiteAltas;
+                  parbol.PermiteCambios = datos.arbol.PermiteCambios;
+                  parbol.PermiteBajas = datos.arbol.PermiteBajas;
+                  permisos = permisos &&  this.entidades.PermitirAccesoACL(parbol);
+                }
+  
+                if (datos.contenido.TokenApp && datos.contenido.TokenMod) {
+                  pcontenido = this.entidades.ObtienePermiso(datos.contenido.TokenApp, datos.contenido.TokenMod);
+                  pcontenido.PermiteAltas = datos.contenido.PermiteAltas;
+                  pcontenido.PermiteCambios = datos.contenido.PermiteCambios;
+                  pcontenido.PermiteBajas = datos.contenido.PermiteBajas;
+                  permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
+                }
+                this.GotoEntidad(permisos, parbol, pcontenido, params[PARAM_ID_JERARQUICO] || '');
               }
+
 
             }, (e)  => {
               this.router.navigateByUrl('/pages/sinacceso');
@@ -118,6 +112,38 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
 
         });
     }
+  }
+
+  private GotoEntidad(permisos: boolean, parbol :PermisoAplicacion, pcontenido: PermisoAplicacion, OrigenJerarquico: string) {
+    if (permisos) {
+      this.config = {
+        ConfiguracionJerarquia: {
+          OrigenTipo: this.paramTipoJerarquico,
+          TipoEntidad: this.paramTipoArbolJerarquico,
+          OrigenId: OrigenJerarquico, 
+          TransactionId: this.entidades.NewGuid(),
+          TipoDespliegue: this.paramTipoDespliegue,
+          Permiso: parbol,
+        },
+        ConfiguracionContenido: {
+          TipoEntidad: this.paramTipoContenidoJerarquico,
+          OrigenTipo: '',
+          OrigenId: '',
+          TransactionId: this.entidades.NewGuid(),
+          TipoDespliegue: this.paramTipoDespliegue,
+          Permiso: pcontenido,
+        },
+      };
+
+    this.entidades
+      .SetCachePropiedadContextual('PadreId', CONTEXTO, '', null);
+    this.EstablecePropiedadContextual(this.config.ConfiguracionJerarquia);
+    this.EstablecePropiedadContextual(this.config.ConfiguracionContenido);
+
+    } else {
+      this.router.navigateByUrl('/pages/sinacceso');
+    }
+
   }
 
   ngOnInit(): void {

@@ -125,6 +125,7 @@
         "rol": "Rol|Roles|el|los|people-outline",
         "volumen": "Volumen|Volumenes|el|los|save-outline",
         "puntomontaje": "Repositorio|Repositorios|el|los|cube-outline",
+        "permisospuntomontaje": "Permiso|Permisos|el|los|person-done-outline",
         "carpeta": "Contenido|Contenidos|el|los|cube-outline",
         "elemento": "Contenido|Contenidos|el|los|cube-outline",
         "elementoclasificacion": "Configuración clasificación|Configuración clasificación|el|la|book-open-outline",
@@ -245,7 +246,7 @@
                 "gmt_offset": "GMT",
                 "Ultimoacceso": "Acceso",
                 "Eliminada": "Eliminado",
-                "Inactiva": "Inactvo",
+                "Inactiva": "Inactivo",
                 "password": "Contraseña"
             },
             "pais": {
@@ -293,6 +294,17 @@
                 "OrigenId": "OrigenId",
                 "CreadorId": "Creador",
                 "FechaCreacion": "Fecha creación"
+            },
+            "permisospuntomontaje": {
+                "Id": "Id",
+                "PuntoMontajeIdId": "PuntoMontajeIdId",
+                "DestinatarioId": "Grupo",
+                "Crear": "Crear",
+                "Actualizar":"Actualizar",
+                "Elminar":"Elminar",
+                "GestionContenido": "Contenido",
+                "GestionMetadatos": "Metadatos",
+                "Leer": "Leer"
             },
             "carpeta": {
                 "PuntoMontajeId": "Repositorio",

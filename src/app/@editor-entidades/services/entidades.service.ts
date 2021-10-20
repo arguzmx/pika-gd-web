@@ -2,7 +2,7 @@ import { FiltroConsultaPropiedad } from './../../@pika/consulta/filtro.-consulta
 import { DocumentoPlantilla } from './../../@pika/metadata/documeto-plantilla';
 import { environment } from './../../../environments/environment.prod';
 import { AppConfig } from './../../app-config';
-import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR } from './../../@pika/seguridad/permiso-acl';
+import { PADMINISTRAR, PLEER, PELIMINAR, PESCRIBIR, PEJECUTAR, PermisoACL } from './../../@pika/seguridad/permiso-acl';
 import { Propiedad, IProveedorReporte, PermisoAplicacion, PDENEGARACCESO, RespuestaComandoWeb } from '../../@pika/pika-module';
 import { Observable, BehaviorSubject, AsyncSubject, forkJoin } from 'rxjs';
 import { CacheEntidadesService } from './cache-entidades.service';
@@ -138,11 +138,43 @@ export class EntidadesService {
         permiso.Mascara = acl.Mascara;
       }
 
+      // console.log(moduloId);
+      // console.log(permiso);
       return permiso;
     }
   }
 
+  CreaPermiso(appid: string, moduloId: string, mascara: number ): PermisoAplicacion {
+    if (this.sesion.ACL.EsAdmin) {
+        return this.permisoAdmin;
+    } else {
+      const permiso = this.permisoSinAcceso;
 
+      permiso.ModuloId = moduloId;
+      permiso.AplicacionId = appid;
+      if (mascara>0) {
+        permiso.NegarAcceso = (mascara & PDENEGARACCESO) > 0;
+        permiso.Admin = (mascara & PADMINISTRAR) > 0;
+        permiso.Leer = (mascara & PLEER) > 0;
+        permiso.Eliminar = (mascara & PELIMINAR) > 0;
+        permiso.Escribir = (mascara & PESCRIBIR) > 0;
+        permiso.Ejecutar = (mascara & PEJECUTAR) > 0;
+        permiso.Mascara = mascara;
+      }
+      // console.log(moduloId);
+      // console.log(permiso);
+
+      const acl =  this.sesion.ACL.Permisos.findIndex(x => x.ModuloId === moduloId
+        && x.AplicacionId === appid);
+
+      if(acl>0) {
+        this.sesion.ACL.Permisos.slice(acl,1);
+      }
+      this.sesion.ACL.Permisos.push(permiso);
+      
+      return permiso;
+    }
+  }
 
   /// Gestion de plantillas
   // ---------------------------------------
@@ -641,6 +673,11 @@ export class EntidadesService {
         subject.complete();
       });
     return subject;
+  }
+
+  
+  public GetACL(entidad: string, id: string): Observable<number> {
+   return this.cliente.GetACL(entidad, id);
   }
 
   // realiza una consulta de pagina relacional
