@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-xg-6 col-lg-6 col-md-6 col-sm-12">
+        <form [formGroup]="passwordForm">
+        <nb-card>
+            <nb-card-header>{{T.t['ui.contrasena-cambiar']}}
+                <span class="float-right">
+                    <button nbButton status="primary" size="small" (click)="onPasswordSet()" [disabled]="!passwordForm.valid">
+                        <nb-icon icon="lock-outline"></nb-icon>
+                        {{T.t['ui.establecer']}}
+                    </button>
+                </span>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <nb-form-field>
+                            <label for="inputActPass" class="label">{{T.t['ui.contrasena-actual']}}</label>
+                            <input [type]="getInputType()" nbInput fullWidth id="inputActPass" formControlName="inputActPass" placeholder="{{T.t['ui.contrasena-actual-ph']}}">
+                            <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                                <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                         pack="eva"
+                                         [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                                </nb-icon>
+                            </button>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-sm-12">
+                        <nb-form-field>
+                            <label for="inputNewPass" class="label">{{T.t['ui.contrasena-nueva']}}</label>
+                            <input [type]="getInputType()" nbInput fullWidth id="inputNewPass" formControlName="inputNewPass" placeholder="{{T.t['ui.contrasena-nueva-ph']}}">
+                        </nb-form-field>
+                    </div>
+                    <div class="col-sm-12">
+                        <nb-form-field>
+                            <label for="inputConfirmPass" class="label">{{T.t['ui.contrasena-confirmar']}}</label>
+                            <input [type]="getInputType()" nbInput fullWidth id="inputConfirmPass" formControlName="inputConfirmPass" placeholder="{{T.t['ui.contrasena-confirmar-ph']}}">
+                        </nb-form-field>
+                    </div>
+                </div>
+            </nb-card-body>
+          </nb-card>
+        </form>
+    </div>
+    <div class="col-xg-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="row">
+          
+    </div>    
+</div>
+

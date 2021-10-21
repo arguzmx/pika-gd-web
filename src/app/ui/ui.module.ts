@@ -59,9 +59,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module';
 import { BienvenidaComponent } from './bienvenida/bienvenida.component'
+import { ConfiguracionModule } from '../@configuracion/configuracion.module';
 
 @NgModule({
   imports: [
+    ConfiguracionModule,
     VisorImagenesModule,
     UIRoutingModule,
     CommonModule,

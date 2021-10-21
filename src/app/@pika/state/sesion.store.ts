@@ -174,6 +174,10 @@ export class SesionStore extends Store<SesionState> {
           const cm: ConstructorMenu = new  ConstructorMenu;
           const menu = cm.CreaMenu(data.menu, data.acl);
 
+          menu.push (  {icon: 'people-outline', group: false, home: false, link: '', pathMatch: 'full', title: 'Usuario' , 
+          children: [
+              {icon: null, group: false, home: false, link: '/pages/perfil/', pathMatch: 'full', title: 'Mi Perfil'  },
+          ] });
 
           this.setPropiedad(PropiedadesSesion.MenuItems, menu);
           this.setPropiedad(PropiedadesSesion.ACL, data.acl);

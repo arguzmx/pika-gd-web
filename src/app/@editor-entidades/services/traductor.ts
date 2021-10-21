@@ -16,6 +16,7 @@ export class Traductor {
       .get(this.ts)
       .pipe(first())
       .subscribe((res) => {
+        console.log(res);
         this.t = res;
       });
   }
