@@ -17,8 +17,8 @@
     <!-- <nb-action class="control-item">
       <nb-search type="rotate-layout"></nb-search>
     </nb-action> -->
-    <nb-action class="control-item" icon="email-outline"></nb-action>
-    <nb-action class="control-item" icon="bell-outline" (click)="alternaVisor()"></nb-action>
+    <!-- <nb-action class="control-item" icon="email-outline"></nb-action>
+    <nb-action class="control-item" icon="bell-outline" (click)="alternaVisor()"></nb-action> -->
     <nb-action class="user-action" *nbIsGranted="['view', 'user']" >
       <nb-user [nbContextMenu]="userMenu"
                [onlyPicture]="userPictureOnly"
@@ -41,8 +41,9 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="float-right">
-            <button nbButton (click)="ref.close()">{{ t["ui.cancelar"] }}</button>
-            <button nbButton status="danger" (click)="salir()">
+            <button size="small" nbButton status="basic" (click)="ref.close()">{{ t["ui.cancelar"] }}</button>
+            &nbsp;
+            <button  size="small" nbButton status="danger" (click)="salir()">
               {{ t["ui.aceptar"] }}
             </button>
           </div>

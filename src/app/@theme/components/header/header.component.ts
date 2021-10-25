@@ -1,10 +1,8 @@
-import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { SesionStore } from './../../../@pika/state/sesion.store';
 import { Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NbContextMenuComponent, NbDialogService, NbMediaBreakpointsService, NbMenuItem, NbMenuService, NbSidebarService,
   NbThemeService, 
   NB_WINDOW} from '@nebular/theme';
-import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -12,6 +10,7 @@ import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -56,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
    @ViewChild('logout') public logoutRef: TemplateRef<any>;
 
   constructor(
+    private router: Router,
               private sesion: SesionStore,
               private translate: TranslateService,
               private dialog: NbDialogService,
@@ -130,6 +130,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         break;
 
       case "perfil":
+        this.router.navigateByUrl('/pages/perfil');
       break;
     }
   }

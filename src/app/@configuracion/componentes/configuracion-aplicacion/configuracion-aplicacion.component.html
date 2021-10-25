@@ -1,1 +1,50 @@
-<p>configuracion-aplicacion works!</p>
+<div class="row">
+    <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+            <span>{{T.t['titulo.configuracion-sistema']}}</span>
+        </mat-toolbar>
+    </div>
+    <div class="col-lg-12">
+        <nb-card accent="info" size="large">
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-xg-6 col-lg-6 col-md-6 col-sm-12">
+                        <form [formGroup]="domainForm">
+                            <nb-card>
+                                <nb-card-header>{{T.t['ui.dominio-actualizar']}}
+                                    <span class="float-right">
+                                        <button nbButton status="primary" size="small" (click)="onDominioUpdate()"
+                                            [disabled]="!domainForm.valid">
+                                            <nb-icon icon="lock-outline"></nb-icon>
+                                            {{T.t['ui.actualizar']}}
+                                        </button>
+                                    </span>
+                                </nb-card-header>
+                                <nb-card-body>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <nb-form-field>
+                                                <label for="dominio"
+                                                    class="label">{{T.t['ui.dominio-dominio-actualizar']}}</label>
+                                                <input nbInput fullWidth id="dominio" formControlName="dominio"
+                                                    placeholder="{{T.t['ui.dominio-dominio-actualizar']}}">
+                                            </nb-form-field>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <nb-form-field>
+                                                <label for="unidad"
+                                                    class="label">{{T.t['ui.dominio-unidad-actualizar']}}</label>
+                                                <input nbInput fullWidth id="unidad" formControlName="unidad"
+                                                    placeholder="{{T.t['ui.dominio-unidad-actualizar']}}">
+                                            </nb-form-field>
+                                        </div>
+                                    </div>
+                                </nb-card-body>
+                            </nb-card>
+                        </form>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>

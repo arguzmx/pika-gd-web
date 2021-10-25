@@ -7,6 +7,10 @@
         "titulo401": "Sin aceso",
         "subtitulo401": "No cuenta con los privilegios para acceder a esta sección, si nuevos permisos le han sido asignados debe salir e iniciar sesión nuevamente"
     },
+    "titulo": {
+        "perfil-usuario": "Perfil del usuario",
+        "configuracion-sistema": "Configuración del sistema"
+    },
     "ui": {
         "salir-app": "¿Desea abandonar la aplicación?",
         "advertencia": "Advertencia",
@@ -67,7 +71,24 @@
         "contrasena-cambio-ok": "La contraseña ha sido actualizada y será válida en el siguiente inicio de sesión",
         "contrasena-cambio-err": "Error al actualizar la contraseña, cierre la sesión y vuelva a intentarlo",
         "contrasena-cambio-nocoincide": "La contraseña actual no coincide con la proporcionada",
-        "contrasena-valida-warning": "La contraseña debe tener al menos 6 caracteres y debe contener un mayúscula, una minúscula, un número y un caraacter especial"
+        "contrasena-valida-warning": "La contraseña debe tener al menos 6 caracteres y debe contener un mayúscula, una minúscula, un número y un caraacter especial",
+        "usuario-actualizar": "Datos del usuario",
+        "usuario-actualizar-nombre": "Nombre(s)",
+        "usuario-actualizar-apellidop": "Apellido paterno",
+        "usuario-actualizar-apellidom": "Apellido materno",
+        "usuario-actualizar-iniciales": "Iniciales",
+        "usuario-actualizar-nickname": "Alias",
+        "usuario-actualizar-genero": "Género",
+        "usuario-actualizar-pais": "País",
+        "usuario-actualizar-estado": "Estado",
+        "usuario-actualizar-zone": "Zona horaria",
+        "usuario-actualizar-ok": "Los datos del perfil han sido actualizados",
+        "usuario-actualizar-err": "Error al actualizar los datos del perfil",
+        "dominio-actualizar": "Datos del dominio",
+        "dominio-dominio-actualizar": "Nombre de la Organización",
+        "dominio-unidad-actualizar": "Nombre de la Unidad",
+        "dominio-unidad-cambio-ok": "Los datos de la organización han sido actualizados",
+        "dominio-unidad-cambio-err": "Error al actualizar los datos de la organización han sido actualizados"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",

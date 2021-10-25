@@ -1,0 +1,22 @@
+export interface PropiedadesUsuario {
+    UsuarioId: string,
+    username: string,
+    password: string,
+    email:string,
+    Inactiva:boolean,
+    name:string,
+    family_name:string,
+    given_name:string, 
+    middle_name:string,
+    nickname: string,
+    generoid: string, 
+    PaisId: string, 
+    EstadoId:string,
+    Eliminada: boolean,
+    gmt:string,
+    gmt_offset?: number,
+    updated_at?: Date,
+    email_verified?: boolean,
+    picture: string,
+    Ultimoacceso: Date
+}
