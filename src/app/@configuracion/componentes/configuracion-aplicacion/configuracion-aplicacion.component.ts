@@ -47,7 +47,6 @@ export class ConfiguracionAplicacionComponent implements OnInit {
       this.domainForm.get('unidad').value).pipe(first()).subscribe(r=> {
       this.ErrorDominioOU(0);
     }, (err) => { this.ErrorDominioOU(parseInt(err.status));   });
-    console.log("Actualizar dominio");
   }
   
   ErrorDominioOU(err: number) {

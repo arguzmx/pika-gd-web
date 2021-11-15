@@ -31,11 +31,12 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   paginaSeleccionada: boolean = false;
   seleccionShift: boolean = false;
   seleccionCtrl: boolean = false;
+  imageData: string = '';
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(private servicioVisor: VisorImagenesService,
-              private httpClient: HttpClient,
-              private domSanitizer: DomSanitizer) {}
+    private httpClient: HttpClient,
+    private domSanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     this.EscuchaPaginaActiva();
@@ -46,10 +47,10 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   // Obtiene pagina activa para mostrar
   EscuchaPaginaActiva() {
     this.servicioVisor.ObtienePaginaVisible()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((p) => {
-      this.paginaVisible = p && this.pagina.Id === p.Id;
-    });
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((p) => {
+        this.paginaVisible = p && this.pagina.Id === p.Id;
+      });
   }
 
 
@@ -81,20 +82,20 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
 
   private srcThumb$ = new BehaviorSubject(this.srcThumb);
   ngOnChanges(): void {
-      this.srcThumb$.next(this.srcThumb);
+    this.srcThumb$.next(this.srcThumb);
   }
 
   dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
 
   private cargaImgSegura(url: string): Observable<any> {
     return (
-        this.httpClient
+      this.httpClient
         .get(url, { responseType: 'blob' })
         .pipe(map((e) => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))))
     );
-}
+  }
 
-// Este funcion se llama al dar click en el thumbnail
+  // Este funcion se llama al dar click en el thumbnail
   SeleccionaThumbnails() {
     if (!this.seleccionShift && !this.seleccionCtrl)
       this.EstablecePaginaActiva();
@@ -108,7 +109,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
   }
 
-  
+
   EstabeleceSeleccion() {
     if (this.seleccionCtrl) this.servicioVisor.AdicionarPaginaSeleccion(this.pagina);
     if (this.seleccionShift) this.servicioVisor.SeleccionShift(this.pagina);
@@ -127,14 +128,14 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     if (event.keyCode === KEY_CODE.CTRL) this.seleccionCtrl = false;
 
     if (this.paginaVisible)
-    switch (event.key) {
-      case 'ArrowRight':
-        this.servicioVisor.SiguientePaginaVisible(this.pagina, true);
-      break;
-      case 'ArrowLeft':
-        this.servicioVisor.AnteriorPaginaVisible(this.pagina, true);
-      break;
-    }
+      switch (event.key) {
+        case 'ArrowRight':
+          this.servicioVisor.SiguientePaginaVisible(this.pagina, true);
+          break;
+        case 'ArrowLeft':
+          this.servicioVisor.AnteriorPaginaVisible(this.pagina, true);
+          break;
+      }
 
   }
 }

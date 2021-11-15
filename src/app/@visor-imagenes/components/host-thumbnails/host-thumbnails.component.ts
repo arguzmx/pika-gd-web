@@ -20,19 +20,28 @@ import { VisorImagenesService } from '../../services/visor-imagenes.service';
 })
 export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() documento: Documento;
+  @Input() alturaComponente;
   public cargandoPaginas: boolean = false;
   private onDestroy$: Subject<void> = new Subject<void>();
+  public alturaVisor = "400px"
 
   @ViewChild("scroller", { static: true })
   public virtualScrollViewport: CdkVirtualScrollViewport;
 
   constructor(private visorService: VisorImagenesService) {
     this.ListenerPaginas();
+    this.setAlturaVisor();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    
+    this.setAlturaVisor();
   }
+
+private setAlturaVisor() {
+  if (this.alturaComponente) {
+    this.alturaVisor = `${this.alturaComponente}px`;
+  }
+}
 
   public SetPage(id: string ){
     const pagina =this.documento.Paginas.find(x=>x.Id == id);
@@ -48,10 +57,10 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((evento) => {
         this.cargandoPaginas = evento;
-        this.virtualScrollViewport.scrollTo({
-          bottom: 0,
-          behavior: "auto"
-        })
+        // this.virtualScrollViewport.scrollTo({
+        //   bottom: 0,
+        //   behavior: "auto"
+        // })
       });
   }
 

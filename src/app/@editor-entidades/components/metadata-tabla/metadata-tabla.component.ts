@@ -882,64 +882,67 @@ export class MetadataTablaComponent extends EditorEntidadesBase
  // Ontiene una página de datos a partir de las entidades de la tabla
   public GetDataPage(notificar: boolean) {
 
-    this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId);
-    this.consulta.IdSeleccion = this.idSeleccion ? this.idSeleccion:  null;
-    this.consulta.consecutivo = 0;
-    this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
-    this.consulta.tamano = this.pagination.limit;
-    this.consulta.ord_columna = this.pagination.sort;
-    this.consulta.ord_direccion = this.pagination.order;
+    if(this.config){
+      this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId || "" );
+      this.consulta.IdSeleccion = this.idSeleccion ? this.idSeleccion:  null;
+      this.consulta.consecutivo = 0;
+      this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+      this.consulta.tamano = this.pagination.limit;
+      this.consulta.ord_columna = this.pagination.sort;
+      this.consulta.ord_direccion = this.pagination.order;
+      
+      this.consulta = { ...this.consulta };
+      this.AnularSeleccion();
+      this.data = [];
+      this.configuration.isLoading = true;
+      if (this.columns.length > 4) {
+        this.configuration.horizontalScroll = true;
+      } else {
+        this.configuration.horizontalScroll = false;
+      }
+      if (this.usarPaginadoRelacional) {
+        this.entidades.ObtenerPaginaRelacional(this.config.OrigenTipo,
+          this.config.OrigenId, this.config.TipoEntidad, this.consulta)
+          .pipe(first())
+          .subscribe(data => {
+            if (data) {
+              this.ActualizarDatosPlantilla(data.Elementos || []);
+              this.configuration.isLoading = false;
+              this.ConteoRegistros.emit(data.ConteoTotal);
+              if (notificar) this.NotificarConteo(data.ConteoTotal);
+            } else {
+              this.ConteoRegistros.emit(0);
+              this.NotificarErrorDatos(data.ConteoTotal);
+            }
+  
+            this.pagination.offset = 0;
+            this.pagination.limit = 10
+            this.pagination.count = data.ConteoTotal;
+            this.pagination = { ...this.pagination };
+            this.cdr.detectChanges();
+  
+          });
+      } else {
+        this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
+          .pipe(first())
+          .subscribe(data => {
+  
+            if (data) {
+              this.ActualizarDatosPlantilla(data.Elementos || []);
+              this.configuration.isLoading = false;
+              this.ConteoRegistros.emit(data.ConteoTotal);
+              if (notificar) this.NotificarConteo(data.ConteoTotal);
+            } else {
+              this.NotificarErrorDatos(data.ConteoTotal);
+            }
+  
+            this.pagination.count = data.ConteoTotal;
+            this.pagination = { ...this.pagination };
+            this.cdr.detectChanges();
+          });
+      }
+    }
     
-    this.consulta = { ...this.consulta };
-    this.AnularSeleccion();
-    this.data = [];
-    this.configuration.isLoading = true;
-    if (this.columns.length > 4) {
-      this.configuration.horizontalScroll = true;
-    } else {
-      this.configuration.horizontalScroll = false;
-    }
-    if (this.usarPaginadoRelacional) {
-      this.entidades.ObtenerPaginaRelacional(this.config.OrigenTipo,
-        this.config.OrigenId, this.config.TipoEntidad, this.consulta)
-        .pipe(first())
-        .subscribe(data => {
-          if (data) {
-            this.ActualizarDatosPlantilla(data.Elementos || []);
-            this.configuration.isLoading = false;
-            this.ConteoRegistros.emit(data.ConteoTotal);
-            if (notificar) this.NotificarConteo(data.ConteoTotal);
-          } else {
-            this.ConteoRegistros.emit(0);
-            this.NotificarErrorDatos(data.ConteoTotal);
-          }
-
-          this.pagination.offset = 0;
-          this.pagination.limit = 10
-          this.pagination.count = data.ConteoTotal;
-          this.pagination = { ...this.pagination };
-          this.cdr.detectChanges();
-
-        });
-    } else {
-      this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
-        .pipe(first())
-        .subscribe(data => {
-
-          if (data) {
-            this.ActualizarDatosPlantilla(data.Elementos || []);
-            this.configuration.isLoading = false;
-            this.ConteoRegistros.emit(data.ConteoTotal);
-            if (notificar) this.NotificarConteo(data.ConteoTotal);
-          } else {
-            this.NotificarErrorDatos(data.ConteoTotal);
-          }
-
-          this.pagination.count = data.ConteoTotal;
-          this.pagination = { ...this.pagination };
-          this.cdr.detectChanges();
-        });
-    }
   }
 
 

@@ -1,6 +1,3 @@
-<div>
-    <img #thumb class="imgDefault" [id]="pagina.Id"
-    [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
-                'imgVisible,imgSeleccionada' : paginaVisible && paginaSeleccionada}"
-                [src]="dataUrl$ | async" on-click="SeleccionaThumbnails();">
-</div>
+<img #thumb class="imgDefault" [id]="pagina.Id" [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
+                'imgSubSeleccionada' : paginaVisible && paginaSeleccionada}" [src]="dataUrl$ | async"
+    on-click="SeleccionaThumbnails();">

@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
     auth.clearHashAfterLogin = false;
     auth.requireHttps = false;
     auth.setStorage(sessionStorage);
+    // auth.showDebugInformation = true;
 
     auth.events.subscribe(e => {
       if (e instanceof OAuthSuccessEvent) {

@@ -77,7 +77,8 @@ AfterViewInit, OnChanges {
 
 
   private configuraBusquedaTexto() {
-      if(this.config.parametros.find(x=>x.id == 'texto').valor == '1'){
+      const parametro = this.config.parametros.find(x=>x.id == 'texto');
+      if(parametro && parametro.valor == '1'){
         this.servicioVisor.ObtieneSinopsis(this.config.parametros.find(x=>x.id == 'searchid').valor, this.config.ElementoId)
         .pipe(first()).subscribe(s=> {
             if(s){

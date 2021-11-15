@@ -1,23 +1,32 @@
 @import '~@angular/material/theming';
 
 .imgVisible {
-    border-bottom:2px solid #457cf1 !important;
+    border-bottom:2px solid black !important;
 }
 
 .imgSeleccionada {
-    @include mat-elevation(8, rgba(0, 140, 186, 0.5), 1)
+    @include mat-elevation(5, black, 1)
 }
 
-.imgDefault {
+.imgSubSeleccionada {
+    border: blue solid 1px;
     border-radius: 4px;
     margin: 5px;
     width: 122px; 
     height: 148px;
 }
 
-img:hover {
-    @include mat-elevation(8, rgba(0, 140, 186, 0.5), 0.8);
+.imgDefault {
+    border: gainsboro solid 1px;
+    border-radius: 4px;
+    margin: 5px;
+    width: 122px; 
+    height: 148px;
 }
+
+// img:hover {
+//     @include mat-elevation(8, rgba(0, 140, 186, 0.5), 0.8);
+// }
 
 
 

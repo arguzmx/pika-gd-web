@@ -93,7 +93,8 @@ export class VisorImagenesService {
         if (this.documento.Paginas[i].Url.includes('.xls')) tipoImg = 'xls.png';
         if (this.documento.Paginas[i].Url.includes('.ppt')) tipoImg = 'ppt.png';
 
-        tipoImg = tipoImg ? tipoImg : 'file.png';
+        // tipoImg = tipoImg ? tipoImg : 'file.png';
+        tipoImg = 'file.png';
         this.documento.Paginas[i].UrlThumbnail =  '/assets/images/' + tipoImg;
       }
     }

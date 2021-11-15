@@ -14,7 +14,7 @@
                     <ngx-full-text-results [hit]="highlightHit" (NuevaSeleccion)="NuevaSeleccion($event)"></ngx-full-text-results>
                   </nb-tab>                  
                   <nb-tab tabTitle="Documento" [active]="!MostrarResultadosTexto">
-                    <ngx-host-thumbnails #thumbnails [documento]="documento"></ngx-host-thumbnails>
+                    <ngx-host-thumbnails [alturaComponente]="alturaComponente" #thumbnails [documento]="documento"></ngx-host-thumbnails>
                   </nb-tab>
                   <nb-tab tabTitle="Metadatos">
                     <ngx-editor-plantilla [config]="config"></ngx-editor-plantilla>
