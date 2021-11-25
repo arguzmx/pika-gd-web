@@ -279,7 +279,14 @@ export class MetadataEditorComponent extends EditorEntidadesBase
     this.LimpiarForma();
     this.ObtieneValoresVinculados();
     if (this.metadata ) {
-      
+      if(navigator.userAgent.indexOf('Firefox')>=0) {
+          const temp = [];
+          for(var i=this.metadata.Propiedades.length - 1; i>=0; i--)
+          {
+            temp.push({ ...this.metadata.Propiedades[i] }); 
+          }
+          this.metadata.Propiedades = temp;
+      }
       this.metadata.Propiedades.forEach( p => {
         if (p.AtributosEvento && p.AtributosEvento.length > 0){
             p.AtributosEvento.forEach( ev => {
