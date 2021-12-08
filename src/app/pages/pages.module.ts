@@ -1,4 +1,3 @@
-import { VisorFavoritosComponent } from './../@visor-imagenes/components/visor-favoritos/visor-favoritos.component';
 import { busquedaContenidoModule } from './../@busqueda-contenido/busqueda-contenido.module';
 import { NgModule } from '@angular/core';
 import { NbButtonModule, NbCardModule, NbMenuModule } from '@nebular/theme';
@@ -13,6 +12,7 @@ import { SinAccesoComponent } from './comunes/sin-acceso/sin-acceso.component';
 import { InicioComponent } from './comunes/inicio/inicio.component';
 import { DesconocidoComponent } from './comunes/desconocido/desconocido.component';
 import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-busqueda-contenido.component';
+import { ConfiguracionModule } from '../@configuracion/configuracion.module';
 
 @NgModule({
   imports: [
@@ -25,6 +25,7 @@ import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-b
     NbButtonModule,
     EditorEntidadesModule,
     GestorPermisosModule,
+    ConfiguracionModule
   ],
   declarations: [
     PagesComponent,

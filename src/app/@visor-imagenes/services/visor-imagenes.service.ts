@@ -7,6 +7,7 @@ import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
 import { IUploadConfig } from '../model/i-upload-config';
+import { PermisoPuntoMontaje } from '../../@pika/pika-module';
 
 @Injectable()
 export class VisorImagenesService {
@@ -19,10 +20,19 @@ export class VisorImagenesService {
 
   private subjecActualizarPaginas = new BehaviorSubject<Pagina[]>(null);
   private subjectOpenUpload = new BehaviorSubject<boolean>(false);
-
+  private subjectPermisos = new BehaviorSubject<PermisoPuntoMontaje>({ Id: '',
+    PuntoMontajeId: '',
+    DestinatarioId: '',
+    Leer: false,
+    Crear: false,
+    Actualizar: false,
+    Elminar: false,
+    GestionContenido: false,
+    GestionMetadatos: false });
 
   documento: Documento = null;
   config: IUploadConfig = null;
+  permisosRepositorio: PermisoPuntoMontaje = null;
   thumbActivo: Pagina = null;
   thumbSeleccionados: Pagina[] = [];
   inicioSeleccion: Pagina = null;
@@ -33,10 +43,26 @@ export class VisorImagenesService {
     private docService: DocumentosService) {
     }
 
+  // Getsion de permisos
+  // ---------------------------------------
+  // ---------------------------------------
+  ObtienePermisos(): Observable<PermisoPuntoMontaje> {
+    return this.subjectPermisos.asObservable();
+  }
+
+  EmiteEventoPermisos(permisos: PermisoPuntoMontaje): void {
+    this.permisosRepositorio = permisos;
+    this.subjectPermisos.next(permisos);
+  }
+
+
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
   }
 
+  ObtienePermisoPuntoMontaje(id: string): Observable<PermisoPuntoMontaje> {
+    return this.docService.ObtienePermisoPuntoMontaje(id);
+  }
 
   public ObtieneSinopsis(busqeudaId: string, elementoId: string): Observable<HighlightHit[]> {
       return this.docService.OntieneSinopsis(busqeudaId, elementoId);

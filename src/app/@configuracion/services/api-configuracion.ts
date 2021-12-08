@@ -34,6 +34,11 @@ export class ApiConfiguracion {
   }
 
 
+  public ActualizaContrasenaUsuario(id: string, nueva: string) {
+    const url = this.CrearEndpoint('seguridad/usuarios/contrasena');
+    return this.http
+      .post(url, { Id: id, Nueva: nueva });
+  }
 
   public ActualizaContrasena(actual: string, nueva: string) {
     const url = this.CrearEndpoint('usuario/perfil/contrasena/actualizar');

@@ -3,11 +3,11 @@ import { Paginado } from './../../../@pika/consulta/paginado';
 import { ValorListaOrdenada } from './../../../@pika/metadata/valor-lista';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { EntidadesService } from './../../services/entidades.service';
-import { first } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
   Component, OnInit, Input, OnChanges, SimpleChanges,
-  ViewChild, TemplateRef, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef
+  ViewChild, TemplateRef, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { ITablaMetadatos } from '../../model/i-tabla-metadatos';
@@ -27,6 +27,7 @@ import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { Acciones, HTML_CHECKBOX, HTML_NUMBER, HTML_TEXT, tBinaryData, tBoolean, tDouble, tIndexedString, tInt32, tInt64, TipoDato, tList } from '../../../@pika/metadata';
 import { ConsultaBackend } from '../../../@pika/consulta';
 import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/busqueda-contenido.module';
+import { Subject, timer } from 'rxjs';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -35,7 +36,7 @@ import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/bu
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataTablaComponent extends EditorEntidadesBase
-  implements ITablaMetadatos, OnInit, OnChanges {
+  implements ITablaMetadatos, OnInit, OnChanges, OnDestroy {
 
   @ViewChild('table', { static: true }) table: APIDefinition;
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
@@ -48,7 +49,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('listaplantilla') listaplantilla: NbSelectComponent;
 
   private dialogColPickRef: any;
-
+  private onDestroy$: Subject<void> = new Subject<void>();
 
   // Parámetros de configuración
   @Input() config: ConfiguracionEntidad;
@@ -158,6 +159,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // Consulta base para el despliegue de datos
   public consulta: Consulta;
   public consultaIds: ConsultaBackend;
+  private timerRefresco;
+  private iteracionesTimer: number;
 
   constructor(
     appeventBus: AppEventBus,
@@ -170,6 +173,27 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.consulta = this.GetConsultaInicial();
     this.T = new Traductor(translate);
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
+  }
+  
+
+  private IniciaTimerRefresco() {
+    this.iteracionesTimer = 10;
+    this.timerRefresco = timer(100, 500).subscribe(t => {
+      this.cdr.detectChanges();
+      this.iteracionesTimer -=1;
+      if (this.iteracionesTimer == 0){
+        this.DetieneTimerRefresco();
+      }
+    });
+  }
+
+  private DetieneTimerRefresco() {
+    this.timerRefresco.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -788,13 +812,13 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               
               this.ActualizarDatosElemento(updated, metadatos);
               this.configuration.isLoading = false;
-              this.cdr.detectChanges();
+              this.IniciaTimerRefresco();
             })
           } else {
             
             this.ActualizarDatosElemento(elementos, metadatos);
             this.configuration.isLoading = false;
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
           }
 
           
@@ -919,7 +943,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.pagination.limit = 10
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
   
           });
       } else {
@@ -938,7 +962,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
           });
       }
     }
@@ -1022,7 +1046,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       });
 
       this.data = newpage;
-      this.cdr.detectChanges();
+      this.IniciaTimerRefresco();
   }
 
 
@@ -1085,19 +1109,19 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             });
             // rcorre cada renglon de los metadatos 
             this.data = newpage;
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
 
           } else {
             this.data = pagedata;
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
           }
 
-        }, (err) => { this.data = []; this.cdr.detectChanges(); });
+        }, (err) => { this.data = []; this.IniciaTimerRefresco(); });
 
     } else {
       // no hay una plantilla seleccionada
       this.data = pagedata;
-      this.cdr.detectChanges();
+      this.IniciaTimerRefresco();
     }
   }
 
@@ -1154,12 +1178,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               });
               this.ActualizarDatosPlantilla(updated || []);
               this.configuration.isLoading = false;
-              this.cdr.detectChanges();
+              this.IniciaTimerRefresco();
             })
           } else {
             this.ActualizarDatosPlantilla(elementos || []);
             this.configuration.isLoading = false;
-            this.cdr.detectChanges();
+            this.IniciaTimerRefresco();
           }
         });
 
@@ -1232,7 +1256,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.pagination.offset = 0;
         this.pagination.count = conteo;
         this.pagination = { ...this.pagination };
-        this.cdr.detectChanges();
+        this.IniciaTimerRefresco();
   
 
       });

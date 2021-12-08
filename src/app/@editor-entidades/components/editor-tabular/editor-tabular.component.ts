@@ -87,25 +87,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   accent: string = "info";
 
-  items: NbMenuItem[] = [
-    {
-      title: 'Profile',
-      icon: 'person-outline',
-    },
-    {
-      title: 'Change Password',
-      icon: 'lock-outline',
-    },
-    {
-      title: 'Privacy Policy',
-      icon: { icon: 'checkmark-outline', pack: 'eva' },
-    },
-    {
-      title: 'Logout',
-      icon: 'unlock-outline',
-    },
-  ];
-
   public alturaComponente = '500px';
 
   // Deternima si es factible la edición
@@ -327,7 +308,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     // Establece entidades vinculadas
     if (this.metadata.EntidadesVinculadas) {
       this.metadata.EntidadesVinculadas.forEach(e => {
-        // asigna como etiqueta del primero hijo en consideración para los links con jerarquías
+        // asigna como sta del primero hijo en consideración para los links con jerarquías
         e.Etiqueta = e.EntidadHijo.split(',')[0];
         if (e.FiltroUI === '') {
           e.Activo = true;

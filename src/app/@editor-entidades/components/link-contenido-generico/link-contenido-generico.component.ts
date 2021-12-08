@@ -1,3 +1,4 @@
+import { PermisoPuntoMontaje } from './../../../@pika/conteido/permiso-punto-montaje';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from './../../../app-config';
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
@@ -24,6 +25,7 @@ export class LinkContenidoGenericoComponent implements OnInit {
 
   public loading: boolean = true;
   public valido: boolean = false;
+  public permisoCrear: boolean = false;
   public existente: boolean = false;
   public nombre: string = '';
   private elemento: any = null;
@@ -56,6 +58,7 @@ export class LinkContenidoGenericoComponent implements OnInit {
       'link-contenido.titulo',
       'link-contenido.errorconfiguracion',
       'link-contenido.sincontenido',
+      'link-contenido.sinpermiso',
       'ui.cancelar',
       'ui.crear'
     ];
@@ -64,20 +67,28 @@ export class LinkContenidoGenericoComponent implements OnInit {
 
 
   public ParamListener(): void {
-    this.ObtieneElmentoContenido(this.tipo, this.id).pipe(first())
+    this.ObtieneElementoContenido(this.tipo, this.id).pipe(first())
       .subscribe(el => {
+        // Esta llamada siemrpe devuelve el elemento y es  configurada en el controlador del tipo de elemento
         this.nombre = el.Nombre;
         if (el.Id == null) {
+          // Si el Id es nulo no tiene contenido vinculado
           if (el.PuntoMontajeId == null || el.VolumenId == null) {
             this.valido = false;
             this.loading = false;
             this.existente = false;
           } else {
-            this.elemento = el;
-            this.loading = false;
-            this.valido = true;
+            this.VerificaAccesoRepositorio(el.PuntoMontajeId).pipe(first())
+            .subscribe(p => {
+              this.permisoCrear = p.Crear;
+              this.elemento = el;
+              this.loading = false;
+              this.valido = true;  
+            }, (e)=>{ this.loading = false; });
           }
         } else {
+          // Si tiene contenido vinculado
+          this.valido = true;  
           this.existente = true;
           this.ObtieneElemento(el.Id);
         }
@@ -87,19 +98,28 @@ export class LinkContenidoGenericoComponent implements OnInit {
   private ObtieneElemento(id: string) {
     this.cliente.Get(id, 'Elemento').pipe(first())
       .subscribe(el => {
-        this.ref.close(el);
+        this.VerificaAccesoRepositorio(el.PuntoMontajeId).pipe(first())
+        .subscribe(p => {
+          if(p.Leer) {
+            this.ref.close(el);
+          } else {
+            this.loading = false;  
+          }
+        }, (e)=>{ this.ref.close(null); });
       }, (e) => { this.ref.close(null); });
   }
 
-  public ObtieneElmentoContenido(tipo: string, id: string): Observable<ContenidoVinculado> {
+  public VerificaAccesoRepositorio(id: string): Observable<PermisoPuntoMontaje> {
+    return this.cliente.ObtienePermisoPuntoMontaje(id);
+  }
+
+  public ObtieneElementoContenido(tipo: string, id: string): Observable<ContenidoVinculado> {
     return this.cliente.GetContenidoVinculado(tipo, id);
   }
 
   public VinculaElmentoContenido(tipo: string, id: string, contenidoId: string): Observable<any> {
     return this.cliente.VinculaElmentoContenido(tipo, id, contenidoId);
   }
-
-
 
   public CreaCarpeta(entidad: string, PuntoMontajeId: string, ruta): Observable<any> {
     return this.cliente.CreaCarpeta(entidad, PuntoMontajeId, ruta);

@@ -1,11 +1,13 @@
+import { PLEER, PESCRIBIR } from './../../../@pika/seguridad/permiso-acl';
 import { PermisosService, TipoEntidadEnum } from './../../services/permisos.service';
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { Aplicacion, Rol, PermisoAplicacion, RespuestaPermisos, AppLogService } from '../../../@pika/pika-module';
+import { Aplicacion, Rol, PermisoAplicacion, RespuestaPermisos, AppLogService, SesionQuery } from '../../../@pika/pika-module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -16,6 +18,10 @@ import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 })
 export class PermisosHostComponent implements OnInit, OnDestroy {
   @Output() CapturaFinalizada = new EventEmitter();
+
+
+  permisoLeer: boolean = false;
+  permisoEscribir: boolean = false;
 
   public aplicaciones: Aplicacion[] = [];
   public roles: Rol[] = [];
@@ -36,11 +42,24 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(
+    session: SesionQuery,
+    route: Router,
     private applog: AppLogService,
     private servicioPermisos: PermisosService, 
-    ts: TranslateService,
+    ts: TranslateService
     ) {
       this.T = new Traductor(ts);
+      const permisos = session.ACL.Permisos.find(p=>p.ModuloId == 'ACL' && p.AplicacionId == 'PIKA-GD-SEGURIDAD');
+      if (permisos) {
+         this.permisoEscribir = permisos.Mascara && PESCRIBIR > 0;
+         this.permisoLeer = (permisos.Mascara && PLEER > 0) || this.permisoLeer;
+      }
+
+      if (!this.permisoLeer){
+        route.navigateByUrl('/pages/sinacceso');
+      }
+
+
      }
 
     private CargaTraducciones() {

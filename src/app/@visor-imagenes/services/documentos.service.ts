@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Documento } from '../model/documento';
 import { IDocumentoService } from '../model/i-documento-service';
-import { DocumentoPlantilla, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
+import { DocumentoPlantilla, PermisoPuntoMontaje, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 
 @Injectable()
@@ -27,9 +27,37 @@ export class DocumentosService implements IDocumentoService {
     this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
   }
   
+  ObtienePermisoPuntoMontaje(id: string): Observable<PermisoPuntoMontaje> {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/puntomontaje/permisos/${id}`;
+    return this.http.get<PermisoPuntoMontaje>(endpoint);
+  }
+
   OntieneSinopsis(busqeudaId: string, elementoId: string): Observable<HighlightHit[]> {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Busqueda/sinopsis/${busqeudaId}`;
     return this.http.post<HighlightHit[]>(url, [elementoId]);
+  }
+
+  DescargaArchivo(url: string, nombre: string ) {
+    
+    const headers = new HttpHeaders();
+    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+      (response: HttpResponse<Blob>) => {
+        const binaryData = [];
+        binaryData.push(response.body);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
+        if(nombre) {
+          downloadLink.setAttribute('download', nombre);
+        } else {
+          downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));  
+        }
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      },
+      (err) => {
+        console.warn(err);
+      },
+    );
   }
 
 

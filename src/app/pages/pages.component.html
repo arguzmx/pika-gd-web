@@ -1,11 +1,9 @@
 <!-- el orden es importante mantener como esta -->
-<!-- <ngx-visor-layout [ngClass]="{ 'oculto': !visorActivo } ">
-    <ngx-visor-favoritos></ngx-visor-favoritos>
-</ngx-visor-layout> -->
 <ngx-one-column-layout>
     <ngx-org-selector></ngx-org-selector>
     <nb-menu [items]='menu'></nb-menu>
     <router-outlet>
-        <ngx-visor-favoritos [ngClass]="{ 'oculto': !visorActivo } "></ngx-visor-favoritos>
+        <ngx-cambiar-contrasena></ngx-cambiar-contrasena>
+        <ngx-visor-favoritos [ngClass]="{ 'oculto': !visorActivo }"></ngx-visor-favoritos>
     </router-outlet>
 </ngx-one-column-layout>

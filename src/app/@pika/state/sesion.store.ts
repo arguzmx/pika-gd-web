@@ -13,7 +13,6 @@ import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
 import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
-import { HIGH_CONTRAST_MODE_ACTIVE_CSS_CLASS } from '@angular/cdk/a11y/high-contrast-mode/high-contrast-mode-detector';
 
 export interface SesionState {
   sesion: Sesion | null;

@@ -1,7 +1,7 @@
 import { Documento } from './../../model/documento';
 import { EventoAplicacion } from './../../../@pika/eventos/evento-aplicacion';
 import { AppEventBus } from './../../../@pika/state/app-event-bus';
-import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef, AfterViewInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NbTabsetComponent } from '@nebular/theme';
 import { IUploadConfig } from '../../model/i-upload-config';
 

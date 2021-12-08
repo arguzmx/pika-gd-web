@@ -21,6 +21,7 @@ export class ConstructorMenu {
         }
     }
 
+
     private CreaItem(el: ElementoMenu): NbMenuItem {
         let adicionar = false;
 
@@ -64,13 +65,40 @@ export class ConstructorMenu {
                 if (nbmenu) item.children.push(nbmenu);
             });
 
-
-            return item;
+            const links = this.TieneLinksActivos(item);
+            return links ? item : null;
 
         } else {
             return null;
         }
 
+    }
+
+
+    private TieneLinksActivos(item: NbMenuItem): boolean {
+        
+        if (item.link != '') {
+            return true;
+        }
+
+        if (item.children) {
+            let activos = false;
+            const cuenta = item.children.filter(x => x.link != '' && x.group == false).length;
+            if (cuenta > 0) {
+                return true;
+            } else {
+                if (item.children && item.children.length > 0){
+                    for(var i=0; i<item.children.length; i++) {
+                        activos = this.TieneLinksActivos(item.children[i]);
+                        if (activos) {
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
 }

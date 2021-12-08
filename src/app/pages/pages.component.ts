@@ -24,6 +24,7 @@ export class PagesComponent implements OnInit {
 
 
     this.appEventBus.LeeEventos().subscribe(ev => {
+      
       switch (ev.tema) {
         case VISOR:
           this.MuestraVisor();
@@ -45,6 +46,5 @@ export class PagesComponent implements OnInit {
   private MuestraVisor(): void {
     this.visorActivo = true;
   }
-
 
 }

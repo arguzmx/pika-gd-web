@@ -35,6 +35,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { NgxMaskModule } from 'ngx-mask';
 import { APP_INITIALIZER } from '@angular/core';
 import { AppConfig, TokenProvider } from './app-config';
+import { ConfiguracionModule } from './@configuracion/configuracion.module';
 
 export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   return () => config.load().then(() => token.load());
@@ -52,6 +53,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
         deps: [HttpClient],
       },
     }),
+    ConfiguracionModule,
     FormsModule,
     ReactiveFormsModule,
     OwlDateTimeModule,

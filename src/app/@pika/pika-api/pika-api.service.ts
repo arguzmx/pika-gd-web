@@ -17,6 +17,7 @@ import { RequestListaIds } from '../consulta/request-paginado-ids';
 import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
 import { PermisoACL, RespuestaComandoWeb } from '../pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
+import { PermisoPuntoMontaje } from '../conteido/permiso-punto-montaje';
 
 const retryCount: number = 0;
 
@@ -77,6 +78,11 @@ export class PikaApiService<T, U> {
       q.ord_direccion = '';
     }
     return this.http.post<unknown[]>(endpoint, q);
+  }
+
+  ObtienePermisoPuntoMontaje(id: string): Observable<PermisoPuntoMontaje> {
+    const endpoint = this.RutaBase() + `/contenido/puntomontaje/permisos/${id}`;
+    return this.http.get<PermisoPuntoMontaje>(endpoint);
   }
 
   GetContenidoVinculado(entidad: string, id: string): Observable<ContenidoVinculado> {

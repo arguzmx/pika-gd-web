@@ -1,0 +1,52 @@
+<ng-template #dialogCambiarContrasena let-data let-ref="dialogRef">
+    <nb-card>
+        <nb-card-header>
+            {{ T.t["ui.contrasena-cambiar"] }} 
+            <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
+                <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                    pack="eva"
+                    [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                </nb-icon>
+            </button>      
+        </nb-card-header>
+        <nb-card-body>
+            <form [formGroup]="passwordForm">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <nb-form-field>
+                            <label for="inputNewPass" class="label">{{T.t['ui.contrasena-nueva']}}</label>
+                            <input [type]="getInputType()" nbInput fullWidth id="inputNewPass"
+                                formControlName="inputNewPass" placeholder="{{T.t['ui.contrasena-nueva-ph']}}">
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <nb-form-field>
+                            <label for="inputConfirmPass" class="label">{{T.t['ui.contrasena-confirmar']}}</label>
+                            <input [type]="getInputType()" nbInput fullWidth id="inputConfirmPass"
+                                formControlName="inputConfirmPass" placeholder="{{T.t['ui.contrasena-confirmar-ph']}}">
+                        </nb-form-field>
+                    </div>
+                </div>
+            </form>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="float-right">
+                        <button nbButton size="medium" (click)="ref.close()">
+                            {{ T.t["ui.cancelar"] }}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="float-right">
+                        <button nbButton size="medium" status="danger" [disabled]="!passwordForm.valid"
+                            (click)="onPasswordSet()">
+                            {{ T.t["ui.establecer"] }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</ng-template>

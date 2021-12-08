@@ -4,7 +4,7 @@
         "irhome": "Ir al inicio",
         "titulo404": "Página no encontrada",
         "subtitulo404": "La página solicitada no existe",
-        "titulo401": "Sin aceso",
+        "titulo401": "Sin acceso",
         "subtitulo401": "No cuenta con los privilegios para acceder a esta sección, si nuevos permisos le han sido asignados debe salir e iniciar sesión nuevamente"
     },
     "titulo": {
@@ -88,7 +88,15 @@
         "dominio-dominio-actualizar": "Nombre de la Organización",
         "dominio-unidad-actualizar": "Nombre de la Unidad",
         "dominio-unidad-cambio-ok": "Los datos de la organización han sido actualizados",
-        "dominio-unidad-cambio-err": "Error al actualizar los datos de la organización han sido actualizados"
+        "dominio-unidad-cambio-err": "Error al actualizar los datos de la organización han sido actualizados",
+        "descargar": "Descargar",
+        "cerrarvista": "Cerrar vista",
+        "cerrardocumento": "Cerrar documento",
+        "subirarchivos": "Subir archivos",
+        "descargararchivos": "Descargar archivos",
+        "descargarpdf": "Descargar PDF",
+        "todos-docs": "Todos los documentos",
+        "solo-img": "Sólo imágenes"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -120,7 +128,8 @@
         "gd-prestamo-devolver-conf": "Desea devolver el préstamo {{nombre}}",
         "visorcontenido": "Visor de contenido",
         "buscarcontenido": "Buscar contenido",
-        "crearcontenidoactivo": "Contenido"
+        "crearcontenidoactivo": "Contenido",
+        "cambiarcontrasena": "Contraseña"
     },
     "busqueda": {
         "bmetadatos": "Buscar por plantilla",
@@ -293,9 +302,24 @@
                 "Nombre": "Nombre",
                 "PaisId": "PaisId"
             },
+            "elementoclasificacion":{
+                "Id": "Id",
+                "Clave": "Sección",
+                "Nombre": "Nombre",
+                "Eliminada": "Eliminada",
+                "Posicion": "Posición"
+
+            },
+            "cuadroclasificacion": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "EstadoCuadroClasificacionId":"Estado",
+                "OrigenId": "Dominio",
+                "Eliminada": "Eliminado"
+            },
             "entradaclasificacion": {
                 "Id": "Id",
-                "Clave": "Clasifiación Archivística",
+                "Clave": "Serie",
                 "MesesVigenciTramite": "Años AT",
                 "MesesVigenciConcentracion": "Años AC",
                 "MesesVigenciHistorico": "Años AH",
@@ -490,6 +514,7 @@
     "link-contenido": {
         "titulo": "Contenido",
         "errorconfiguracion": "El archivo no tiene asociado un repositorio válido de contenido",
-        "sincontenido": "No hay contenido asociado al elemento ¿Desea crearlo?"
+        "sincontenido": "No hay contenido asociado al elemento ¿Desea crearlo?",
+        "sinpermiso": "No cuenta con el permisos para acceder al contenido"
     }
 }

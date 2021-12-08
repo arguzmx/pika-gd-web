@@ -2,25 +2,25 @@
     <div class="col-lg-12">
         <mat-toolbar class="mat-toolbar-white">
             <span class="toolbar-spacer"></span>
-            <button mat-icon-button on-click="CerraVista()" nbTooltip="Cerrar Vista">
+            <button mat-icon-button on-click="CerraVista()" nbTooltip='{{ T.t["ui.cerrarvista"] }}'>
                 <mat-icon>close</mat-icon>
             </button>
-            <button mat-icon-button on-click="CerrarDocumento()" nbTooltip="Cerrar documento">
+            <button mat-icon-button on-click="CerrarDocumento()" nbTooltip='{{ T.t["ui.cerrardocumento"] }}'>
                 <mat-icon>remove</mat-icon>
             </button>
             <mat-icon class="gray-icon">more_vert</mat-icon>
-            <button mat-icon-button [nbTooltip]="soloImagenes ? 'Todos los documentos' : 'Sólo imágenes'"
+            <!-- <button mat-icon-button [nbTooltip]="soloImagenes ? '{{T.t['ui.todos-docs']}}' : '{{T.t['ui.solo-img']}}'"
                 on-click="EstableceSoloImaganes(!soloImagenes)">
                 <mat-icon [ngClass]="soloImagenes ? 'text-primary' : ''">perm_media</mat-icon>
-            </button>
+            </button> -->
             <!-- Separadador -->
-            <button mat-icon-button on-click="doUpload()" nbTooltip="Subir archivos">
+            <button *ngIf="crear" mat-icon-button on-click="doUpload()" nbTooltip='{{T.t["ui.subirarchivos"]}}'>
                 <mat-icon>cloud_upload</mat-icon>
             </button>
-            <button mat-icon-button on-click="doZipDownload()" nbTooltip="Descargar archivos">
+            <button *ngIf="leer" mat-icon-button on-click="doZipDownload()" nbTooltip='{{T.t["ui.descargararchivos"]}}'>
                 <mat-icon>cloud_download</mat-icon>
             </button>
-            <button mat-icon-button on-click="doPDFDownload()" nbTooltip="Descargar PDF">
+            <button *ngIf="leer" mat-icon-button on-click="doPDFDownload()" nbTooltip='{{T.t["ui.descargarpdf"]}}'>
                 <mat-icon>picture_as_pdf</mat-icon>
             </button>
         </mat-toolbar>

@@ -31,7 +31,7 @@
                 </nb-autocomplete>
 
             </div>
-            <div class="col-5 d-flex justify-content-end">
+            <div *ngIf="permisoEscribir" class="col-5 d-flex justify-content-end">
                 <button mat-icon-button nbTooltip='{{ T.t["permisos.guardar"] }}' on-click="GuardaPermisos()"  [disabled]="EsAdmin">
                     <mat-icon>save</mat-icon>
                 </button>

@@ -192,7 +192,7 @@ import { FullTextResultsComponent } from './components/full-text-results/full-te
   }],
 })
 class VisorImagenesModule { }
-
+// el orden en el modulo debe ser imports, declarations, exports para poder exponerlos a angular
 export {VisorImagenesModule, IUploadConfig } 
 
 

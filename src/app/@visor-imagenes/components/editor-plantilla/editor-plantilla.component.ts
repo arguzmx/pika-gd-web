@@ -4,17 +4,21 @@ import { MetadataInfo } from './../../../@pika/metadata/metadata-info';
 import { DialogMetadataComponent } from './../dialog-metadata/dialog-metadata.component';
 import { first } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, AfterViewInit, Input, OnChanges, SimpleChanges, 
-  ViewContainerRef, ComponentFactoryResolver, ComponentRef, TemplateRef } from '@angular/core';
+  ViewContainerRef, ComponentFactoryResolver, ComponentRef, TemplateRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { DocumentosService } from '../../services/documentos.service';
 import { AppLogService } from '../../../@pika/servicios';
 import { DocumentoPlantilla, RequestValoresPlantilla, VinculoDocumentoPlantilla, VinculosObjetoPlantilla } from '../../../@pika/pika-module';
 import { IUploadConfig } from '../../model/i-upload-config';
+import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { VisorImagenesService } from '../../services/visor-imagenes.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'ngx-editor-plantilla',
   templateUrl: './editor-plantilla.component.html',
-  styleUrls: ['./editor-plantilla.component.scss']
+  styleUrls: ['./editor-plantilla.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChanges {
 
@@ -29,6 +33,9 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
   private cantidadMetadatosDocumentosUnicos: number;
   private idSeleccionado: string;
   private dialogoAbierto: NbDialogRef<unknown>;
+  public T: Traductor;
+  crear: boolean = false;
+  leer: boolean = false;
 
   @ViewChild('dialogConfirmaEliminarUnico', { static: true }) dialogEliminarUnico: TemplateRef<any>;
 
@@ -37,10 +44,14 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
   @Input() config: IUploadConfig;
 
   constructor(
+    ts: TranslateService,
+    private cdr: ChangeDetectorRef,
+    private servicioVisor: VisorImagenesService,
     private resolver: ComponentFactoryResolver,
     private servicioPlantilla: DocumentosService,
     private applog: AppLogService,
     private dialogService: NbDialogService) {
+      this.T = new Traductor(ts);
     }
 
   // Realiza el despliegue de metadatos
@@ -62,6 +73,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
           component.instance.EventoEliminar.subscribe(id => { this.ConfirmarEliminarUnico(id); });
         }
     });
+    this.cdr.detectChanges();
   }
 
 
@@ -109,6 +121,17 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
 
   ngOnInit(): void {
     this.ObtienePlantillas();
+    this.CargaTraducciones();
+    this.servicioVisor.ObtienePermisos().pipe(first()).subscribe(p => {
+      this.crear = p.GestionMetadatos;
+      this.leer = p.Leer;
+    })
+  }
+
+  private CargaTraducciones() {
+    this.T.ts = ['ui.cerrarvista', 'ui.cerrardocumento', 'ui.subirarchivos',
+    'ui.descargararchivos', 'ui.descargarpdf', 'ui.todos-docs', 'ui.solo-img'];
+    this.T.ObtenerTraducciones();
   }
 
   private ProcesaConfiguracion(): void {
@@ -123,6 +146,7 @@ export class EditorPlantillaComponent implements OnInit, AfterViewInit, OnChange
     this.servicioPlantilla.ObtienePlantillas().pipe(first())
     .subscribe( (data) => {
       this.plantillas = data;
+      this.cdr.detectChanges();
     }, (e) => {}, () => {});
   }
 

@@ -19,7 +19,7 @@ export class ConfirmacionComponent implements OnInit {
 
   constructor(
     protected ref: NbDialogRef<ConfirmacionComponent>,
-    ts: TranslateService,
+   ts: TranslateService, 
   ) { 
     this.T = new Traductor(ts);
   }
@@ -29,7 +29,7 @@ export class ConfirmacionComponent implements OnInit {
   }
 
   private CargaTraducciones() {
-    this.T.ts = ['ui.confirmar', 'ui.cancelar', 'ui.aceptar'];
+    this.T.ts = ['ui.descargar'];
     this.T.ObtenerTraducciones();
   }
 

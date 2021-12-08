@@ -1,6 +1,8 @@
-
 <div class="text-center">
-    <p> {{pagina.Nombre}} </p>
-    <a [href]="pagina.Url" [title]="pagina.Nombre" [download]="pagina.Nombre"><button nbButton shape="round"
-            size="medium" status="info">Descargar</button></a>
+    <p> {{pagina.Nombre}}</p>
+
+    <button nbButton status="primary"  (click)="doDownload()">
+        <mat-icon>cloud_download</mat-icon>
+        {{T.t['ui.descargar']}}
+    </button>
 </div>
