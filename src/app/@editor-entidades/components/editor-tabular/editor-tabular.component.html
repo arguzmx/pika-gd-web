@@ -305,20 +305,19 @@
 
 <ng-template #dialogLinkPicker let-data let-ref="dialogRef">
   <nb-card>
-    <nb-card-header>{{ T.t["ui.propiedades"] }}</nb-card-header>
+    <nb-card-header>
+      <span class="text-hint">{{ T.t["ui.propiedades"] }}</span></nb-card-header>
     <nb-card-body>
       <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let link of this.vinculosActivos">
         <div *ngIf="linkUnoAVarios(link); then varios; else uno"></div>
         <ng-template #uno>
-          <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="EjecutarIrALink(link)">
-            {{ T.ObtieneSingularT("entidades." + link.Etiqueta) }}
-            <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+          <button mat-stroked-button (click)="EjecutarIrALink(link)" style="width: 100%; text-align: left; margin-bottom: 5px;">
+            <mat-icon color="primary">{{T.ObtieneIconoT('entidades.' + link.Etiqueta)}}</mat-icon> {{ T.ObtieneSingularT("entidades." + link.Etiqueta) }}
           </button>
         </ng-template>
-        <ng-template #varios>
-          <button nbButton shape="semi-round" fullWidth="true" (click)="EjecutarIrALink(link)">
-            {{ T.ObtienePluralT("entidades." + link.Etiqueta) }}
-            <nb-icon status="primary" [icon]="T.ObtieneIconoT('entidades.' + link.Etiqueta)"></nb-icon>
+        <ng-template #varios> 
+          <button mat-stroked-button (click)="EjecutarIrALink(link)" style="width: 100%; text-align: left; margin-bottom: 5px;">
+            <mat-icon color="primary">{{T.ObtieneIconoT('entidades.' + link.Etiqueta)}}</mat-icon> {{ T.ObtienePluralT("entidades." + link.Etiqueta) }}
           </button>
         </ng-template>
       </div>
@@ -339,12 +338,12 @@
 
 <ng-template #dialogReportPicker let-data let-ref="dialogRef">
   <nb-card>
-    <nb-card-header>{{ T.t["ui.reportes"] }}</nb-card-header>
+    <nb-card-header>
+      <span class="text-hint">{{ T.t["ui.reportes"] }}</span></nb-card-header>
     <nb-card-body>
       <div class="col-lg-12 col-md-12 col-sm-12" *ngFor="let reporte of this.metadata.Reportes">
-        <button nbButton shape="semi-round" size="large" fullWidth="true" (click)="EjecutarIrReporte(reporte)">
-          {{ reporte.Nombre }}
-          <nb-icon status="primary" icon="file-text-outline"></nb-icon>
+        <button mat-stroked-button (click)="EjecutarIrReporte(reporte)" style="width: 100%; text-align: left; margin-bottom: 5px;">
+          <mat-icon color="primary">receipt_long</mat-icon> {{ reporte.Nombre }}
         </button>
       </div>
     </nb-card-body>

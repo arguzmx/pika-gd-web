@@ -13,6 +13,7 @@ import { EntidadesService } from '../../services/entidades.service';
 export class ConfirmacionComponent implements OnInit {
 
   public T: Traductor;
+  @Input() titulo: string;
   @Input() texto: string;
   @Input() metadata: MetadataInfo;
   @Input() entidades: EntidadesService;
@@ -29,7 +30,7 @@ export class ConfirmacionComponent implements OnInit {
   }
 
   private CargaTraducciones() {
-    this.T.ts = ['ui.descargar'];
+    this.T.ts = ['ui.cancelar', 'ui.aceptar'];
     this.T.ObtenerTraducciones();
   }
 

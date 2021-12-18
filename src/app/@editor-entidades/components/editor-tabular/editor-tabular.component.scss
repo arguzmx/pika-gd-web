@@ -34,11 +34,15 @@
     fill: #CCCCCC;
   }
   
+  
     .padded {
       padding-left: 10px;
       padding-right: 10px;
     }
   
+    boton-link {
+      width: 100%; text-align: left; margin-bottom: 5px;
+    }
 
   nb-card-header {
     display: flex;

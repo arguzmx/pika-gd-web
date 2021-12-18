@@ -4,7 +4,7 @@ import { RutaTipo } from '../state/configuracion/ruta-tipo';
 import { IProveedorReporte } from './../metadata/iproveedor-reporte';
 import { FiltroConsulta, FiltroConsultaBackend } from './../consulta/filtro-consulta';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Consulta, Paginado, Operacion } from '../consulta';
 import { MetadataInfo } from '../metadata';
@@ -335,24 +335,27 @@ export class PikaApiService<T, U> {
         retry(retryCount),
       );
   }
-
+  
+  private getFileNameFromHttpResponse(httpResponse: HttpResponse<Blob>): string {
+    var contentDispositionHeader = httpResponse.headers.get('Content-Disposition');
+    var result = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+    return result.replace(/"/g, '');
+  }
 
   GetReport(entidad: string, reporte: IProveedorReporte, filename?: string) {
-
-    let endpoint = this.CrearEndpoint(entidad) + reporte.Url;
+    let url = this.CrearEndpoint(entidad) + reporte.Url;
     const headers = new HttpHeaders();
     reporte.Parametros.forEach(p => {
-      endpoint = endpoint.replace(`{${p.Id}}`, p['Valor']);
+      url = url.replace(`{${p.Id}}`, p['Valor']);
     });
-    this.http.get(endpoint, { headers, responseType: 'blob' as 'json' }).subscribe(
-      (response: any) => {
-        const dataType = response.type;
+
+    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+      (response: HttpResponse<Blob>) => {
         const binaryData = [];
-        binaryData.push(response);
+        binaryData.push(response.body);
         const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-        if (filename)
-          downloadLink.setAttribute('download', filename);
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
+        downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));  
         document.body.appendChild(downloadLink);
         downloadLink.click();
       },

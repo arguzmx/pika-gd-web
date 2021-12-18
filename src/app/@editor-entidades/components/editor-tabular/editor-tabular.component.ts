@@ -631,7 +631,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const nombre = reporte.Nombre + ' ' +
       this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) +
       '.' + reporte.FormatosDisponibles[0].Id;
-
+    console.log(nombre);
     this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
   }
 
@@ -697,7 +697,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             break;
 
           case  TipoVista.WebCommand:
-            // console.log(link);
             const validar = link.Condicion.split('[').join('this.entidad[');
             if (validar!=''){
               const valido = eval(validar);
@@ -711,18 +710,23 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
               }
             }
 
-            this.dialogService
-            .open(ConfirmacionComponent, {
-              context: {
-                entidades: this.entidades,
-                metadata: this.metadata,
-                texto: '¿Desea proceder con la operación?'
-              }
-            })
-            .onClose.subscribe(confirmacion => {
-              if (confirmacion) {
-                this.ejecutaNavegarWebCommand(link, this.entidad, this.metadata);
-              }
+            const vista = `vistas.${link.Vista}`;
+            const nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
+            this.T.ObtenerTraduccion([vista, `${vista}-conf`], { tema: nombre } ).pipe(first()).subscribe(t=> {
+                this.dialogService
+                .open(ConfirmacionComponent, {
+                  context: {
+                    titulo: t[vista],
+                    entidades: this.entidades,
+                    metadata: this.metadata,
+                    texto: t[`${vista}-conf`] 
+                  }
+                })
+                .onClose.subscribe(confirmacion => {
+                  if (confirmacion) {
+                    this.ejecutaNavegarWebCommand(link, this.entidad, this.metadata);
+                  }
+                });
             });
             break;
         }

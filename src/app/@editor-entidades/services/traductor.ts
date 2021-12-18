@@ -1,4 +1,5 @@
 import { TranslateService } from '@ngx-translate/core/lib/translate.service';
+import { AsyncSubject, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 export class Traductor {
@@ -18,6 +19,22 @@ export class Traductor {
       .subscribe((res) => {
         this.t = res;
       });
+  }
+
+
+  ObtenerTraduccion(ids: string[], interpolateParams?: Object): Observable<string[]> {
+    const subject = new AsyncSubject<any>();
+    this.translate
+    .get(ids, interpolateParams)
+    .pipe(first())
+    .subscribe((res) => {
+      subject.next(res);
+      subject.complete();
+    }, () => {
+      subject.next(null);
+      subject.complete();
+    }) ;
+    return subject;
   }
 
   ObtieneSingularT(item: string) {
