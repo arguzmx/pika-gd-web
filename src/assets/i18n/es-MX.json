@@ -350,7 +350,7 @@
                 "Id": "Id",
                 "Nombre": "Nombre",
                 "Eliminada": "Eliminado",
-                "VolumenDefaultId": "Volumen Default",
+                "VolumenDefaultId": "Volumen Almacenamiento",
                 "TipoOrigenId": "TipoOrigenId",
                 "OrigenId": "OrigenId",
                 "CreadorId": "Creador",
