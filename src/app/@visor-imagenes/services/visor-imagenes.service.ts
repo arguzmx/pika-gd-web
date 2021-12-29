@@ -56,6 +56,20 @@ export class VisorImagenesService {
   }
 
 
+  EliminaPaginas(paginas: Pagina[]): Observable<boolean> {
+    const subject = new AsyncSubject<boolean>();
+    this.docService.EliminaPaginas(this.documento.Id, paginas).pipe(first())
+    .subscribe(r => {
+      console.log('ok');
+      subject.next(true);
+      subject.complete();
+    }, () => {
+      subject.next(false);
+      subject.complete();
+    } );
+    return subject;
+  }
+
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
   }

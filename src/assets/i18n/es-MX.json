@@ -93,6 +93,7 @@
         "cerrarvista": "Cerrar vista",
         "cerrardocumento": "Cerrar documento",
         "subirarchivos": "Subir archivos",
+        "eliminar-contenido": "Eliminar selección",
         "descargararchivos": "Descargar archivos",
         "descargarpdf": "Descargar PDF",
         "todos-docs": "Todos los documentos",
@@ -328,7 +329,11 @@
                 "TipoDisposicionDocumentalId": "Disposición",
                 "Eliminada": "Eliminada",
                 "TipoValoracionDocumentalId": "Valoración",
-                "Descripcion": "Descripción"
+                "Descripcion": "Descripción",
+                "AbreCon": "Abre con",
+                "CierraCon": "Cierra con",
+                "Contiene": "Contiene",
+                "InstruccionFinal": "Instruccion final"
             },
             "volumen": {
                 "Id": "Id",
@@ -543,5 +548,10 @@
         "errorconfiguracion": "El archivo no tiene asociado un repositorio válido de contenido",
         "sincontenido": "No hay contenido asociado al elemento ¿Desea crearlo?",
         "sinpermiso": "No cuenta con el permisos para acceder al contenido"
+    },
+    "visor": {
+        "eliminar-cotenido-titulo": "Eliminar",
+        "eliminar-cotenido-mensaje": "¿Desea eliminar el contenido seleccionado? la eliminación es permanente",
+        "warn-sin-seleccion": "No hay contenido seleccionado"
     }
 }

@@ -9,6 +9,8 @@ import { Documento } from '../model/documento';
 import { IDocumentoService } from '../model/i-documento-service';
 import { DocumentoPlantilla, PermisoPuntoMontaje, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
+import { id } from 'date-fns/locale';
+import { Pagina } from '../model/pagina';
 
 @Injectable()
 export class DocumentosService implements IDocumentoService {
@@ -27,6 +29,16 @@ export class DocumentosService implements IDocumentoService {
     this.endpointMetadatos = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
   }
   
+  EliminaPaginas(id: string, paginas: Pagina[]): Observable<any> {
+    let csvidpaginas = '';
+    paginas.forEach(p=> {
+      csvidpaginas += `${p.Id},`;
+    });
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${id}/eliminar/${csvidpaginas}`;
+    return this.http.delete<any>(endpoint);
+  }
+
+
   ObtienePermisoPuntoMontaje(id: string): Observable<PermisoPuntoMontaje> {
     const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/puntomontaje/permisos/${id}`;
     return this.http.get<PermisoPuntoMontaje>(endpoint);

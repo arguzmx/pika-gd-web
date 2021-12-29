@@ -14,6 +14,9 @@
                 <mat-icon [ngClass]="soloImagenes ? 'text-primary' : ''">perm_media</mat-icon>
             </button> -->
             <!-- Separadador -->
+            <button *ngIf="eliminar" mat-icon-button on-click="doEliminar()" nbTooltip='{{T.t["ui.eliminar-contenido"]}}'>
+                <mat-icon>delete_outline</mat-icon>
+            </button>
             <button *ngIf="crear" mat-icon-button on-click="doUpload()" nbTooltip='{{T.t["ui.subirarchivos"]}}'>
                 <mat-icon>cloud_upload</mat-icon>
             </button>

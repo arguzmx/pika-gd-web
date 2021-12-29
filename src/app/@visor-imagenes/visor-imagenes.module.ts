@@ -97,6 +97,7 @@ import { VisorFavoritosComponent } from './components/visor-favoritos/visor-favo
 import { IUploadConfig } from './model/i-upload-config';
 import { HeaderThumbsComponent } from './components/header-thumbs/header-thumbs.component';
 import { FullTextResultsComponent } from './components/full-text-results/full-text-results.component';
+import { ConfirmacionVisorComponent } from './components/confirmacion-visor/confirmacion-visor.component';
 
 @NgModule({
   imports: [
@@ -182,7 +183,7 @@ import { FullTextResultsComponent } from './components/full-text-results/full-te
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent, ConfirmacionVisorComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent, VisorFavoritosComponent],
