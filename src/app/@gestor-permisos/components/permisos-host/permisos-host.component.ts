@@ -49,16 +49,23 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
     ts: TranslateService
     ) {
       this.T = new Traductor(ts);
+      console.log(session.ACL);
+      console.log(session.ACL.Permisos);
       const permisos = session.ACL.Permisos.find(p=>p.ModuloId == 'ACL' && p.AplicacionId == 'PIKA-GD-SEGURIDAD');
+      console.log(permisos);
       if (permisos) {
          this.permisoEscribir = permisos.Mascara && PESCRIBIR > 0;
          this.permisoLeer = (permisos.Mascara && PLEER > 0) || this.permisoLeer;
+      } else {
+        if(session.ACL.EsAdmin){
+          this.permisoEscribir = true;
+         this.permisoLeer = true;
+        }
       }
 
       if (!this.permisoLeer){
         route.navigateByUrl('/pages/sinacceso');
       }
-
 
      }
 

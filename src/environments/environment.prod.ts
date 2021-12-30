@@ -5,6 +5,6 @@
  */
 export const environment = {
   production: true,
-  version: '1.2.8'
+  version: '1.2.9'
 };
 
