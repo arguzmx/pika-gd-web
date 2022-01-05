@@ -19,7 +19,8 @@
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="padded">
                   <ngx-header-thumbs (cerrarVista)="evCerrarVista()" (cerrarDocumento)="evCerrarDocumento($event)"
-                    (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()">
+                    (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()"
+                    (paginasEliminadas)="paginasEliminadas($event)">
                   </ngx-header-thumbs>
                   <nb-tabset fullWidth accent="danger">
                     <nb-tab *ngIf="MostrarResultadosTexto" tabTitle="Búsqueda" [active]="true">

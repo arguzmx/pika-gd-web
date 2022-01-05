@@ -60,7 +60,6 @@ export class VisorImagenesService {
     const subject = new AsyncSubject<boolean>();
     this.docService.EliminaPaginas(this.documento.Id, paginas).pipe(first())
     .subscribe(r => {
-      console.log('ok');
       subject.next(true);
       subject.complete();
     }, () => {

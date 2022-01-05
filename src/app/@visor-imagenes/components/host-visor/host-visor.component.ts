@@ -253,6 +253,19 @@ export class HostVisorComponent
     this.cerrarVista.emit();
   }
 
+  paginasEliminadas(paginas: Pagina[]) {
+    const copia = [...this.documento.Paginas];
+    paginas.forEach(p=> {
+        const index = this.documento.Paginas.findIndex(x=>x.Id == p.Id);
+        if (index >= 0) {
+          copia.splice(index, 1);
+        }
+    });
+    this.documento.Paginas = copia;
+    this.cdr.detectChanges();
+  }
+
+
   @HostListener("window:keydown", ["$event"])
   CancelaFuncionReAvPag($event) {
     if ($event.key === "PageUp" || $event.key === "PageDown") {

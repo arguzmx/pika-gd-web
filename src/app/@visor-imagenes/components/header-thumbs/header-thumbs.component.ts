@@ -9,7 +9,7 @@ import {
 import { NbDialogService } from "@nebular/theme";
 import { TranslateService } from "@ngx-translate/core";
 import { pipe, Subject } from "rxjs";
-import { first } from "rxjs/operators";
+import { first, takeUntil } from "rxjs/operators";
 import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
 import { AppLogService } from "../../../@pika/servicios";
 import { Documento } from "../../model/documento";
@@ -24,6 +24,7 @@ import { ConfirmacionVisorComponent } from "../confirmacion-visor/confirmacion-v
   styleUrls: ["./header-thumbs.component.scss"],
 })
 export class HeaderThumbsComponent implements OnInit, OnDestroy {
+  @Output() paginasEliminadas = new EventEmitter();
   @Output() callUpload = new EventEmitter();
   @Output() cerrarDocumento = new EventEmitter();
   @Output() cerrarVista = new EventEmitter();
@@ -60,7 +61,9 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
         this.eliminar = p.GestionContenido;
       });
 
-    this.servicioVisor.ObtienePaginasSeleccionadas().subscribe((p) => {
+    this.servicioVisor.ObtienePaginasSeleccionadas()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((p) => {
       this.paginas = p;
     });
   }
@@ -129,7 +132,11 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
         if (confirmacion) {
           this.servicioVisor.EliminaPaginas(this.paginas).pipe(first())
           .subscribe(ok => {
-            console.log(ok);
+            const paginasEliminadas = [];
+            this.paginas.forEach(p=> {
+              paginasEliminadas.push({...p});
+            })
+            this.paginasEliminadas.emit(paginasEliminadas)
           });
         }
       });

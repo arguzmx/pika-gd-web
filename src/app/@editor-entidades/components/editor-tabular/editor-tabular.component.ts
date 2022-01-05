@@ -631,7 +631,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const nombre = reporte.Nombre + ' ' +
       this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad) +
       '.' + reporte.FormatosDisponibles[0].Id;
-    console.log(nombre);
     this.entidades.GetReport(this.config.TipoEntidad, reporte, nombre);
   }
 
