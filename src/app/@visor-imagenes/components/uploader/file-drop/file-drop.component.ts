@@ -19,6 +19,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   //#region drag zone variables
   accept: string;
   maxSize: number;
+  posicionInicio: number;
   files: any[] = [];
   selectable = false;
   hasBaseDropZoneOver = false;
@@ -30,6 +31,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   lastInvalids: any;
   fileDropDisabled: any;
   baseDropValid: any;
+  selectedAdicionId: string ="0";
   //#endregion
 
   //#region upload variables
@@ -57,7 +59,9 @@ export class FileDropComponent implements OnInit, OnDestroy {
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.accept = data.accept;
     this.maxSize = data.maxSize;
+    this.posicionInicio = data.posicionInicio;
     this.uploadService = data.uploadService;
+    console.log(this.posicionInicio);
   }
 
   ngOnInit(): void {
@@ -75,6 +79,10 @@ export class FileDropComponent implements OnInit, OnDestroy {
       'ui.cancelar',
       'ui.eliminar-todo',
       'ui.elegir-ellipsis',
+      'ui.archivos-sel',
+      'ui.al-inicio',
+      'ui.al-final',
+      'ui.al-posicion',
     ];
     this.ObtenerTraducciones();
   }
@@ -107,6 +115,8 @@ export class FileDropComponent implements OnInit, OnDestroy {
       let subido = false;
 
       // El servivio emite el evento de actualización de páginas al finalizar
+      this.uploadService.Posicion = parseInt(this.selectedAdicionId,10);
+      this.uploadService.PosicionInicio = this.posicionInicio;
       this.progress = this.uploadService.upload(this.files);
 
       // tslint:disable-next-line: forin

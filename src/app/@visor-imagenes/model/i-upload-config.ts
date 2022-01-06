@@ -8,5 +8,5 @@ export interface IUploadConfig {
     CarpetaId: string;
     TransactionId: string;
     VersionId: string;
-    parametros: PayloadItem[]
+    parametros: PayloadItem[];
 }

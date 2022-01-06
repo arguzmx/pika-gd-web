@@ -47,7 +47,8 @@
         "total-regitros": "registros encontrados",
         "selec-org": "Seleccionar espacio de trabajo",
         "enviar": "Enviar",
-        "elegir-ellipsis": "Elegir ...",
+        "elegir-ellipsis": "Elegir archivos ...",
+        "archivos-sel": "archivos seleccionados",
         "reportes": "Reportes",
         "elementoseleccionado": "la selección",
         "busqueda-lateral": "Mostrar/ocultar pánel de búsqueda",
@@ -97,7 +98,10 @@
         "descargararchivos": "Descargar archivos",
         "descargarpdf": "Descargar PDF",
         "todos-docs": "Todos los documentos",
-        "solo-img": "Sólo imágenes"
+        "solo-img": "Sólo imágenes",
+        "al-inicio": "Al inicio",
+        "al-final": "Al final",
+        "al-posicion": "En la posición"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",

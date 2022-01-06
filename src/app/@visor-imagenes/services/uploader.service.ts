@@ -22,6 +22,10 @@ import { IUploadConfig } from '../model/i-upload-config';
 export class UploadService {
   private indiceCarga: number;
   private url: string;
+
+  public Posicion: number;
+  public PosicionInicio: number;
+
   constructor(
     private app: AppConfig,
     private http: HttpClient, 
@@ -30,6 +34,8 @@ export class UploadService {
     private servicioVisor: VisorImagenesService) {
     this.indiceCarga = 1;
     this.url = this.app.config.uploadUrl;
+    this.Posicion = 0;
+    this.PosicionInicio = 0;
   }
 
   public static NewGuid(): string {
@@ -62,6 +68,8 @@ export class UploadService {
       formData.append('ElementoId', this.uConfig.ElementoId);
       formData.append('TransaccionId', this.uConfig.TransactionId);
       formData.append('Indice', this.indiceCarga.toString());
+      formData.append('Posicion', this.Posicion.toString());
+      formData.append('PosicionInicio', this.PosicionInicio.toString());
       formData.append('VersionId', this.uConfig.VersionId);
       formData.append('file', file, file.name);
 

@@ -1,5 +1,5 @@
 import { IUploadConfig } from './../../model/i-upload-config';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FileDropComponent } from './file-drop/file-drop.component';
@@ -14,23 +14,32 @@ import { UploadService } from '../../services/uploader.service';
   templateUrl: './uploader.component.html',
   styleUrls: ['./uploader.component.scss'],
 })
-export class UploaderComponent implements OnInit  {
+export class UploaderComponent implements OnInit, OnDestroy  {
   @Input() accept: string;
   @Input() config: IUploadConfig;
   @Input() maxSize: number; // bytes . 1024 = 1kb . 1048576 b = 1mb . 10485760 b = 10 mb
+
+  // Identifica el indice máximo en las paginas seleccionadas para realizar una inserción
+  private MaxIndice: number = 0;
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
     public uploadService: UploadService,
-    public servicioVisor: VisorImagenesService) {}
+    private servicioVisor: VisorImagenesService) {}
+  
+  ngOnDestroy(): void {
+      this.onDestroy$.next(null);
+      this.onDestroy$.complete();
+  }
+  
   ngOnInit(): void {
-    this.EscuchaAbrirUpload();
+    this.ConfiguraObservables();
   }
 
   
-  EscuchaAbrirUpload() {
+  ConfiguraObservables() {
     this.servicioVisor.ObtieneAbrirUpload()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe(abrir => {
@@ -39,13 +48,27 @@ export class UploaderComponent implements OnInit  {
         this.servicioVisor.EstableceAbrirUpload(false);
        }
     });
+
+    this.servicioVisor.ObtienePaginasSeleccionadas()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((p) => {
+      this.MaxIndice = 0;
+      if (p.length > 0) {
+        p.forEach(pagina => {
+            if (pagina.Indice > this.MaxIndice) {
+              this.MaxIndice = pagina.Indice;
+            }
+        });
+      }
+      console.log(this.MaxIndice)
+    });
   }
 
 
   public openUploadSheet() {
     const bottomSheetRef = this.bottomSheet.open(FileDropComponent, {
       ariaLabel: 'Elegir archivos',
-      data: { accept: this.accept, maxSize: this.maxSize, uploadService: this.uploadService },
+      data: { accept: this.accept, maxSize: this.maxSize, uploadService: this.uploadService, posicionInicio: this.MaxIndice },
     });
   }
 }

@@ -90,11 +90,15 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     // ====== zoom ======
     this.canvas.on('mouse:wheel', function (opt) {
       const delta = opt.e.deltaY;
-      let zoom = this.canvas.getZoom();
-      zoom *= 0.999 ** delta;
-      if (zoom > 20) zoom = 20;
-      if (zoom < 0.01) zoom = 0.01;
-      this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+      try {
+        let zoom = this.canvas.getZoom();
+        zoom *= 0.999 ** delta;
+        if (zoom > 20) zoom = 20;
+        if (zoom < 0.01) zoom = 0.01;
+        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);  
+      } catch (error) {
+        console.error(error);        
+      }
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
