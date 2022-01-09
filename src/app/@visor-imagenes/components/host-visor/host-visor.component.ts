@@ -217,8 +217,6 @@ export class HostVisorComponent
       .subscribe((paginasNuevas) => {
         if (this.documento) {
           if (this.documento.Id == paginasNuevas[0].ElementoId) {
-            this.documento.Paginas =
-              this.documento.Paginas.concat(paginasNuevas);
             this.documento.Paginas = this.servicioVisor.GeneraUrlPaginas();
           }
         }

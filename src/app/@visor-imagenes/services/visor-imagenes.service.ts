@@ -113,6 +113,9 @@ export class VisorImagenesService {
 
   // Genera las urls de las páginas del documento actual y el arreglo de páginas para leerlo después de SUBIR nuevas
   public GeneraUrlPaginas(): Pagina[] {
+    const paginas = [...this.documento.Paginas].sort((a, b) => a.Indice - b.Indice);
+    this.documento.Paginas = paginas;
+    
     for (let i = 0; i < this.documento.Paginas.length; i++ ) {
       let url = `${this.config.VolumenId}/`;
       url = url + `${this.config.ElementoId}/`;
@@ -137,7 +140,7 @@ export class VisorImagenesService {
         this.documento.Paginas[i].UrlThumbnail =  '/assets/images/' + tipoImg;
       }
     }
-    this.documento.Paginas.sort((a, b) => a.Indice - b.Indice);
+    
     return this.documento.Paginas;
   }
 
@@ -155,6 +158,7 @@ export class VisorImagenesService {
 
   public EstableceActualizarPaginas(paginas: Pagina[], ElementoId: string) {
     paginas.forEach( p => p.ElementoId = ElementoId);
+    this.documento.Paginas = paginas;
     this.subjecActualizarPaginas.next(paginas);
   }
 

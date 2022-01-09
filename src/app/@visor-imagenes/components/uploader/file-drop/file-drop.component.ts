@@ -31,7 +31,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   lastInvalids: any;
   fileDropDisabled: any;
   baseDropValid: any;
-  selectedAdicionId: string ="0";
+  selectedAdicionId: string ="1";
   //#endregion
 
   //#region upload variables
@@ -61,7 +61,6 @@ export class FileDropComponent implements OnInit, OnDestroy {
     this.maxSize = data.maxSize;
     this.posicionInicio = data.posicionInicio;
     this.uploadService = data.uploadService;
-    console.log(this.posicionInicio);
   }
 
   ngOnInit(): void {

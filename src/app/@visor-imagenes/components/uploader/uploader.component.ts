@@ -60,7 +60,6 @@ export class UploaderComponent implements OnInit, OnDestroy  {
             }
         });
       }
-      console.log(this.MaxIndice)
     });
   }
 
