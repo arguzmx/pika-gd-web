@@ -269,7 +269,7 @@ export class EntidadesService {
 
   public ObtieneDescriptorNodo(tipo: string): Observable<DescriptorNodo> {
     const subject = new AsyncSubject<any>();
-    this.ObtieneMetadatos(tipo).pipe(first())
+    this.ObtieneMetadatos(tipo, '').pipe(first())
       .subscribe(m => {
 
         const valor: DescriptorNodo = { PropId: null, PropNombre: null, PropIdraiz: '', PropIdPadre: '' };
@@ -621,19 +621,25 @@ export class EntidadesService {
   }
 
   // Obtiene los metadatos de un tipo de  entidad
-  public ObtieneMetadatos(tipoentidad: string): Observable<MetadataInfo> {
+  public ObtieneMetadatos(tipoentidad: string, entidadPadre: string = ''): Observable<MetadataInfo> {
     const subject = new AsyncSubject<MetadataInfo>();
     const key = this.cache.ClaveMetadatos(tipoentidad);
-
     if (this.cache.has(key)) {
-      subject.next(this.cache.get(key));
+      const m = this.cache.get(key);
+      if(m) {
+        subject.next(this.MetadatosPorEntidad({...m}, entidadPadre));
+      } else {
+        subject.next(null);
+      }
+      // subject.next(m);
       subject.complete();
     } else {
       this.cliente.GetMetadata(tipoentidad).pipe(first())
         .subscribe(m => {
           this.ProcesaMetadatos(tipoentidad, m).pipe(first()).subscribe(procesados => {
             this.cache.set(key, procesados);
-            subject.next(procesados);
+            subject.next(this.MetadatosPorEntidad({...procesados}, entidadPadre));
+            // subject.next(procesados);
           }, (err) => {
             subject.next(m);
           });
@@ -648,12 +654,37 @@ export class EntidadesService {
     return subject;
   }
 
+  private MetadatosPorEntidad(metadatos: MetadataInfo, entidadPadre: string ): MetadataInfo {
+    const especificas = [...metadatos.Propiedades.filter(p=> p.Entidad.toLowerCase() == entidadPadre.toLowerCase() && p.Entidad!=='')];
+    const eliminar = [...metadatos.Propiedades.filter(p=> p.Entidad.toLowerCase() != entidadPadre.toLowerCase() && p.Entidad!=='')];
+    const todas = [...metadatos.Propiedades];
+
+    /// Elimina la propiedad genérica si hay una por entidad
+    especificas.forEach( e=> {
+        const index = todas.findIndex(p => p.Id == e.Id && p.Entidad == '');
+        if(index >= 0) {
+          todas.splice(index, 1);
+        }
+      });
+
+      // elimina las propiedades de entidad que no son de la actual
+      eliminar.forEach( e=> {
+        const index = todas.findIndex(p => p.Id == e.Id && p.Entidad.toLowerCase() != entidadPadre.toLowerCase() && p.Entidad !== '');
+        if(index >= 0) {
+          todas.splice(index, 1);
+        }
+      });
+
+    metadatos.Propiedades = todas;
+    return metadatos;
+  }
+
+
   // Ontiene las traducciones para los encabezados y los asigna a las propeidaes
   private ProcesaMetadatos(entidad: string, metadatos: MetadataInfo): Observable<MetadataInfo> {
     const subject = new AsyncSubject<MetadataInfo>();
     this.ts.get('entidades.propiedades.' + entidad.toLowerCase()).pipe(first())
       .subscribe(r => {
-
         const pcatalogo = this.ObtieneCamposCatalogo(metadatos);
         pcatalogo.forEach(p => {
           metadatos.Propiedades.push(p);
@@ -857,6 +888,7 @@ export class EntidadesService {
         IdContextual: '',
         Etiqueta: false,
         CatalogoVinculado: true,
+        Entidad: ''
       };
       propiedades.push(p);
       indice++;

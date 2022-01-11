@@ -109,14 +109,13 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
   }
 
   public ProcesaConfiguracion(): void {
-
     if (this.config) {
       this.entidades.ObtieneDescriptorNodo(this.config.TipoEntidad).pipe(first())
         .subscribe(d => {
           this.descriptor = d;
           if (this.descriptor) {
             this.validametadata = true;
-            this.entidades.ObtieneMetadatos(this.config.TipoEntidad).pipe(first())
+            this.entidades.ObtieneMetadatos(this.config.TipoEntidad, this.config.OrigenTipo).pipe(first())
               .subscribe(m => {
                 this.metadata = m;
                 this.ObtineRaices();

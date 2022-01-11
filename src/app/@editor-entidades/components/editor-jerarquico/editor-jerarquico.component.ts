@@ -260,11 +260,11 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       this.configC = this.config.ConfiguracionContenido;
 
       const mJ = this.entidades
-        .ObtieneMetadatos(this.configJ.TipoEntidad)
+        .ObtieneMetadatos(this.configJ.TipoEntidad, this.configJ.OrigenTipo)
         .pipe(first());
 
       const mC = this.entidades
-        .ObtieneMetadatos(this.configC.TipoEntidad)
+        .ObtieneMetadatos(this.configC.TipoEntidad, this.configC.OrigenTipo)
         .pipe(first());
 
       forkJoin([mJ, mC]).subscribe(resultados => {
@@ -315,7 +315,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       } else {
         // Si la entidad no existe obtiene los metadatos
         this.entidades
-          .ObtieneMetadatos(this.configJ.OrigenTipo)
+          .ObtieneMetadatos(this.configJ.OrigenTipo, '')
           .pipe(first())
           .subscribe((m) => {
             this.metadataLink = m;

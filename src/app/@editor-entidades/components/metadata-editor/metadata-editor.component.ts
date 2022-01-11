@@ -155,7 +155,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
     switch (this.config.TipoDespliegue.toString()) {
       case TipoDespliegueVinculo.Membresia.toString():
-        this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
+        this.entidades.ObtieneMetadatos(this.config.OrigenTipo, '').pipe(first())
         .subscribe( m => {
           const vinculo = m.EntidadesVinculadas.find(x =>
                  x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()
@@ -385,7 +385,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
 
   private ObtieneValoresVinculados():  void {
     if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '') {
-      this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
+      this.entidades.ObtieneMetadatos(this.config.OrigenTipo, '').pipe(first())
       .subscribe( m => {
         const index  = m.EntidadesVinculadas
         .findIndex( x => x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase());

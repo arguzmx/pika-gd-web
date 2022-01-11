@@ -48,4 +48,5 @@ export interface Propiedad {
     EmitirCambiosValor?: boolean;
     ParametroLinkVista?: ParametroLinkVista;
     VinculoMetadatos?: string;
+    Entidad?: string;
 }

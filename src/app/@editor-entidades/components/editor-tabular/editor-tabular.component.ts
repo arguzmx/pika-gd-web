@@ -274,7 +274,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     if (this.config && this.config.TipoEntidad) {
       this._Reset();
       this.accent = this.mostrarBarra ? 'info' : 'basic';
-      this.entidades.ObtieneMetadatos(this.config.TipoEntidad)
+      this.entidades.ObtieneMetadatos(this.config.TipoEntidad, this.config.OrigenTipo)
         .pipe(first())
         .subscribe(m => {
           this.metadata = m;
@@ -356,7 +356,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       } else {
         // Si la entidad no existe obtiene los metadatos
         this.entidades
-          .ObtieneMetadatos(this.config.OrigenTipo)
+          .ObtieneMetadatos(this.config.OrigenTipo, '')
           .pipe(first())
           .subscribe((m) => {
             this.HabilitarSeleccion = m.HabilitarSeleccion;
@@ -522,7 +522,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
     switch (this.config.TipoDespliegue.toString()) {
       case TipoDespliegueVinculo.Membresia.toString():
-        this.entidades.ObtieneMetadatos(this.config.OrigenTipo).pipe(first())
+        this.entidades.ObtieneMetadatos(this.config.OrigenTipo, '').pipe(first())
           .subscribe(m => {
             const vinculo = m.EntidadesVinculadas.find(x =>
               x.EntidadHijo.toLowerCase() === this.config.TipoEntidad.toLowerCase()

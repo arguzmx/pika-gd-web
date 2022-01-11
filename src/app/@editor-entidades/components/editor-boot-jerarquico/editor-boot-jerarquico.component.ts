@@ -119,16 +119,16 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
       this.config = {
         ConfiguracionJerarquia: {
           OrigenTipo: this.paramTipoJerarquico,
-          TipoEntidad: this.paramTipoArbolJerarquico,
           OrigenId: OrigenJerarquico, 
+          TipoEntidad: this.paramTipoArbolJerarquico,
           TransactionId: this.entidades.NewGuid(),
           TipoDespliegue: this.paramTipoDespliegue,
           Permiso: parbol,
         },
         ConfiguracionContenido: {
           TipoEntidad: this.paramTipoContenidoJerarquico,
-          OrigenTipo: '',
-          OrigenId: '',
+          OrigenTipo: this.paramTipoJerarquico,
+          OrigenId: '', 
           TransactionId: this.entidades.NewGuid(),
           TipoDespliegue: this.paramTipoDespliegue,
           Permiso: pcontenido,
