@@ -211,7 +211,7 @@
                 "Id": "Id",
                 "Nombre": "Nombre",
                 "Requerido": "Requerido",
-                "IndiceOrdenamiento": "Ïndice",
+                "IndiceOrdenamiento": "Índice",
                 "TipoDatoId": "Tipo dato",
                 "ValorDefault": "Valor Default",
                 "IndiceOrdenamientoTabla": "IndiceOrdenamientoTabla",

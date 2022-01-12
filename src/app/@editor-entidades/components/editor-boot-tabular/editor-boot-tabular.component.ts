@@ -73,7 +73,7 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
         this.paramTipo = (params[PARAM_TIPO] || '').toLowerCase();
         this.paramTipoOrigen = (params[PARAM_TIPO_ORIGEN] || '').toLowerCase();
         //console.log(params[PARAM_TIPO]);
-        console.log('InicializarDesdeRuta -----------------');
+
         this.entidades.ObtieneMetadatos(params[PARAM_TIPO]).pipe(first())
           .subscribe(m => {
             let pcontenido: PermisoAplicacion = null;
@@ -130,7 +130,6 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
 
     this.paramTipo = this.tipo.toLowerCase();
     this.paramTipoOrigen = this.tipoOrigen.toLowerCase();
-    console.log('InicializarManual -----------------');
     this.entidades.ObtieneMetadatos(this.paramTipo).pipe(first())
       .subscribe(m => {
         let pcontenido = null;
