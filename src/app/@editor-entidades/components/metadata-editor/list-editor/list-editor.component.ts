@@ -1,7 +1,7 @@
 import { EditorCampo } from './../editor-campo';
 import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../../../@pika/pika-module';
 import { ICampoEditable } from './../../../model/i-campo-editable';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
 import { Subject, of } from 'rxjs';
 import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
@@ -20,7 +20,14 @@ export class ListEditorComponent extends EditorCampo
   implements ICampoEditable, OnInit, OnDestroy  {
     @ViewChild('ngSelect')
     ngSelect: MatSelect;
-
+    
+    @HostBinding('class.col-lg-4')
+    @HostBinding('class.col-md-6')
+    @HostBinding('class.col-sm-12') elementoVisible: boolean;
+  
+    habilitarClases(oculto: boolean) {
+      this.elementoVisible = !oculto;
+    }
 
   list: ValorListaOrdenada[];
   selected: any = null;
@@ -35,11 +42,10 @@ export class ListEditorComponent extends EditorCampo
   listInput$ = new Subject<string>();
 
   @ViewChild('lista') Lista: any;
-
+    
   constructor(eventos: EventosInterprocesoService) {
     super(eventos);
   }
-
 
   private GetFiltrosPropiedad(): FiltroConsulta[] {
     const filtros = this.filtrosQ.find(x=>x.PropiedadId == this.propiedad.Id);
@@ -157,6 +163,7 @@ export class ListEditorComponent extends EditorCampo
   ngOnInit(): void {
     // console.log(this.filtrosQ);
     // console.log(this.propiedad.Id);
+    this.elementoVisible = true;
     this.hookEscuchaEventos();
     let aheadval = '';
 
@@ -194,8 +201,11 @@ export class ListEditorComponent extends EditorCampo
           }
 
       } else {
-        this.propiedad.ValoresLista = this.propiedad.AtributoLista.Valores;
-        if (this.propiedad.OrdenarValoresListaPorNombre) {
+        if(Boolean(this.propiedad.AtributoLista.ValoresCSV) === false) {
+          this.propiedad.ValoresLista = this.propiedad.AtributoLista.Valores;
+        }
+
+        if (this.propiedad.AtributoLista.OrdenarAlfabetico) {
           this.list = this.Sort('Texto');
         } else {
           this.list = this.Sort('Indice');

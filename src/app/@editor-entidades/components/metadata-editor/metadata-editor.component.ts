@@ -1,5 +1,5 @@
 import { FiltroConsultaPropiedad } from './../../../@pika/consulta/filtro.-consulta-propiedad';
-import { FiltroConsulta, FiltroConsultaBackend } from './../../../@pika/consulta/filtro-consulta';
+import { Evento, Eventos } from './../../../@pika/metadata';
 import { environment } from './../../../../environments/environment';
 import { AppEventBus } from './../../../@pika/state/app-event-bus';
 import { Traductor } from './../../services/traductor';
@@ -15,6 +15,9 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { EntidadesService } from '../../services/entidades.service';
@@ -56,10 +59,11 @@ import { EventosInterprocesoService } from '../../services/eventos-interproceso.
   selector: 'ngx-metadata-editor',
   templateUrl: './metadata-editor.component.html',
   styleUrls: ['./metadata-editor.component.scss'],
-  providers: [EventosInterprocesoService]
+  providers: [EventosInterprocesoService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataEditorComponent extends EditorEntidadesBase
-  implements IEditorMetadatos, OnInit, OnDestroy, OnChanges {
+  implements IEditorMetadatos, OnInit, OnDestroy, OnChanges, AfterViewInit {
   // Mantiene la configutación de la entidad obtenida por el ruteo
   @Input() config: ConfiguracionEntidad;
   @Input() metadata: MetadataInfo;
@@ -95,11 +99,13 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   constructor(
     entidades: EntidadesService,
     appeventBus: AppEventBus,
+    private eventosUI: EventosInterprocesoService,
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
     diccionarioNavegacion: DiccionarioNavegacion,
     private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     super(appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.transaccionId = (new Date()).getMilliseconds().toString();
@@ -131,7 +137,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   }
 
   ngOnInit(): void {
-    this.T.ObtenerTraducciones();
+        this.T.ObtenerTraducciones();
     this.CargaTraducciones();
     this.entidades.ObtieneAventosContexto()
     .pipe(takeUntil(this.onDestroy$))
@@ -243,6 +249,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       this.applog.AdvertenciaT('editor-pika.mensajes.err-datos-novalidos');
       return;
     }
+    const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
 
     const Id = this.entidades.ObtenerIdEntidad(
       this.config.TipoEntidad,
@@ -252,7 +259,7 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       .ActualizarEntidad(
         this.config.TipoEntidad,
         Id,
-        this.formGroup.getRawValue(),
+        entidadCopiada,
       )
       .pipe(first())
       .subscribe((entidad) => {
@@ -316,9 +323,9 @@ export class MetadataEditorComponent extends EditorEntidadesBase
       }
     }
 
-    if (this.entidad) {
-      this.AsignarValoresForma(this.entidad);
-    }
+    // if (this.entidad) {
+    //   this.AsignarValoresForma(this.entidad);
+    // }
   }
 
 
@@ -400,16 +407,42 @@ export class MetadataEditorComponent extends EditorEntidadesBase
   // Actualiza los valores de la forma para la entidad
   private AsignarValoresForma(entidad: any): void {
     const controls = Object.keys(this.formGroup.controls);
+
+         
+    controls.forEach((control) => {
+      if (( this.formGroup.get(control) instanceof FormControl )) {
+        this.formGroup.get(control).setValue(null);
+        if (this.entidad[control] !== null && this.entidad[control] !== undefined) {
+          this.EmiteEventoCambio(control, String(this.entidad[control]), this.transaccionId );
+        }
+      }
+    });
+
     controls.forEach((control) => {
       if (( this.formGroup.get(control) instanceof FormControl )) {
         this.formGroup.get(control).setValue(null);
         if (entidad[control] !== null && entidad[control] !== undefined) {
-          this.formGroup.get(control).setValue(entidad[control]);
+          this.formGroup.get(control).setValue(String(entidad[control]));
         }
       }
     });
+
+    this.cdr.detectChanges();
   }
 
+  ngAfterViewInit(): void {
+    this.AsignarValoresForma(this.entidad);
+  }
+
+  EmiteEventoCambio(Id: string, Valor:  any, Transaccion: string ) {
+    const evt: Evento = {
+      Origen: Id,
+      Valor: Valor,
+      Evento: Eventos.AlCambiar,
+      Transaccion: Transaccion,
+    };
+    this.eventosUI.EmiteEvento(evt);
+  }
 
   // Establece los valores por defecto en el grupo
   private AsignarValoresDefault(): void {

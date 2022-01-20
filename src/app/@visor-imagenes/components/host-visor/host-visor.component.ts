@@ -25,6 +25,7 @@ import { CacheEntidadesService } from "../../../@editor-entidades/editor-entidad
 import { UploaderComponent } from "../uploader/uploader.component";
 import { IUploadConfig } from "../../model/i-upload-config";
 import { HostThumbnailsComponent } from "../host-thumbnails/host-thumbnails.component";
+import { MODO_VISTA_MINIATURAS } from "../../model/constantes";
 
 @Component({
   selector: "ngx-host-visor",
@@ -52,6 +53,7 @@ export class HostVisorComponent
   public MostrarResultadosTexto: boolean = false;
   public highlightHit: HighlightHit;
   public Miniaturas: boolean = false;
+  modoVista: string = MODO_VISTA_MINIATURAS;
   verificandoPermisos: boolean = true;
   accesoPermitido: boolean = false;
 
@@ -269,6 +271,10 @@ export class HostVisorComponent
     if ($event.key === "PageUp" || $event.key === "PageDown") {
       $event.preventDefault();
     }
+  }
+
+  evModoVista(modo: string) {
+    this.modoVista = modo;
   }
 
   @HostListener("window:keyup", ["$event"])

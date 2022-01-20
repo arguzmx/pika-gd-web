@@ -1,5 +1,5 @@
 import { EditorCampo } from './../editor-campo';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
@@ -12,6 +12,15 @@ import { EventosInterprocesoService } from '../../../services/eventos-interproce
 export class NumericEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
+
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
+  
 
   mask: string = 'separator.4';
   negativos: boolean = true;
@@ -30,7 +39,9 @@ cambiovalor(evento) {
   }
 }
 
+
 ngOnInit(): void {
+  this.elementoVisible = true;
   this.hookEscuchaEventos();
     switch (this.propiedad.TipoDatoId) {
       case tDouble:

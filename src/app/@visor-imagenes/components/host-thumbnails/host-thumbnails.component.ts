@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MODO_VISTA_MINIATURAS } from '../../model/constantes';
 import { Documento } from '../../model/documento';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 
@@ -21,11 +22,13 @@ import { VisorImagenesService } from '../../services/visor-imagenes.service';
 export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() documento: Documento;
   @Input() alturaComponente;
+  @Input() modoVista;
+  itemSize = 50;
   public cargandoPaginas: boolean = false;
   private onDestroy$: Subject<void> = new Subject<void>();
   public alturaVisor = "400px"
 
-  @ViewChild("scroller", { static: true })
+  // @ViewChild("scroller", { static: true })
   public virtualScrollViewport: CdkVirtualScrollViewport;
 
   constructor(private visorService: VisorImagenesService) {
@@ -38,6 +41,11 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
 private setAlturaVisor() {
+  if ( this.modoVista == MODO_VISTA_MINIATURAS) {
+    this.itemSize =50;
+  } else {
+    this.itemSize =30;
+  }
   if (this.alturaComponente) {
     this.alturaVisor = `${this.alturaComponente}px`;
   }

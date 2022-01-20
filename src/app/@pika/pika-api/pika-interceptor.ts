@@ -10,6 +10,7 @@ import { OAuthModuleConfig, OAuthResourceServerErrorHandler, OAuthStorage } from
 const HCULTURE: string = 'culture';
 const HDOMINIOID: string = 'did';
 const HUNIDADORGID: string = 'tid';
+const TIMEOFFSET: string = 'gmtoffset';
 
 @Injectable()
 export class PikaSessionInterceptor implements HttpInterceptor {
@@ -18,6 +19,7 @@ export class PikaSessionInterceptor implements HttpInterceptor {
   private IdUnidadOrg: string = '';
   private Token: string = '';
   private UILocale: string = '';
+  private timeZoneOffset = new Date().getTimezoneOffset();
 
   constructor(
     private sesionQuery: SesionQuery,
@@ -62,6 +64,7 @@ export class PikaSessionInterceptor implements HttpInterceptor {
     headerSettings[HDOMINIOID] = this.IdDominio;
     headerSettings[HUNIDADORGID] = this.IdUnidadOrg;
     headerSettings[HCULTURE] = this.UILocale;
+    headerSettings[TIMEOFFSET] = this.timeZoneOffset.toString();
     const newHeader = new HttpHeaders(headerSettings);
     return newHeader;
   }

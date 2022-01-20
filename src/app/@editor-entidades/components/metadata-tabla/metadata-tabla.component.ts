@@ -22,12 +22,12 @@ import { AppLogService } from '../../../@pika/pika-module';
 import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
-import { format } from 'date-fns';
+import { addMinutes, format } from 'date-fns';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
-import { Acciones, HTML_CHECKBOX, HTML_NUMBER, HTML_TEXT, tBinaryData, tBoolean, tDouble, tIndexedString, tInt32, tInt64, TipoDato, tList } from '../../../@pika/metadata';
+import { Acciones, HTML_CHECKBOX, HTML_LABEL, HTML_NUMBER, HTML_TEXT, tBinaryData, tBoolean, tDouble, tIndexedString, tInt32, tInt64, TipoDato, tList } from '../../../@pika/metadata';
 import { ConsultaBackend } from '../../../@pika/consulta';
 import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/busqueda-contenido.module';
-import { Subject, timer } from 'rxjs';
+import { AsyncSubject, Observable, Subject, timer } from 'rxjs';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -104,6 +104,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     sort: '',
     order: '',
   };
+  
+  private timeZoneOffset = new Date().getTimezoneOffset();
 
   private _CerrarDialogos() {
     if (this.dialogColPickRef && !this.dialogColPickRef.closed) this.dialogColPickRef.close();
@@ -331,7 +333,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     if (p) {
       const c = p.AtributosVistaUI.find(x => x.Plataforma === 'web');
       if (f) {
-        const fecha = new Date(f);
+        const fechaSinOffset = new Date(f);
+        const fecha = addMinutes(fechaSinOffset, (this.timeZoneOffset * -1));
         switch (c.Control) {
           case HTML_DATE:
             texto = format(fecha, 'yyyy-MM-dd');
@@ -930,13 +933,16 @@ export class MetadataTablaComponent extends EditorEntidadesBase
           .pipe(first())
           .subscribe(data => {
             if (data) {
-              this.ActualizarDatosPlantilla(data.Elementos || []);
-              this.configuration.isLoading = false;
-              this.ConteoRegistros.emit(data.ConteoTotal);
-              if (notificar) this.NotificarConteo(data.ConteoTotal);
+              this.ActualizaCamposLabel(data).pipe(first())
+              .subscribe( newdata=> {
+                this.ActualizarDatosPlantilla(newdata.Elementos || []);
+                this.configuration.isLoading = false;
+                this.ConteoRegistros.emit(newdata.ConteoTotal);
+                if (notificar) this.NotificarConteo(newdata.ConteoTotal);                
+              });
             } else {
               this.ConteoRegistros.emit(0);
-              this.NotificarErrorDatos(data.ConteoTotal);
+              this.NotificarErrorDatos(data.ConteoTotal || 0);
             }
   
             this.pagination.offset = 0;
@@ -950,17 +956,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
           .pipe(first())
           .subscribe(data => {
-  
             if (data) {
-              this.ActualizarDatosPlantilla(data.Elementos || []);
-              this.configuration.isLoading = false;
-              this.ConteoRegistros.emit(data.ConteoTotal);
-              if (notificar) this.NotificarConteo(data.ConteoTotal);
+              this.ActualizaCamposLabel(data).pipe(first())
+              .subscribe( newdata=> {
+                this.ActualizarDatosPlantilla(newdata.Elementos || []);
+                this.configuration.isLoading = false;
+                this.ConteoRegistros.emit(newdata.ConteoTotal);
+                if (notificar) this.NotificarConteo(newdata.ConteoTotal);
+              });
             } else {
               this.NotificarErrorDatos(data.ConteoTotal);
             }
-  
-            this.pagination.count = data.ConteoTotal;
+              this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
             this.IniciaTimerRefresco();
           });
@@ -969,7 +976,45 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     
   }
 
+  private ActualizaCamposLabel(data: Paginado<any>): Observable<Paginado<any>> {
+    const subject = new AsyncSubject<Paginado<any>>();
+    const etiquetas = [];
+    this.metadata.Propiedades.forEach(p=> {
+      p.AtributosVistaUI.forEach(a=> {
+        if(a.Control === HTML_LABEL) {
+          etiquetas.push(a.PropiedadId);
+        }
+      })
+    });
 
+    const valores = [];
+    data.Elementos.forEach(d=> {
+      etiquetas.forEach(e=> {
+        if(valores.indexOf(d[e])<0){
+          valores.push(d[e]);
+        }
+      })
+    });
+
+    if(valores.length > 0) {
+      this.T.ObtenerTraduccion(valores).subscribe(traducciones=> {
+        data.Elementos.forEach(d=> {
+            etiquetas.forEach(e=> {
+              d[e] = traducciones[d[e]];
+            })          
+        });
+        subject.next(data);
+        subject.complete();
+      }, () => {
+        subject.next(data);
+        subject.complete();
+      });
+    } else {
+        subject.next(data);
+        subject.complete();
+    }
+    return subject;
+  }
 
 
   private RealizaPaginadoPorObjeto() {

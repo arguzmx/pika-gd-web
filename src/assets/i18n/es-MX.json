@@ -11,6 +11,22 @@
         "perfil-usuario": "Perfil del usuario",
         "configuracion-sistema": "Configuración del sistema"
     },
+    "listas": {
+        "tareaautomatica": {
+            "unico": "Ejecución única",
+            "hora": "Por hora",
+            "diario": "Diariamente",
+            "diasemana": "Día de la semana",
+            "diames": "Día del mes",
+            "lunes": "Lunes",
+            "martes": "Martes",
+            "miercoles": "Miércoles",
+            "jueves": "Jueves",
+            "viernes":"viernes",
+            "sabado": "Sábado",
+            "domingo":"Domingo"
+        }
+    },
     "ui": {
         "salir-app": "¿Desea abandonar la aplicación?",
         "advertencia": "Advertencia",
@@ -101,7 +117,9 @@
         "solo-img": "Sólo imágenes",
         "al-inicio": "Al inicio",
         "al-final": "Al final",
-        "al-posicion": "En la posición"
+        "al-posicion": "En la posición",
+        "vista-detalle": "Modo detalle",
+        "vista-miniaturas": "Modo miniaturas"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -199,6 +217,8 @@
         "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|dvr",
         "tipodatoid": "Propiedad|Propiedades|la|las|translate",
         "valorlistaplantilla": "Valor|Valores|el|los|dvr",
+        "tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
+        "bitacoratarea": "Bitácora|Bitácoras|la|las|dvr",
         "propiedades": {
             "valorlistaplantilla": {
                 "PropiedadId": "PropiedadId",
@@ -498,6 +518,35 @@
             "usuariosrol": {
                 "RolId": "Id del rol",
                 "ApplicationUserId": "Usuario"
+            },
+            "tareaautomatica": {
+                "Id": "Id",
+                "Nombre": "Tarea",
+                "UltimaEjecucion": "Última ejecución",
+                "Exito": "Exitosa",
+                "Duracion": "Minutos",
+                "ProximaEjecucion": "Próxima ejecución",
+                "CodigoError": "Último error",
+                "Periodo": "Periodo",
+                "FechaHoraEjecucion": "Fecha ejecución",
+                "Intervalo": "Intervalo",
+                "TipoOrigenId":"TipoOrigenId",
+                "OrigenId":"OrigenId",
+                "Ensamblado": "Ensamblado",
+                "DiaMes": "Día mes",
+                "DiaSemana": "Día semana",
+                "EtiquetaIntervalo": "Intervalo",
+                "HoraEjecucion": "Hora ejecución",
+                "EtiquetaFecha": "Programación",
+                "EtiquetaPeriodo": "Periodo"
+            },
+            "bitacoratarea": {
+                "Id": "Id",
+                "TareaId": "TareaId",
+                "FechaEjecucion": "Fecha ejecución",
+                "Duracion": "Minutos",
+                "Exito": "Exitosa",
+                "CodigoError":"Último error"
             }
         }
     },

@@ -828,6 +828,69 @@ export class EntidadesService {
     return subject;
   }
 
+  public BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>, metadata?: MetadataInfo):
+    Observable<boolean> {
+    const subject = new AsyncSubject<boolean>();
+    const key = this.cache.ClaveMetadatos(tipoentidad);
+    
+    if (this.cache.has(key) && metadata == null) {
+      metadata = this.cache.get(key);
+    }
+    
+    if (metadata) {
+      const buscar: string[] = [];
+      // Inicia el proes deo busqeda
+      metadata.Propiedades.forEach(p => {
+        // realiza el análisis si la priedad es atributlo de lista
+
+        if (p.CatalogoVinculado) {
+          this.BuscaIdsParaCatalogos(p, pagina).forEach(item => buscar.push(item));
+        } else {
+          if (p.AtributoLista && p.AtributoLista.DatosRemotos && p.AtributoLista.Entidad !== '') {
+            this.BuscaIdsParaLista(p, pagina).forEach(item => buscar.push(item));
+          }
+        }
+      });
+
+      if (buscar.length > 0) {
+        // LLama a la API para obtener todos los identiicadores
+        const tasks$ = [];
+        buscar.forEach(s => {
+          const entidad = s.split('|')[0];
+          const lids = s.split('|')[1].split('&');
+          tasks$.push(this.cliente.PairListbyId(lids, entidad).pipe(first()));
+        });
+
+        // resuelve el observable al finalizar todos los threads
+        forkJoin(...tasks$).subscribe(results => {
+          let idx = 0;
+          results.forEach(element => {
+            const entidad = buscar[idx].split('|')[0];
+            element.forEach((item: ValorListaOrdenada) => {
+              if (this.ListaIds.findIndex(x => x.Id === item.Id &&
+                x.Entidad === entidad) < 0)
+                this.ListaIds.push(new TextoDesdeId(entidad, item.Id, item.Texto));
+            });
+            idx++;
+          });
+          subject.next(true);
+        }, (err) => {
+          subject.next(false);
+        }, () => {
+          subject.complete();
+        });
+      } else {
+        subject.next(true);
+        subject.complete();
+      }
+
+    } else {
+      subject.next(true);
+      subject.complete();
+    }
+
+    return subject;
+  }
 
   public ObtieneCamposCatalogo(metadata: MetadataInfo): Propiedad[] {
     const propiedades: Propiedad[] = [];
@@ -953,72 +1016,6 @@ export class EntidadesService {
     const ids = this.IdsParaCatalogos(pagina);
     return this.cliente.SinopisPorIds(consultaId, ids);
   }
-
-
-  public BuscaTextoDeIdentificadores(tipoentidad: string, pagina: Paginado<any>, metadata?: MetadataInfo):
-    Observable<boolean> {
-    const subject = new AsyncSubject<boolean>();
-    const key = this.cache.ClaveMetadatos(tipoentidad);
-    
-    if (this.cache.has(key) && metadata == null) {
-      metadata = this.cache.get(key);
-    }
-    
-    if (metadata) {
-      const buscar: string[] = [];
-      // Inicia el proes deo busqeda
-      metadata.Propiedades.forEach(p => {
-        // realiza el análisis si la priedad es atributlo de lista
-
-        if (p.CatalogoVinculado) {
-          this.BuscaIdsParaCatalogos(p, pagina).forEach(item => buscar.push(item));
-        } else {
-          if (p.AtributoLista && p.AtributoLista.DatosRemotos && p.AtributoLista.Entidad !== '') {
-            this.BuscaIdsParaLista(p, pagina).forEach(item => buscar.push(item));
-          }
-        }
-      });
-
-      if (buscar.length > 0) {
-        // LLama a la API para obtener todos los identiicadores
-        const tasks$ = [];
-        buscar.forEach(s => {
-          const entidad = s.split('|')[0];
-          const lids = s.split('|')[1].split('&');
-          tasks$.push(this.cliente.PairListbyId(lids, entidad).pipe(first()));
-        });
-
-        // resuelve el observable al finalizar todos los threads
-        forkJoin(...tasks$).subscribe(results => {
-          let idx = 0;
-          results.forEach(element => {
-            const entidad = buscar[idx].split('|')[0];
-            element.forEach((item: ValorListaOrdenada) => {
-              if (this.ListaIds.findIndex(x => x.Id === item.Id &&
-                x.Entidad === entidad) < 0)
-                this.ListaIds.push(new TextoDesdeId(entidad, item.Id, item.Texto));
-            });
-            idx++;
-          });
-          subject.next(true);
-        }, (err) => {
-          subject.next(false);
-        }, () => {
-          subject.complete();
-        });
-      } else {
-        subject.next(true);
-        subject.complete();
-      }
-
-    } else {
-      subject.next(true);
-      subject.complete();
-    }
-
-    return subject;
-  }
-
 
   public GetReport(entidad: string, reporte: IProveedorReporte, filename?: string) {
     this.cliente.GetReport(entidad, reporte, filename);

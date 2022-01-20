@@ -1,8 +1,8 @@
 <div class="row" [nbSpinner]="cargandoPaginas" nbSpinnerStatus="danger" nbSpinnerSize="large" nbSpinnerMessage="">
-    <cdk-virtual-scroll-viewport #scroller itemSize="50" minBufferPx="100" maxBufferPx="200"
+    <cdk-virtual-scroll-viewport #scroller [itemSize]="itemSize" minBufferPx="100" maxBufferPx="200"
         class="cdk-virtual-scroll-viewport">
         <div class="row" style="padding-left: 5%; padding-bottom: 15%; padding-top: 5px;" [style.height.px]="alturaVisor">
-            <ngx-thumbnail *cdkVirtualFor="let p of documento.Paginas; let i=index;" [pagina]="p"
+            <ngx-thumbnail [modoVista]="modoVista" *cdkVirtualFor="let p of documento.Paginas; let i=index;" [pagina]="p"
                 [srcThumb]="p.UrlThumbnail"></ngx-thumbnail>
         </div>
     </cdk-virtual-scroll-viewport>

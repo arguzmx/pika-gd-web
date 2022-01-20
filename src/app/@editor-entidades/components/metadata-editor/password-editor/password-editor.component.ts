@@ -1,5 +1,5 @@
 import { EditorCampo } from './../editor-campo';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
@@ -12,6 +12,14 @@ export class PasswordEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
   @ViewChild('validfield') validfield: any;
+
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
 
   isConfirm: boolean = false;
   propConfName: string = '';
@@ -52,6 +60,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.elementoVisible = true;
     this.hookEscuchaEventos();
     this.isConfirm = (this.propiedad.ControlHTML === 'passconfirm');
     this.propConfName = this.propiedad.Id + 'conf';

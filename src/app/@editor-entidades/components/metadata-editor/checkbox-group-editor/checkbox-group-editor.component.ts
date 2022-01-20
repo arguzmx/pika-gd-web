@@ -1,5 +1,5 @@
 import { EditorCampo } from './../editor-campo';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { FormGroup, FormArray, FormControl } from '@angular/forms';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
@@ -19,6 +19,15 @@ export class CheckboxGroupEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
 
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
+
+  
   valgroup: FormGroup;
   valoresOriginales: any[];
   list: ValorListaOrdenada[];
@@ -93,6 +102,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.elementoVisible = true;
     // this.hookEscuchaEventos();
     this.valoresOriginales = this.group.get(this.propiedad.Id).value;
     this.valgroup = this.group.get(this.propiedad.Id + '-valores') as FormGroup;

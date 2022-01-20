@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EditorCampo } from '../editor-campo';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
@@ -11,6 +11,14 @@ import { EventosInterprocesoService } from '../../../services/eventos-interproce
 export class StringEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
+
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
 
   isTextArea: boolean = false;
 
@@ -29,6 +37,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.elementoVisible = true;
     this.hookEscuchaEventos();
     this.isTextArea = (this.propiedad.ControlHTML === 'textarea');
   }

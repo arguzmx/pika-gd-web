@@ -1,3 +1,23 @@
-<img #thumb class="imgDefault" [id]="pagina.Id" [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
-                'imgSubSeleccionada' : paginaVisible && paginaSeleccionada}" [src]="dataUrl$ | async"
-    on-click="SeleccionaThumbnails();">
+<div *ngIf="modoMiniatura; then mini else detalle"></div>
+<ng-template #mini>
+    <img #thumb class="imgDefault" [id]="pagina.Id" [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
+    'imgSubSeleccionada' : paginaVisible && paginaSeleccionada}" [src]="dataUrl$ | async"
+        on-click="SeleccionaThumbnails();">
+</ng-template>
+<ng-template #detalle>
+    <div class="row" [ngClass]="{'renglonVisible' : paginaVisible, 'renglonSeleccionado':  paginaSeleccionada,
+                        'renglonSubSeleccionado' : paginaVisible && paginaSeleccionada}" [id]="pagina.Id"
+        on-click="SeleccionaThumbnails();">
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 5px; padding-bottom: 5px;">
+            <table width='100%'>
+                <td style="padding-right: 5px; width: 24px;">
+                    <img class="imgRenglon" #thumb [src]="dataUrl$ | async">
+                </td>
+                <td style="text-align: left;">
+                    {{pagina.Nombre}}
+                </td>
+            </table>
+        </div>
+
+    </div>
+</ng-template>

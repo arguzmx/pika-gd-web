@@ -61,8 +61,12 @@ export class EditorCampo {
     eventoMostrar(ev: Evento, a: AtributoEvento) {
         const expresion = a.Parametro.replace('{0}', String(ev.Valor));
         this.oculto = !this.evaluar(expresion);
+        this.habilitarClases(this.oculto);
     }
 
+    habilitarClases(oculto: boolean) {
+        // esxte metodo debe sobre escribirse en el control
+    }
 
     private evaluar(expresion: string):  any {
         // tslint:disable-next-line: ban

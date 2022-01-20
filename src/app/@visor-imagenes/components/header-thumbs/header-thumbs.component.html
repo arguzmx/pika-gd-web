@@ -9,6 +9,13 @@
                 <mat-icon>close</mat-icon>
             </button>
             <mat-icon class="gray-icon">more_vert</mat-icon>
+                <button *ngIf="verDetalle" mat-icon-button on-click="seModoVista('mini')" nbTooltip='{{T.t["ui.vista-miniaturas"]}}'>
+                    <mat-icon>format_list_bulleted</mat-icon>
+                </button>
+                <button *ngIf="verMiniaturas" mat-icon-button on-click="seModoVista('detalle')" nbTooltip='{{T.t["ui.vista-detalle"]}}'>
+                    <mat-icon>grid_view</mat-icon>
+                </button>
+            <mat-icon class="gray-icon">more_vert</mat-icon>
             <!-- <button mat-icon-button [nbTooltip]="soloImagenes ? '{{T.t['ui.todos-docs']}}' : '{{T.t['ui.solo-img']}}'"
                 on-click="EstableceSoloImaganes(!soloImagenes)">
                 <mat-icon [ngClass]="soloImagenes ? 'text-primary' : ''">perm_media</mat-icon>

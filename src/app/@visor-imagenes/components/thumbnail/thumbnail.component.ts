@@ -4,6 +4,9 @@ import {
   Input,
   OnDestroy,
   HostListener,
+  OnChanges,
+  SimpleChanges,
+  HostBinding,
 } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Pagina } from '../../model/pagina';
@@ -11,6 +14,7 @@ import { takeUntil, first, take, switchMap, map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MODO_VISTA_MINIATURAS } from '../../model/constantes';
 
 export enum KEY_CODE {
   SHIFT = 16,
@@ -23,10 +27,11 @@ export enum KEY_CODE {
   templateUrl: './thumbnail.component.html',
   styleUrls: ['./thumbnail.component.scss'],
 })
-export class ThumbnailComponent implements OnInit, OnDestroy {
+export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
   @Input() private srcThumb: string = '';
   @Input() pagina: Pagina;
-
+  @Input() modoVista: string = MODO_VISTA_MINIATURAS;
+  modoMiniatura: boolean = true;
   paginaVisible: boolean = false;
   paginaSeleccionada: boolean = false;
   seleccionShift: boolean = false;
@@ -38,7 +43,35 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
     private httpClient: HttpClient,
     private domSanitizer: DomSanitizer) { }
 
+ 
+    @HostBinding('class.col-lg-12')
+    @HostBinding('class.col-md-12')
+    @HostBinding('class.col-sm-12') esRenglon: boolean;
+    
+  ngOnChanges(changes: SimpleChanges): void {
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'modoVista':
+            this.estableceModoVista();
+            break;
+
+          case "srcThumb":
+            this.srcThumb$.next(this.srcThumb)
+            break;
+        }
+      }
+    }
+  }
+
+
+  estableceModoVista() {
+    this.modoMiniatura  = this.modoVista === MODO_VISTA_MINIATURAS;
+    this.esRenglon = !this.modoMiniatura;
+  }
+
   ngOnInit(): void {
+    this.esRenglon = false;
     this.EscuchaPaginaActiva();
     this.EscuchaPaginaSeleccion();
     this.EscuchaFiltroPaginas();
@@ -81,9 +114,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy {
   }
 
   private srcThumb$ = new BehaviorSubject(this.srcThumb);
-  ngOnChanges(): void {
-    this.srcThumb$.next(this.srcThumb);
-  }
+
 
   dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
 

@@ -12,6 +12,7 @@ import { pipe, Subject } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
 import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
 import { AppLogService } from "../../../@pika/servicios";
+import { MODO_VISTA_DETALLES, MODO_VISTA_MINIATURAS } from "../../model/constantes";
 import { Documento } from "../../model/documento";
 import { Pagina } from "../../model/pagina";
 import { DocumentosService } from "../../services/documentos.service";
@@ -28,9 +29,12 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
   @Output() callUpload = new EventEmitter();
   @Output() cerrarDocumento = new EventEmitter();
   @Output() cerrarVista = new EventEmitter();
+  @Output() modoVista = new EventEmitter();
   @Output() eventMuestraInfo = new EventEmitter();
   @Input() documento: Documento;
 
+  verMiniaturas: boolean = true;
+  verDetalle: boolean = false;
   crear: boolean = false;
   leer: boolean = false;
   eliminar: boolean = false;
@@ -80,6 +84,8 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
       "ui.eliminar-contenido",
       "visor.eliminar-cotenido-titulo",
       "visor.eliminar-cotenido-mensaje",
+      "ui.vista-miniaturas",
+      "ui.vista-detalle"
     ];
     this.T.ObtenerTraducciones();
   }
@@ -117,6 +123,20 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
 
   CerraVista() {
     this.cerrarVista.emit();
+  }
+
+  seModoVista(modo: string) {
+    if(modo === MODO_VISTA_MINIATURAS) {
+      this.verMiniaturas = true;
+      this.verDetalle = false;
+    }
+
+    if(modo === MODO_VISTA_DETALLES) {
+      this.verMiniaturas = false;
+      this.verDetalle = true;
+    }
+
+    this.modoVista.emit(modo);
   }
 
   doEliminar() {

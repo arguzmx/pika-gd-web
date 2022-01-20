@@ -1,5 +1,5 @@
 import { EditorCampo } from './../editor-campo';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import {
   HTML_DATE,
@@ -16,6 +16,14 @@ import { EventosInterprocesoService } from '../../../services/eventos-interproce
 export class DatetimeEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
+
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
 
   @ViewChild('dt1') date1: any;
 
@@ -37,6 +45,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.elementoVisible = true;
     this.hookEscuchaEventos();
     const webcontrol = this.propiedad.AtributosVistaUI.find(
       (x) => x.Plataforma === 'web',

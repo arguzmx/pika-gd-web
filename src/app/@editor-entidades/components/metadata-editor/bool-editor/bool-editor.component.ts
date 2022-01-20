@@ -1,5 +1,5 @@
 import { EditorCampo } from './../editor-campo';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 
@@ -11,6 +11,14 @@ import { EventosInterprocesoService } from '../../../services/eventos-interproce
 export class BoolEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
+
+  @HostBinding('class.col-lg-4')
+  @HostBinding('class.col-md-6')
+  @HostBinding('class.col-sm-12') elementoVisible: boolean;
+
+  habilitarClases(oculto: boolean) {
+    this.elementoVisible = !oculto;
+  }
 
   constructor(eventos: EventosInterprocesoService) {
     super(eventos);
@@ -27,6 +35,7 @@ implements ICampoEditable, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.elementoVisible = true;
     this.hookEscuchaEventos();
   }
 
