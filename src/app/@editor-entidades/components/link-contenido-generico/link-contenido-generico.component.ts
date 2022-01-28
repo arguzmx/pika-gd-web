@@ -131,6 +131,7 @@ export class LinkContenidoGenericoComponent implements OnInit {
     this.CreaCarpeta('Carpeta', this.elemento.PuntoMontajeId, this.elemento.RutaRepositorio)
       .pipe(first()).subscribe(c => {
         this.elemento.CarpetaId = c['Id'];
+        this.elemento["AutoNombrar"] = true;
         this.cliente.Post( this.elemento, 'Elemento').pipe(
           first()).subscribe(r => {
             if (r) {

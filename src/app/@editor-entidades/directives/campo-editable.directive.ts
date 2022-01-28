@@ -97,11 +97,12 @@ export class CampoEditableDirective
         components[vista.Control],
       );
 
-      if (vista.Control == 'select') {
+      if (vista.Control == 'select' && this.propiedad.AtributoLista.ValoresCSV) {
         const copiaP = {...this.propiedad};
-
+        copiaP.ValoresLista = [];
+        console.log(copiaP);
         if(copiaP.AtributoLista.ValoresCSV) {
-          copiaP.ValoresLista = [];
+          
           const elementos = this.propiedad.AtributoLista.ValoresCSV.split(',');
           elementos.forEach(e=>{
             if(e.indexOf('|')>0){
@@ -113,7 +114,7 @@ export class CampoEditableDirective
             }
           });
         }
-
+        console.log(copiaP.ValoresLista);
         const valores = copiaP.ValoresLista.map(v=> v.Texto);
 
         this.T.ObtenerTraduccion(valores).pipe(first())

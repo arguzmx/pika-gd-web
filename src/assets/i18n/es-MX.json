@@ -1,5 +1,5 @@
 {
-    "titulo-sitio": "PIKA-GD",
+    "titulo-sitio": "PIKA©-Gestión Documental",
     "paginascomunes": {
         "irhome": "Ir al inicio",
         "titulo404": "Página no encontrada",
@@ -13,6 +13,7 @@
     },
     "listas": {
         "tareaautomatica": {
+            "continuo": "Ejecución continua",
             "unico": "Ejecución única",
             "hora": "Por hora",
             "diario": "Diariamente",
@@ -119,7 +120,7 @@
         "al-final": "Al final",
         "al-posicion": "En la posición",
         "vista-detalle": "Modo detalle",
-        "vista-miniaturas": "Modo miniaturas"
+        "vista-miniaturas": "Modo miniaturas"		
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -217,7 +218,7 @@
         "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|dvr",
         "tipodatoid": "Propiedad|Propiedades|la|las|translate",
         "valorlistaplantilla": "Valor|Valores|el|los|dvr",
-        "tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
+		"tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
         "bitacoratarea": "Bitácora|Bitácoras|la|las|dvr",
         "propiedades": {
             "valorlistaplantilla": {
@@ -347,9 +348,9 @@
             "entradaclasificacion": {
                 "Id": "Id",
                 "Clave": "Serie",
-                "VigenciaTramite": "Años AT",
-                "VigenciaConcentracion": "Años AC",
-                "VigenciaHistorico": "Años AH",
+                "VigenciaTramite": "Años Archivo Tramite",
+                "VigenciaConcentracion": "Años Archivo Concentración",
+                "VigenciaHistorico": "Años Archivo Historico",
                 "TipoDisposicionDocumentalId": "Disposición",
                 "Eliminada": "Eliminada",
                 "TipoValoracionDocumentalId": "Valoración",
@@ -498,8 +499,8 @@
                 "ArchivoId": "Archivo Actual",
                 "EnPrestamo": "Prestado",
                 "Ampliado": "Ampliado",
-                "FechaRetencionAT": "Fecha retención AT",
-                "FechaRetencionAC": "Fecha retención AC",
+                "FechaRetencionAT": "Fecha retención Archivo Tramite",
+                "FechaRetencionAC": "Fecha retención Archivo Concetración",
                 "OrigenId": "OrigenId",
                 "Vencidos": "Dias para vencer"
             },

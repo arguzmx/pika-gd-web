@@ -162,7 +162,7 @@ export class ListEditorComponent extends EditorCampo
 
   ngOnInit(): void {
     // console.log(this.filtrosQ);
-    // console.log(this.propiedad.Id);
+    // console.log(this.propiedad);
     this.elementoVisible = true;
     this.hookEscuchaEventos();
     let aheadval = '';
