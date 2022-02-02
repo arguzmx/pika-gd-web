@@ -55,7 +55,7 @@ import {
   HTML_HIDDEN,
   HTML_CHECKBOX_MULTI,
 } from "../../../@pika/pika-module";
-import { Subject } from "rxjs";
+import { Subject, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { DiccionarioNavegacion } from "../../model/i-diccionario-navegacion";
 import { EventosInterprocesoService } from "../../services/eventos-interproceso.service";
@@ -101,6 +101,25 @@ export class MetadataEditorComponent
   public transaccionId: string;
 
   private formaCreada: boolean = false;
+
+  
+  private iteracionesTimer
+  private timerRefresco;
+  private listDone = false;
+  private IniciaTimerRefresco() {
+    this.iteracionesTimer = 10;
+    this.timerRefresco = timer(100, 500).subscribe(t => {
+      this.cdr.detectChanges();
+      this.iteracionesTimer -=1;
+      if (this.iteracionesTimer == 0){
+        this.DetieneTimerRefresco();
+      }
+    });
+  }
+
+  private DetieneTimerRefresco() {
+    this.timerRefresco.unsubscribe();
+  }
 
   // Cosntructor del componente
   constructor(
@@ -224,6 +243,13 @@ export class MetadataEditorComponent
       if (control) {
         switch (p.TipoDatoId) {
           case tString:
+            if(p.AtributosVistaUI?.findIndex(x=>x.Control=='checkboxgroupeditor') >= 0) {
+              if (entidad[p.Id] != null) {
+                if(typeof entidad[p.Id] === 'string') {
+                  entidad[p.Id] = entidad[p.Id].split(',');
+                }
+              }
+            }
             break;
           case tDouble:
             if (entidad[p.Id] != null) {
@@ -232,7 +258,7 @@ export class MetadataEditorComponent
             break;
           case tBoolean:
             if (entidad[p.Id] != null) {
-              entidad[p.Id] = entidad[p.Id] == true ? true : false;
+              entidad[p.Id] = entidad[p.Id] == true ||  entidad[p.Id] == 'true' ? true : false;
             }
             break;
           case tInt64:
@@ -257,7 +283,7 @@ export class MetadataEditorComponent
 
     const entidadcopia = {};
     for (const [key, value] of Object.entries(entidad)) {
-      if (value !== null) {
+      if (value !== null && (this.metadata.Propiedades.findIndex(p=>p.Id == key) >=0 ) ) {
         entidadcopia[key] = value;
       }
     }
@@ -270,8 +296,10 @@ export class MetadataEditorComponent
       this.applog.AdvertenciaT("editor-pika.mensajes.err-datos-novalidos");
       return;
     }
-    const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
 
+    console.log(this.formGroup.getRawValue());
+    const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
+    console.log(entidadCopiada);
     const Id = this.entidades.ObtenerIdEntidad(
       this.config.TipoEntidad,
       this.entidad
@@ -296,6 +324,7 @@ export class MetadataEditorComponent
   private ProcesaConfiguracion() {
     this._Reset();
 
+    console.log(this.entidad);
     if (this.entidad) {
       this.modoEditar = true;
     }
@@ -333,7 +362,6 @@ export class MetadataEditorComponent
           .GetFiltroBusqueda(this.metadata.Tipo, this.config.OrigenId)
           .subscribe((f) => {
             this.filtrosQ = f;
-            // console.log(this.filtrosQ);
             this.CrearForma();
           });
       } else {
@@ -431,10 +459,7 @@ export class MetadataEditorComponent
   // Actualiza los valores de la forma para la entidad
   private AsignarValoresForma(entidad: any): void {
     if (entidad) {
-      console.log(entidad);
       const controls = Object.keys(this.formGroup.controls);
-      console.log(controls);
-
       controls.forEach((control) => {
         if (this.formGroup.get(control) instanceof FormControl) {
           this.formGroup.get(control).setValue(null);
@@ -461,11 +486,11 @@ export class MetadataEditorComponent
       });
     }
     this.cdr.detectChanges();
+    this.IniciaTimerRefresco();
   }
 
   ngAfterViewInit(): void {
     this.AsignarValoresForma(this.entidad);
-    // this.cdr.detectChanges();
   }
 
   EmiteEventoCambio(Id: string, Valor: any, Transaccion: string) {

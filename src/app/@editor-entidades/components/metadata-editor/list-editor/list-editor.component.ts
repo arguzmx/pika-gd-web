@@ -3,7 +3,7 @@ import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../
 import { ICampoEditable } from './../../../model/i-campo-editable';
 import { Component, OnInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject, of } from 'rxjs';
+import { Subject, of, timer } from 'rxjs';
 import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { MatSelect } from '@angular/material/select';
@@ -159,6 +159,39 @@ export class ListEditorComponent extends EditorCampo
     this.group.get(this.propiedad.Id).patchValue(newval);
   }
 
+  private iteracionesTimer
+  private timerRefresco;
+
+  private IniciaTimerRefresco() {
+    let verificar = false;
+    this.iteracionesTimer = 3;
+    this.timerRefresco = timer(100, 500).subscribe(t => {
+      let aheadval = '';
+      if(this.group.get(this.propiedad.Id).value) {
+        this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
+        aheadval = this.propiedad.AtributoLista.Default;
+        if (this.isUpdate && aheadval) {
+          this.eventos.ValoresLista([aheadval ],
+          this.propiedad.AtributoLista.Entidad ).subscribe( items => {
+            this.elementos = items;
+            if(this.ngSelect) {
+              this.ngSelect.toggle();
+            }
+          });
+        }
+        verificar = true;
+      }
+
+      this.iteracionesTimer -=1;
+      if (verificar || this.iteracionesTimer == 0){
+        this.DetieneTimerRefresco();
+      }
+    });
+  }
+
+  private DetieneTimerRefresco() {
+    this.timerRefresco.unsubscribe();
+  }
 
   ngOnInit(): void {
     // console.log(this.filtrosQ);
@@ -166,9 +199,13 @@ export class ListEditorComponent extends EditorCampo
     this.elementoVisible = true;
     this.hookEscuchaEventos();
     let aheadval = '';
-
+    // console.log(this.propiedad);
+    // console.log(this.isUpdate);
+    // console.log(this.propiedad.AtributoLista);
+    // console.log(this.group);
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {
+        this.IniciaTimerRefresco();
         this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
         aheadval = this.propiedad.AtributoLista.Default;
       }
@@ -184,13 +221,15 @@ export class ListEditorComponent extends EditorCampo
             this.getTypeAhead();
 
             // Carga la lista de valores si es un update
-            if (this.isUpdate && aheadval) {
-              this.eventos.ValoresLista([aheadval ],
-              this.propiedad.AtributoLista.Entidad ).subscribe( items => {
-                this.elementos = items;
-                this.ngSelect.toggle();
-              });
-            }
+            // if (this.isUpdate && aheadval) {
+            //   // console.log(this.eventos.ValoresLista);
+            //   // console.log(aheadval);
+            //   this.eventos.ValoresLista([aheadval ],
+            //   this.propiedad.AtributoLista.Entidad ).subscribe( items => {
+            //     this.elementos = items;
+            //     this.ngSelect.toggle();
+            //   });
+            // }
           }
 
           if ( (!tieneEventos && !this.isTypeAhead) ||  (this.propiedad.AtributoLista.EsListaTemas) ) {

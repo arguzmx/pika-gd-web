@@ -39,6 +39,7 @@ import { MetadataTablaComponent } from '../metadata-tabla/metadata-tabla.compone
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { TipoVista } from '../../../@pika/metadata';
+import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 
 
 const CONTENIDO_BUSCAR = 'buscar';
@@ -602,19 +603,33 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     const msg = this.metadataJ.ElminarLogico
       ? 'editor-pika.mensajes.warn-crud-eliminar-logico'
       : 'editor-pika.mensajes.warn-crud-eliminar';
+    const msgs = ['ui.confirmar', msg];
     this.T.translate
-      .get(msg, { nombre: this.NodoArbolSeleccionado.texto })
+      .get(msgs, { nombre: this.NodoArbolSeleccionado.texto })
       .pipe(first())
       .subscribe((m) => {
-        this.dialogComnfirmDelRef = this.dialogService.open(
-          this.dialogConfirmDelete,
-          { context: m },
-        );
+        console.log(m);
+        this.dialogComnfirmDelRef = this.dialogService
+        .open(ConfirmacionComponent, {
+          context: {
+            titulo: m['ui.confirmar'],
+            entidades: this.entidades,
+            metadata: this.metadataJ,
+            texto: m[msg],
+            confirmarId: true,
+            confirmacionId: this.NodoArbolSeleccionado.texto
+          }
+        })
+        .onClose.subscribe(confirmacion => {
+          if(confirmacion) {
+            this.EliminarJerarquia();
+          }
+        });
       });
   }
 
   private EliminarJerarquia() {
-    this.dialogComnfirmDelRef.close();
+    // this.dialogComnfirmDelRef.close();
     const Id = this.NodoArbolSeleccionado.id;
     const nombre = this.NodoArbolSeleccionado.texto;
     this.entidades

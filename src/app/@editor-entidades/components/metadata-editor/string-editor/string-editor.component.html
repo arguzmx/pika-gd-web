@@ -11,7 +11,7 @@
 <ng-template  #textinputBlock>
         <div class="col-lg-12 col-md-12 col-sm-12 form-group" (input)="cambiovalor($event)" [formGroup]="group">
             <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
-            <input nbInput type="text" fieldSize="medium" fullWidth="true" 
+            <input nbInput type="text" fieldSize="medium" fullWidth="true"
                 [id]="propiedad.Id" [formControlName]="propiedad.Id" class="form-control" />
         </div>
 </ng-template>

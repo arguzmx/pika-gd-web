@@ -3,7 +3,16 @@
     <nb-card-body>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
-                {{texto}}
+                <div [innerHTML]="texto"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div *ngIf="confirmarId" class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                <input nbInput type="text" fieldSize="medium" fullWidth="true" 
+                [id]="idconfirmacion"  class="form-control" status='info'
+                placeholder="{{T.t['editor-pika.mensajes.confirm-crud-eliminarid']}}"
+                name="idconfirmacion" [ngModel]="idconfirmacion" (ngModelChange)="cambiaIdConfirmacion($event)"
+                />
             </div>
         </div>
     </nb-card-body>
@@ -18,7 +27,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="float-right">
-                    <button nbButton size="medium" status="primary" (click)="aceptar()">
+                    <button nbButton size="medium" [disabled]="!confirmacionActivo" status="primary" (click)="aceptar()">
                         {{ T.t["ui.aceptar"] }}
                     </button>
                 </div>

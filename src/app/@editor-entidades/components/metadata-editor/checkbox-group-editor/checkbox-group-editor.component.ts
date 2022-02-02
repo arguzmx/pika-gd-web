@@ -8,6 +8,7 @@ import { Evento } from '../../../../@pika/pika-module';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { AtributoLista } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { timer } from 'rxjs';
 
 
 @Component({
@@ -27,7 +28,9 @@ implements ICampoEditable, OnInit, OnDestroy {
     this.elementoVisible = !oculto;
   }
 
-  
+  private iteracionesTimer
+  private timerRefresco;
+   
   valgroup: FormGroup;
   valoresOriginales: any[];
   list: ValorListaOrdenada[];
@@ -84,7 +87,7 @@ implements ICampoEditable, OnInit, OnDestroy {
             v.controls.push(new FormControl(estado));
           });
           this.propiedad.ValoresLista = lst.Valores;
-
+          this.IniciaTimerRefresco();
           if (this.propiedad.OrdenarValoresListaPorNombre) {
             this.list = this.Sort('Texto');
           } else {
@@ -101,11 +104,51 @@ implements ICampoEditable, OnInit, OnDestroy {
     this.destroy();
   }
 
+  private IniciaTimerRefresco() {
+    let verificar = false;
+    this.iteracionesTimer = 3;
+    this.timerRefresco = timer(100, 500).subscribe(t => {
+
+      if(this.group.get(this.propiedad.Id).value) {
+        if((typeof this.group.get(this.propiedad.Id).value) === 'string') {
+          this.valoresOriginales = this.group.get(this.propiedad.Id).value.split(',');
+        }
+
+        if(this.valoresOriginales.length>0) {
+          verificar = true;
+        }
+
+        const v = this.valgroup.controls['valores'] as FormArray;
+        const values = [];
+        this.propiedad.ValoresLista.forEach( i => {
+          const estado: boolean = ( this.valoresOriginales.indexOf(i.Id) >= 0 ) ? true : false;
+          values.push(estado);
+        });
+        v.setValue(values);
+  
+        if(verificar) {
+          this.DetieneTimerRefresco();
+        }
+      }
+
+      this.iteracionesTimer -=1;
+      if (this.iteracionesTimer == 0){
+        this.DetieneTimerRefresco();
+      }
+    });
+  }
+
+  private DetieneTimerRefresco() {
+    this.timerRefresco.unsubscribe();
+  }
+
+
   ngOnInit(): void {
     this.elementoVisible = true;
-    // this.hookEscuchaEventos();
+    this.hookEscuchaEventos();
     this.valoresOriginales = this.group.get(this.propiedad.Id).value;
     this.valgroup = this.group.get(this.propiedad.Id + '-valores') as FormGroup;
+    
     if (this.propiedad.AtributoLista) {
       if (this.isUpdate) {
         this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
@@ -128,19 +171,20 @@ implements ICampoEditable, OnInit, OnDestroy {
     }
   }
 
+
   public change(e: any, id: any) {
-    const arr: any[] = this.group.get(this.propiedad.Id).value ;
+   
     const item = this.list.find(x => x.Id === id);
     if (item) {
       if (e) {
-        if (arr.indexOf(item.Id) < 0) arr.push(item.Id);
+        if (this.valoresOriginales.indexOf(item.Id) < 0) this.valoresOriginales.push(item.Id);
       } else {
-        const index = arr.indexOf(item.Id);
-        if ( index >= 0) arr.splice(index, 1);
+        const index = this.valoresOriginales.indexOf(item.Id);
+        if ( index >= 0) this.valoresOriginales.splice(index, 1);
       }
     }
-    this.group.get(this.propiedad.Id).setValue(arr);
-    this.eventoCambiarValor(arr);
+    this.group.get(this.propiedad.Id).setValue(this.valoresOriginales);
+    this.eventoCambiarValor(this.valoresOriginales);
   }
 
   Sort(by: string) {

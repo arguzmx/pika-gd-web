@@ -12,9 +12,9 @@ export class Traductor {
   public t: object;
 
   // Obtiene las tradcucciones
-  ObtenerTraducciones(): void {
+  ObtenerTraducciones(interpolateParams?: Object): void {
     this.translate
-      .get(this.ts)
+      .get(this.ts, interpolateParams)
       .pipe(first())
       .subscribe((res) => {
         this.t = res;

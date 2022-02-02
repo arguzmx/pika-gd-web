@@ -593,6 +593,7 @@
             "err-config-vinculo": "La configuración del vínculo no es válida",
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado será permanente y no podrá ser revertido.",
             "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido.",
+            "confirm-crud-eliminarid": "Digite {{nombre}} para validar.",
             "ok-tema-add": "El tema ha sido adicionado",
             "err-tema-add": "Error al añadir tema"
         }
