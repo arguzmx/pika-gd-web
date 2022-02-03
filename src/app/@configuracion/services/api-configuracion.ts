@@ -6,16 +6,24 @@ import { Observable } from 'rxjs';
 import { AppLogService, ValorListaOrdenada } from '../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { ActDominioOU } from '../model/act-dominio-ou';
+import { ReporteSalud } from '../model/reporte-salud';
 
 @Injectable()
 export class ApiConfiguracion {
+  private endpointSalud: string;
 
+  private DepuraUrl(url: string): string {
+    return url.replace(/\/$/, '') + '/';
+  }
   constructor(
     private app: AppConfig,
     private http: HttpClient,
     private applog: AppLogService,
     private ts: TranslateService,
-  ) { }
+  ) { 
+
+    this.endpointSalud = this.DepuraUrl(this.app.config.pikaApiUrl) + `health`;
+  }
 
   private CrearEndpoint(sufijo: string): string {
     return this.app.config.apiUrl.replace(/\/$/, '') + '/' + sufijo;
@@ -84,6 +92,9 @@ export class ApiConfiguracion {
     return this.http
       .get<ValorListaOrdenada[]>(`${url}${qs}`);
   }
-
+  
+  ObtienePermisoPuntoMontaje(): Observable<ReporteSalud> {
+    return this.http.get<ReporteSalud>(this.endpointSalud);
+  }
 }
 

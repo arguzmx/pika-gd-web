@@ -11,6 +11,15 @@
         "perfil-usuario": "Perfil del usuario",
         "configuracion-sistema": "Configuración del sistema"
     },
+    "componentes": {
+        "monitor-salud": {
+            "titulo": "Estado servidores del sistema",
+            "identityserver": "Identidad",
+            "mysql": "Base de datos", 
+            "rabbitmq":  "Bus de eventos",
+            "elasticsearch": "Base indexado"
+        }
+    },
     "listas": {
         "tareaautomatica": {
             "continuo": "Ejecución continua",

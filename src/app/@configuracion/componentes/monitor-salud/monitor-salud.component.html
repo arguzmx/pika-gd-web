@@ -1,0 +1,35 @@
+<table>
+    <tr>
+        <td>
+            <mat-icon
+            [ngClass]="{'green-icon': reporte.entries.identityserver.status==='Healthy', 'red-icon': reporte.entries.identityserver.status!=='Healthy'}">
+                lightbulb</mat-icon>
+        </td>
+        <td>{{T.t['componentes.monitor-salud.identityserver']}}</td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon
+            [ngClass]="{'green-icon': reporte.entries.elasticsearch.status==='Healthy', 'red-icon': reporte.entries.elasticsearch.status!=='Healthy'}">
+                lightbulb</mat-icon>
+        </td>
+        <td>{{T.t['componentes.monitor-salud.elasticsearch']}}</td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon
+            [ngClass]="{'green-icon': reporte.entries.rabbitmq.status==='Healthy', 'red-icon': reporte.entries.rabbitmq.status!=='Healthy'}">
+                lightbulb</mat-icon>
+        </td>
+        <td>{{T.t['componentes.monitor-salud.rabbitmq']}}</td>
+
+    </tr>
+    <tr>
+        <td>
+            <mat-icon
+            [ngClass]="{'green-icon': reporte.entries.mysql.status==='Healthy', 'red-icon': reporte.entries.mysql.status!=='Healthy'}">
+                lightbulb</mat-icon>
+        </td>
+        <td>{{T.t['componentes.monitor-salud.mysql']}}</td>
+    </tr>
+</table>

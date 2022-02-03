@@ -13,7 +13,6 @@ import { InicioComponent } from './comunes/inicio/inicio.component';
 import { DesconocidoComponent } from './comunes/desconocido/desconocido.component';
 import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-busqueda-contenido.component';
 import { ConfiguracionModule } from '../@configuracion/configuracion.module';
-
 @NgModule({
   imports: [
     VisorImagenesModule,

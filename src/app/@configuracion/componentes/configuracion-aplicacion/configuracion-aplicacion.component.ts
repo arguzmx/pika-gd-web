@@ -16,6 +16,7 @@ import { ApiConfiguracion } from '../../services/api-configuracion';
 })
 export class ConfiguracionAplicacionComponent implements OnInit {
 
+  cargandoSalud: boolean = true;
   domainForm: FormGroup;
   public T: Traductor;
 
@@ -34,6 +35,9 @@ export class ConfiguracionAplicacionComponent implements OnInit {
 
   }
 
+  estadoCargaSalud(estadoCarga: boolean) {
+    this.cargandoSalud = !estadoCarga;
+  }
 
   ngOnInit(): void {
     this.CargaTraducciones();    
@@ -68,7 +72,8 @@ export class ConfiguracionAplicacionComponent implements OnInit {
       'titulo.configuracion-sistema',
       'ui.dominio-actualizar',
       'ui.dominio-dominio-actualizar',
-      'ui.dominio-unidad-actualizar'
+      'ui.dominio-unidad-actualizar',
+      'componentes.monitor-salud.titulo'
     ];
     this.T.ObtenerTraducciones();
   }

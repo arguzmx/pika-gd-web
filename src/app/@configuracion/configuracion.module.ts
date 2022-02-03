@@ -24,6 +24,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.module';
 import { ThemeModule } from '../@theme/theme.module';
 import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cambiar-contrasena.component';
+import { MonitorSaludComponent } from './componentes/monitor-salud/monitor-salud.component';
 
 
 
@@ -71,10 +72,10 @@ import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cam
     NbEvaIconsModule, 
     NbIconModule
   ],
-  declarations: [PerfilUsuarioComponent, ConfiguracionAplicacionComponent, CambiarContrasenaComponent],
+  declarations: [PerfilUsuarioComponent, ConfiguracionAplicacionComponent, CambiarContrasenaComponent, MonitorSaludComponent],
   exports: [CambiarContrasenaComponent]
 })
 class ConfiguracionModule { }
 
 // el orden en el modulo debe ser imports, declarations, exports para poder exponerlos a angular
- export {ConfiguracionModule, ConfiguracionAplicacionComponent, PerfilUsuarioComponent };
+ export {ConfiguracionModule, ConfiguracionAplicacionComponent, PerfilUsuarioComponent, MonitorSaludComponent};
