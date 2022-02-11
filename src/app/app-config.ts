@@ -27,7 +27,7 @@ export class AppConfig {
             return this.client.get<ApplicationConfiguration>(url).subscribe(r=>{
                 this.config = r;
                 if (!this.config.healthendpoint) {
-                    this.config.pikaApiUrl = 'servicios/health';
+                    this.config.healthendpoint = 'health';
                 }
                 resolve(true);
             }, (err)=>{
