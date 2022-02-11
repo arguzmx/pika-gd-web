@@ -11,6 +11,7 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { LocalStorageService } from 'ngx-localstorage';
 
 
 @Component({
@@ -56,6 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private storageService: LocalStorageService,
               private sesion: SesionStore,
               private translate: TranslateService,
               private dialog: NbDialogService,
@@ -170,6 +172,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   salir():void {
+    this.storageService.remove("login");
+    this.storageService.set("ensesion", -1);
     this.auth.logOut();
   }
 

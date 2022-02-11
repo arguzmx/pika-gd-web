@@ -14,6 +14,7 @@
     "componentes": {
         "monitor-salud": {
             "titulo": "Estado servidores del sistema",
+            "nosaludable": "El servidor puede permitir el acceso", 
             "identityserver": "Identidad",
             "mysql": "Base de datos", 
             "rabbitmq":  "Bus de eventos",

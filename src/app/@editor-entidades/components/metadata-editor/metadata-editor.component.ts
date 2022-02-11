@@ -297,9 +297,7 @@ export class MetadataEditorComponent
       return;
     }
 
-    console.log(this.formGroup.getRawValue());
     const entidadCopiada = this.ClonaEntidad(this.formGroup.getRawValue());
-    console.log(entidadCopiada);
     const Id = this.entidades.ObtenerIdEntidad(
       this.config.TipoEntidad,
       this.entidad
@@ -324,7 +322,6 @@ export class MetadataEditorComponent
   private ProcesaConfiguracion() {
     this._Reset();
 
-    console.log(this.entidad);
     if (this.entidad) {
       this.modoEditar = true;
     }

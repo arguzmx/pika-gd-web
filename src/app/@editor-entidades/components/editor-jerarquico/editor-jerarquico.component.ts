@@ -608,7 +608,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       .get(msgs, { nombre: this.NodoArbolSeleccionado.texto })
       .pipe(first())
       .subscribe((m) => {
-        console.log(m);
+
         this.dialogComnfirmDelRef = this.dialogService
         .open(ConfirmacionComponent, {
           context: {

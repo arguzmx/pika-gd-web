@@ -16,7 +16,9 @@ export class MonitorSaludComponent implements OnInit {
   public T: Traductor;
 
   @Output() DatosListos = new EventEmitter();
+  @Output() ServidorSaludable = new EventEmitter();
   reporte: ReporteSalud = this.reporteVacio();
+
   constructor(
     private serviciosGenerales: ApiConfiguracion,
     ts: TranslateService,
@@ -29,12 +31,15 @@ export class MonitorSaludComponent implements OnInit {
   
   ngOnInit(): void {
     this.DatosListos.emit(false);
-
+    this.ServidorSaludable.emit(false);
     this.serviciosGenerales
-      .ObtienePermisoPuntoMontaje()
+      .ObtieneEstadoServidor()
       .pipe(first())
       .subscribe(
         (data) => {
+          if(data.status == 'Healthy') {
+            this.ServidorSaludable.emit(true);
+          }
           this.reporte = data;
           this.DatosListos.emit(true);
         },

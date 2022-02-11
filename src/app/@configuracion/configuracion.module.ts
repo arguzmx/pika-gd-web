@@ -73,7 +73,7 @@ import { MonitorSaludComponent } from './componentes/monitor-salud/monitor-salud
     NbIconModule
   ],
   declarations: [PerfilUsuarioComponent, ConfiguracionAplicacionComponent, CambiarContrasenaComponent, MonitorSaludComponent],
-  exports: [CambiarContrasenaComponent]
+  exports: [CambiarContrasenaComponent, MonitorSaludComponent]
 })
 class ConfiguracionModule { }
 

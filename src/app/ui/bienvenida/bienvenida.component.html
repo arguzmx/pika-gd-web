@@ -9,19 +9,23 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                
-                                        <div class="col text-center">
-                                        <img src="../../../assets/images/logo_pika.png">
-                                        <br>
-                                        <button nbButton on-click="login()" aria-label="Iniciar sesión">
-                                            <mat-icon>fingerprint</mat-icon>
-                                            Iniciar Sesión
-                                        </button>
-                                        </div>
+                                <div class="col text-center">
+                                    <img src="../../../assets/images/logo_pika.png">
+                                    <br>
+                                    <button [disabled]="!servidorSaludable" nbButton on-click="login()"
+                                        aria-label="Iniciar sesión">
+                                        <mat-icon>fingerprint</mat-icon>
+                                        Iniciar Sesión
+                                    </button>
+                                    <div *ngif="cargaFinalizada && !servidorSaludable">{{T.t['componentes.monitor-salud.nosaludable']}}</div>
+                                </div>
+                                <div class="pt-4 pb-2"><label class="text-info-focus"> {{T.t['componentes.monitor-salud.titulo']}}</label></div>
+                                <ngx-monitor-salud (DatosListos)="DatosListos($event)" (ServidorSaludable)="ServidorSaludable($event)" ></ngx-monitor-salud>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="padded">
                                     <h2>Noticias</h2>
+
                                 </div>
                             </div>
                         </div>

@@ -13,6 +13,7 @@ export interface ApplicationConfiguration {
     uploadUrl: string,
     visordUrl: string,
     mediaUrl: string,
+    healthendpoint: string;
 }
 
 @Injectable()
@@ -21,10 +22,13 @@ export class AppConfig {
 
     public config: ApplicationConfiguration = null;
     load() {
-        var url = environment.production ? "./config.json" : "./config.json"; 
+        var url = environment.production ? './config.json' : './config.json'; 
         return new Promise((resolve, reject) => {
             return this.client.get<ApplicationConfiguration>(url).subscribe(r=>{
                 this.config = r;
+                if (!this.config.healthendpoint) {
+                    this.config.healthendpoint = 'servicios/health';
+                }
                 resolve(true);
             }, (err)=>{
                 resolve(false);

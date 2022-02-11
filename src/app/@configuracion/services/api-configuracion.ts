@@ -22,7 +22,7 @@ export class ApiConfiguracion {
     private ts: TranslateService,
   ) { 
 
-    this.endpointSalud = this.DepuraUrl(this.app.config.pikaApiUrl) + `health`;
+    this.endpointSalud = this.DepuraUrl(this.app.config.pikaApiUrl) + this.app.config.healthendpoint;
   }
 
   private CrearEndpoint(sufijo: string): string {
@@ -93,7 +93,7 @@ export class ApiConfiguracion {
       .get<ValorListaOrdenada[]>(`${url}${qs}`);
   }
   
-  ObtienePermisoPuntoMontaje(): Observable<ReporteSalud> {
+  ObtieneEstadoServidor(): Observable<ReporteSalud> {
     return this.http.get<ReporteSalud>(this.endpointSalud);
   }
 }

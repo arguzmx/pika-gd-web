@@ -10,7 +10,7 @@ import { EntidadesService } from '../../services/entidades.service';
   templateUrl: './confirmacion.component.html',
   styleUrls: ['./confirmacion.component.scss']
 })
-export class ConfirmacionComponent implements OnInit, OnChanges {
+export class ConfirmacionComponent implements OnInit {
 
   public T: Traductor;
   @Input() titulo: string;
@@ -28,13 +28,8 @@ export class ConfirmacionComponent implements OnInit, OnChanges {
     this.T = new Traductor(ts);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
-
   ngOnInit(): void {
     this.CargaTraducciones();
-    console.log(this.confirmarId);
     if(this.confirmarId) {
       this.confirmacionActivo = false;
     }
