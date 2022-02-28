@@ -944,9 +944,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               this.ConteoRegistros.emit(0);
               this.NotificarErrorDatos(data.ConteoTotal || 0);
             }
-  
-            this.pagination.offset = 0;
-            this.pagination.limit = 10
+
+            this.pagination.offset = data.Indice + 1;
+            this.pagination.limit = data.Tamano;
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
             this.IniciaTimerRefresco();
