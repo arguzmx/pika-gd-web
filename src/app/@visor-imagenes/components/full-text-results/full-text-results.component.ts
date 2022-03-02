@@ -1,6 +1,10 @@
-import { Highlight, HighlightHit } from './../../../@busqueda-contenido/model/highlight-hit';
+import { Highlight, HighlightHit, HighlightProcesado } from './../../../@busqueda-contenido/model/highlight-hit';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, TemplateRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
+import { Documento } from '../../model/documento';
+import { TranslateService } from '@ngx-translate/core';
+import { AppLogService } from '../../../@pika/pika-module';
+import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 
 @Component({
   selector: 'ngx-full-text-results',
@@ -13,14 +17,27 @@ export class FullTextResultsComponent implements OnInit, OnChanges {
   @ViewChild('strHTMLTpl', { static: true }) strHTMLTpl: TemplateRef<any>;
   @Output() NuevaSeleccion = new EventEmitter();
   @Input() hit: HighlightHit;
-  public highlights: Highlight[] = [];
+  @Input() documento: Documento;
+  
+  public T: Traductor;
+  public highlights: HighlightProcesado[] = [];
+  public highlightsTmp: Highlight[] = [];
   public configuration: Config;
   public columns: Columns[];
 
   public entidadseleccionada: any = null;
   public renglonSeleccionado: number = -1;
   
-  constructor() { }
+  constructor(ts: TranslateService,
+    applog: AppLogService,) {
+      this.T = new Traductor(ts);
+      this.CargaTraducciones();
+  }
+
+  private CargaTraducciones() {
+    this.T.ts = ['busqueda.col-highlight', 'busqueda.col-posicion', 'busqueda.col-documento'];
+    this.T.ObtenerTraducciones();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -35,14 +52,33 @@ export class FullTextResultsComponent implements OnInit, OnChanges {
   }
 
   private procesaConfiguracion() {
-    this.highlights = this.hit.Highlights;
+    this.configureTable();
+    this.highlightsTmp = this.hit.Highlights;
+    const tmp: HighlightProcesado[] = [];
+    if(this.documento) {
+      this.highlightsTmp.forEach(h=> {
+          const item = this.documento.Paginas.find(p => p.Id == h.ParteId);
+          if(item) {
+            if (item.EsPDF) {
+              tmp.push( { ParteNombre:item.Nombre, ParteId: h.ParteId, Pagina: `${String(item.Indice)} / ${String(h.Pagina)}`, Texto: h.Texto })
+            } else {
+              tmp.push( { ParteNombre:item.Nombre, ParteId: h.ParteId, Pagina: String(item.Indice), Texto: h.Texto })
+            }
+          } 
+      });
+    }
+    this.highlights = tmp;
   }
 
   ngOnInit(): void {
+    
+  }
+
+  private configureTable() {
     this.columns = [
-      { key: 'ParteId', title: 'Elemento',  width: '5%'  },
-      { key: 'Pagina', title: 'Pagina', width: '5%' },
-      { key: 'Texto', title: 'Texto', width: '90%', cellTemplate: this.strHTMLTpl },
+      // { key: 'ParteNombre', title: this.T.t['busqueda.col-documento'],  width: '5%'  },
+      { key: 'Texto', title: this.T.t['busqueda.col-highlight'], width: '90%', cellTemplate: this.strHTMLTpl },
+      { key: 'Pagina', title: this.T.t['busqueda.col-posicion'], width: '10%' },
     ];
     this.configuration = { ...DefaultConfig };
   }

@@ -390,7 +390,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   // recibe el evento de nueva entidad desde el editor
   public NuevaEntidad(entidad: any) {
     this.tablas.first.LimpiarSeleccion();
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, true);
   }
 
   // Recibe el evento de nueva selección desde la tabla
@@ -425,7 +425,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   public EntidadActualizada(entidad: any) {
     this.tablas.first.LimpiarSeleccion();
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, false);
   }
 
   public CapturaFinalizada() {
@@ -434,7 +434,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
 
   public refrescarTabla(): void {
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, false);
   }
 
   public mostrarVinculos(): void {
@@ -532,7 +532,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
               this.entidad[vinculo.PropiedadHijo], [
               this.entidad[vinculo.PropiedadIdMiembro]]).pipe(first())
               .subscribe(resultado => {
-                if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+                if (resultado) this.tablas.first.obtenerPaginaDatos(false, true);
               });
           });
         break;
@@ -540,7 +540,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       default:
         this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
           .pipe(first()).subscribe(resultado => {
-            if (resultado) this.tablas.first.obtenerPaginaDatos(false);
+            if (resultado) this.tablas.first.obtenerPaginaDatos(false, true);
           });
         break;
     }
@@ -563,7 +563,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;
-    this.tablas.first.obtenerPaginaDatos(true);
+    this.tablas.first.obtenerPaginaDatos(true, true);
   }
 
   public ConteoRegistros(total: number): void {
@@ -586,7 +586,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const cache: FiltroConsulta[] = (this.GetFiltrosDeafault());
     this.filtrosActivos = false;
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
-    this.tablas.first.obtenerPaginaDatos(true);
+    this.tablas.first.obtenerPaginaDatos(true, true);
     this.entidades.EmiteEventoFiltros(EventosFiltrado.EliminarFiltros);
   }
 
@@ -823,7 +823,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
               this.entidades.SeleccionEliminar(this.idSeleccion, this.metadata.Tipo, ids).pipe(first())
                 .subscribe(eliminada => {
                   if (eliminada) {
-                    this.tablas.first.GetDataPage(true);
+                    this.tablas.first.GetDataPage(true, true);
                   }
                 });
             }
@@ -850,7 +850,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
           this.entidades.SeleccionVaciar(this.idSeleccion , this.metadata.Tipo).pipe(first())
           .subscribe(eliminada => {
               if (eliminada) {
-                this.tablas.first.GetDataPage(true);
+                this.tablas.first.GetDataPage(true, true);
               }
           });
         }

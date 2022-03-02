@@ -10,3 +10,10 @@ export interface Highlight {
     Pagina: number;
     Texto: string;
 }
+
+export interface HighlightProcesado {
+    ParteNombre: string;
+    ParteId: string;
+    Pagina: string;
+    Texto: string;
+}

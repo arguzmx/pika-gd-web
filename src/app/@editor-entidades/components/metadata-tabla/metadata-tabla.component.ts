@@ -207,7 +207,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             break;
 
           case 'idSeleccion':
-              this.GetDataPage(true);
+              this.GetDataPage(true, true);
               break;            
         }
       }
@@ -243,7 +243,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       this.columnasBase = this.GetColumnasTabla();
       this.EstableceColumnas(this.columnasBase);
       if (!this.busuedaPersonalizada) {
-        this.GetDataPage(false);
+        this.GetDataPage(false, true);
       }
     }
   }
@@ -692,15 +692,15 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.pagination = { ...this.pagination };
     if (this.busuedaPersonalizada) {
-        this.obtenerPaginaPeronalizada(false);
+        this.obtenerPaginaPeronalizada(false, false);
     } else {
-      this.obtenerPaginaDatos(false);
+      this.obtenerPaginaDatos(false, false);
     }
 
   }
 
   // Obtiene una nueva página de datos
-  public obtenerPaginaPeronalizada(notificar: boolean): void {
+  public obtenerPaginaPeronalizada(notificar: boolean, reiniciarPaginado: boolean): void {
 
     this.consultaIds.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
     this.consultaIds.tamano = this.pagination.limit;
@@ -709,7 +709,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if (this.plantillaSeleccionada) {
        if(this.EsPropiedadExtendida(this.pagination.sort)) {
-          this.RealizaPaginadoMetadatosPersonalizada();
+          this.RealizaPaginadoMetadatosPersonalizada(reiniciarPaginado);
           return;
        } 
     } 
@@ -717,7 +717,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   // Obtiene una nueva página de datos
-  public obtenerPaginaDatos(notificar: boolean): void {
+  public obtenerPaginaDatos(notificar: boolean, reiniciarPaginado: boolean): void {
 
     if (this.plantillaSeleccionada) {
        if(this.EsPropiedadExtendida(this.pagination.sort)) {
@@ -725,12 +725,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
           return;
        } 
     } 
-    this.GetDataPage(notificar);
+    this.GetDataPage(notificar, reiniciarPaginado);
   }
 
 
   // ONtiene una pagina de datis a partir de los metadtos
-  private RealizaPaginadoMetadatosPersonalizada() {
+  private RealizaPaginadoMetadatosPersonalizada(reiniciarPaginado: boolean) {
     
     const consultameta: Consulta = {
       indice: (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1,
@@ -776,7 +776,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     });
 
     this.consulta.consecutivo = 0;
-    this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+    this.consulta.indice = reiniciarPaginado ? 1 : (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
     this.consulta.tamano = this.pagination.limit;
     this.consulta.ord_columna = this.pagination.sort;
     this.consulta.ord_direccion = this.pagination.order;
@@ -833,7 +833,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
 
-  // ONtiene una pagina de datis a partir de los metadtos
+  // ONtiene una pagina de datos a partir de los metadtos
   private RealizaPaginadoMetadatos() {
     
     const consultameta: Consulta = {
@@ -907,17 +907,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
 
  // Ontiene una página de datos a partir de las entidades de la tabla
-  public GetDataPage(notificar: boolean) {
+  public GetDataPage(notificar: boolean, reiniciarPaginado: boolean) {
 
     if(this.config){
       this.consulta.FiltroConsulta = this.cacheFilros.GetCacheFiltros(this.config.TransactionId || "" );
       this.consulta.IdSeleccion = this.idSeleccion ? this.idSeleccion:  null;
       this.consulta.consecutivo = 0;
-      this.consulta.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
+      this.consulta.indice =  reiniciarPaginado ? 0 : (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
       this.consulta.tamano = this.pagination.limit;
       this.consulta.ord_columna = this.pagination.sort;
       this.consulta.ord_direccion = this.pagination.order;
       
+
       this.consulta = { ...this.consulta };
       this.AnularSeleccion();
       this.data = [];
@@ -945,7 +946,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               this.NotificarErrorDatos(data.ConteoTotal || 0);
             }
 
-            this.pagination.offset = data.Indice + 1;
+            this.pagination.offset = reiniciarPaginado ? 1 : data.Indice + 1;
             this.pagination.limit = data.Tamano;
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
@@ -1036,7 +1037,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.consulta.ord_columna = this.pagination.sort;
         this.consulta.ord_direccion = this.pagination.order;
         this.consulta = { ...this.consulta };
-        this.GetDataPage(false);
+        this.GetDataPage(false, true);
       }
     }
   }

@@ -27,7 +27,9 @@
                   </ngx-header-thumbs>
                   <nb-tabset fullWidth accent="danger">
                     <nb-tab *ngIf="MostrarResultadosTexto" tabTitle="Búsqueda" [active]="true">
-                      <ngx-full-text-results [hit]="highlightHit" (NuevaSeleccion)="NuevaSeleccion($event)">
+                      <ngx-full-text-results 
+                        [documento]="documento"
+                        [hit]="highlightHit" (NuevaSeleccion)="NuevaSeleccion($event)">
                       </ngx-full-text-results>
                     </nb-tab>
                     <nb-tab tabTitle="Documento" [active]="!MostrarResultadosTexto">

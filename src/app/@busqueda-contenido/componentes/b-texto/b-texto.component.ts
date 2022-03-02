@@ -29,7 +29,7 @@ export class BTextoComponent implements OnInit, AfterViewInit {
   private CargaTraducciones() {
     this.T.ts = ['busqueda.phocr', 'busqueda.fuzzy',
     , 'busqueda.fuzzy-exacta', , 'busqueda.fuzzy-alta', 
-    , 'busqueda.fuzzy-media'];
+    , 'busqueda.fuzzy-media', 'busqueda.fuzzy-baja', 'busqueda.fuzzy-similar'];
     this.T.ObtenerTraducciones();
   }
 
@@ -42,7 +42,7 @@ export class BTextoComponent implements OnInit, AfterViewInit {
       texto: new FormControl(),
       fuzzy: new FormControl()
     });
-    this.formOCR.get("fuzzy").setValue('0');
+    this.formOCR.get("fuzzy").setValue('1');
   }
 
   ngOnInit(): void {

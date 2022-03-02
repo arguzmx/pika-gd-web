@@ -57,7 +57,7 @@ export class HostVisorComponent
   verificandoPermisos: boolean = true;
   accesoPermitido: boolean = false;
 
-  @ViewChild("thumbnails", { static: true })
+  @ViewChild("thumbnails", { static: false })
   thumbnails: HostThumbnailsComponent;
 
   @Output() cerrarDocumento = new EventEmitter();

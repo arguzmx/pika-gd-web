@@ -176,7 +176,12 @@
         "fuzzy": "Similitud",
         "fuzzy-exacta": "Exacta",
         "fuzzy-alta": "Alta",
-        "fuzzy-media": "Media"
+        "fuzzy-media": "Media",
+        "fuzzy-baja": "Baja",
+        "fuzzy-similar": "Similar", 
+        "col-documento": "Documento",
+        "col-posicion": "Página",
+        "col-highlight": "Texto"
     },
     "permisos": {
         "nombre": "Permisos",
@@ -512,7 +517,9 @@
                 "FechaRetencionAT": "Fecha retención Archivo Tramite",
                 "FechaRetencionAC": "Fecha retención Archivo Concetración",
                 "OrigenId": "OrigenId",
-                "Vencidos": "Dias para vencer"
+                "Vencidos": "Dias para vencer",
+                "UbicacionCaja": "Ubicación Caja",
+                "UbicacionRack": "Ubicación Anaquél"
             },
             "ampliacion": {
                 "Id": "Id",

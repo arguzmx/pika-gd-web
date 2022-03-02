@@ -449,7 +449,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   public NuevaEntidadC(entidad: any) {
     this.RemoverSeleccionC();
     this.tablas.first.LimpiarSeleccion();
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, true);
   }
 
   // recibe el evento de entidad actualizada par la jerquia
@@ -475,7 +475,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   public EntidadActualizadaC(entidad: any) {
     this.RemoverSeleccionC();
     this.tablas.first.LimpiarSeleccion();
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, false);
   }
 
   // La captura de la entidad jerarquica ha finalizado
@@ -490,7 +490,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   public refrescarTabla(): void {
     this.RemoverSeleccionC();
-    this.tablas.first.obtenerPaginaDatos(false);
+    this.tablas.first.obtenerPaginaDatos(false, false);
   }
 
   public mostrarVinculos(): void {
@@ -744,7 +744,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       .subscribe((resultado) => {
         if (resultado) {
           this.RemoverSeleccionC();
-          this.tablas.first.obtenerPaginaDatos(false);
+          this.tablas.first.obtenerPaginaDatos(false, true);
         }
       });
   }
@@ -784,7 +784,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     this.filtrosActivos = conteoFiltrosDefault !== defaults.length;
     this.cacheFilros.SetCacheFiltros(this.configC.TransactionId, cache);
     this.VistaTrasera = false;
-    this.tablas.first.obtenerPaginaDatos(true);
+    this.tablas.first.obtenerPaginaDatos(true, true);
   }
 
 public AlternatCheckboxes() {
@@ -817,7 +817,7 @@ public AlternatCheckboxes() {
     }
     this.filtrosActivos = false;
     this.cacheFilros.SetCacheFiltros(this.configC.TransactionId, cache);
-    this.tablas.first.obtenerPaginaDatos(true);
+    this.tablas.first.obtenerPaginaDatos(true, true);
   }
 
   public borrarFiltrosBuscador(): void {
