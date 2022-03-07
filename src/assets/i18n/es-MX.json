@@ -432,7 +432,8 @@
                 "VolumenId": "Volumen",
                 "CarpetaId": "Carpeta",
                 "PermisoId": "Permiso",
-                "Versionado": "Versionado"
+                "Versionado": "Versionado",
+                "ConteoAnexos": "Páginas" 
             },
             "tipoarchivo": {
                 "Id": "Id",

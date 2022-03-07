@@ -12,6 +12,6 @@
 // ---------------------------------------------------
 export const environment = {
   production: false,
-  version: '1.3.3'
+  version: '1.3.5'
 };
 

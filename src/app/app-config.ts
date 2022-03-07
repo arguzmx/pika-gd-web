@@ -25,6 +25,18 @@ export class AppConfig {
         var url = environment.production ? './config.json' : './config.json'; 
         return new Promise((resolve, reject) => {
             return this.client.get<ApplicationConfiguration>(url).subscribe(r=>{
+                if(!r.authUrl.endsWith('/')) {
+                    r.authUrl = `${r.authUrl}/`;
+                }
+
+                if(!r.pikaApiUrl.endsWith('/')) {
+                    r.pikaApiUrl = `${r.pikaApiUrl}/`;
+                }
+
+                if(!r.apiUrl.endsWith('/')) {
+                    r.apiUrl = `${r.apiUrl}/`;
+                }
+                
                 this.config = r;
                 if (!this.config.healthendpoint) {
                     this.config.healthendpoint = 'health';
