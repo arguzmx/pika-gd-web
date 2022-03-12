@@ -29,7 +29,6 @@ import { Acciones, MetadataInfo, EntidadVinculada, TipoCardinalidad,
   Eventos, Evento, HTML_DATETIME, HTML_DATE, HTML_TIME,
   AtributoEvento, IProveedorReporte, HTML_SELECT_MULTI, LinkVista, ParametroLinkVista } from './metadata/index';
 import { NodoJerarquico, Operacion, FiltroConsulta, Consulta, TextpOperador, Paginado } from './consulta/index';
-import { AppLogService } from './servicios/index';
 import { SesionQuery, AppBusStore, PropiedadesBus, SesionStore, AppBusQuery } from './state/index';
 import { TraduccionEntidad } from './comunes/index';
 import { DominioActivo, UnidadOrganizacionalActiva } from './sesion';
@@ -44,7 +43,7 @@ import { RequestValoresPlantilla } from './metadata/request-valores-plantilla';
 import { PropiedadesExtendidas, PropiedadExtendida, ValoresEntidad } from './consulta/propiedades-extendidas';
 import { RespuestaComandoWeb } from './comunes/respuesta-comando-web';
 import { PermisoPuntoMontaje } from './conteido/permiso-punto-montaje';
-
+import { PostTareaEnDemanda } from './modelos/post-tareaendemanda';
 @NgModule({
   imports: [],
   declarations: [],
@@ -54,8 +53,8 @@ import { PermisoPuntoMontaje } from './conteido/permiso-punto-montaje';
 class PikaModule {
 }
 
-export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogService,
-  EntidadVinculada, TipoCardinalidad, TipoDespliegueVinculo, FiltroConsulta,
+export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, 
+    EntidadVinculada, TipoCardinalidad, TipoDespliegueVinculo, FiltroConsulta,
   Operacion, Consulta, Eventos, Evento, Operaciones, ValorListaOrdenada, AtributoLista,
   TextpOperador, PikaApiService, Paginado, SesionQuery, TraduccionEntidad, AtributoEvento,
   AtributoVistaUI, HTML_PASSWORD_CONFIRM, HTML_HIDDEN, HTML_CHECKBOX_MULTI, PLATAFORMA_WEB, HTML_SELECT_MULTI,
@@ -67,5 +66,5 @@ export {PikaModule, Acciones, MetadataInfo, Propiedad, NodoJerarquico, AppLogSer
   LinkVista, ParametroLinkVista, Rol, EntidadesResolver, ACLUsuario, PermisoACL, PDENEGARACCESO, PEJECUTAR, PELIMINAR,
   PESCRIBIR, PLEER, PADMINISTRAR, ValorPropiedad, DocumentoPlantilla, VinculosObjetoPlantilla, VinculoDocumentoPlantilla,
   RequestValoresPlantilla, RespuestaPermisos, PropiedadesExtendidas, ValoresEntidad, PropiedadExtendida, RespuestaComandoWeb,
-  PermisoPuntoMontaje
+  PermisoPuntoMontaje, PostTareaEnDemanda
 };

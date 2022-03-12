@@ -1,6 +1,6 @@
 import {
-  PikaModule, AppLogService, PikaSesionService,
-  httpInterceptorProviders, EntidadesResolver
+  PikaModule, PikaSesionService,
+  httpInterceptorProviders, EntidadesResolver,
 } from './@pika/pika-module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -36,6 +36,8 @@ import { NgxMaskModule } from 'ngx-mask';
 import { APP_INITIALIZER } from '@angular/core';
 import { AppConfig, TokenProvider } from './app-config';
 import { ConfiguracionModule } from './@configuracion/configuracion.module';
+import { AppLogService } from './services/app-log/app-log.service';
+import { CanalTareasService } from './services/canal-tareas/canal-tareas.service';
 
 export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   return () => config.load().then(() => token.load());
@@ -80,7 +82,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
     CookieService,
     IsChldrenAuthorizedGuard,
     httpInterceptorProviders,
-    PikaSesionService, CookieService,
+    PikaSesionService, CanalTareasService,
     { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion },
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
     AppLogService,

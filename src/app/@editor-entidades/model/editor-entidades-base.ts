@@ -3,7 +3,6 @@ import { AppEventBus, EventoCerrarPlugins, VISOR } from './../../@pika/state/app
 import { EntidadesService, CONTEXTO } from './../services/entidades.service';
 import { first } from 'rxjs/operators';
 import {
-  AppLogService,
   EntidadVinculada,
   TipoDespliegueVinculo,
   MetadataInfo, LinkVista,
@@ -23,6 +22,7 @@ import {
 import { Router } from '@angular/router';
 import { Traductor } from '../services/traductor';
 import { DiccionarioNavegacion } from './i-diccionario-navegacion';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 export class EditorEntidadesBase {
   // Propiedades para la edición indivicual en una entidad vinculada

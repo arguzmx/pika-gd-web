@@ -12,7 +12,7 @@ import { PikaApiService } from '../../@pika/pika-module';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { TraduccionEntidad } from '../../@pika/pika-module';
-import { AppLogService } from '../../@pika/pika-module';
+
 import { TextoDesdeId } from '../model/texto-desde-id';
 import { Consulta, Paginado } from '../../@pika/pika-module';
 import { ValorListaOrdenada } from '../../@pika/pika-module';
@@ -24,6 +24,7 @@ import { Acciones } from '../../@pika/pika-module';
 import { EventoArbol, EventoContexto } from '../model/eventos-arbol';
 import { ConsultaBackend, FiltroConsultaBackend } from '../../@pika/consulta';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 
 

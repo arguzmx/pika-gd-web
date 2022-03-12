@@ -22,9 +22,10 @@ export class EntidadesResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<any> | Promise<any> | any {
-        this.eventBus.EmitirCerrarPlugins();
+        
+    this.eventBus.EmitirCerrarPlugins();
         // Obtiene las rutas en el server para las entidades
-        if ( this.sessionQ.RutasEntidades.length === 0 ) {
+        if (!Boolean(this.sessionQ.RutasEntidades) || this.sessionQ.RutasEntidades.length === 0 ) {
             const service = new  PikaApiService<any, any>(this.app, this.sessionQ, this.htpp);
             return service.ObtieneRutas();
         } else {

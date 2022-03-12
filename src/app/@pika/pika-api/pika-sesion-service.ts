@@ -1,4 +1,3 @@
-import { AppLogService } from './../servicios/app-log/app-log.service';
 import { DominioActivo } from './../sesion/dominio-activo';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -7,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ACLUsuario } from '../seguridad';
 import { MenuAplicacion } from '../aplicacion';
 import { AppConfig } from '../../app-config';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 const retryCount: number = 1;
 

@@ -3,12 +3,11 @@ import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
 import { Operacion } from '../../../../@pika/pika-module';
-import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
-import { EntidadesService } from '../../../services/entidades.service';
 import { Component, OnInit } from '@angular/core';
 import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../../model/constantes';
 import { Traductor } from '../../../services/traductor';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-numeric-search',

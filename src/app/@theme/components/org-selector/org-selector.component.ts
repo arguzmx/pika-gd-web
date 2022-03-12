@@ -10,8 +10,9 @@ import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { first, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DominioActivo, SesionStore,
-  AppLogService, AppBusQuery, PikaSesionService, 
+  AppBusQuery, PikaSesionService, 
   SesionQuery, UnidadOrganizacionalActiva } from '../../../@pika/pika-module';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 
 @Component({

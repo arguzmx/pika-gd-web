@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { first } from "rxjs/operators";
 import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
-import { AppLogService } from "../../../@pika/servicios";
+import { AppLogService } from "../../../services/app-log/app-log.service";
 import { ReporteSalud } from "../../model/reporte-salud";
 import { ApiConfiguracion } from "../../services/api-configuracion";
 

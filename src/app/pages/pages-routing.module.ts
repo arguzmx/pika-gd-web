@@ -73,6 +73,9 @@ const routes: Routes = [{
     {
       path: 'inicio',
       component: InicioComponent,
+      resolve: {
+        entidadesResolver: EntidadesResolver,
+      },
     },
     // {
     //   path: 'entidades',

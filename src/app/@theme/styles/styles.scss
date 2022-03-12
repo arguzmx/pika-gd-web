@@ -110,3 +110,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+
+.gray-icon {
+  color:  #8f9bb3;
+}
+/* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+.gray-icon svg {
+  fill: #8f9bb3;
+}

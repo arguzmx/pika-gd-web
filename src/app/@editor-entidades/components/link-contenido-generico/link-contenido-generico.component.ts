@@ -2,16 +2,16 @@ import { PermisoPuntoMontaje } from './../../../@pika/conteido/permiso-punto-mon
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from './../../../app-config';
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { TranslateService } from '@ngx-translate/core';
 import { PikaApiService } from '../../../@pika/pika-api';
 import { Traductor } from '../../editor-entidades.module';
 import { SesionQuery } from '../../../@pika/state';
-import { AsyncSubject, Observable } from 'rxjs';
 import { ContenidoVinculado } from '../../../@pika/conteido/contenido-vinculado';
 import { first } from 'rxjs/operators';
-import { AppLogService } from '../../../@pika/servicios';
+import { AppLogService } from '../../../services/app-log/app-log.service';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'ngx-link-contenido-generico',

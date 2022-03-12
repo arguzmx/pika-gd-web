@@ -9,7 +9,6 @@ import { NodoJerarquico } from '../../../@pika/pika-module';
 import { NodoArbol } from '../../model/nodo-arbol';
 import { EditorEntidadesBase } from '../../model/editor-entidades-base';
 import { EntidadesService } from '../../services/entidades.service';
-import { AppLogService } from '../../../@pika/pika-module';
 import { DescriptorNodo } from '../../model/descriptor-nodo';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
@@ -19,6 +18,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { DynamicDataSource } from './dynamic-datasource';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 
 @Component({

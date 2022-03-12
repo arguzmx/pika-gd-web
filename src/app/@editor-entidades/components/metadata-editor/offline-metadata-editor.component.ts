@@ -1,5 +1,4 @@
 import { MetadataInfo, TipoDespliegueVinculo } from '../../../@pika/pika-module';
-import { AppLogService } from '../../../@pika/pika-module';
 import {
   Component,
   OnInit,
@@ -44,6 +43,7 @@ import { Subject } from 'rxjs';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
 import { CacheEntidadesService } from '../../services/cache-entidades.service';
 import { environment } from '../../../../environments/environment';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-offline-metadata-editor',

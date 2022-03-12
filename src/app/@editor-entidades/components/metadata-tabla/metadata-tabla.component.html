@@ -1,8 +1,14 @@
 <ngx-table #table [configuration]="configuration" [data]="data" [columns]="columns" 
     [pagination]="pagination"
-    (event)="eventosTabla($event)">
+    (event)="eventosTabla($event)"
+    [noResultsTemplate]="noResultsTemplate">
 </ngx-table>
 
+<ng-template #noResultsTemplate>
+    <td [attr.colspan]="columns.length" class="no-results">
+      {{T.t["ui.sin-resultados-tabla"]}}
+    </td>
+  </ng-template>
 
 <!-- Tmplate para despliegue de cadenas de para áreas-->
 <ng-template #indexStrTpl let-row let-rowIndex="rowIndex" let-column="column">

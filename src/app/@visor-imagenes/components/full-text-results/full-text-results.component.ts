@@ -3,8 +3,8 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, TemplateRef, ViewCh
 import { Config, DefaultConfig, Columns, APIDefinition, API } from 'ngx-easy-table';
 import { Documento } from '../../model/documento';
 import { TranslateService } from '@ngx-translate/core';
-import { AppLogService } from '../../../@pika/pika-module';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-full-text-results',

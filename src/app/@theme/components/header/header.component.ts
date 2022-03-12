@@ -6,12 +6,16 @@ import { NbContextMenuComponent, NbDialogService, NbMediaBreakpointsService, NbM
 import { LayoutService } from '../../../@core/utils';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { AppBusStore, PropiedadesBus } from '../../../@pika/pika-module';
+import { AppBusStore, PostTareaEnDemanda, PropiedadesBus } from '../../../@pika/pika-module';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-localstorage';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { CentroMensajesComponent } from '../centro-mensajes/centro-mensajes.component';
+import { AppLogService } from '../../../services/app-log/app-log.service';
+import { CanalTareasService } from '../../../services/canal-tareas/canal-tareas.service';
 
 
 @Component({
@@ -24,6 +28,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPictureOnly: boolean = false;
   user: any = {};
   ver: string = '';
+
+  tareas: PostTareaEnDemanda[] = [];
+  tareasDisponibles: boolean = false;
+  tareasConteo: number = 0;
+
   themes = [
     {
       value: 'default',
@@ -56,6 +65,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
    @ViewChild('logout') public logoutRef: TemplateRef<any>;
 
   constructor(
+    private appLog: AppLogService,
+    private _bottomSheet: MatBottomSheet,
+    private canalTareas: CanalTareasService,
     private router: Router,
     private storageService: LocalStorageService,
               private sesion: SesionStore,
@@ -74,8 +86,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
 
+  private ProcesaNotificacionTareas(tareas: PostTareaEnDemanda[]) {
+    const source = JSON.stringify(this.tareas);
+    this.tareasConteo = tareas.length;
+    this.tareasDisponibles = this.tareasConteo > 0;
+    this.tareas = tareas;
+
+    if(JSON.stringify(this.tareas) !== source) {
+      this.appLog.ExitoT('componentes.canal-tareas.resultados-existentes');
+    }
+  }
 
   ngOnInit() {
+
+    this.canalTareas.TareasServer().subscribe(t=> {
+      this.ProcesaNotificacionTareas(t);
+    });
 
     this.currentTheme = this.themeService.currentTheme;
 
@@ -108,6 +134,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(data => this.hubMenuUsuario(data) );
 
       this.CargaTraducciones();
+  }
+
+  MostrarTareea(): void {
+    this._bottomSheet.open(CentroMensajesComponent, {
+      data: { tareas: this.tareas },
+    });
   }
 
   private CargaTraducciones() {

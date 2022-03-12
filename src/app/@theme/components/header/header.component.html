@@ -13,12 +13,12 @@
   </div>
 </div>
 <div class="header-container">
+  <mat-icon *ngIf="tareasDisponibles" matBadge="{{tareasConteo}}" class="gray-icon" matBadgeColor="warn" (click)="MostrarTareea()" >work</mat-icon>
   <nb-actions size="small">
     <!-- <nb-action class="control-item">
       <nb-search type="rotate-layout"></nb-search>
     </nb-action> -->
-    <!-- <nb-action class="control-item" icon="email-outline"></nb-action>
-    <nb-action class="control-item" icon="bell-outline" (click)="alternaVisor()"></nb-action> -->
+    <!-- <nb-action class="control-item" icon="email-outline"></nb-action> -->
     <nb-action class="user-action" *nbIsGranted="['view', 'user']" >
       <nb-user [nbContextMenu]="userMenu"
                [onlyPicture]="userPictureOnly"

@@ -108,6 +108,7 @@ import { ServicioListaMetadatos } from './services/servicio-lista-metadatos';
 import { LinkContenidoGenericoComponent } from './components/link-contenido-generico/link-contenido-generico.component';
 import { EditorTemasSeleccionComponent } from './components/editor-temas-seleccion/editor-temas-seleccion.component';
 import { ConfirmacionComponent } from './components/confirmacion/confirmacion.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [
@@ -179,13 +180,13 @@ import { ConfirmacionComponent } from './components/confirmacion/confirmacion.co
     NbIconModule,
     TableModule,
     NbCardModule,
-    ThemeModule,
     FormsModule,
     ReactiveFormsModule,
     NbMenuModule,
     RouterModule,
     MatSliderModule,
     NbTooltipModule,
+    CommonModule,
   ],
   exports: [EditorTabularComponent, EditorJerarquicoComponent,
     EditorBootTabularComponent, EditorBootJerarquicoComponent, 

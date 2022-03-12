@@ -7,12 +7,12 @@ import { Component, OnInit, ViewChild, AfterViewInit, Input, OnChanges, SimpleCh
   ViewContainerRef, ComponentFactoryResolver, ComponentRef, TemplateRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NbDialogRef, NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { DocumentosService } from '../../services/documentos.service';
-import { AppLogService } from '../../../@pika/servicios';
 import { DocumentoPlantilla, RequestValoresPlantilla, VinculoDocumentoPlantilla, VinculosObjetoPlantilla } from '../../../@pika/pika-module';
 import { IUploadConfig } from '../../model/i-upload-config';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-editor-plantilla',

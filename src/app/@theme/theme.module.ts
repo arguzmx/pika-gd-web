@@ -15,6 +15,8 @@ import {
   NbThemeModule,
   NbTooltipModule,
   NbCardModule,
+  NbBadgeModule,
+  NbCheckboxModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -44,6 +46,11 @@ import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrgSelectorComponent } from './components/org-selector/org-selector.component';
+import { CentroMensajesComponent } from './components/centro-mensajes/centro-mensajes.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
+import { TableModule } from 'ngx-easy-table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -61,6 +68,12 @@ const NB_MODULES = [
   NbEvaIconsModule,
   NbTooltipModule,
   NbCardModule,
+  NbCheckboxModule,
+  NbBadgeModule,
+  MatIconModule,
+  MatBadgeModule,
+  MatToolbarModule,
+  TableModule
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -85,7 +98,7 @@ const PIPES = [
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
-  declarations: [...COMPONENTS, ...PIPES, OrgSelectorComponent],
+  declarations: [...COMPONENTS, ...PIPES, OrgSelectorComponent, CentroMensajesComponent],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {

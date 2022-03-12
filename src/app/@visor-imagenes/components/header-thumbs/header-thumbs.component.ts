@@ -11,7 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { pipe, Subject } from "rxjs";
 import { first, takeUntil } from "rxjs/operators";
 import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
-import { AppLogService } from "../../../@pika/servicios";
+import { AppLogService } from "../../../services/app-log/app-log.service";
 import { MODO_VISTA_DETALLES, MODO_VISTA_MINIATURAS } from "../../model/constantes";
 import { Documento } from "../../model/documento";
 import { Pagina } from "../../model/pagina";

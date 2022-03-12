@@ -19,7 +19,21 @@
             "mysql": "Base de datos", 
             "rabbitmq":  "Bus de eventos",
             "elasticsearch": "Base indexado"
-        }
+        },
+        "visor-documento": {
+            "crear-pdf-ack":  "La solictud de PDF ha sido recibida",
+            "crear-zip-ack":  "La solictud de ZIP ha sido recibida",
+            "tarea-existente": "Ya hay una tarea en el servidor para esta solicitud",
+            "elemento-inexistente": "El documento objetivo de la tarea no fué localizado en el servidor"
+        },
+        "canal-tareas": {
+            "resultados-existentes": "Tiene tareas finalizas por el servidor por revisar",
+            "tareas-pendientes": "Se han encontrado {{cantidad}} tareas pendientes",
+            "tareas-completadas": "Se han encontrado {{cantidad}} tareas completadas",
+            "tareas-desconocida": "La tarea seleccionada no fué localizada en memoria",
+            "tareas-elminada": "La tarea ha sido eliminada satisfactoriamente",
+            "sin-tareas": "No hay tareas del usuario"
+        } 
     },
     "listas": {
         "tareaautomatica": {
@@ -39,6 +53,7 @@
         }
     },
     "ui": {
+        "sin-resultados-tabla": "No hay resultados",
         "salir-app": "¿Desea abandonar la aplicación?",
         "advertencia": "Advertencia",
         "ubicacion-org": "Ubicación",

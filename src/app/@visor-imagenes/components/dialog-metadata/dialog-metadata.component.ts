@@ -5,8 +5,8 @@ import { NbDialogRef } from '@nebular/theme';
 import { ConfiguracionEntidad } from '../../../@editor-entidades/model/configuracion-entidad';
 import { MetadataInfo, TipoDespliegueVinculo } from '../../../@pika/metadata';
 import { DocumentosService } from '../../services/documentos.service';
-import { AppLogService } from '../../../@pika/servicios';
 import { DocumentoPlantilla, RequestValoresPlantilla, ValorPropiedad } from '../../../@pika/pika-module';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 @Component({
   selector: 'ngx-dialog-metadata',
   templateUrl: './dialog-metadata.component.html',

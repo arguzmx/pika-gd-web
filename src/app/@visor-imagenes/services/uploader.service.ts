@@ -10,10 +10,11 @@ import {
 import { Subject, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { AppLogService, TraduccionEntidad } from '../../@pika/pika-module';
+import { TraduccionEntidad } from '../../@pika/pika-module';
 import { VisorImagenesService } from './visor-imagenes.service';
 import { Pagina } from '../model/pagina';
 import { IUploadConfig } from '../model/i-upload-config';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 
 

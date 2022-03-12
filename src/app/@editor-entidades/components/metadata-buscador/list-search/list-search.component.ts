@@ -4,7 +4,6 @@ import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
 import { Operacion, Consulta } from '../../../../@pika/consulta';
 import { Observable, Subject, of } from 'rxjs';
-import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, tap, switchMap, catchError, first } from 'rxjs/operators';
 import { AtributoLista } from '../../../../@pika/pika-module';
@@ -14,6 +13,7 @@ import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
 import { ServicioListaMetadatos } from '../../../services/servicio-lista-metadatos';
 import { NB_THEME_OPTIONS } from '@nebular/theme';
 import { isThursday } from 'date-fns';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-list-search',

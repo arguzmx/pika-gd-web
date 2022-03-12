@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
-import { AppLogService } from '../../../@pika/servicios';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 import { ActDominioOU } from '../../model/act-dominio-ou';
 import { ApiConfiguracion } from '../../services/api-configuracion';
 

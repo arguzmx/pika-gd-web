@@ -3,9 +3,10 @@ import { first } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponseBase } from '@angular/common/http';
 import { Observable, AsyncSubject, BehaviorSubject } from 'rxjs';
-import { Aplicacion, PermisoAplicacion, Rol, AppLogService, TraduccionEntidad, RespuestaPermisos } from '../../@pika/pika-module';
+import { Aplicacion, PermisoAplicacion, Rol, TraduccionEntidad, RespuestaPermisos } from '../../@pika/pika-module';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 export enum PermisosEnum {
   leer = 0,

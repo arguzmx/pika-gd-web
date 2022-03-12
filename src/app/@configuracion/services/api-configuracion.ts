@@ -3,10 +3,11 @@ import { AppConfig } from './../../app-config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AppLogService, ValorListaOrdenada } from '../../@pika/pika-module';
+import { ValorListaOrdenada } from '../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { ActDominioOU } from '../model/act-dominio-ou';
 import { ReporteSalud } from '../model/reporte-salud';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 @Injectable()
 export class ApiConfiguracion {

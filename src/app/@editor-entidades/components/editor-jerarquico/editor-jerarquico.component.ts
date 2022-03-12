@@ -24,7 +24,6 @@ import {
 } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
-import { AppLogService } from '../../../@pika/pika-module';
 import { Router } from '@angular/router';
 import { NbDialogService } from '@nebular/theme';
 import { first } from 'rxjs/operators';
@@ -40,6 +39,7 @@ import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { TipoVista } from '../../../@pika/metadata';
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 
 const CONTENIDO_BUSCAR = 'buscar';

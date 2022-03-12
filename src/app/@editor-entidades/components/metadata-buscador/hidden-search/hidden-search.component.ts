@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { Operacion } from '../../../../@pika/pika-module';
-import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { EntidadesService } from '../../../services/entidades.service';
 import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../../model/constantes';
 import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-hidden-search',

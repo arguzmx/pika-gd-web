@@ -4,10 +4,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
-import { AppLogService } from '../../../@pika/servicios';
 import { ApiConfiguracion } from '../../services/api-configuracion';
 import { forkJoin } from 'rxjs';
 import { ValorListaOrdenada } from '../../../@pika/metadata';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-perfil-usuario',

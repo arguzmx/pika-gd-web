@@ -57,7 +57,7 @@
     "@swimlane/ngx-charts": "^13.0.2",
     "@types/fabric": "^3.6.8",
     "angular-ng-autocomplete": "^2.0.1",
-    "angular-oauth2-oidc": "^10.0.3",
+    "angular-oauth2-oidc": "^13.0.0",
     "angular-split": "^4.0.0",
     "angular2-chartjs": "0.4.1",
     "bootstrap": "4.3.1",

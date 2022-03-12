@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { AppLogService, FiltroConsulta, MetadataInfo, Operacion } from '../../../@pika/pika-module';
+import { FiltroConsulta, MetadataInfo, Operacion } from '../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { Traductor } from '../../../@editor-entidades/services/traductor';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-b-texto',

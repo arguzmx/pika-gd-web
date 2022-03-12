@@ -3,8 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import {OAuthService } from 'angular-oauth2-oidc';
 import { LocalStorageService } from 'ngx-localstorage';
 import { Traductor } from '../../@editor-entidades/editor-entidades.module';
-import { AppLogService } from '../../@pika/servicios';
 import { AppConfig } from '../../app-config';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-bienvenida',
@@ -34,7 +34,7 @@ export class BienvenidaComponent implements OnInit {
     auth.scope = 'openid profile pika-gd';
     auth.useSilentRefresh = true;
     auth.sessionChecksEnabled = false;
-    auth.showDebugInformation = false;
+    auth.showDebugInformation = true;
     auth.clearHashAfterLogin = false;
     auth.requireHttps = false;
     auth.setStorage(sessionStorage);
@@ -65,11 +65,11 @@ export class BienvenidaComponent implements OnInit {
     this.storageService.set("ensesion", 0);
     let url = this.auth.issuer.replace(/\/$/, "") + '/.well-known/openid-configuration';
     this.auth.loadDiscoveryDocument(url)
-      .then(() => this.auth.tryLogin())
-      .then(() => {
-        if (!this.auth.hasValidAccessToken()) {
-          this.auth.initImplicitFlow();
-        }
-      });
+    .then(() => this.auth.tryLogin())
+    .then(() => {
+      if (!this.auth.hasValidAccessToken()) {
+        this.auth.initImplicitFlow();
+      }
+    });
   }
 }

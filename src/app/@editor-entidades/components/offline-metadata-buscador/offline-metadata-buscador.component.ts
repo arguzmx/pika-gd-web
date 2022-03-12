@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Propiedad } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { FiltroConsulta } from '../../../@pika/pika-module';
-import { AppLogService } from '../../../@pika/pika-module';
 import {
   Component,
   OnInit,
@@ -32,6 +31,7 @@ import {
   CTL1_PREFIX,
 } from '../../model/constantes';
 import { Traductor } from '../../services/traductor';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-offline-metadata-buscador',

@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { HTML_DATE, HTML_TIME, HTML_DATETIME } from '../../../../@pika/pika-module';
-import { AppLogService } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { EntidadesService } from '../../../services/entidades.service';
 import { isDate, formatISO } from 'date-fns';
@@ -11,6 +10,7 @@ import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../.
 import { Router } from '@angular/router';
 import { Traductor } from '../../../services/traductor';
 import { CacheFiltrosBusqueda } from '../../../services/cache-filtros-busqueda';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-datetime-search',

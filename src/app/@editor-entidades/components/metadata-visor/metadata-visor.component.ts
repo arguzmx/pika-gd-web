@@ -1,5 +1,4 @@
 import { AppEventBus } from './../../../@pika/state/app-event-bus';
-import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import { Component, OnInit, Input } from '@angular/core';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
@@ -8,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { IVisorMetadatos } from '../../model/i-visor-metadatos';
 import { Router } from '@angular/router';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-metadata-visor',

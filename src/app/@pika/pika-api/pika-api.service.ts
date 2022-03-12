@@ -15,7 +15,7 @@ import { SesionQuery } from '../state';
 import { ContenidoVinculado } from '../conteido/contenido-vinculado';
 import { RequestListaIds } from '../consulta/request-paginado-ids';
 import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
-import { PermisoACL, RespuestaComandoWeb } from '../pika-module';
+import { PermisoACL, PostTareaEnDemanda, RespuestaComandoWeb } from '../pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 import { PermisoPuntoMontaje } from '../conteido/permiso-punto-montaje';
 
@@ -46,9 +46,11 @@ export class PikaApiService<T, U> {
 
   private CrearEndpoint(TipoEntidad: string): string {
     let url = '';
+
     // Las rutas de las entidades se obtienen desde el servidor
     if (this.sessionQ.RutasEntidades.length === 0) return url;
 
+   
     const r = this.sessionQ.RutasEntidades.find(x => x.Tipo.toLocaleLowerCase() === TipoEntidad.toLowerCase());
     if (r) {
       url = this.app.config.pikaApiUrl.replace(/\/$/, '') + '/';
@@ -444,6 +446,27 @@ export class PikaApiService<T, U> {
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.delete(endpoint, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+
+  ObtenerTareasEnDemanda() :  Observable<PostTareaEnDemanda[]> {
+    const endpoint = this.CrearEndpoint('TareaEnDemanda'); // Mantener las mayúsculas
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.get<PostTareaEnDemanda[]>(endpoint, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  EliminarTareaEnDemanda(id: string) :  Observable<PostTareaEnDemanda[]> {
+    const endpoint = `${this.CrearEndpoint('TareaEnDemanda')}${id}`; // Mantener las mayúsculas
+    const headers = new HttpHeaders()
+      .set('content-type', 'application/json');
+    return this.http.delete<PostTareaEnDemanda[]>(endpoint, { 'headers': headers })
       .pipe(
         retry(retryCount),
       );

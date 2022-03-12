@@ -7,10 +7,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Documento } from '../model/documento';
 import { IDocumentoService } from '../model/i-documento-service';
-import { DocumentoPlantilla, PermisoPuntoMontaje, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
+import { DocumentoPlantilla, PermisoPuntoMontaje, PostTareaEnDemanda, RequestValoresPlantilla, VinculosObjetoPlantilla } from '../../@pika/pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
-import { id } from 'date-fns/locale';
 import { Pagina } from '../model/pagina';
+import { AppLogService } from '../../services/app-log/app-log.service';
 
 @Injectable()
 export class DocumentosService implements IDocumentoService {
@@ -23,6 +23,7 @@ export class DocumentosService implements IDocumentoService {
 
   //constructor(private http: HttpClient, private cache: CacheEntidadesService) {
   constructor(
+    private applog: AppLogService,
     private app: AppConfig,
     private http: HttpClient) {
     this.endpointPlantilla = this.DepuraUrl(this.app.config.apiUrl) + `metadatos/`;
@@ -76,37 +77,55 @@ export class DocumentosService implements IDocumentoService {
   ObtieneZIP(id: string, version: string) {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;
     const headers = new HttpHeaders();
-    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
-      (response: HttpResponse<Blob>) => {
-        const binaryData = [];
-        binaryData.push(response.body);
-        const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
-        downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
+   
+    this.http.post<PostTareaEnDemanda>(url, { observe: 'response', headers }).subscribe(
+      (r) => {
+        this.applog.ExitoT('componentes.visor-documento.crear-zip-ack');
       },
       (err) => {
-        console.warn(err);
+
+        if(err.status==400 || err.status==404)
+        {
+          this.applog.AdvertenciaT(`componentes.visor-documento.${err.error}`);
+        } else {
+          this.applog.FallaT(`${err.error}`);
+        }
       },
     );
+    // const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;
+    // const headers = new HttpHeaders();
+    // this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+    //   (response: HttpResponse<Blob>) => {
+    //     const binaryData = [];
+    //     binaryData.push(response.body);
+    //     const downloadLink = document.createElement('a');
+    //     downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
+    //     downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
+    //     document.body.appendChild(downloadLink);
+    //     downloadLink.click();
+    //   },
+    //   (err) => {
+    //     console.warn(err);
+    //   },
+    // );
   }
 
   ObtienePDF(id: string, version: string) {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}`;
     const headers = new HttpHeaders();
-    this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
-      (response: HttpResponse<Blob>) => {
-        const binaryData = [];
-        binaryData.push(response.body);
-        const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
-        downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
+   
+    this.http.post<PostTareaEnDemanda>(url, { observe: 'response', headers }).subscribe(
+      (r) => {
+        this.applog.ExitoT('componentes.visor-documento.crear-pdf-ack');
       },
       (err) => {
-        console.warn(err);
+
+        if(err.status==400 || err.status==404)
+        {
+          this.applog.AdvertenciaT(`componentes.visor-documento.${err.error}`);
+        } else {
+          this.applog.FallaT(`${err.error}`);
+        }
       },
     );
   }

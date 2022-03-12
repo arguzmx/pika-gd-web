@@ -8,12 +8,12 @@ import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil, first } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { AppLogService } from '../../../@pika/servicios';
 import { EditorBootTabularComponent, MetadataTablaComponent, ServicioListaMetadatos, Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { ServicioBusquedaAPI } from '../../services/servicio-busqueda-api';
 import { Busqueda, BusquedaContenido, EstadoBusqueda } from '../../model/busqueda-contenido';
 import { Operacion } from '../../../@pika/consulta';
 import { BTextoComponent } from '../b-texto/b-texto.component';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-host-busqueda',

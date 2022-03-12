@@ -6,7 +6,6 @@ import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
 import { NbDialogService, NbDialogRef, NbMenuItem, NbSelectComponent } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
-import { AppLogService } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import {
   Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
@@ -33,6 +32,7 @@ import { TipoVista, ValorListaOrdenada } from '../../../@pika/metadata';
 import { EventoAplicacion, PayloadItem } from '../../../@pika/eventos/evento-aplicacion';
 import { EditorTemasSeleccionComponent } from '../editor-temas-seleccion/editor-temas-seleccion.component';
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';

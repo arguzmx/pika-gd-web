@@ -3,11 +3,11 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { EventoAplicacion } from '../../../@pika/eventos/evento-aplicacion';
 import { NbDialogService } from '@nebular/theme';
 import { TranslateService } from '@ngx-translate/core';
-import { AppLogService } from '../../../@pika/pika-module';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiConfiguracion } from '../../services/api-configuracion';
 import { first } from 'rxjs/operators';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-cambiar-contrasena',

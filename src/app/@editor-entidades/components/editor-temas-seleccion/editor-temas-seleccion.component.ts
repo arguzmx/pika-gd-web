@@ -2,7 +2,6 @@ import { first } from 'rxjs/operators';
 import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MetadataInfo, ValorListaOrdenada } from '../../../@pika/metadata';
-import { AppLogService } from '../../../@pika/servicios';
 import { Traductor } from '../../editor-entidades.module';
 import { EntidadesService } from '../../services/entidades.service';
 import { NbDialogRef } from '@nebular/theme';

@@ -1,13 +1,14 @@
 import { PLEER, PESCRIBIR } from './../../../@pika/seguridad/permiso-acl';
 import { PermisosService, TipoEntidadEnum } from './../../services/permisos.service';
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { Aplicacion, Rol, PermisoAplicacion, RespuestaPermisos, AppLogService, SesionQuery } from '../../../@pika/pika-module';
+import { Aplicacion, Rol, PermisoAplicacion, RespuestaPermisos, SesionQuery } from '../../../@pika/pika-module';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { Router } from '@angular/router';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 
 @Component({

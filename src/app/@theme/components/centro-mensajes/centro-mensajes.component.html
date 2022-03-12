@@ -1,0 +1,44 @@
+<span style="font-size: xx-small;">
+    <ngx-table #table [configuration]="configuration" [data]="tareas" [columns]="columns"
+    [noResultsTemplate]="noResultsTemplate">
+    </ngx-table>
+</span>
+<!-- Tmplate para despliegue de booleanos-->
+<ng-template #etiquetaTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div *ngIf="row['TipoRespuesta'] == 10 && row['Completado'] == true; else elseBlock">
+        <mat-icon class="text-info" on-click="DescargaBLOB(row['Id'])">file_download</mat-icon>
+    </div>
+    <ng-template #elseBlock>
+        &nbsp;
+    </ng-template>
+</ng-template>
+
+<ng-template #noResultsTemplate>
+    <td [attr.colspan]="columns.length" class="no-results">
+      {{T.t["componentes.canal-tareas.sin-tareas"]}}
+    </td>
+  </ng-template>
+
+<ng-template #closeTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <mat-icon on-click="EliminarTarea(row['Id'])">delete</mat-icon>
+</ng-template>
+
+<!-- Tmplate para despliegue de booleanos-->
+<ng-template #boolTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div *ngIf="row['Completado'] == true; else elseCompletado">
+        <div *ngIf="row['ConError'] == true; else elseConError">
+            <mat-icon class="text-danger">error_outline</mat-icon>
+        </div>
+        <ng-template #elseConError>
+            <mat-icon class="text-success">check_circle_outline</mat-icon>
+        </ng-template>
+    </div>
+    <ng-template #elseCompletado>
+        <mat-icon class="text-info">hourglass_empty</mat-icon>
+    </ng-template>
+</ng-template>
+
+<!-- Tmplate para despliegue de fechas-->
+<ng-template #fechaTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <span>{{EtiquetasFecha(row[column.key], column, rowIndex)}}</span>
+</ng-template>

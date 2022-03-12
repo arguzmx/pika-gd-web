@@ -18,7 +18,6 @@ import { EntidadVinculada } from '../../../@pika/pika-module';
 import { ColumnaTabla } from '../../model/columna-tabla';
 import { Propiedad, MetadataInfo } from '../../../@pika/pika-module';
 import { TablaEventObject } from '../../model/tabla-event-object';
-import { AppLogService } from '../../../@pika/pika-module';
 import { NbDialogService, NbSelectComponent } from '@nebular/theme';
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
@@ -28,6 +27,7 @@ import { Acciones, HTML_CHECKBOX, HTML_LABEL, HTML_NUMBER, HTML_TEXT, tBinaryDat
 import { ConsultaBackend } from '../../../@pika/consulta';
 import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/busqueda-contenido.module';
 import { AsyncSubject, Observable, Subject, timer } from 'rxjs';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -258,7 +258,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   }
 
   private CargaTraducciones(): void {
-    this.T.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades', 'ui.plantillas'];
+    this.T.ts = ['ui.cerrar', 'ui.selcol', 'ui.eliminar', 'ui.confirmar', 'ui.propiedades', 'ui.plantillas',
+    'ui.sin-resultados-tabla'];
     this.T.ObtenerTraducciones();
   }
 

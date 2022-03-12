@@ -6,7 +6,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Propiedad } from '../../../@pika/pika-module';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import { FiltroConsulta } from '../../../@pika/pika-module';
-import { AppLogService } from '../../../@pika/pika-module';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
   Component,
@@ -37,6 +36,7 @@ import {
 import { Router } from '@angular/router';
 import { Traductor } from '../../services/traductor';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 
 

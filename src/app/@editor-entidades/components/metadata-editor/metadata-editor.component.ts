@@ -7,7 +7,6 @@ import {
   MetadataInfo,
   TipoDespliegueVinculo,
 } from "../../../@pika/pika-module";
-import { AppLogService } from "../../../@pika/pika-module";
 import { EditorEntidadesBase } from "./../../model/editor-entidades-base";
 import {
   Component,
@@ -59,6 +58,7 @@ import { Subject, timer } from "rxjs";
 import { Router } from "@angular/router";
 import { DiccionarioNavegacion } from "../../model/i-diccionario-navegacion";
 import { EventosInterprocesoService } from "../../services/eventos-interproceso.service";
+import { AppLogService } from "../../../services/app-log/app-log.service";
 
 @Component({
   selector: "ngx-metadata-editor",
