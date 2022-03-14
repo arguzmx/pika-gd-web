@@ -7,6 +7,7 @@ import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { first } from 'rxjs/operators';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { PostTareaEnDemanda } from '../../../@pika/pika-module';
+import { AppConfig } from '../../../app-config';
 import { AppLogService } from '../../../services/app-log/app-log.service';
 import { CanalTareasService } from '../../../services/canal-tareas/canal-tareas.service';
 
@@ -30,6 +31,7 @@ export class CentroMensajesComponent implements OnInit {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private cdr: ChangeDetectorRef,
     private appLog: AppLogService,
+    private appConfig: AppConfig,
     private canalTareasService: CanalTareasService,
     private _bottomSheetRef: MatBottomSheetRef<CentroMensajesComponent>,
     translate: TranslateService,
@@ -75,7 +77,10 @@ export class CentroMensajesComponent implements OnInit {
     const tarea = this.tareas.find(x=>x.Id == id);
     if (tarea) {
       const headers = new HttpHeaders();
-      this.http.get(tarea.PickupURL, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
+      const u = this.ObtieneRutas(tarea.PickupURL);
+      console.log(tarea.PickupURL);
+      console.log(u);
+      this.http.get(u, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
         (response: HttpResponse<Blob>) => {
           const binaryData = [];
           binaryData.push(response.body);
@@ -94,6 +99,11 @@ export class CentroMensajesComponent implements OnInit {
     }
   }
 
+  public ObtieneRutas(endpoint: string): string {
+    let url = this.appConfig.config.pikaApiUrl.replace(/\/$/, '') + '/';
+    url = url + `api/v${this.appConfig.config.apiVersion}/${endpoint}`.replace('//','/');
+    return url;
+  }
 
   ngOnInit(): void {
     this.CargaTraducciones();
@@ -105,6 +115,7 @@ export class CentroMensajesComponent implements OnInit {
       { key: 'Etiqueta', title: '', cellTemplate: this.etiquetaTpl, width: '10%' },
     ];
     this.configuration = { ...DefaultConfig };
+    this.configuration.paginationEnabled = false;
   }
 
   private CargaTraducciones(): void {
