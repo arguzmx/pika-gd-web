@@ -18,7 +18,7 @@ import { Pagina } from "../../model/pagina";
 import { DocumentosService } from "../../services/documentos.service";
 import { VisorImagenesService } from "../../services/visor-imagenes.service";
 import { ConfirmacionVisorComponent } from "../confirmacion-visor/confirmacion-visor.component";
-
+import { PdfDownloadComponent } from "../pdf-download/pdf-download.component";
 @Component({
   selector: "ngx-header-thumbs",
   templateUrl: "./header-thumbs.component.html",
@@ -74,18 +74,19 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
 
   private CargaTraducciones() {
     this.T.ts = [
-      "ui.cerrarvista",
-      "ui.cerrardocumento",
-      "ui.subirarchivos",
-      "ui.descargararchivos",
-      "ui.descargarpdf",
-      "ui.todos-docs",
-      "ui.solo-img",
-      "ui.eliminar-contenido",
-      "visor.eliminar-cotenido-titulo",
-      "visor.eliminar-cotenido-mensaje",
-      "ui.vista-miniaturas",
-      "ui.vista-detalle"
+      'ui.cerrarvista',
+      'ui.cerrardocumento',
+      'ui.subirarchivos',
+      'ui.descargararchivos',
+      'ui.descargarpdf',
+      'ui.todos-docs',
+      'ui.solo-img',
+      'ui.eliminar-contenido',
+      'visor.eliminar-cotenido-titulo',
+      'visor.eliminar-cotenido-mensaje',
+      'ui.vista-miniaturas',
+      'ui.vista-detalle',
+      'componentes.visor-documento.titulo-pdf-ack','ui.sel-invertir','ui.sel-todos','ui.sel-eliminar'
     ];
     this.T.ObtenerTraducciones();
   }
@@ -114,7 +115,18 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
   }
 
   doPDFDownload() {
-    this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId);
+
+      this.dialogService
+      .open(PdfDownloadComponent, {
+        context: {
+          titulo: this.T.t['componentes.visor-documento.titulo-pdf-ack']
+        },
+      })
+      .onClose.subscribe((confirmacion) => {
+        if (confirmacion.confirma) {
+          this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId, confirmacion.porciento);
+        }
+      });
   }
 
   CerrarDocumento() {
@@ -139,13 +151,30 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy {
     this.modoVista.emit(modo);
   }
 
+  selInvertir() {
+    if(this.documento.Paginas.length > 0){
+      this.servicioVisor.InvertirSeleccion();
+    }
+  }
+
+  selTodos() {
+    if(this.documento.Paginas.length > 0){
+      this.servicioVisor.SelecionarTodos();
+    }
+  }
+
+  selEliminar() {
+    this.servicioVisor.EliminarSeleccion();
+  }
+
+
   doEliminar() {
     if (this.paginas.length > 0) {
       this.dialogService
       .open(ConfirmacionVisorComponent, {
         context: {
-          titulo: this.T.t["visor.eliminar-cotenido-titulo"],
-          texto: this.T.t["visor.eliminar-cotenido-mensaje"],
+          titulo: this.T.t['visor.eliminar-cotenido-titulo'],
+          texto: this.T.t['visor.eliminar-cotenido-mensaje'],
         },
       })
       .onClose.subscribe((confirmacion) => {

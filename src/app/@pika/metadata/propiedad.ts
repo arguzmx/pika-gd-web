@@ -49,4 +49,5 @@ export interface Propiedad {
     ParametroLinkVista?: ParametroLinkVista;
     VinculoMetadatos?: string;
     Entidad?: string;
+    Formato?: string;
 }

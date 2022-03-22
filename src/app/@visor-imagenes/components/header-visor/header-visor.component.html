@@ -1,25 +1,30 @@
 <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-8 col-md-12 col-sm-12">
+        <mat-toolbar class="mat-toolbar-white">
+            <span class="caption-2 text-hint"> {{tamano}}, {{T.t['componentes.visor-documento.lbl-paginas']}} {{seleccionadas}}/{{paginas}}</span>
+        </mat-toolbar>
+    </div>
+    <div class="col-lg-4 col-md-12 col-sm-12">
         <mat-toolbar class="mat-toolbar-white">
             <span class="toolbar-spacer"></span>
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.REFLEJO_VER)"
-                    nbTooltip="Reflejo vertical">
+                    [nbTooltip]="T.t['componentes.visor-documento.lbl-swap-vert']">
                     <mat-icon>swap_vert</mat-icon>
                 </button>
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.REFLEJO_HOR)"
-                    nbTooltip="Reflejo horizontal">
+                    [nbTooltip]="T.t['componentes.visor-documento.lbl-swap-horiz']">
                     <mat-icon>swap_horiz</mat-icon>
                 </button>
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.GIRAR_180)"
-                    nbTooltip="Girar 180°">
+                    [nbTooltip]="T.t['componentes.visor-documento.lbl-rot-180']">
                     <mat-icon>flip_camera_android</mat-icon>
                 </button>
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.GIRAR_DER)"
-                    nbTooltip="Girar a la derecha">
+                    [nbTooltip]="T.t['componentes.visor-documento.lbl-rot-der']">
                     <mat-icon>rotate_right</mat-icon>
                 </button>
                 <button mat-icon-button on-click="EstableceOperacionPagina(operaciones.GIRAR_IZQ)"
-                    nbTooltip="Girar a la izquierda">
+                    [nbTooltip]="T.t['componentes.visor-documento.lbl-rot-izq']">
                     <mat-icon>rotate_left</mat-icon>
                 </button>
         </mat-toolbar>

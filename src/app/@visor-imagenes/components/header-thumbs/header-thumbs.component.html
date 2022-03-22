@@ -21,6 +21,16 @@
                 <mat-icon [ngClass]="soloImagenes ? 'text-primary' : ''">perm_media</mat-icon>
             </button> -->
             <!-- Separadador -->
+            <button *ngIf="eliminar" mat-icon-button on-click="selTodos()" nbTooltip='{{T.t["ui.sel-todos"]}}'>
+                <mat-icon>select_all</mat-icon>
+            </button>
+            <button *ngIf="eliminar" mat-icon-button on-click="selEliminar()" nbTooltip='{{T.t["ui.sel-eliminar"]}}'>
+                <mat-icon>clear_all</mat-icon>
+            </button>
+            <button *ngIf="eliminar" mat-icon-button on-click="selInvertir()" nbTooltip='{{T.t["ui.sel-invertir"]}}'>
+                <mat-icon>multiple_stop</mat-icon>
+            </button>
+            <mat-icon class="gray-icon">more_vert</mat-icon>
             <button *ngIf="eliminar" mat-icon-button on-click="doEliminar()" nbTooltip='{{T.t["ui.eliminar-contenido"]}}'>
                 <mat-icon>delete_outline</mat-icon>
             </button>

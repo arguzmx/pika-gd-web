@@ -1,0 +1,37 @@
+<nb-card>
+    <nb-card-header>{{titulo}}</nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {{ T.t["componentes.visor-documento.porciento-pdf"] }}
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <nb-select selected="100"  size="small" filled status="info" (selectedChange)="porciento($event)" 
+                fullWidth="true" #selectporciento>
+                    <nb-option value="100">100 %</nb-option>
+                    <nb-option value="75">75 %</nb-option>
+                    <nb-option value="50">50 %</nb-option>
+                    <nb-option value="25">25 %</nb-option>
+                </nb-select>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="row">
+            <div class="col-lg-6">
+                <div>
+                    <button nbButton size="medium" (click)="cerrar()">
+                        {{ T.t["ui.cancelar"] }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="float-right">
+                    <button nbButton size="medium" status="primary" (click)="aceptar()">
+                        {{ T.t["ui.aceptar"] }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>

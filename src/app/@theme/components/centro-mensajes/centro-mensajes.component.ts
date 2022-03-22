@@ -52,7 +52,6 @@ export class CentroMensajesComponent implements OnInit {
   }
 
   public eventosTabla($event) {
-    console.log($event);
   }
 
   EliminarTarea(Id: string) {
@@ -78,8 +77,7 @@ export class CentroMensajesComponent implements OnInit {
     if (tarea) {
       const headers = new HttpHeaders();
       const u = this.ObtieneRutas(tarea.PickupURL);
-      console.log(tarea.PickupURL);
-      console.log(u);
+
       this.http.get(u, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
         (response: HttpResponse<Blob>) => {
           const binaryData = [];
@@ -109,8 +107,9 @@ export class CentroMensajesComponent implements OnInit {
     this.CargaTraducciones();
     this.columns = [
       { key: 'Completado', title: '', cellTemplate: this.boolTpl, width: '10%' },
-      { key: 'Fecha', title: 'Fecha', cellTemplate: this.fechaTpl, width: '30%' },
-      { key: 'Etiqueta', title: 'Tarea', width: '40%' },
+      { key: 'Fecha', title: this.T.t['componentes.canal-tareas.col-fecha'], cellTemplate: this.fechaTpl, width: '30%' },
+      { key: 'FechaCaducidad', title: this.T.t['componentes.canal-tareas.col-caducidad'], cellTemplate: this.fechaTpl, width: '30%' },
+      { key: 'Etiqueta', title: this.T.t['componentes.canal-tareas.col-tarea'], width: '40%' },
       { key: 'Completado', title: '', cellTemplate: this.closeTpl, width: '10%' },
       { key: 'Etiqueta', title: '', cellTemplate: this.etiquetaTpl, width: '10%' },
     ];
@@ -119,7 +118,7 @@ export class CentroMensajesComponent implements OnInit {
   }
 
   private CargaTraducciones(): void {
-    this.T.ts = ['componentes.canal-tareas.sin-tareas'];
+    this.T.ts = ['componentes.canal-tareas.sin-tareas', 'componentes.canal-tareas.col-tarea', 'componentes.canal-tareas.col-caducidad', 'componentes.canal-tareas.col-fecha'];
     this.T.ObtenerTraducciones();
   }
 }

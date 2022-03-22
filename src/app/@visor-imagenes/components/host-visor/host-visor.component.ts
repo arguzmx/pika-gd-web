@@ -156,6 +156,7 @@ export class HostVisorComponent
       .subscribe((doc) => {
         this.documento = doc;
         this.paginas = this.documento.Paginas;
+        this.cdr.detectChanges();
       });
   }
 
@@ -254,15 +255,16 @@ export class HostVisorComponent
   }
 
   paginasEliminadas(paginas: Pagina[]) {
-    const copia = [...this.documento.Paginas];
-    paginas.forEach(p=> {
-        const index = this.documento.Paginas.findIndex(x=>x.Id == p.Id);
-        if (index >= 0) {
-          copia.splice(index, 1);
-        }
-    });
-    this.documento.Paginas = copia;
-    this.cdr.detectChanges();
+    // const copia = [...this.documento.Paginas];
+    // paginas.forEach(p=> {
+    //     const index = this.documento.Paginas.findIndex(x=>x.Id == p.Id);
+    //     if (index >= 0) {
+    //       copia.splice(index, 1);
+    //     }
+    // });
+    // this.documento.Paginas = copia;
+    // this.cdr.detectChanges();
+    this.CargaDocumento();
   }
 
 

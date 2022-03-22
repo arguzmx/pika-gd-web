@@ -98,6 +98,7 @@ import { IUploadConfig } from './model/i-upload-config';
 import { HeaderThumbsComponent } from './components/header-thumbs/header-thumbs.component';
 import { FullTextResultsComponent } from './components/full-text-results/full-text-results.component';
 import { ConfirmacionVisorComponent } from './components/confirmacion-visor/confirmacion-visor.component';
+import { PdfDownloadComponent } from './components/pdf-download/pdf-download.component';
 
 @NgModule({
   imports: [
@@ -183,7 +184,7 @@ import { ConfirmacionVisorComponent } from './components/confirmacion-visor/conf
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent, ConfirmacionVisorComponent
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent, ConfirmacionVisorComponent, PdfDownloadComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
             PieVisorComponent, HostThumbnailsComponent, VisorFavoritosComponent],

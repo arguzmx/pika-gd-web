@@ -23,6 +23,12 @@
 </ng-template>
 
 <!-- Tmplate para despliegue de fechas-->
+<ng-template #numFormatTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <span>{{EtiquetasNumericas(row[column.key], column.key)}}</span>
+</ng-template>
+
+
+<!-- Tmplate para despliegue de fechas-->
 <ng-template #fechaTpl let-row let-rowIndex="rowIndex" let-column="column">
     <span>{{EtiquetasFecha(row[column.key], column.key, column, rowIndex)}}</span>
 </ng-template>

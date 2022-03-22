@@ -92,26 +92,10 @@ export class DocumentosService implements IDocumentoService {
         }
       },
     );
-    // const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;
-    // const headers = new HttpHeaders();
-    // this.http.get(url, { observe: 'response', headers, responseType: 'blob' as 'json' }).subscribe(
-    //   (response: HttpResponse<Blob>) => {
-    //     const binaryData = [];
-    //     binaryData.push(response.body);
-    //     const downloadLink = document.createElement('a');
-    //     downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: response.type.toString() }));
-    //     downloadLink.setAttribute('download', this.getFileNameFromHttpResponse(response));
-    //     document.body.appendChild(downloadLink);
-    //     downloadLink.click();
-    //   },
-    //   (err) => {
-    //     console.warn(err);
-    //   },
-    // );
   }
 
-  ObtienePDF(id: string, version: string) {
-    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}`;
+  ObtienePDF(id: string, version: string, porcentaje: number) {
+    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}/${porcentaje}`;
     const headers = new HttpHeaders();
    
     this.http.post<PostTareaEnDemanda>(url, { observe: 'response', headers }).subscribe(

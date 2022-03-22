@@ -42,6 +42,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('boolTpl', { static: true }) boolTpl: TemplateRef<any>;
   @ViewChild('cataloLinkTpl', { static: true }) cataloLinkTpl: TemplateRef<any>;
   @ViewChild('fechaTpl', { static: true }) fechaTpl: TemplateRef<any>;
+   @ViewChild('numFormatTpl', { static: true }) numFormatTpl: TemplateRef<any>;
   @ViewChild('listTpl', { static: true }) listTpl: TemplateRef<any>;
   @ViewChild('indexStrTpl', { static: true }) indexStrTpl: TemplateRef<any>;
   @ViewChild('strHTMLTpl', { static: true }) strHTMLTpl: TemplateRef<any>;
@@ -325,6 +326,61 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     return Id;
   }
 
+  public EtiquetasNumericas(dato: number, EntidadId: string) {
+    if (!this.metadata) return '';
+
+    const p = this.metadata.Propiedades.find(x => x.Id === EntidadId);
+    let texto = '';
+    if (p && p.Formato) {
+      
+      switch(p.Formato) {
+        case "bytes":
+          texto = this.NumeroABytes(dato);
+          break;
+  
+          default:
+            texto = `${dato}`;
+            break;
+      }  
+    }
+    return texto;
+  }
+
+
+  private NumeroABytes(numero: number):string {
+    let resultado = '';
+    let comparador = numero;
+    let conteo: number = 0;
+    while((comparador/1024) >= 1){
+      conteo ++;
+      comparador = comparador /1024;
+    }
+    
+    switch(conteo) {
+      case 0:
+        resultado = `${comparador.toFixed(2)} b`;
+        break;
+      case 1:
+        resultado = `${comparador.toFixed(2)} Kb`;
+        break;
+      case 2:
+        resultado = `${comparador.toFixed(2)} Mb`;
+        break;
+      case 3:
+        resultado = `${comparador.toFixed(2)} Gb`;
+        break;
+      case 4:
+        resultado = `${comparador.toFixed(2)} Tb`;
+        break;
+
+        default:
+          resultado = `${comparador.toFixed(2)} ??`;
+          break;
+    }
+
+    return resultado;
+  }
+
   public EtiquetasFecha(f: Date, EntidadId: string, column: any, rowIndex: any) {
 
     if (!this.metadata) return '';
@@ -382,6 +438,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         if (columnas[i].Tipo === tIndexedString) template = this.indexStrTpl;
         if (columnas[i].Id === 'ocr') template = this.strHTMLTpl;
         if (columnas[i].EsFecha) template = this.fechaTpl;
+        if (columnas[i].EsNumerico && Boolean(columnas[i].Formato)) template = this.numFormatTpl;
         if (columnas[i].Tipo === 'bool') template = this.boolTpl;
         if (columnas[i].EsLista) template = this.listTpl;
         if (columnas[i].EsCatalogoVinculado) template = this.cataloLinkTpl;
@@ -416,6 +473,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       if (c.MostrarEnTabla) {
         let eslista = false;
         const esFecha = ['date', 'datetime', 'time'].indexOf(c.TipoDatoId) < 0 ? false : true;
+        const esNumerico = ['double', 'int', 'long'].indexOf(c.TipoDatoId) < 0 ? false : true;
+
         if (c.AtributoLista && c.AtributoLista.DatosRemotos && c.AtributoLista.Entidad !== '') {
           eslista = true;
         }
@@ -432,7 +491,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             EsLista: eslista,
             EsCatalogoVinculado: c.CatalogoVinculado,
             EsFecha: esFecha,
-            EsPropiedadExtendida: false
+            EsPropiedadExtendida: false,
+            Formato: c.Formato,
+            EsNumerico: esNumerico
           });
         }
       }
@@ -474,7 +535,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               EsLista: false,
               EsCatalogoVinculado: false,
               EsFecha: (p.TipoDatoId == tDateTime || p.TipoDatoId == tDate || p.TipoDatoId == tTime),
-              EsPropiedadExtendida: true
+              EsPropiedadExtendida: true,
+              EsNumerico: false
             });
 
 
@@ -532,7 +594,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     if(this.muestraOCR) {
       columnas.push( { Id: 'ocr', Nombre: 'Texto', Visible: true, Alternable: false, Ordenable:false, Buscable: false,
-      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false } )
+      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false, EsNumerico: false } )
     }
 
     if (columnas.length > 0) {
@@ -1255,7 +1317,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     }
 
     columnas.push( { Id: 'ocr', Nombre: 'Texto', Visible: true, Alternable: false, Ordenable:false, Buscable: false,
-      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false } )
+      Tipo: tString, NombreI18n: 'Texto', EsLista: false, EsFecha: false, EsCatalogoVinculado: false, EsPropiedadExtendida: false, EsNumerico: false } )
 
       if (columnas.length > 0) {
         columnas.forEach(c => {

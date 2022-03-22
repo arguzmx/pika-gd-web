@@ -221,6 +221,26 @@ export class VisorImagenesService {
     this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
   }
 
+  public SelecionarTodos() {
+    this.thumbSeleccionados = this.documento.Paginas;
+    this.inicioSeleccion = null;
+    this.finSeleccion = null;
+    this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+  }
+
+  public InvertirSeleccion() {
+    const tmp: Pagina[] = [];
+    this.documento.Paginas.forEach(p=> {
+        if(this.thumbSeleccionados.findIndex(x=>x.Id == p.Id) < 0 ){
+            tmp.push(p);
+        }
+    })
+    this.thumbSeleccionados = tmp;
+    this.inicioSeleccion = null;
+    this.finSeleccion = null;
+    this.subjectPaginasSeleccionadas.next(this.thumbSeleccionados);
+  }
+
   public SiguientePaginaVisible(pagina: Pagina, siguiente: boolean) {
     this.subjectCambiarPagina.next({anterior: false, siguiente: siguiente, indice: pagina.Indice});
   }

@@ -21,6 +21,14 @@
             "elasticsearch": "Base indexado"
         },
         "visor-documento": {
+            "lbl-paginas":  "Páginas",
+            "lbl-swap-vert":  "Reflejo vertical",
+            "lbl-swap-horiz":  "Reflejo horizontal",
+            "lbl-rot-180":  "Girar 180",
+            "lbl-rot-der":  "Girar a la derecha",
+            "lbl-rot-izq":  "Girar a la izquierda",
+            "titulo-pdf-ack":  "Crear PDF",
+            "porciento-pdf": "Escala de las imágenes",
             "crear-pdf-ack":  "La solictud de PDF ha sido recibida",
             "crear-zip-ack":  "La solictud de ZIP ha sido recibida",
             "tarea-existente": "Ya hay una tarea en el servidor para esta solicitud",
@@ -32,7 +40,10 @@
             "tareas-completadas": "Se han encontrado {{cantidad}} tareas completadas",
             "tareas-desconocida": "La tarea seleccionada no fué localizada en memoria",
             "tareas-elminada": "La tarea ha sido eliminada satisfactoriamente",
-            "sin-tareas": "No hay tareas del usuario"
+            "sin-tareas": "No hay tareas del usuario",
+            "col-fecha": "Creado",
+            "col-caducidad": "Caduca",
+            "col-tarea": "Tarea"
         } 
     },
     "listas": {
@@ -136,7 +147,7 @@
         "cerrarvista": "Cerrar vista",
         "cerrardocumento": "Cerrar documento",
         "subirarchivos": "Subir archivos",
-        "eliminar-contenido": "Eliminar selección",
+        "eliminar-contenido": "Eliminar páginas seleccionadas",
         "descargararchivos": "Descargar archivos",
         "descargarpdf": "Descargar PDF",
         "todos-docs": "Todos los documentos",
@@ -145,7 +156,10 @@
         "al-final": "Al final",
         "al-posicion": "En la posición",
         "vista-detalle": "Modo detalle",
-        "vista-miniaturas": "Modo miniaturas"		
+        "vista-miniaturas": "Modo miniaturas",
+        "sel-eliminar": "Eliminar selección",
+        "sel-todos": "Seleccionar todos",
+        "sel-invertir": "Invertir selección"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -448,7 +462,8 @@
                 "CarpetaId": "Carpeta",
                 "PermisoId": "Permiso",
                 "Versionado": "Versionado",
-                "ConteoAnexos": "Páginas" 
+                "ConteoAnexos": "Páginas",
+                "TamanoBytes": "Tamaño"
             },
             "tipoarchivo": {
                 "Id": "Id",
