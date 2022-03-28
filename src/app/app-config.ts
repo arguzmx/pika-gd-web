@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from '../environments/environment';
 
 export interface ApplicationConfiguration {
+    host?: string,
     authUrl: string, 
     apiUrl: string,
     pikaApiUrl: string,
@@ -13,7 +14,8 @@ export interface ApplicationConfiguration {
     uploadUrl: string,
     visordUrl: string,
     mediaUrl: string,
-    healthendpoint: string;
+    healthendpoint: string,
+    hosts?: ApplicationConfiguration[]
 }
 
 @Injectable()
@@ -24,7 +26,18 @@ export class AppConfig {
     load() {
         var url = environment.production ? './config.json' : './config.json'; 
         return new Promise((resolve, reject) => {
-            return this.client.get<ApplicationConfiguration>(url).subscribe(r=>{
+            return this.client.get<ApplicationConfiguration>(url).subscribe(config=>{
+                
+                let r = null
+                if(config.hosts.length > 0) {
+                    const host = config.hosts.find(h=>h.host === window.location.host);
+                    if (host != undefined) {
+                        r = host;
+                    } else {
+                        r = config;    
+                    }
+                }
+
                 if(!r.authUrl.endsWith('/')) {
                     r.authUrl = `${r.authUrl}/`;
                 }
@@ -41,6 +54,7 @@ export class AppConfig {
                 if (!this.config.healthendpoint) {
                     this.config.healthendpoint = 'health';
                 }
+
                 resolve(true);
             }, (err)=>{
                 resolve(false);
