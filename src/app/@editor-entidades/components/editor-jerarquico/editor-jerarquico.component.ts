@@ -431,6 +431,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
 
   // recibe el evento de nueva entidad jerárquica  desde el editor
   public NuevaEntidadJ(entidad: any) {
+    console.log(entidad);
     const tipo =
       entidad['EsRaiz'] === true
         ? EventosArbol.CrearRaiz
@@ -512,6 +513,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
   CerrarDialogos(): void { }
 
   public mostrarCrearJerarquia(raiz: boolean): void {
+    console.log(raiz);
     this.MostrarTituloCrear(this.configJ);
     this.editandoJerarquica = true;
     this.entidades.SetCachePropiedadContextual('EsRaiz', CONTEXTO, '', raiz);

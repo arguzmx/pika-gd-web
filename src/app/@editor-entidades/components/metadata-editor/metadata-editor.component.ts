@@ -88,6 +88,7 @@ export class MetadataEditorComponent
   // Propedades activas para directiva
   public propiedadesActivas: Propiedad[] = [];
   public propiedadesHidden: Propiedad[] = [];
+  public propiedadesActivasUI: Propiedad[] = [];
 
   public filtrosQ: FiltroConsultaPropiedad[] = [];
 
@@ -427,6 +428,7 @@ export class MetadataEditorComponent
         }
       });
     this.AsignarValoresDefault();
+    this.propiedadesActivasUI = this.propiedadesActivas;
     this.formaCreada = true;
   }
 

@@ -20,6 +20,50 @@
                                 </div>
                             </nb-card-body>
                         </nb-card>
+                        <nb-card [nbSpinner]="cargandoSalud" nbSpinnerStatus="danger">
+                            <nb-card-header>{{T.t['componentes.monitor-salud.indexado']}}
+                            </nb-card-header>
+                            <nb-card-body>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="m-2">
+                                            <table style="width: 100%;">
+                                                <tr style="text-align: center;">
+                                                    <th>
+                                                        {{T.t['componentes.monitor-salud.indexado-completo']}}
+                                                    </th>
+                                                    <th>
+                                                        {{T.t['componentes.monitor-salud.indexado-pendiente']}}
+                                                    </th>
+                                                    <th>
+                                                        {{T.t['componentes.monitor-salud.indexado-error']}}
+                                                    </th>
+                                                </tr>
+                                                <tr style="text-align: center;">
+                                                    <td>
+                                                        {{estadoOCR.Completo}}
+                                                    </td>
+                                                    <td>
+                                                        {{estadoOCR.Pendiente}}
+                                                    </td>
+                                                    <td>
+                                                        {{estadoOCR.Error}}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <button nbButton status="primary" size="small" (click)="onReprocesarOCRError()">
+                                            <nb-icon icon="flash-outline"></nb-icon>
+                                            {{T.t['componentes.monitor-salud.reprocesar-errores']}}
+                                        </button>
+                                        <button nbButton size="small" (click)="onRefreshOCR(true)">
+                                            <nb-icon icon="sync-outline"></nb-icon>
+                                            {{T.t['componentes.monitor-salud.refrescar-ocr']}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </nb-card-body>
+                        </nb-card>
                     </div>
                     <div class="col-xg-6 col-lg-6 col-md-6 col-sm-12">
                         <form [formGroup]="domainForm">

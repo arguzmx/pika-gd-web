@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActDominioOU } from '../model/act-dominio-ou';
 import { ReporteSalud } from '../model/reporte-salud';
 import { AppLogService } from '../../services/app-log/app-log.service';
+import { EstadoOCR } from '../model/estado-ocr';
 
 @Injectable()
 export class ApiConfiguracion {
@@ -40,6 +41,18 @@ export class ApiConfiguracion {
     const url = this.CrearEndpoint('sistema/appconfig/dominiouo');
     return this.http
       .get<ActDominioOU>(url);
+  }
+
+  public ObtieneEstadoOCR(): Observable<EstadoOCR> {
+    const url = this.CrearEndpoint('sistema/appconfig/estadoocr');
+    return this.http
+      .get<EstadoOCR>(url);
+  }
+
+
+  public ReiniciaOCRErrores(): Observable<any> {
+    const url = this.CrearEndpoint('sistema/appconfig/ocrerroneos');
+    return this.http.post(url, null);
   }
 
 

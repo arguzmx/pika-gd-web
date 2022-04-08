@@ -14,11 +14,21 @@
     "componentes": {
         "monitor-salud": {
             "titulo": "Estado servidores del sistema",
+            "indexado": "Estado indexado documentos",
+            "indexado-completo": "Completos",
+            "indexado-pendiente": "Pendientes",
+            "indexado-error": "Con error",
+            "reindexado-error-ok": "OCR reiniciado para erróneos",
+            "reindexado-error-err": "Error al reiniciar OCR para erróneos",
+            "reprocesar-errores": "Reprocesar errores",
             "nosaludable": "El servidor puede permitir el acceso", 
             "identityserver": "Identidad",
             "mysql": "Base de datos", 
             "rabbitmq":  "Bus de eventos",
-            "elasticsearch": "Base indexado"
+            "elasticsearch": "Base indexado",
+            "refrescar-ocr": "Actualizar conteo",
+            "refrescar-ocr-ok": "Conteo actualizado",
+            "refrescar-ocr-err": "Erro al actualizar conteo"
         },
         "visor-documento": {
             "lbl-paginas":  "Páginas",
