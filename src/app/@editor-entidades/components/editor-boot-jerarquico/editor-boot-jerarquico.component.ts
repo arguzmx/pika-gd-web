@@ -67,7 +67,6 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
               let pcontenido: PermisoAplicacion = null;
               let permisos = true;
 
-
               if(datos.contenido.TipoSeguridad == TipoSeguridad.AlIngreso) {
                 this.entidades.GetACL(datos.contenido.Tipo, params[PARAM_ID_JERARQUICO]).pipe(first()).subscribe(mask => {
                   parbol = this.entidades.CreaPermiso(datos.arbol.TokenApp, datos.arbol.TokenMod, mask);

@@ -81,10 +81,10 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
 
             // console.log(m);
             // console.log(m.TokenMod);
-
             if(m.TipoSeguridad == TipoSeguridad.AlIngreso) { 
 
               this.entidades.GetACL(m.Tipo, params[PARAM_ID_ORIGEN]).pipe(first()).subscribe(mask => {
+                console.log(mask);
                 pcontenido = this.entidades.CreaPermiso(m.TokenApp,m.TokenMod, mask);
                 pcontenido.PermiteAltas = m.PermiteAltas;
                 pcontenido.PermiteCambios = m.PermiteCambios;
