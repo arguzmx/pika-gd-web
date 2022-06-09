@@ -2,7 +2,6 @@ import { DominioActivo } from './../sesion/dominio-activo';
 import { NbMenuItem } from '@nebular/theme';
 import { ACLUsuario } from '../seguridad';
 import { MenuAplicacion } from '../aplicacion';
-
 export interface Sesion {
     IdUsuario: string;
     IdDominio: string;

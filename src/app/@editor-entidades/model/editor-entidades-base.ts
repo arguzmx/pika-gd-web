@@ -84,7 +84,6 @@ export class EditorEntidadesBase {
     entidad: any,
     config: ConfiguracionEntidad,
   ): void {
-
     if (entidad) {
       this.CerrarDialogos();
       if (link.HijoDinamico) {

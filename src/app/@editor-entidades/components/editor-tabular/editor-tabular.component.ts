@@ -287,7 +287,30 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     if (this.EliminarLogico) {
       filtros.push(this.FiltroEliminadas());
     }
+    // this.metadata.Propiedades.forEach((p) => {
+    //   if (p.IdContextual) {
+    //     const partes = p.IdContextual.split('.');
+    //     const valor = this.entidades.GetPropiedadCacheContextual(
+    //       partes[1],
+    //       partes[0],
+    //       '',
+    //     );
+    //     filtros.push(this.FiltroEq(p.Id, valor, true));
+    //   }
+    // });
     return filtros;
+  }
+
+  private FiltroEq(propiedad: string, valor: any, Oculto?: boolean): FiltroConsulta {
+    return {
+      Negacion: false,
+      Operador: Operacion.OP_EQ,
+      ValorString: String(valor),
+      Propiedad: propiedad,
+      Id: propiedad,
+      Valor: [valor],
+      Oculto: Oculto
+    };
   }
 
   private Procesaentidad() {
@@ -370,6 +393,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
                 // Y posteriormente una instancia en base al ID
                 // para establecer los títulos
                 if (e) {
+                  this.entidades.SetCacheInstanciaEntidad(this.config.OrigenTipo, this.config.OrigenId, e);
                   this.NombreInstanciaDisponible = true;
                   this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
                     this.config.OrigenTipo,

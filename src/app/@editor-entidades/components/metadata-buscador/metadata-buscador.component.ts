@@ -109,9 +109,6 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     this._Reset();
     if (this.metadata && this.metadata.Propiedades.length > 0) {
       this.filtros = [];
-      this.propiedades = this.metadata.Propiedades.filter(
-        (x) => x.Buscable === true,
-      );
       const filtros = this.cacheFiltros.GetCacheFiltros(this.config.TransactionId);
       filtros.forEach((item) => {
         const index = this.propiedades.findIndex((x) => x.Id === item.Id);
@@ -119,6 +116,12 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
           this._addFiltro(item.Id, item);
         }
       });
+      this.propiedades = this.metadata.Propiedades.filter(
+        (x) => x.Buscable === true && (
+          (filtros.filter(p=>p.Id === x.Id).length === 0) ||
+          (filtros.filter(p=>p.Id === x.Id).length >0 && filtros.filter(p=>p.Id === x.Id)[0].Oculto != true) 
+        )
+      );
       this.regenerarForma();
     }
   }
@@ -172,6 +175,7 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
           const fc = new FiltroConsulta();
           fc.Id = propiedad.Id;
           fc.Valido = false;
+          fc.Oculto = filtro?.Oculto;
           this.filtros.push(fc);
         }
       }

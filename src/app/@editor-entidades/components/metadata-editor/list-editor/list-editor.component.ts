@@ -120,7 +120,7 @@ export class ListEditorComponent extends EditorCampo
           if (atributo.Default) {
             this.group.get(this.propiedad.Id).patchValue(atributo.Default);
             this.selected = atributo.Default;
-            this.eventoCambiarValor(atributo.Default);
+            // this.eventoCambiarValor(atributo.Default);
           }
         }
       }
@@ -235,8 +235,17 @@ export class ListEditorComponent extends EditorCampo
           if ( (!tieneEventos && !this.isTypeAhead) ||  (this.propiedad.AtributoLista.EsListaTemas) ) {
             // Los datos se obtienen em una sola llamada cuando no 
             // dependen de un evento y no es typeahead
-            this.ObtieneLista(this.propiedad.AtributoLista,
-              new Consulta());
+            const consulta = new Consulta();
+            if(this.filtrosQ) {
+              this.filtrosQ.forEach(ff=>{
+                if(true) {
+                  ff.Filtros.forEach(f=>{
+                    consulta.FiltroConsulta.push({Negacion: f.Negacion,Propiedad: f.Propiedad, Operador: f.Operador, Valor: [f.Valor], ValorString: f.ValorString, Valido: true});
+                  })
+                }
+              })
+            }
+            this.ObtieneLista(this.propiedad.AtributoLista, consulta );
           }
 
       } else {

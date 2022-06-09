@@ -3,6 +3,7 @@ import { Propiedad } from './propiedad';
 import { EntidadVinculada } from './entidad-vinculada';
 import { CatalogoVinculado } from './catelogo-vinculado';
 import { LinkVista } from './link-vista';
+import { FiltroDefault } from './atributo-filtrodefault';
 
 
 export enum TipoSeguridad
@@ -11,8 +12,6 @@ export enum TipoSeguridad
     AlIngreso = 1,
     AlCambiar = 2,
 }
-
-
 export class MetadataInfo {
     Tipo: string;
     FullName: string;
@@ -32,4 +31,5 @@ export class MetadataInfo {
     PermiteBajas: boolean = true;
     PermiteCambios: boolean = true;
     TipoSeguridad: TipoSeguridad = TipoSeguridad.Default;
+    FiltrosDefault: FiltroDefault[];
 }

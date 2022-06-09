@@ -4,6 +4,7 @@ import { Operacion } from './operacion';
 export class FiltroConsulta {
   constructor() {
     this.Negacion = false;
+    this.Oculto = false;
   }
 
   Id?: string;
@@ -24,6 +25,9 @@ export class FiltroConsulta {
   ValorString?: string;
 
   Valido?: boolean;
+
+  // Determina si el filtro es oculto
+  Oculto?: boolean;
 
 }
 

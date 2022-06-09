@@ -13,7 +13,6 @@ import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
 import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
-
 export interface SesionState {
   sesion: Sesion | null;
   preferencias: IPreferencias | null;

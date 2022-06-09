@@ -45,13 +45,13 @@ export class EventosInterprocesoService {
     return this.cliente.PairListTypeAhead(lista, texto, filtros);
   }
 
-  SolicitarLista(lista: AtributoLista, consulta: Consulta): Observable<AtributoLista> {
+  SolicitarLista(lista: AtributoLista, consulta: Consulta, UseCache: boolean = false): Observable<AtributoLista> {
     let query = '';
     consulta.FiltroConsulta.forEach(x => query = query + `${x.Propiedad}-${x.Operador}-${x.Valor}`);
     const key = this.cache.ClaveLista(lista.Entidad, query);
 
     const subject = new AsyncSubject<AtributoLista>();
-    if (this.cache.has(key)) {
+    if (UseCache && this.cache.has(key)) {
       lista.Valores = this.cache.get(key);
       subject.next(lista);
       subject.complete();

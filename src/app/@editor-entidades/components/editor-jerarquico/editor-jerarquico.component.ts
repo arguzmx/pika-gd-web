@@ -330,6 +330,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
                 // Y posteriormente una instancia en base al ID
                 // para establecer los títulos
                 if (e) {
+                  this.entidades.SetCacheInstanciaEntidad(this.configJ.OrigenTipo, this.configJ.OrigenId, e);
                   this.NombreInstanciaDisponible = true;
                   this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
                     this.configJ.OrigenTipo,
@@ -411,14 +412,13 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
           partes[0],
           '',
         );
-        filtros.push(this.FiltroEq(p.Id, valor));
+        filtros.push(this.FiltroEq(p.Id, valor, true));
       }
     });
-
     return filtros;
   }
 
-  private FiltroEq(propiedad: string, valor: any): FiltroConsulta {
+  private FiltroEq(propiedad: string, valor: any, Oculto?: boolean): FiltroConsulta {
     return {
       Negacion: false,
       Operador: Operacion.OP_EQ,
@@ -426,6 +426,7 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       Propiedad: propiedad,
       Id: propiedad,
       Valor: [valor],
+      Oculto: Oculto
     };
   }
 

@@ -20,8 +20,6 @@ export class SesionQuery extends Query<SesionState> {
   
   public modoVisorActivado$ = this.select(state => state.sesion.ModoVisorActivado);
 
-  
-
   public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
 
   public dominioid$ = this.select(({ sesion }) => sesion.IdDominio);

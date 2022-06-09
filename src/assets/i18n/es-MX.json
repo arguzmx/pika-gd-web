@@ -261,9 +261,12 @@
         "archivo":"Archivo|Archivos|el|los|inventory_2",
         "almacenarchivo":"Almacén Archivo|Almacenes Archivo|el|los|home-outline",
         "zonaalmacen":"Zona Almacén|Zonas Almacén|la|las|place",
+        "contenedoralmacen":"Caja Almacén|Cajas Almacén|la|las|inventory_2",
+        "posicionalmacen":"Rack Almacén|Racks Almacén|la|las|apps",
+        "activocontenedoralmacen": "Activo|Activos|el|los|document_scanner",
         "unidadadministrativaarchivo": "Unidad Administrativa|Unidades Administrativas|la|las|hub",
         "permisosunidadadministrativaarchivo": "Permiso Unidad Administrativa|Permisos Unidad Administrativa|el|los|security",
-        "activo": "Activo acerco|Activos acervo|el|los|document_scanner",
+        "activo": "Activo acervo|Activos acervo|el|los|document_scanner",
         "prestamo": "Préstamo|Préstamos|el|los|social_distance",
         "activoprestamo": "Expediente préstamo|Expedientes préstamo|el|los|document_scanner",
         "ampliacion": "Ampliación|Ampliaciones|la|las|update",
@@ -504,9 +507,31 @@
             "zonaalmacen": {
                     "Id": "Id",
                     "Nombre": "Nombre",
-                    "Clave": "Clave",
                     "ArchivoId": "Archivo",
                     "AlmacenArchivoId": "Almacén"
+            },
+            "posicionalmacen":{
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "ArchivoId": "Archivo",
+                "AlmacenArchivoId": "Almacén",
+                "ZonaAlmacenId": "Zona",
+                "Indice": "Charola",
+                "IncrementoContenedor": "% Incremento",
+                "CodigoBarras": "Código Barras",
+                "CodigoElectronico":"Código Electrónico",
+                "Ocupacion": "% Ocupación"
+            },
+            "contenedoralmacen": {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "ArchivoId": "Archivo",
+                "AlmacenArchivoId": "Almacén",
+                "ZonaAlmacenId": "Zona",
+                "PosicionAlmacenId": "Rack",
+                "CodigoBarras": "Código Barras",
+                "CodigoElectronico":"Código Electrónico",
+                "Ocupacion": "% Ocupación"
             },
             "unidadadministrativaarchivo": {
                 "Id": "Id",
@@ -579,7 +604,10 @@
                 "OrigenId": "OrigenId",
                 "Vencidos": "Dias para vencer",
                 "UbicacionCaja": "Ubicación Caja",
-                "UbicacionRack": "Ubicación Anaquél"
+                "UbicacionRack": "Ubicación Anaquél",
+                "ContenedorAlmacenId": "Caja",
+                "ZonaAlmacenId": "Zona",
+                "AlmacenArchivoId": "Almacén"
             },
             "ampliacion": {
                 "Id": "Id",

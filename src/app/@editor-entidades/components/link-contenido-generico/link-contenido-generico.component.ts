@@ -69,7 +69,6 @@ export class LinkContenidoGenericoComponent implements OnInit {
   public ParamListener(): void {
     this.ObtieneElementoContenido(this.tipo, this.id).pipe(first())
       .subscribe(el => {
-        console.log(el);
         // Esta llamada siemrpe devuelve el elemento y es  configurada en el controlador del tipo de elemento
         this.nombre = el.Nombre;
         if (el.Id == null) {

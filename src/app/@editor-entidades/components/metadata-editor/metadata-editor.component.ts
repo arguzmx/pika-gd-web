@@ -355,6 +355,7 @@ export class MetadataEditorComponent
       const requiereFiltros = this.metadata.Propiedades.filter(
         (x) => x.AtributoLista?.FiltroBusqueda == true
       );
+      
       if (requiereFiltros.length > 0) {
         this.entidades
           .GetFiltroBusqueda(this.metadata.Tipo, this.config.OrigenId)
