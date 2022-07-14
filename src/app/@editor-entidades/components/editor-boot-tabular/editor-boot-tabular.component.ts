@@ -173,6 +173,7 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   }
 
   handlerEventoResultadoBusqueda(data: unknown) {
+    console.log(data);
     this.EventoResultadoBusqueda.emit(data);
   }
 
