@@ -48,6 +48,7 @@ export class HostVisorComponent
   private paginas: Pagina[] = [];
   public Titulo: string = "";
   public alturaComponente = "500px";
+  public alturaPanelThumbs = "400px";
   public VistaTrasera: boolean;
   public EsImagen: boolean = true;
   public MostrarResultadosTexto: boolean = false;
@@ -227,14 +228,20 @@ export class HostVisorComponent
   }
 
   private setAlturaPanel(altura: number) {
-    let h = parseInt(altura.toString(), 0) - 250;
+    let h = parseInt(altura.toString(), 0) - 300;
     h = h < 0 ? 200 : h;
     const a = `${h}px`;
+    const b = `${h-50}px`;
     this.alturaComponente = a;
+    this.alturaPanelThumbs = b;
   }
 
   public NuevaSeleccion(event) {
     this.thumbnails.SetPage(event["ParteId"]);
+  }
+
+  public irAPagina(event) {
+    this.thumbnails.gotoPage(event);
   }
 
   // Envia el  input para mostrar el tarahet trasera del panel del visor

@@ -1,8 +1,10 @@
 <div *ngIf="modoMiniatura; then mini else detalle"></div>
 <ng-template #mini>
-    <img #thumb class="imgDefault" [id]="pagina.Id" [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
-    'imgSubSeleccionada' : paginaVisible && paginaSeleccionada}" [src]="dataUrl$ | async"
-        on-click="SeleccionaThumbnails();">
+    <div class="bordeMiniatura" [ngClass]="{'imgVisible' : paginaVisible, 'imgSeleccionada':  paginaSeleccionada,
+    'imgSubSeleccionada' : paginaVisible && paginaSeleccionada}">
+        <img #thumb class="imgDefault" [id]="pagina.Id"  [src]="dataUrl$ | async"
+            on-click="SeleccionaThumbnails();">
+    </div>
 </ng-template>
 <ng-template #detalle>
     <div class="row" [ngClass]="{'renglonVisible' : paginaVisible, 'renglonSeleccionado':  paginaSeleccionada,

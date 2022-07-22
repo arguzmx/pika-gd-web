@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { VisorImagenesService } from '../../services/visor-imagenes.service';
 import { Pagina } from '../../model/pagina';
-import { takeUntil, first, take, switchMap, map } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil, first, take, switchMap, map, debounceTime } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, of} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MODO_VISTA_MINIATURAS } from '../../model/constantes';
@@ -77,6 +77,10 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
     this.EscuchaFiltroPaginas();
   }
 
+  private srcThumb$ = new BehaviorSubject(this.srcThumb);
+  dataUrl$: Observable<string> = this.srcThumb$.pipe(debounceTime(600), switchMap((url) => this.cargaImgSegura(url))); 
+
+
   // Obtiene pagina activa para mostrar
   EscuchaPaginaActiva() {
     this.servicioVisor.ObtienePaginaVisible()
@@ -106,17 +110,22 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
           if (this.paginaVisible) this.servicioVisor.EstablecerPaginaActiva(null);
         }
       });
+
+      this.servicioVisor
+      .ObtienePaginasModificadas()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((pags) => {
+        const p = pags.find(x=>x.Id == this.pagina.Id);
+        if(p) {
+          this.srcThumb$.next(`${this.srcThumb}?${Date.now()}`)
+        }
+      });
   }
 
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
   }
-
-  private srcThumb$ = new BehaviorSubject(this.srcThumb);
-
-
-  dataUrl$ = this.srcThumb$.pipe(switchMap((url) => this.cargaImgSegura(url)));
 
   private cargaImgSegura(url: string): Observable<any> {
     return (

@@ -32,6 +32,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
   muestraZoom: boolean = false;
   loading = false;
   canvasColor: string = "#000";
+  private srcImg: string = '';
 
   private src$ = new BehaviorSubject('');
 
@@ -71,6 +72,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   
   private cargaImgSegura(url: string): Observable<any> {
+    if(this.srcImg != url) this.srcImg = url;
     return this.httpClient
       .get(url, {responseType: 'blob'})
       .pipe(
@@ -97,7 +99,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
         if (zoom < 0.01) zoom = 0.01;
         this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);  
       } catch (error) {
-        console.error(error);        
+        // console.error(error);        
       }
       opt.e.preventDefault();
       opt.e.stopPropagation();
@@ -155,7 +157,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private AlturaCanvas(): number {
-    return parseInt(this.alturaComponente.replace('px','')) - 75;
+    return parseInt(this.alturaComponente.replace('px','')) - 50;
   }
 
   private AlturaCanvasPx(): string {
@@ -210,6 +212,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (dir === OperacionHeader.GIRAR_DER) this.oImg.angle = angulo + 90;
     if (dir === OperacionHeader.GIRAR_IZQ) this.oImg.angle = angulo - 90;
     if (dir === OperacionHeader.GIRAR_180) this.oImg.angle = angulo + 180;
+    
     this.canvas.renderAll();
   }
 
@@ -237,15 +240,19 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     .ObtieneOperacionHeader()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe((op) => {
-      if (this.oImg ) {
-        switch (op) {
-          case OperacionHeader.GIRAR_DER :
-          case OperacionHeader.GIRAR_IZQ :
-          case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
-          case OperacionHeader.REFLEJO_HOR :
-          case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
-        }
+      if(op) {
+        this.src$.next(`${this.srcImg}?${Date.now()}`)
       }
+      
+      // if (this.oImg ) {
+      //   switch (op) {
+      //     case OperacionHeader.GIRAR_DER :
+      //     case OperacionHeader.GIRAR_IZQ :
+      //     case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
+      //     case OperacionHeader.REFLEJO_HOR :
+      //     case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
+      //   }
+      // }
     });
   }
 }

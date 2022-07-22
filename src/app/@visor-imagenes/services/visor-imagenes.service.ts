@@ -14,6 +14,7 @@ export class VisorImagenesService {
   private subjectPaginasSeleccionadas = new BehaviorSubject<Pagina[]>([]);
   private subjectPaginaVisible = new BehaviorSubject<Pagina>(null);
   private subjectOperacionHeader = new BehaviorSubject<OperacionHeader>(null);
+  private subjectPaginasModifcadas = new BehaviorSubject<Pagina[]>([]);
   private subjectFiltroPaginas = new BehaviorSubject<boolean>(null);
   private subjLeyendoPaginas = new BehaviorSubject<boolean>(false);
   private subjectCambiarPagina = new BehaviorSubject<{anterior: boolean, siguiente: boolean, indice: number}>(null);
@@ -55,6 +56,49 @@ export class VisorImagenesService {
     this.subjectPermisos.next(permisos);
   }
 
+  RotarPaginas(documentoId: string, paginas: string[], angulo: number) {
+    const subject = new AsyncSubject<boolean>();
+    this.docService.RotarPaginas(documentoId, paginas, angulo).pipe(first())
+    .subscribe(r => {
+      this.subjectPaginasModifcadas.next(this.thumbSeleccionados);
+      subject.next(true);
+      subject.complete();
+    }, () => {
+      subject.next(false);
+      subject.complete();
+    } );
+    return subject;
+  }
+
+
+  ReflejarPaginas(documentoId: string, paginas: string[], direccion: string) {
+    const subject = new AsyncSubject<boolean>();
+    this.docService.ReflejarPaginas(documentoId, paginas, direccion).pipe(first())
+    .subscribe(r => {
+      this.subjectPaginasModifcadas.next(this.thumbSeleccionados);
+      subject.next(true);
+      subject.complete();
+    }, () => {
+      subject.next(false);
+      subject.complete();
+    } );
+    return subject;
+  }
+
+
+  MoverPaginas(documentoId: string,posicion: number, paginas: number[]) {
+    const subject = new AsyncSubject<boolean>();
+    this.docService.MoverPaginas(documentoId, posicion, paginas).pipe(first())
+    .subscribe(r => {
+      subject.next(true);
+      subject.complete();
+    }, () => {
+      subject.next(false);
+      subject.complete();
+    } );
+    return subject;
+  }
+
 
   EliminaPaginas(paginas: Pagina[]): Observable<boolean> {
     const subject = new AsyncSubject<boolean>();
@@ -68,6 +112,11 @@ export class VisorImagenesService {
     } );
     return subject;
   }
+
+  ReordenarPorNombre(documentoId: string): Observable<any> {
+    return this.docService.ReordenarPorNombre(documentoId);
+  }
+
 
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
@@ -265,6 +314,10 @@ export class VisorImagenesService {
 
   ObtieneOperacionHeader(): Observable<OperacionHeader> {
     return this.subjectOperacionHeader.asObservable();
+  }
+
+  ObtienePaginasModificadas(): Observable<Pagina[]> {
+    return this.subjectPaginasModifcadas.asObservable();
   }
 
   //#endregion

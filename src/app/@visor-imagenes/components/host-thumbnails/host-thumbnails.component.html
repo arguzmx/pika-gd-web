@@ -2,7 +2,7 @@
     <cdk-virtual-scroll-viewport #scroller [itemSize]="itemSize" minBufferPx="100" maxBufferPx="200"
         class="cdk-virtual-scroll-viewport">
         <div class="row" style="padding-left: 5%; padding-bottom: 15%; padding-top: 5px;" [style.height.px]="alturaVisor">
-            <ngx-thumbnail [modoVista]="modoVista" *cdkVirtualFor="let p of documento.Paginas; let i=index;" [pagina]="p"
+            <ngx-thumbnail [modoVista]="modoVista" *cdkVirtualFor="let p of documento.Paginas; let i=index; templateCacheSize: 0;" [pagina]="p"
                 [srcThumb]="p.UrlThumbnail"></ngx-thumbnail>
         </div>
     </cdk-virtual-scroll-viewport>

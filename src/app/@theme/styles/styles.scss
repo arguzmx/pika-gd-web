@@ -118,3 +118,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .gray-icon svg {
   fill: #8f9bb3;
 }
+
+.green-icon {
+  color:  #009900;
+}
+/* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+.green-icon svg {
+  fill: #009900;
+}
+
+.red-icon {
+  color:  #FF0000;
+}
+/* Note: If you're using an SVG icon, you should make the class target the `<svg>` element */
+.red-icon svg {
+  fill: #FF0000;
+}
+

@@ -40,6 +40,28 @@ export class DocumentosService implements IDocumentoService {
   }
 
 
+  RotarPaginas(documentoId: string, paginas: string[], angulo: number) {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${documentoId}/rotar/${angulo}`;
+    return this.http.post<any>(endpoint,paginas);
+  }
+
+
+  ReflejarPaginas(documentoId: string, paginas: string[], direccion: string) {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${documentoId}/reflejar/${direccion.toUpperCase()}`;
+    return this.http.post<any>(endpoint,paginas);
+  }
+
+  MoverPaginas(documentoId: string,posicion: number, paginas: number[]) {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${documentoId}/mover/${posicion}`;
+    return this.http.post<any>(endpoint,paginas);
+  }
+
+  ReordenarPorNombre(documentoId: string): Observable<any> {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${documentoId}/ordernar/alfabetico`;
+    return this.http.post<any>(endpoint,null);
+  }
+
+
   ObtienePermisoPuntoMontaje(id: string): Observable<PermisoPuntoMontaje> {
     const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/puntomontaje/permisos/${id}`;
     return this.http.get<PermisoPuntoMontaje>(endpoint);

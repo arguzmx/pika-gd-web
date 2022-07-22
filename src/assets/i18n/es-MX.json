@@ -169,7 +169,8 @@
         "vista-miniaturas": "Modo miniaturas",
         "sel-eliminar": "Eliminar selección",
         "sel-todos": "Seleccionar todos",
-        "sel-invertir": "Invertir selección"
+        "sel-invertir": "Invertir selección",
+        "reordernar-nombre": "Reordenar por nombre"
     },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
@@ -712,6 +713,24 @@
     "visor": {
         "eliminar-cotenido-titulo": "Eliminar",
         "eliminar-cotenido-mensaje": "¿Desea eliminar el contenido seleccionado? la eliminación es permanente",
-        "warn-sin-seleccion": "No hay contenido seleccionado"
+        "warn-sin-seleccion": "No hay contenido seleccionado",
+        "reordenar-por-nombre-titulo": "Reordenar las páginas",
+        "reordenar-por-nombre": "¿Desea reordenar las páginas en base al nombre? esta acción es permanente",
+        "reordenar-por-nombre-ok": "El reordenamiento fue exitoso",
+        "reordenar-por-nombre-error": "Ocurrió un error al realizar el reordenamiento",
+        "mover-paginas-titulo": "Mover páginas",
+        "mover-paginas-msg": "Seleccione la posición y presione sobre el botón para completar",
+        "mover-paginas": "¿Mover las páginas a la nueva posición?",
+        "mover-paginas-ok": "Las páginas han sido movidas satisfactoriamente",
+        "mover-paginas-solo-una": "Debe seleccionar una página destino para realizar el movimiento",
+        "mover-paginas-error": "Ocurrió un error al realizar mover las páginas",
+        "al-inicio": "Ir al inicio",
+        "al-final": "Ir al final",
+        "a-pagina": "Ir a la página",
+        "rotar-izquierda": "Rotar a la izquierda",
+        "rotar-derecha": "Rotar a la derecha",
+        "rotar-180": "Rotar 180",
+        "reflejar-vertical": "Reflejar verticalmente",
+        "reflejar-horizontal": "Reflejar horizontalmente"
     }
 }

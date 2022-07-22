@@ -30,11 +30,23 @@
 }
 
 .imgDefault {
+    width: auto;
+    height: auto;
+    max-width: 120px;
+    max-height: 140px;
+}
+
+.bordeMiniatura {
     border: gainsboro solid 1px;
     border-radius: 4px;
     margin: 5px;
-    width: 122px; 
+    width: 124px; 
     height: 148px;
+    min-width: 124px; 
+    min-height: 148px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .imgRenglon {

@@ -12,19 +12,20 @@
       No cuenta con los permisos de acceso al elemento
     </div>
     <div *ngIf="accesoPermitido" class="col-lg-12">
-      <div [ngStyle]="{width: '100%', height: alturaComponente}">
+      <ngx-header-thumbs 
+      (irAPagina) = "irAPagina($event)"
+      (modoVista) = "evModoVista($event)"
+      (cerrarVista)="evCerrarVista()" 
+      (cerrarDocumento)="evCerrarDocumento($event)"
+      (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()"
+      (paginasEliminadas)="paginasEliminadas($event)">
+    </ngx-header-thumbs>
+      <div [ngStyle]="{width: '100%', height: alturaPanelThumbs}">
         <as-split direction="horizontal">
-          <as-split-area [size]="40" class="hideScroll">
+          <as-split-area [size]="35" class="hideScroll">
             <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="padded">
-                  <ngx-header-thumbs 
-                    (modoVista) = "evModoVista($event)"
-                    (cerrarVista)="evCerrarVista()" 
-                    (cerrarDocumento)="evCerrarDocumento($event)"
-                    (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()"
-                    (paginasEliminadas)="paginasEliminadas($event)">
-                  </ngx-header-thumbs>
                   <nb-tabset fullWidth accent="danger">
                     <nb-tab *ngIf="MostrarResultadosTexto" tabTitle="Búsqueda" [active]="true">
                       <ngx-full-text-results 
@@ -44,13 +45,13 @@
               </div>
             </div>
           </as-split-area>
-          <as-split-area [size]="60">
+          <as-split-area [size]="65">
             <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="padded">
-                  <span class="example-spacer" *ngIf="EsImagen">
+                  <!-- <span class="example-spacer" *ngIf="EsImagen">
                     <ngx-header-visor [documento]="documento"></ngx-header-visor>
-                  </span>
+                  </span> -->
                   <ngx-visor [alturaComponente]="alturaComponente"></ngx-visor>
                 </div>
               </div>

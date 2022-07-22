@@ -84,7 +84,7 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
             if(m.TipoSeguridad == TipoSeguridad.AlIngreso) { 
 
               this.entidades.GetACL(m.Tipo, params[PARAM_ID_ORIGEN]).pipe(first()).subscribe(mask => {
-                console.log(mask);
+                // console.log(mask);
                 pcontenido = this.entidades.CreaPermiso(m.TokenApp,m.TokenMod, mask);
                 pcontenido.PermiteAltas = m.PermiteAltas;
                 pcontenido.PermiteCambios = m.PermiteCambios;
@@ -173,7 +173,7 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   }
 
   handlerEventoResultadoBusqueda(data: unknown) {
-    console.log(data);
+    // console.log(data);
     this.EventoResultadoBusqueda.emit(data);
   }
 

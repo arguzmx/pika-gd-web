@@ -7,6 +7,7 @@ import {
   SimpleChanges,
   OnDestroy,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -19,7 +20,7 @@ import { VisorImagenesService } from '../../services/visor-imagenes.service';
   templateUrl: './host-thumbnails.component.html',
   styleUrls: ['./host-thumbnails.component.scss'],
 })
-export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
+export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() documento: Documento;
   @Input() alturaComponente;
   @Input() modoVista;
@@ -28,17 +29,29 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges {
   private onDestroy$: Subject<void> = new Subject<void>();
   public alturaVisor = "400px"
 
-  // @ViewChild("scroller", { static: true })
-  public virtualScrollViewport: CdkVirtualScrollViewport;
+  @ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport;
 
   constructor(private visorService: VisorImagenesService) {
     this.ListenerPaginas();
     this.setAlturaVisor();
   }
 
+  ngAfterViewInit(): void {
+    this.viewport.scrolledIndexChange
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe((p) => {
+      this.SetPageByIndex(p);
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.setAlturaVisor();
   }
+
+  gotoPage(page: number) {
+    this.viewport.scrollToIndex(page);
+  }
+
 
 private setAlturaVisor() {
   if ( this.modoVista == MODO_VISTA_MINIATURAS) {
@@ -51,10 +64,19 @@ private setAlturaVisor() {
   }
 }
 
+  public SetPageByIndex(id: number ) {
+    this.visorService.EliminarSeleccion();
+    const pagina =this.documento.Paginas.find(x=>x.Indice == id);
+    if(pagina) {
+      this.visorService.EstablecerPaginaActiva(pagina);
+      this.visorService.AdicionarPaginaSeleccion(pagina);
+    }
+  }
+
   public SetPage(id: string ){
+    this.visorService.EliminarSeleccion();
     const pagina =this.documento.Paginas.find(x=>x.Id == id);
     if(pagina) {
-      this.visorService.EliminarSeleccion();
       this.visorService.EstablecerPaginaActiva(pagina);
       this.visorService.AdicionarPaginaSeleccion(pagina);
     }
@@ -65,6 +87,8 @@ private setAlturaVisor() {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((evento) => {
         this.cargandoPaginas = evento;
+        
+        // this.viewport.scrollToIndex(0);
         // this.virtualScrollViewport.scrollTo({
         //   bottom: 0,
         //   behavior: "auto"

@@ -39,6 +39,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
 import {CdkStepperModule} from '@angular/cdk/stepper';
 import {CdkTableModule} from '@angular/cdk/table';
 import {CdkTreeModule} from '@angular/cdk/tree';
+import { NgxMaskModule } from 'ngx-mask';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -106,6 +107,7 @@ import { PdfDownloadComponent } from './components/pdf-download/pdf-download.com
     ngfModule,
     NgxExtendedPdfViewerModule,
     AngularSplitModule.forRoot(),
+    NgxMaskModule.forRoot(),
     A11yModule,
     ClipboardModule,
     CdkStepperModule,
