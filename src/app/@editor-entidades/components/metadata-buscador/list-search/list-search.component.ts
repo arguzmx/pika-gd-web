@@ -42,6 +42,7 @@ ICampoBuscable {
     translate: TranslateService,
     cache: CacheFiltrosBusqueda) {
     super(cache, translate);
+    console.log(translate);
     this.T = new Traductor(translate);
     this.T.ts = ['ui.no'];
   }
@@ -122,6 +123,7 @@ ICampoBuscable {
         this.isTypeAhead = false;
         // Añade los valores del CSV en el caso de que existan
         if (this.propiedad.AtributoLista.ValoresCSV) {
+          this.propiedad.ValoresLista = [];
           let indice: number = 0;
           this.propiedad.AtributoLista.ValoresCSV.split(',').forEach( v => {
             this.propiedad.ValoresLista.push({Id: v, Texto: v, Indice: indice});
