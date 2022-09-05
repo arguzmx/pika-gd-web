@@ -235,6 +235,7 @@
         "obtenidos-0": "El elemento seleccionado no tiene permisos asignados"
     },
     "entidades": {
+        "transferencia": "Transferencia|Transferencias|la|las|sync_alt",
         "temas-seleccion": "Elegir tema",
         "temas-seleccion-nombre": "Tema selección",
         "vaciar-seleccion": "¿Eliminar todo el contenido de la selección?",
@@ -281,6 +282,11 @@
 		"tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
         "bitacoratarea": "Bitácora|Bitácoras|la|las|dvr",
         "propiedades": {
+            "transferencia" : {
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "FechaCreacion": "Creación"
+            },
             "valorlistaplantilla": {
                 "PropiedadId": "PropiedadId",
                 "Id": "Id",
