@@ -5,9 +5,6 @@
                 <nb-card accent="info" size="large">
                     <nb-card-body>
                         <div class="row">
-                            &nbsp;
-                        </div>
-                        <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="col text-center">
                                     <img src="../../../assets/images/logo_pika.png">
@@ -23,17 +20,19 @@
                                 <ngx-monitor-salud (DatosListos)="DatosListos($event)" (ServidorSaludable)="ServidorSaludable($event)" ></ngx-monitor-salud>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="text-right">
+                                    <span class="caption text-hint">{{ver}}</span>
+                                </div>
                                 <div class="padded">
                                     <h2>Noticias</h2>
-
                                 </div>
                             </div>
                         </div>
                     </nb-card-body>
-                    <nb-card-footer>
+                    <!-- <nb-card-footer>
                         <span class="text-danger"></span>
                         <span class="text-hint"></span>
-                    </nb-card-footer>
+                    </nb-card-footer> -->
                 </nb-card>
             </nb-card-front>
 

@@ -7,6 +7,7 @@ import {
 import { TranslateService } from "@ngx-translate/core";
 import { OAuthService } from "angular-oauth2-oidc";
 import { LocalStorageService } from "ngx-localstorage";
+import { environment } from "../../../environments/environment";
 import { Traductor } from "../../@editor-entidades/editor-entidades.module";
 import { AppConfig } from "../../app-config";
 import { AppLogService } from "../../services/app-log/app-log.service";
@@ -19,6 +20,7 @@ import { AppLogService } from "../../services/app-log/app-log.service";
 })
 export class BienvenidaComponent implements OnInit {
   public T: Traductor;
+  ver: string = '';
   cargaFinalizada: boolean = false;
   servidorSaludable: boolean = false;
   constructor(
@@ -29,6 +31,7 @@ export class BienvenidaComponent implements OnInit {
     ts: TranslateService,
     private applog: AppLogService
   ) {
+    this.ver = environment.version
     this.T = new Traductor(ts);
     this.CargaTraducciones();
     auth.issuer = this.config.config.authUrl;
