@@ -7,10 +7,12 @@ import {
 import { TranslateService } from "@ngx-translate/core";
 import { OAuthService } from "angular-oauth2-oidc";
 import { LocalStorageService } from "ngx-localstorage";
+import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { Traductor } from "../../@editor-entidades/editor-entidades.module";
 import { AppConfig } from "../../app-config";
 import { AppLogService } from "../../services/app-log/app-log.service";
+import { AuthService } from "../../services/auth/auth.service";
 
 @Component({
   selector: "ngx-bienvenida",
@@ -23,9 +25,16 @@ export class BienvenidaComponent implements OnInit {
   ver: string = '';
   cargaFinalizada: boolean = false;
   servidorSaludable: boolean = false;
+
+
+  isAuthenticated$: Observable<boolean>;
+  isDoneLoading$: Observable<boolean>;
+  canActivateProtectedRoutes$: Observable<boolean>;
+
   constructor(
+    private authService: AuthService,
     private storageService: LocalStorageService,
-    private auth: OAuthService,
+    // private auth: OAuthService,
     private config: AppConfig,
     private cdr: ChangeDetectorRef,
     ts: TranslateService,
@@ -34,20 +43,25 @@ export class BienvenidaComponent implements OnInit {
     this.ver = environment.version
     this.T = new Traductor(ts);
     this.CargaTraducciones();
-    auth.issuer = this.config.config.authUrl;
-    auth.skipIssuerCheck = true;
-    auth.clientId = "api-pika-gd-angular";
-    auth.redirectUri = window.location.origin + "/index.html";
-    auth.silentRefreshRedirectUri =
-      window.location.origin + "/silent-refresh.html";
-    auth.scope = "openid profile pika-gd";
-    auth.useSilentRefresh = true;
-    auth.sessionChecksEnabled = false;
-    auth.showDebugInformation = true;
-    auth.clearHashAfterLogin = false;
-    auth.requireHttps = false;
-    auth.strictDiscoveryDocumentValidation = false;
-    auth.setStorage(sessionStorage);
+    // auth.issuer = this.config.config.authUrl;
+    // auth.skipIssuerCheck = true;
+    // auth.clientId = "api-pika-gd-angular";
+    // auth.redirectUri = window.location.origin + "/index.html";
+    // auth.silentRefreshRedirectUri =
+    //   window.location.origin + "/silent-refresh.html";
+    // auth.scope = "openid profile pika-gd";
+    // auth.useSilentRefresh = true;
+    // auth.sessionChecksEnabled = false;
+    // auth.showDebugInformation = true;
+    // auth.clearHashAfterLogin = false;
+    // auth.requireHttps = false;
+    // auth.strictDiscoveryDocumentValidation = false;
+    // auth.setStorage(sessionStorage);
+
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
+    this.isDoneLoading$ = this.authService.isDoneLoading$;
+    this.canActivateProtectedRoutes$ = this.authService.canActivateProtectedRoutes$;
+
   }
 
   ngOnInit(): void {}
@@ -71,19 +85,20 @@ export class BienvenidaComponent implements OnInit {
 
   login() {
     
-    this.eliminaDatosSesion();
+    this.authService.login();
+    // this.eliminaDatosSesion();
    
 
-    let url =
-      this.auth.issuer.replace(/\/$/, "") + "/.well-known/openid-configuration";
-    this.auth
-      .loadDiscoveryDocument(url)
-      .then(() => this.auth.tryLogin())
-      .then(() => {
-        if (!this.auth.hasValidAccessToken()) {
-          this.auth.initImplicitFlow();
-        }
-      });
+    // let url =
+    //   this.auth.issuer.replace(/\/$/, "") + "/.well-known/openid-configuration";
+    // this.auth
+    //   .loadDiscoveryDocument(url)
+    //   .then(() => this.auth.tryLogin())
+    //   .then(() => {
+    //     if (!this.auth.hasValidAccessToken()) {
+    //       this.auth.initImplicitFlow();
+    //     }
+    //   });
   }
 
   eliminaDatosSesion() {

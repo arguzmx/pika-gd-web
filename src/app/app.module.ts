@@ -38,6 +38,7 @@ import { AppConfig, TokenProvider } from './app-config';
 import { ConfiguracionModule } from './@configuracion/configuracion.module';
 import { AppLogService } from './services/app-log/app-log.service';
 import { CanalTareasService } from './services/canal-tareas/canal-tareas.service';
+import { AuthCoreModule } from './services/auth/auth.core.module';
 
 export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   return () => config.load().then(() => token.load());
@@ -75,7 +76,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
     environment.production ? [] : AkitaNgDevtools,
-    OAuthModule.forRoot(),
+    AuthCoreModule.forRoot(),
   ],
   bootstrap: [AppComponent],
   providers: [
