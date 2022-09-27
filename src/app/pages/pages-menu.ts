@@ -189,10 +189,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'text-outline',
     children: [
       {
-        title: 'TinyMCE',
-        link: '/pages/editors/tinymce',
-      },
-      {
         title: 'CKEditor',
         link: '/pages/editors/ckeditor',
       },
