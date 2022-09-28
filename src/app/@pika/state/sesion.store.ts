@@ -13,6 +13,7 @@ import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
 import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
+import { AuthService } from '../../services/auth/auth.service';
 export interface SesionState {
   sesion: Sesion | null;
   preferencias: IPreferencias | null;
@@ -81,7 +82,7 @@ export class SesionStore extends Store<SesionState> {
 
   constructor(
     private app: AppConfig,
-    private auth: OAuthService,
+    private auth: AuthService,
     private localStorage: LocalStorageService,
     private serviceSesion: PikaSesionService) {
     super(createInitialState());
@@ -89,44 +90,20 @@ export class SesionStore extends Store<SesionState> {
     const prefs = this.ObtienePreferencias();
     this.setPreferencias(prefs);
     
-    this.auth.setupAutomaticSilentRefresh();
-    
-    window.addEventListener('storage', (event) => {
-
-      // The `key` is `null` if the event was caused by `.clear()`
-      if (event.key !== 'access_token' && event.key !== null) {
-        return;
-      }
-
-    });
-
-    this.auth.events.subscribe(event => {
-      if (event instanceof OAuthSuccessEvent) {
-        console.error("OK  access token");
-        if (this.auth.hasValidAccessToken()){
-
-          // this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
-          // this.setPropiedad(PropiedadesSesion.token, this.auth.getAccessToken());
-          // this.procesaUsuario();
-
-          // if(this.GetUserInfo) {
-          //   this.GetUserInfo = false;
-          //   this.auth.loadUserProfile().then(u=>{
-          //     // console.log(u);
-          //   });
-          // }
-
-        } else {
-          console.error("Invalid access token");
-          // window.location.reload();
-          //this.auth.silentRefresh();
+    this.auth.isAuthenticated$.subscribe(event => {
+      console.log(event);
+      if(event) {
+        console.log("valid token");
+        console.log(this.auth.accessToken);
+        this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
+        this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
+        this.procesaUsuario();
+        if(this.GetUserInfo) {
+          this.GetUserInfo = false;
         }
-      }
+      } else {
 
-      // if (event instanceof OAuthErrorEvent ) {
-      // }
-      
-      
+      }
     });
   }
 

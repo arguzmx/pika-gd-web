@@ -7,15 +7,14 @@ import { LayoutService } from '../../../@core/utils';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { AppBusStore, PostTareaEnDemanda, PropiedadesBus } from '../../../@pika/pika-module';
-import { OAuthService } from 'angular-oauth2-oidc';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { LocalStorageService } from 'ngx-localstorage';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CentroMensajesComponent } from '../centro-mensajes/centro-mensajes.component';
 import { AppLogService } from '../../../services/app-log/app-log.service';
 import { CanalTareasService } from '../../../services/canal-tareas/canal-tareas.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 
 @Component({
@@ -69,11 +68,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private _bottomSheet: MatBottomSheet,
     private canalTareas: CanalTareasService,
     private router: Router,
-    private storageService: LocalStorageService,
               private sesion: SesionStore,
               private translate: TranslateService,
               private dialog: NbDialogService,
-              private auth: OAuthService,
+              private auth: AuthService,
               private appBusStore: AppBusStore,
               private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
@@ -105,8 +103,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.currentTheme = this.themeService.currentTheme;
 
-    if(this.auth.hasValidAccessToken()) {
-      const claims = this.auth.getIdentityClaims();
+    if(this.auth.hasValidToken()) {
+      const claims = this.auth.identityClaims;
       this.user['name'] = claims['preferred_username'] ;
     }
 
@@ -204,9 +202,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   salir():void {
-    this.storageService.remove("login");
-    this.storageService.set("ensesion", -1);
-    this.auth.logOut();
+    this.auth.logout();
   }
 
   alternaVisor(): void {

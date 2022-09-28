@@ -1,16 +1,9 @@
 import { Router } from "@angular/router";
-import { AppConfig } from "./app-config";
 import { Component, OnInit } from "@angular/core";
 import { AnalyticsService } from "./@core/utils/analytics.service";
 import { SeoService } from "./@core/utils/seo.service";
 import { TranslateService } from "@ngx-translate/core";
-import {
-  OAuthErrorEvent,
-  OAuthService,
-  OAuthSuccessEvent,
-} from "angular-oauth2-oidc";
 import { LocalStorageService } from "ngx-localstorage";
-import { decodeJwtPayload } from "@nebular/auth";
 import { AuthService } from "./services/auth/auth.service";
 
 @Component({
@@ -23,10 +16,7 @@ export class AppComponent implements OnInit {
   private enLogin: number;
 
   constructor(
-    private storageService: LocalStorageService,
-    // private auth: OAuthService,
     private authService: AuthService,
-    private config: AppConfig,
     public translate: TranslateService,
     private analytics: AnalyticsService,
     private seoService: SeoService,
@@ -46,15 +36,15 @@ export class AppComponent implements OnInit {
     // alert(window.location);
     // alert(this.GetLocation());
     // Al cargar añade la URL de retorno si no es el callback de index o l apágina de inicio o la raíz
-    if (
-      this.GetLocation() != '/' &&
-      window.location.toString().indexOf("index.html") < 0 &&
-      window.location.toString().indexOf("inicio") < 0
-    ) {
-      this.storageService.set("returnurl", btoa(this.GetLocation()));
-    } else {
-      this.storageService.set("returnurl", null);
-    }
+    // if (
+    //   this.GetLocation() != '/' &&
+    //   window.location.toString().indexOf("index.html") < 0 &&
+    //   window.location.toString().indexOf("inicio") < 0
+    // ) {
+    //   this.storageService.set("returnurl", btoa(this.GetLocation()));
+    // } else {
+    //   this.storageService.set("returnurl", null);
+    // }
     
     if(authService.hasValidToken()) {
       console.log("valid");
@@ -164,21 +154,6 @@ export class AppComponent implements OnInit {
     //     });
     //   }
     // }
-  }
-
-  private ValidToken(): boolean {
-    const at = window.sessionStorage.getItem("access_token");
-    if (at) {
-      const d = new Date(0);
-      d.setUTCSeconds(decodeJwtPayload(at).exp);
-      if (d > new Date()) {
-        return true;
-      }
-    } else {
-      const nonce = window.sessionStorage.getItem("nonce");
-      if (nonce) return true;
-    }
-    return false;
   }
 
   private GetLocation(): string {
