@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NbMenuService } from '@nebular/theme';
 import { TranslateService } from '@ngx-translate/core';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
@@ -13,7 +14,11 @@ export class DesconocidoComponent implements OnInit {
   public T: Traductor;
 
   constructor(ts: TranslateService,
+    private router:  Router,
     private menuService: NbMenuService) {
+      
+      console.info(router.url);
+      console.info(router.getCurrentNavigation());
       this.T  = new Traductor(ts);
   }
 

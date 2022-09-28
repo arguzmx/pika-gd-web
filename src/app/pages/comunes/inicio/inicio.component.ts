@@ -10,7 +10,6 @@ import { SesionStore } from "../../../@pika/pika-module";
 })
 export class InicioComponent implements OnInit {
   constructor(
-    private oauthService: OAuthService,
     private sesionStore: SesionStore,
     private route: ActivatedRoute
   ) {}
@@ -20,7 +19,5 @@ export class InicioComponent implements OnInit {
     if (rutas.length > 0) {
       this.sesionStore.setRutasTipo(rutas);
     }
-    let claims = this.oauthService.getIdentityClaims();
-  
   }
 }
