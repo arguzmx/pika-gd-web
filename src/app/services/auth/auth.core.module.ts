@@ -12,7 +12,6 @@ import { AuthService } from './auth.service';
 export function storageFactory(): OAuthStorage {
   return localStorage;
 }
-
 @NgModule({
   imports: [
     HttpClientModule,
@@ -31,7 +30,6 @@ export class AuthCoreModule {
       providers: [
         { provide: APP_INITIALIZER, useFactory: authAppInitializerFactory, deps: [AuthService], multi: true },
         { provide: AuthConfig, useValue: authConfig },
-        { provide: OAuthModuleConfig, useValue: authModuleConfig },
         { provide: OAuthStorage, useFactory: storageFactory },
       ]
     };

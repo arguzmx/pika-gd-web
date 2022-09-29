@@ -7,5 +7,5 @@ export const authConfig: AuthConfig = {
   clientId: 'api-pika-gd-angular', 
   responseType: 'code',
   redirectUri: window.location.origin + '/', // silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
-  scope: 'openid profile pika-gd', 
+  scope: 'openid profile offline_access pika-gd', 
 };

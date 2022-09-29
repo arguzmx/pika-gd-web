@@ -91,10 +91,7 @@ export class SesionStore extends Store<SesionState> {
     this.setPreferencias(prefs);
     
     this.auth.isAuthenticated$.subscribe(event => {
-      console.log(event);
       if(event) {
-        console.log("valid token");
-        console.log(this.auth.accessToken);
         this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
         this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
         this.procesaUsuario();

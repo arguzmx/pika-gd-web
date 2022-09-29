@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { AppConfig } from '../../app-config';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
   }
 
   constructor(
+    private appConfig: AppConfig,
     private oauthService: OAuthService,
     private router: Router,
   ) {
@@ -83,33 +85,37 @@ export class AuthService {
 
   public runInitialLoginSequence(): Promise<void> {
     if (location.hash) {
-      console.log('Encountered hash fragment, plotting as table...');
-      console.table(location.hash.substr(1).split('&').map(kvp => kvp.split('=')));
+      console.debug('Encountered hash fragment, plotting as table...');
+      console.debug(location.hash.substr(1).split('&').map(kvp => kvp.split('=')));
     }
 
+
+    return this.appConfig.load().then(()=>{
+      this.oauthService.issuer =this.appConfig.config.authUrl;
+    })
+    .then(()=>{
     // 0. LOAD CONFIG:
     // First we have to check to see how the IdServer is
     // currently configured:
-    return this.oauthService.loadDiscoveryDocument()
-
-      // For demo purposes, we pretend the previous call was very slow
-      .then(() => new Promise<void>(resolve => setTimeout(() => resolve(), 1500)))
-
+    this.oauthService.loadDiscoveryDocument()
       // 1. HASH LOGIN:
       // Try to log in via hash fragment after redirect back
       // from IdServer from initImplicitFlow:
-      .then(() => this.oauthService.tryLogin())
-
+      .then(() => { 
+        this.oauthService.tryLogin(); 
+      })
       .then(() => {
         if (this.oauthService.hasValidAccessToken()) {
           return Promise.resolve();
         }
 
+        return Promise.reject();
         // 2. SILENT LOGIN:
         // Try to log in via a refresh because then we can prevent
         // needing to redirect the user:
         return this.oauthService.silentRefresh()
           .then(() => Promise.resolve())
+          .then(() => new Promise<void>(resolve => setTimeout(() => resolve(), 1500)))
           .catch(result => {
             // Subset of situations from https://openid.net/specs/openid-connect-core-1_0.html#AuthError
             // Only the ones where it's reasonably sure that sending the
@@ -120,6 +126,10 @@ export class AuthService {
               'account_selection_required',
               'consent_required',
             ];
+
+            console.log("No silent refresh");
+
+            console.log(result);
 
             if (result
               && result.reason
@@ -155,11 +165,19 @@ export class AuthService {
           if (stateUrl.startsWith('/') === false) {
             stateUrl = decodeURIComponent(stateUrl);
           }
-          console.log(`There was state of ${this.oauthService.state}, so we are sending you to: ${stateUrl}`);
+          // console.log(`There was state of ${this.oauthService.state}, so we are sending you to: ${stateUrl}`);
+          if(stateUrl.toLocaleLowerCase().indexOf('bienvenida')>=0){
+            stateUrl='/pages/inicio';
+          }
           this.router.navigateByUrl(stateUrl);
         }
       })
       .catch(() => this.isDoneLoadingSubject$.next(true));
+
+    })
+    .catch(() => this.isDoneLoadingSubject$.next(true));
+
+    
   }
 
   public login(targetUrl?: string) {
@@ -168,9 +186,7 @@ export class AuthService {
     this.oauthService.initLoginFlow(targetUrl || this.router.url);
   }
 
-  public logout() {
-    this.oauthService.logOut();
-   }
+  public logout() { this.oauthService.logOut(); }
   public refresh() { this.oauthService.silentRefresh(); }
   public hasValidToken() { return this.oauthService.hasValidAccessToken(); }
 
