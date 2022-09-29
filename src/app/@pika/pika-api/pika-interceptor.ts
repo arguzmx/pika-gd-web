@@ -22,10 +22,7 @@ export class PikaSessionInterceptor implements HttpInterceptor {
   private timeZoneOffset = new Date().getTimezoneOffset();
 
   constructor(
-    private sesionQuery: SesionQuery,
-    private authStorage: OAuthStorage,
-    private errorHandler: OAuthResourceServerErrorHandler,
-    @Optional() private moduleConfig: OAuthModuleConfig
+    private sesionQuery: SesionQuery
   ) {
     this.SessionChanges();
   }
@@ -57,10 +54,12 @@ export class PikaSessionInterceptor implements HttpInterceptor {
       headerSettings[key] = req.headers.getAll(key);
     }
 
-    let token = this.authStorage.getItem('access_token');
-    let header = 'Bearer ' + token;
+    // let token = this.authStorage.getItem('access_token');
+    if(this.Token) {
+      let header = 'Bearer ' + this.Token;
+      headerSettings['Authorization'] = header;
+    }
 
-    headerSettings['Authorization'] = header;
     headerSettings[HDOMINIOID] = this.IdDominio;
     headerSettings[HUNIDADORGID] = this.IdUnidadOrg;
     headerSettings[HCULTURE] = this.UILocale;

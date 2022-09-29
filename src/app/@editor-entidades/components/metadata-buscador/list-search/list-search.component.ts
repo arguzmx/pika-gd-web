@@ -42,7 +42,6 @@ ICampoBuscable {
     translate: TranslateService,
     cache: CacheFiltrosBusqueda) {
     super(cache, translate);
-    console.log(translate);
     this.T = new Traductor(translate);
     this.T.ts = ['ui.no'];
   }
