@@ -102,7 +102,7 @@ export class AuthService {
 
     return this.appConfig.load().then(()=>{
       this.oauthService.issuer = this.appConfig.config.authUrl;
-      this.oauthService.redirectUri = window.location.origin + '/';
+      this.oauthService.redirectUri = window.location.origin;
       console.log(this.oauthService.redirectUri);
     })
     .then(()=>{
