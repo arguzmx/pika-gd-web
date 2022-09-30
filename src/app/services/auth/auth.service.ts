@@ -33,7 +33,12 @@ export class AuthService {
 
   private navigateToLoginPage() {
     // TODO: Remember current URL
-    this.router.navigateByUrl('/should-login');
+    // this.router.navigateByUrl('/bienvenida');
+  }
+
+  private navigateToInicio() {
+    // TODO: Remember current URL
+    this.router.navigateByUrl('/pages/inicio');
   }
 
   constructor(
@@ -47,6 +52,9 @@ export class AuthService {
         console.error('OAuthErrorEvent Object:', event);
       } else {
         console.warn('OAuthEvent Object:', event);
+        if (this.oauthService.hasValidAccessToken()) {
+          this.navigateToInicio();
+        }
       }
     });
 
@@ -64,6 +72,8 @@ export class AuthService {
 
       if (!this.oauthService.hasValidAccessToken()) {
         this.navigateToLoginPage();
+      } else {
+        this.navigateToInicio();
       }
     });
 
@@ -91,7 +101,9 @@ export class AuthService {
 
 
     return this.appConfig.load().then(()=>{
-      this.oauthService.issuer =this.appConfig.config.authUrl;
+      this.oauthService.issuer = this.appConfig.config.authUrl;
+      this.oauthService.redirectUri = window.location.origin + '/';
+      console.log(this.oauthService.redirectUri);
     })
     .then(()=>{
     // 0. LOAD CONFIG:
@@ -169,7 +181,7 @@ export class AuthService {
           if(stateUrl.toLocaleLowerCase().indexOf('bienvenida')>=0){
             stateUrl='/pages/inicio';
           }
-          this.router.navigateByUrl(stateUrl);
+          // this.router.navigateByUrl(stateUrl);
         }
       })
       .catch(() => this.isDoneLoadingSubject$.next(true));
