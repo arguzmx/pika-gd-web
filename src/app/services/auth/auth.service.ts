@@ -52,6 +52,7 @@ export class AuthService {
         console.error('OAuthErrorEvent Object:', event);
       } else {
         console.warn('OAuthEvent Object:', event);
+        console.warn(this.oauthService.hasValidAccessToken());
         if (this.oauthService.hasValidAccessToken()) {
           this.navigateToInicio();
         }
@@ -102,8 +103,7 @@ export class AuthService {
 
     return this.appConfig.load().then(()=>{
       this.oauthService.issuer = this.appConfig.config.authUrl;
-      this.oauthService.redirectUri = window.location.origin;
-      console.log(this.oauthService.redirectUri);
+      this.oauthService.redirectUri = window.location.origin + '/';
     })
     .then(()=>{
     // 0. LOAD CONFIG:
@@ -165,7 +165,7 @@ export class AuthService {
             return Promise.reject(result);
           });
       })
-
+      .then(() => new Promise<void>(resolve => setTimeout(() => resolve(), 1500)))
       .then(() => {
         this.isDoneLoadingSubject$.next(true);
 
