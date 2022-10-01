@@ -48,6 +48,7 @@ export class AuthService {
   ) {
     // Useful for debugging:
     this.oauthService.events.subscribe(event => {
+      console.debug(event);
       if (event instanceof OAuthErrorEvent) {
         console.error('OAuthErrorEvent Object:', event);
       } else {
@@ -63,6 +64,8 @@ export class AuthService {
     // tab before everything is said and done there.
     // TODO: Improve this setup. See: https://github.com/jeroenheijmans/sample-angular-oauth2-oidc-with-auth-guards/issues/2
     window.addEventListener('storage', (event) => {
+      
+      console.log(event);
       // The `key` is `null` if the event was caused by `.clear()`
       if (event.key !== 'access_token' && event.key !== null) {
         return;
@@ -71,15 +74,16 @@ export class AuthService {
       console.warn('Noticed changes to access_token (most likely from another tab), updating isAuthenticated');
       this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
 
-      if (!this.oauthService.hasValidAccessToken()) {
-        this.navigateToLoginPage();
-      } else {
-        this.navigateToInicio();
-      }
+      // if (!this.oauthService.hasValidAccessToken()) {
+      //   this.navigateToLoginPage();
+      // } else {
+      //   this.navigateToInicio();
+      // }
     });
 
     this.oauthService.events
       .subscribe(_ => {
+        console.debug(this.oauthService.hasValidAccessToken());
         this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
       });
 
@@ -120,8 +124,7 @@ export class AuthService {
         if (this.oauthService.hasValidAccessToken()) {
           return Promise.resolve();
         }
-
-        return Promise.reject();
+        return Promise.resolve();
         // 2. SILENT LOGIN:
         // Try to log in via a refresh because then we can prevent
         // needing to redirect the user:
