@@ -4,8 +4,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, windowWhen } from 'rxjs/operators';
 import { AppConfig } from '../../app-config';
+import { AppLogService } from '../app-log/app-log.service';
+import { interval } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -15,6 +18,43 @@ export class AuthService {
 
   private isDoneLoadingSubject$ = new BehaviorSubject<boolean>(false);
   public isDoneLoading$ = this.isDoneLoadingSubject$.asObservable();
+
+  private profileSubject$ = new BehaviorSubject<object>(null);
+  public profile$ = this.profileSubject$.asObservable();
+
+  private ExpirationDate: Date;
+
+
+  timeLeft: number = 60;
+  interval;
+
+  startTimer() {
+    this.interval = setInterval(() => {
+      const mins = this.getMinutesBetweenDates(this.ExpirationDate);
+      if(mins > 0){
+        this.pauseTimer()
+        this.oauthService.refreshToken().then(()=> {
+          this.programRefresh(this.oauthService.getAccessTokenExpiration());
+        }).catch((err)=> { console.error(err); this.router.navigateByUrl('/Bienvenida')});
+      } 
+    },30000)
+  }
+
+  pauseTimer() {
+    clearInterval(this.interval);
+  }
+    
+
+ getMinutesBetweenDates(endDate : Date) {
+    var startDate = new Date();
+    var diff = endDate.getTime() - startDate.getTime();
+    return (diff / 60000);
+ }
+
+  programRefresh(date:number) {
+    this.ExpirationDate = new Date(date);
+    this.startTimer();
+  }
 
   /**
    * Publishes `true` if and only if (a) all the asynchronous initial
@@ -42,19 +82,21 @@ export class AuthService {
   }
 
   constructor(
+    private applog: AppLogService,
     private appConfig: AppConfig,
     private oauthService: OAuthService,
     private router: Router,
+    private http: HttpClient,
   ) {
     // Useful for debugging:
     this.oauthService.events.subscribe(event => {
-      console.debug(event);
       if (event instanceof OAuthErrorEvent) {
-        console.error('OAuthErrorEvent Object:', event);
+       // console.error('OAuthErrorEvent Object:', event);
       } else {
-        console.warn('OAuthEvent Object:', event);
-        console.warn(this.oauthService.hasValidAccessToken());
+        // console.warn('OAuthEvent Object:', event);
+        // console.warn(this.oauthService.hasValidAccessToken());
         if (this.oauthService.hasValidAccessToken()) {
+          this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
           this.navigateToInicio();
         }
       }
@@ -64,8 +106,7 @@ export class AuthService {
     // tab before everything is said and done there.
     // TODO: Improve this setup. See: https://github.com/jeroenheijmans/sample-angular-oauth2-oidc-with-auth-guards/issues/2
     window.addEventListener('storage', (event) => {
-      
-      console.log(event);
+
       // The `key` is `null` if the event was caused by `.clear()`
       if (event.key !== 'access_token' && event.key !== null) {
         return;
@@ -83,7 +124,7 @@ export class AuthService {
 
     this.oauthService.events
       .subscribe(_ => {
-        console.debug(this.oauthService.hasValidAccessToken());
+        // console.debug(this.oauthService.hasValidAccessToken());
         this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
       });
 
@@ -99,15 +140,15 @@ export class AuthService {
   }
 
   public runInitialLoginSequence(): Promise<void> {
-    if (location.hash) {
-      console.debug('Encountered hash fragment, plotting as table...');
-      console.debug(location.hash.substr(1).split('&').map(kvp => kvp.split('=')));
-    }
+    // if (location.hash) {
+    //   console.debug('Encountered hash fragment, plotting as table...');
+    //   console.debug(location.hash.substr(1).split('&').map(kvp => kvp.split('=')));
+    // }
 
 
     return this.appConfig.load().then(()=>{
       this.oauthService.issuer = this.appConfig.config.authUrl;
-      this.oauthService.redirectUri = window.location.origin + '/';
+      // console.log("Config loeaded");
     })
     .then(()=>{
     // 0. LOAD CONFIG:
@@ -118,12 +159,24 @@ export class AuthService {
       // Try to log in via hash fragment after redirect back
       // from IdServer from initImplicitFlow:
       .then(() => { 
-        this.oauthService.tryLogin(); 
+        this.oauthService.tryLogin();
+        // console.log("Trye login"); 
       })
       .then(() => {
+        // console.log("Is Valid token");
+        // console.log(this.oauthService.hasValidAccessToken());
+
         if (this.oauthService.hasValidAccessToken()) {
-          return Promise.resolve();
+          this.programRefresh(this.oauthService.getAccessTokenExpiration());
+          this.oauthService.loadUserProfile().finally(()=> {
+            this.profileSubject$.next(this.oauthService.getIdentityClaims());
+            this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+            return Promise.resolve();
+          })
         }
+
+        
+        
         return Promise.resolve();
         // 2. SILENT LOGIN:
         // Try to log in via a refresh because then we can prevent
@@ -168,24 +221,24 @@ export class AuthService {
             return Promise.reject(result);
           });
       })
-      .then(() => new Promise<void>(resolve => setTimeout(() => resolve(), 1500)))
       .then(() => {
-        this.isDoneLoadingSubject$.next(true);
+        // console.log("last resort");
+        // this.isDoneLoadingSubject$.next(true);
 
-        // Check for the strings 'undefined' and 'null' just to be sure. Our current
-        // login(...) should never have this, but in case someone ever calls
-        // initImplicitFlow(undefined | null) this could happen.
-        if (this.oauthService.state && this.oauthService.state !== 'undefined' && this.oauthService.state !== 'null') {
-          let stateUrl = this.oauthService.state;
-          if (stateUrl.startsWith('/') === false) {
-            stateUrl = decodeURIComponent(stateUrl);
-          }
-          // console.log(`There was state of ${this.oauthService.state}, so we are sending you to: ${stateUrl}`);
-          if(stateUrl.toLocaleLowerCase().indexOf('bienvenida')>=0){
-            stateUrl='/pages/inicio';
-          }
-          // this.router.navigateByUrl(stateUrl);
-        }
+        // // Check for the strings 'undefined' and 'null' just to be sure. Our current
+        // // login(...) should never have this, but in case someone ever calls
+        // // initImplicitFlow(undefined | null) this could happen.
+        // if (this.oauthService.state && this.oauthService.state !== 'undefined' && this.oauthService.state !== 'null') {
+        //   let stateUrl = this.oauthService.state;
+        //   if (stateUrl.startsWith('/') === false) {
+        //     stateUrl = decodeURIComponent(stateUrl);
+        //   }
+        //   // console.log(`There was state of ${this.oauthService.state}, so we are sending you to: ${stateUrl}`);
+        //   if(stateUrl.toLocaleLowerCase().indexOf('bienvenida')>=0){
+        //     stateUrl='/pages/inicio';
+        //   }
+        // this.router.navigateByUrl(stateUrl);
+        //}
       })
       .catch(() => this.isDoneLoadingSubject$.next(true));
 
@@ -195,13 +248,49 @@ export class AuthService {
     
   }
 
-  public login(targetUrl?: string) {
+  public login(user: string, password: string, targetUrl?: string): Promise<void> {
     // Note: before version 9.1.0 of the library you needed to
     // call encodeURIComponent on the argument to the method.
-    this.oauthService.initLoginFlow(targetUrl || this.router.url);
+
+    // console.log("oic");
+    return this.appConfig.load().then(()=>{
+        this.oauthService.issuer = this.appConfig.config.authUrl;
+        this.oauthService.oidc = false;
+        // console.log("Config loeaded");
+    })
+    .then(()=>{
+        // 0. LOAD CONFIG:
+        // First we have to check to see how the IdServer is
+        // currently configured:
+        this.oauthService.loadDiscoveryDocument().then(() => {
+          this.oauthService
+            .fetchTokenUsingPasswordFlowAndLoadUserProfile(user, password)
+            .then((resp) => {
+                this.programRefresh(this.oauthService.getAccessTokenExpiration());
+                this.profileSubject$.next( this.oauthService.getIdentityClaims());
+                return Promise.resolve();
+              }).catch((err)=> {
+              console.error(err);
+              this.applog.FallaT('ui.login-err');
+              return Promise.reject();
+            });
+        });
+    })
+    .catch((err) => { return Promise.reject(); this.applog.FallaT('ui.login-err');})
+    // this.oauthService.initLoginFlow(targetUrl || this.router.url);
   }
 
-  public logout() { this.oauthService.logOut(); }
+  public logout() { this.pauseTimer();
+    this.pauseTimer();
+    const logoutURL = `${this.oauthService.issuer.replace(/\/+$/, '')}/connect/endsession?id_token_hint=${this.oauthService.getAccessToken()}`;
+    this.http.get(logoutURL).toPromise().finally(()=> { 
+      window.localStorage.removeItem('access_token');
+      window.localStorage.removeItem('refresh_token');
+      window.localStorage.removeItem('id_token');
+    });
+    this.router.navigateByUrl('/bienvenida');
+  }  
+  
   public refresh() { this.oauthService.silentRefresh(); }
   public hasValidToken() { return this.oauthService.hasValidAccessToken(); }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { first } from "rxjs/operators";
 import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
@@ -15,9 +15,11 @@ import { ApiConfiguracion } from "../../services/api-configuracion";
 export class MonitorSaludComponent implements OnInit {
   public T: Traductor;
 
+  @Input() Expanded: boolean = true;
   @Output() DatosListos = new EventEmitter();
   @Output() ServidorSaludable = new EventEmitter();
   reporte: ReporteSalud = this.reporteVacio();
+  resumenSaludable: boolean = false;
 
   constructor(
     private serviciosGenerales: ApiConfiguracion,
@@ -38,6 +40,7 @@ export class MonitorSaludComponent implements OnInit {
       .subscribe(
         (data) => {
           if(data.status == 'Healthy') {
+            this.resumenSaludable = true;
             this.ServidorSaludable.emit(true);
           }
           this.reporte = data;

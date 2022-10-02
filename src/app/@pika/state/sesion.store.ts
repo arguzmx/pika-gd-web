@@ -12,7 +12,6 @@ import { IConfiguracion } from './configuracion/i-configuracion';
 import { forkJoin } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConstructorMenu } from '../aplicacion/constructor-menu';
-import { OAuthErrorEvent, OAuthService, OAuthSuccessEvent } from 'angular-oauth2-oidc';
 import { AuthService } from '../../services/auth/auth.service';
 export interface SesionState {
   sesion: Sesion | null;
@@ -90,8 +89,8 @@ export class SesionStore extends Store<SesionState> {
     const prefs = this.ObtienePreferencias();
     this.setPreferencias(prefs);
     
-    this.auth.isAuthenticated$.subscribe(event => {
-      if(event) {
+    this.auth.isAuthenticated$.subscribe(autenticado => {
+      if(autenticado) {
         this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
         this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
         this.procesaUsuario();

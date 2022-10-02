@@ -74,6 +74,9 @@
         }
     },
     "ui": {
+        "login-err": "Datos de acceso no válidos",
+        "ingresar": "Ingresar",
+        "usuario": "Usuario",
         "sin-resultados-tabla": "No hay resultados",
         "salir-app": "¿Desea abandonar la aplicación?",
         "advertencia": "Advertencia",

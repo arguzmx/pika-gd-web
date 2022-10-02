@@ -81,6 +81,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
               @Inject(NB_WINDOW) private window
               ) {
                 this.ver = environment.version;
+
+                this.auth.profile$.subscribe(p=> {
+                  if(p!=null) {
+                    this.user['name'] = p['preferred_username'] ;
+                  }
+                });
   }
 
 
@@ -102,11 +108,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
 
     this.currentTheme = this.themeService.currentTheme;
-
-    if(this.auth.hasValidToken()) {
-      const claims = this.auth.identityClaims;
-      this.user['name'] = claims['preferred_username'] ;
-    }
 
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()

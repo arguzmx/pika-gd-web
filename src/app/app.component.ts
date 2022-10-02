@@ -6,6 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { LocalStorageService } from "ngx-localstorage";
 import { AuthService } from "./services/auth/auth.service";
 
+
 @Component({
   selector: "ngx-app",
   template: "<router-outlet></router-outlet>",
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit {
     if(authService.hasValidToken()) {
       this.route.navigateByUrl("/pages/inicio");
     } else {
-      route.navigateByUrl("/bienvenida");
+       route.navigateByUrl("/bienvenida");
     }
   }
 

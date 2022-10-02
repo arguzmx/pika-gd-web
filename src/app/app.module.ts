@@ -38,6 +38,7 @@ import { AppConfig, TokenProvider } from './app-config';
 import { ConfiguracionModule } from './@configuracion/configuracion.module';
 import { AppLogService } from './services/app-log/app-log.service';
 import { CanalTareasService } from './services/canal-tareas/canal-tareas.service';
+import { AuthService } from './services/auth/auth.service';
 import { AuthCoreModule } from './services/auth/auth.core.module';
 
 export function servicesOnRun(config: AppConfig, token: TokenProvider) {
@@ -87,6 +88,7 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
     { provide: DiccionarioNavegacion, useClass: PIKADiccionarioNavegacion },
     { provide: NbTokenStorage, useClass: NbTokenLocalStorage },
     AppLogService,
+    AuthService,
     AppConfig,
     TokenProvider,
     {

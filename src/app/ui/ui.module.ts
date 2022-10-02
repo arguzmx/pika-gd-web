@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NbMenuModule, NbPopoverModule, NbToggleModule, NbInputModule, NbCardModule,
   NbButtonModule, NbActionsModule, NbUserModule, NbCheckboxModule, NbRadioModule,
-  NbFormFieldModule, NbIconModule, NbDatepickerModule, NbSelectModule } from '@nebular/theme';
+  NbFormFieldModule, NbIconModule, NbDatepickerModule, NbSelectModule, NbAccordionModule } from '@nebular/theme';
 import { UIRoutingModule } from './ui-routing-module';
 import { ThemeModule } from '../@theme/theme.module';
 import { UIRootComponent } from './ui-root-component';
@@ -127,6 +127,7 @@ import { ConfiguracionModule } from '../@configuracion/configuracion.module';
     NbRadioModule,
     NbFormFieldModule,
     NbIconModule,
+    NbAccordionModule,
     NbDatepickerModule,
     NbSelectModule,
     NbIconModule,
