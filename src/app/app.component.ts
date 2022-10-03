@@ -26,11 +26,9 @@ export class AppComponent implements OnInit {
     translate.addLangs(["es-MX"]);
     translate.setDefaultLang("es-MX");
    
-    if(authService.hasValidToken()) {
-      this.route.navigateByUrl("/pages/inicio");
-    } else {
-       route.navigateByUrl("/bienvenida");
-    }
+    if(!authService.hasValidToken()) {
+      route.navigateByUrl("/bienvenida");
+    } 
   }
 
   ngOnInit(): void {

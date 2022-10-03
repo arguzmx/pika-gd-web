@@ -97,7 +97,7 @@ export class AuthService {
         // console.warn(this.oauthService.hasValidAccessToken());
         if (this.oauthService.hasValidAccessToken()) {
           this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
-          this.navigateToInicio();
+          // this.navigateToInicio();
         }
       }
     });
@@ -171,6 +171,7 @@ export class AuthService {
           this.oauthService.loadUserProfile().finally(()=> {
             this.profileSubject$.next(this.oauthService.getIdentityClaims());
             this.isAuthenticatedSubject$.next(this.oauthService.hasValidAccessToken());
+            this.navigateToInicio();
             return Promise.resolve();
           })
         }
@@ -268,6 +269,7 @@ export class AuthService {
             .then((resp) => {
                 this.programRefresh(this.oauthService.getAccessTokenExpiration());
                 this.profileSubject$.next( this.oauthService.getIdentityClaims());
+                this.navigateToInicio();
                 return Promise.resolve();
               }).catch((err)=> {
               console.error(err);
