@@ -12,11 +12,32 @@
     <ng-template #typeaheadmode>
         <div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
             <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
+            <nb-form-field>
+                <input  nbInput type="text" fieldSize="medium" fullWidth="true" [(ngModel)]="selectedItem" [matAutocomplete]="auto"
+                [formControlName]="shadowControl" [id]="shadowControl" placeholder="">
+                <button nbSuffix nbButton ghost (click)="borraBusqueda()">
+                    <nb-icon icon="close-outline" pack="eva">
+                    </nb-icon>
+                </button>
+            </nb-form-field>
+            <mat-autocomplete [panelWidth]="auto" #auto="matAutocomplete" (optionSelected)="onSelected($event)"
+            [displayWith]="displayFn.bind(this)">
+            <mat-option *ngIf="isLoading" class="is-loading">Loading...</mat-option>
+            <ng-container *ngIf="!isLoading">
+              <mat-option *ngFor="let item of filteredItems" [value]="item">
+                <span>{{item.Texto}}</span>
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </div>
+        
+
+        <!-- <div class="col-lg-12 col-md-12 col-sm-12 form-group" [formGroup]="group">
+            <label [for]="propiedad.Id" class="label">&nbsp;{{propiedad.NombreI18n}}</label>
             <ng-select #ngSelect [items]="elementos" bindLabel="Texto" bindValue="Id" [multiple]="multiple"
                 (change)="onTypeaheadChange($event)" [addTag]="true" [multiple]="false" [trackByFn]="trackByFn"
                 [minTermLength]="2" [loading]="listaLoading" [typeahead]="listInput$">
             </ng-select>
-
-        </div>
+        </div> -->
     </ng-template>
 </div>

@@ -143,7 +143,7 @@ export class MetadataEditorComponent
 
     this.formGroup.valueChanges.subscribe((campos) => {
       if (!environment.production) {
-        console.debug(campos);
+       // console.debug(campos);
       }
       this.cdr.detectChanges();
     });

@@ -284,11 +284,30 @@
         "valorlistaplantilla": "Valor|Valores|el|los|dvr",
 		"tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
         "bitacoratarea": "Bitácora|Bitácoras|la|las|dvr",
+        "activotransferencia": "Activo transferencia|Activos transferencia|el|los|document_scanner",
         "propiedades": {
+            "activotransferencia": {
+                "Id": "Id",
+                "ActivoId": "Activo",
+                "TransferenciaId": "Transferencia",
+                "Declinado": "Declinado",
+                "MotivoDeclinado": "Motivo",
+                "UsuarioIdDeclinadoId": "Declinado por"
+            },
             "transferencia" : {
                 "Id": "Id",
                 "Nombre": "Nombre",
-                "FechaCreacion": "Creación"
+                "FechaCreacion": "Creación",
+                "ArchivoDestinoId": "Destino",
+                "CuadroClasificacionId": "Cuadro",
+                "EntradaClasificacionId": "Serie",
+                "Folio": "Folio",
+                "CantidadActivos": "Activos",
+                "ArchivoOrigenId": "Orígen",
+                "EstadoTransferenciaId": "Estado",
+                "UsuarioId": "Creador",
+                "APICODE-TRANSFERENCIAS-ODIDENTICO": "EL archivo de orígen y destino deben ser diferentes",
+                "APICODE-TRANSFERENCIAS-ERRORCCEC": "El cuadro o la serie no corresponden"
             },
             "valorlistaplantilla": {
                 "PropiedadId": "PropiedadId",
