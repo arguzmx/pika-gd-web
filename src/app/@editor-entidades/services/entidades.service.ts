@@ -736,11 +736,11 @@ export class EntidadesService {
 
   // realiza una consulta de pagina relacional
   public ObtenerPaginaRelacional(TipoOrigen: string, OrigenId: string, Entidad: string,
-    consulta: Consulta): Observable<Paginado<any>> {
+    consulta: Consulta, Texto: string = null): Observable<Paginado<any>> {
 
     const subject = new AsyncSubject<Paginado<any>>();
 
-    this.cliente.PageRelated(TipoOrigen, OrigenId, consulta, Entidad).pipe(
+    this.cliente.PageRelated(TipoOrigen, OrigenId, consulta, Entidad, Texto).pipe(
       debounceTime(500), first(),
     ).subscribe(data => {
 
@@ -804,12 +804,12 @@ export class EntidadesService {
     return subject;
   }
   
-  public ObtenerPagina(Entidad: string,
-    consulta: Consulta): Observable<Paginado<any>> {
+
+  public ObtenerPagina(Entidad: string, consulta: Consulta, Texto: string = null): Observable<Paginado<any>> {
 
     const subject = new AsyncSubject<Paginado<any>>();
 
-    this.cliente.Page(consulta, Entidad).pipe(
+    this.cliente.Page(consulta, Entidad, Texto).pipe(
       debounceTime(500), first(),
     ).subscribe(data => {
       this.BuscaTextoDeIdentificadores(Entidad, data).pipe(first())

@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { DynamicDataSource } from './dynamic-datasource';
 import { AppLogService } from '../../../services/app-log/app-log.service';
+import { FormBuilder } from '@angular/forms';
 
 
 @Component({
@@ -30,7 +31,6 @@ import { AppLogService } from '../../../services/app-log/app-log.service';
 export class EditorArbolEntidadComponent extends EditorEntidadesBase
   implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   @ViewChild('arboldinamico') arbol: MatTree<DynamicFlatNode>;
-  private onDestroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private database: DynamicDatabase,
@@ -38,9 +38,10 @@ export class EditorArbolEntidadComponent extends EditorEntidadesBase
     entidades: EntidadesService,
     router: Router,
     applog: AppLogService,
+    fb: FormBuilder,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(this.getLevel, this.isExpandable);
     this.dataSource = new DynamicDataSource(this.treeControl, database);
     this.escuchaCambiosArbol();

@@ -83,7 +83,6 @@ export class ListEditorComponent extends EditorCampo
         )
       )
       .subscribe( items => {
-        console.log(items);
         if(items.length == 0) {
           this.applog.AdvertenciaT('ui.sin-regitros-busqueda', null, { texto : this.group.get(this.shadowControl).value } );
         }

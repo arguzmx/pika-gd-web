@@ -4,7 +4,7 @@ import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
-import { NbDialogService, NbDialogRef, NbMenuItem, NbSelectComponent } from '@nebular/theme';
+import { NbDialogService, NbDialogRef, NbSelectComponent } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import {
@@ -33,6 +33,7 @@ import { EventoAplicacion, PayloadItem } from '../../../@pika/eventos/evento-apl
 import { EditorTemasSeleccionComponent } from '../editor-temas-seleccion/editor-temas-seleccion.component';
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 import { AppLogService } from '../../../services/app-log/app-log.service';
+import { FormBuilder } from '@angular/forms';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -46,8 +47,7 @@ const EMPTYGUID = '00000000-0000-0000-0000-000000000000';
 })
 export class EditorTabularComponent extends EditorEntidadesBase implements OnInit,
   OnDestroy, OnChanges {
-  private onDestroy$: Subject<void> = new Subject<void>();
-  
+   
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<MetadataEditorComponent>;
   @ViewChildren(MetadataBuscadorComponent) buscadorMetadatos: QueryList<MetadataBuscadorComponent>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
@@ -91,6 +91,9 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   // Deternima si es factible la edición
   public editarDisponible: boolean = false;
+
+  // Determina si la entidad acepta búsquedas de texto
+  public BuscarPorTexto: boolean = false;
 
   // Nombre del tipo de entidad en edición
   public NombreEntidad: string = '';
@@ -156,9 +159,10 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     private resolver: ComponentFactoryResolver,
     private dialogService: NbDialogService,
     private location: Location,
+    fb: FormBuilder,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.Permiso = this.entidades.permisoSinAcceso;
     this.setAlturaPanelLateral(window.innerHeight);
@@ -198,6 +202,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.Permiso = this.entidades.permisoSinAcceso;
     this._CerrarDialogos();
     this.busquedaLateral = false;
+    this.BuscarPorTexto = false;
     this.tieneReportes = false;
     this.InstanciaSeleccionada = false;
     this.editarDisponible = false;
@@ -315,6 +320,13 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   private Procesaentidad() {
 
+    if(this.metadata) {
+      this.BuscarPorTexto = this.metadata.BuscarPorTexto;
+      if(this.BuscarPorTexto) {
+        this.hookTypeAhead();
+      }
+    }
+
     this.Permiso = this.config.Permiso ? this.config.Permiso : this.entidades.permisoSinAcceso;
 
     const KeyNombreEntidad = ('entidades.' + this.config.TipoEntidad).toLowerCase();
@@ -364,7 +376,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
   private ProcesaConfiguracion(): void {
-
     // Es una entidad vinculada
     if (this.config.OrigenId !== '' && this.config.OrigenTipo !== '') {
       this.NombreInstanciaDisponible = false;

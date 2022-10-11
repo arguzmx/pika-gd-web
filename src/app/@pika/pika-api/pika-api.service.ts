@@ -179,11 +179,18 @@ export class PikaApiService<T, U> {
       );
   }
 
-  Page(consulta: Consulta, entidad: string): Observable<Paginado<T>> {
+  Page(consulta: Consulta, entidad: string, Texto: string = null): Observable<Paginado<T>> {
     const endpoint = this.CrearEndpoint(entidad);
     const qs = this.getQueryStringConsulta(consulta);
 
-    return this.http.get<Paginado<T>>(endpoint + 'page' + qs)
+    let URL = '';
+    if(Texto) {
+      URL = endpoint + `page/texto/${encodeURI(Texto)}` + qs;
+    } else {
+      URL = endpoint + 'page' + qs;
+    }
+
+    return this.http.get<Paginado<T>>(URL)
       .pipe(
         retry(retryCount),
       );
@@ -274,11 +281,18 @@ export class PikaApiService<T, U> {
   }
 
 
-  PageRelated(Type: string, Id: string, consulta: Consulta, entidad: string): Observable<Paginado<T>> {
+  PageRelated(Type: string, Id: string, consulta: Consulta, entidad: string, Texto: string = null): Observable<Paginado<T>> {
     const endpoint = this.CrearEndpoint(entidad);
     const qs = this.getQueryStringConsulta(consulta);
+    let URL = '';
 
-    return this.http.get<Paginado<T>>(endpoint + `page/${Type.toLowerCase()}/${Id}` + qs)
+    if(Texto) {
+      URL = endpoint + `page/${Type.toLowerCase()}/${Id}/texto/${encodeURI(Texto)}` + qs;
+    } else {
+      URL = endpoint + `page/${Type.toLowerCase()}/${Id}` + qs;
+    }
+
+    return this.http.get<Paginado<T>>(URL)
       .pipe(
         retry(retryCount),
       );

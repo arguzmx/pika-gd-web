@@ -59,11 +59,20 @@
             </span>
           </span>
           <span class="toolbar-spacer"></span>
+          <nb-form-field *ngIf="BuscarPorTexto" [formGroup]="baseFormGroup">
+            <nb-icon icon="flash-outline" pack="eva" nbPrefix></nb-icon>
+              <input type="text" nbInput shape="round"  status="basic" fieldSize="small" formControlName="searchCtrl" id="searchCtrl" name="searchCtrl">
+              <button nbSuffix nbButton ghost (click)="EliminarBusquedaTexto()">
+                <nb-icon icon="close-outline" pack="eva" >
+                </nb-icon>
+              </button>
+          </nb-form-field>
+          <span class="toolbar-spacer"></span>
           <button *ngFor="let link of botonesLinkVista" mat-icon-button on-click="navegarVista(link)"
             [nbTooltip]="tituloNavegarLista(link)" nbTooltipPlacement="bottom" aria-label="tituloNavegarLista(link)">
             <mat-icon>{{link.Icono}}</mat-icon>
           </button>
-
+        
           <!-- Separadador -->
           <mat-icon *ngIf="tieneBotonesVista" class="gray-icon">more_vert</mat-icon>
 
@@ -168,6 +177,7 @@
                 <div [ngClass]="{'row pt-10': barraSeleccion, 'row': !barraSeleccion}">
                   <div [ngClass]="{'col-lg-8': busquedaLateral, 'col-lg-12': !busquedaLateral}">
                     <ngx-metadata-tabla #tablaeditor [config]="config" [idSeleccion]="idSeleccion" [metadata]="metadata"
+                      [textoBusqueda] = 'textoBusqueda'
                       [busuedaPersonalizada]='busuedaPersonalizada'
                       (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)"
                       (ConteoRegistros)="ConteoRegistros($event)" (NuevaSeleccion)="NuevaSeleccion($event)"
@@ -269,6 +279,7 @@
   </ng-template>
   <ng-template #elseBlock>
     <ngx-metadata-tabla #tablaeditor [config]="config" [metadata]="metadata"
+      [textoBusqueda] = 'textoBusqueda'
       (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" [busuedaPersonalizada]='busuedaPersonalizada'
       (ConteoRegistros)="ConteoRegistros($event)" (NuevaSeleccion)="NuevaSeleccion($event)"
       (EditarSeleccion)="EditarSeleccion($event)">

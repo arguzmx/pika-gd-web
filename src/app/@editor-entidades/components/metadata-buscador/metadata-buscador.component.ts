@@ -48,7 +48,6 @@ import { AppLogService } from '../../../services/app-log/app-log.service';
 export class MetadataBuscadorComponent extends EditorEntidadesBase
   implements IBuscadorMetadatos, OnInit, OnDestroy {
 
-  private onDestroy$ = new Subject();
   // Mantiene la configutación de la entidad obtenida por el ruteo
   @Input() config: ConfiguracionEntidad;
   @Input() metadata: MetadataInfo;
@@ -82,10 +81,10 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
-    private fb: FormBuilder,
+    fb: FormBuilder,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.T.ts = ['ui.filtrarpor', 'ui.adicionar', 'ui.aplicar'];
     this.group = this.fb.group({});

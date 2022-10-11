@@ -14,6 +14,7 @@ export const MetadataElemento: MetadataInfo =
     "PermiteAltas": true,
     "PermiteBajas": true,
     "PermiteCambios": true,
+    "BuscarPorTexto": true,
     "Propiedades": [
         {
             "Id": "Id",

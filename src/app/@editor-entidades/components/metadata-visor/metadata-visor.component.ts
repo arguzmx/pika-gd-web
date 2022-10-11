@@ -8,6 +8,7 @@ import { IVisorMetadatos } from '../../model/i-visor-metadatos';
 import { Router } from '@angular/router';
 import { DiccionarioNavegacion } from '../../model/i-diccionario-navegacion';
 import { AppLogService } from '../../../services/app-log/app-log.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'ngx-metadata-visor',
@@ -22,10 +23,10 @@ implements IVisorMetadatos, OnInit {
 
   // Cosntructor del componente
   constructor(entidades: EntidadesService,
-    ts: TranslateService, applog: AppLogService, appeventBus:AppEventBus,
-    diccionarioNavegacion: DiccionarioNavegacion,
+    ts: TranslateService, applog: AppLogService, appeventBus: AppEventBus,
+    diccionarioNavegacion: DiccionarioNavegacion, fb:  FormBuilder,
     router: Router) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
   }
 
 

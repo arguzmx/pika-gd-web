@@ -1,13 +1,13 @@
 import { EventoAplicacion, PayloadItem } from './../../@pika/eventos/evento-aplicacion';
 import { AppEventBus, EventoCerrarPlugins, VISOR } from './../../@pika/state/app-event-bus';
 import { EntidadesService, CONTEXTO } from './../services/entidades.service';
-import { first } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, finalize, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   EntidadVinculada,
   TipoDespliegueVinculo,
   MetadataInfo, LinkVista,
 } from '../../@pika/pika-module';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { ConfiguracionEntidad } from './configuracion-entidad';
 import {
   PARAM_TIPO,
@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
 import { Traductor } from '../services/traductor';
 import { DiccionarioNavegacion } from './i-diccionario-navegacion';
 import { AppLogService } from '../../services/app-log/app-log.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 export class EditorEntidadesBase {
   // Propiedades para la edición indivicual en una entidad vinculada
@@ -33,11 +34,16 @@ export class EditorEntidadesBase {
   // Determina si la entida den edición es una entidad vinculada
   public EditandoVinculada = false;
   public contenidoVisible: boolean = true;
-
+  public baseFormGroup: FormGroup;
+  public searchCtrl: FormControl = new FormControl('');
+  public textoBusqueda: string = '';
+  public minLengthTerm =2;
   public botonesLinkVista: LinkVista[] = [];
   public tieneBotonesVista: boolean = false;
-
+  public onDestroy$: Subject<void> = new Subject<void>();
+  
   constructor(
+    public fb: FormBuilder,
     public appEventBus: AppEventBus,
     public entidades: EntidadesService,
     public applog: AppLogService,
@@ -59,6 +65,64 @@ export class EditorEntidadesBase {
     });
 
    }
+
+   EliminarBusquedaTexto() {
+    if(this.baseFormGroup) {
+      this.searchCtrl.patchValue('');  
+      this.textoBusqueda = '';
+    }  
+   }
+
+
+   hookTypeAhead() {
+
+    this.baseFormGroup = this.fb.group({});
+    this.baseFormGroup.addControl('searchCtrl', this.searchCtrl);
+    this.searchCtrl.valueChanges
+    .pipe(takeUntil(this.onDestroy$))
+    .pipe(
+      filter(res => {
+        return res !== null && res!== undefined && res.length >= this.minLengthTerm
+      }),
+      distinctUntilChanged(),
+      debounceTime(1000),
+    )
+    .subscribe(v=> {
+      this.textoBusqueda = v;
+    });
+
+
+
+    // this.searchCtrl.valueChanges
+    // .pipe(
+    //   filter(res => {
+    //     return res !== null && res!== undefined && res.length >= this.minLengthTerm
+    //   }),
+    //   distinctUntilChanged(),
+    //   debounceTime(1000),
+    //   tap(() => {
+    //     console.log('tap');
+    //     // this.errorMsg = "";
+    //     // this.filteredItems = [];
+    //     // this.isLoading = true;
+    //   }),
+    //   // switchMap( term => console.log(term))
+    //   //   .pipe(
+    //   //     finalize(() => {
+    //   //       // this.isLoading = false
+    //   //     }),
+    //   //   )
+    //   // )
+    // )
+    // .subscribe( items => {
+    //   console.log(items);
+    //   // if(items.length == 0) {
+    //   //   this.applog.AdvertenciaT('ui.sin-regitros-busqueda', null, { texto : this.group.get(this.shadowControl).value } );
+    //   // }
+    //   // this.filteredItems = items;
+    //   // this.cdr.detectChanges();
+    // })
+  }
 
   // Gestion de vínculose
   // -------------------------------------------------------------
