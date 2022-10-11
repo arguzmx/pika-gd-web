@@ -357,6 +357,7 @@ export class MetadataEditorComponent
       );
       
       if (requiereFiltros.length > 0) {
+        console.log(this.config);
         this.entidades
           .GetFiltroBusqueda(this.metadata.Tipo, this.config.OrigenId)
           .subscribe((f) => {

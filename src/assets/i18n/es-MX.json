@@ -111,6 +111,7 @@
         "falso": "Falso",
         "verdadero": "Verdadero",
         "total-regitros": "registros encontrados",
+        "sin-regitros-busqueda": "No hay coincidencias para '{{texto}}'",
         "selec-org": "Seleccionar espacio de trabajo",
         "enviar": "Enviar",
         "elegir-ellipsis": "Elegir archivos ...",
@@ -306,6 +307,8 @@
                 "ArchivoOrigenId": "Orígen",
                 "EstadoTransferenciaId": "Estado",
                 "UsuarioId": "Creador",
+                "TemaId": "Selección",
+                "EliminarTema": "Eliminar selección",
                 "APICODE-TRANSFERENCIAS-ODIDENTICO": "EL archivo de orígen y destino deben ser diferentes",
                 "APICODE-TRANSFERENCIAS-ERRORCCEC": "El cuadro o la serie no corresponden"
             },

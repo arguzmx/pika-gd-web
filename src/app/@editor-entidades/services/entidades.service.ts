@@ -545,7 +545,7 @@ export class EntidadesService {
   // ---------------------------------------------------------------
   GetFiltroBusqueda(entidad: string, id: string): Observable<FiltroConsultaPropiedad[]> {
     const subject = new AsyncSubject<FiltroConsultaPropiedad[]>();
-    const key = this.cache.ClaveFiltroBusqueda(entidad);
+    const key = this.cache.ClaveFiltroBusqueda(`${entidad}${id}`);
 
     if (this.cache.has(key)) {
       subject.next(this.cache.get(key));

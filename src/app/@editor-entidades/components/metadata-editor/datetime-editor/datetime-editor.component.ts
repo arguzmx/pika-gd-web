@@ -7,6 +7,7 @@ import {
   HTML_DATETIME,
 } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-datetime-editor',
@@ -28,8 +29,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   @ViewChild('dt1') date1: any;
 
   format: string = '';
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
   }
 
   ngOnDestroy(): void {

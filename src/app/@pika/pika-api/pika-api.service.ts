@@ -233,7 +233,7 @@ export class PikaApiService<T, U> {
     const consulta: Consulta = new Consulta();
     const filtro: FiltroConsulta = new FiltroConsulta();
     consulta.indice = 0;
-    consulta.tamano = 20;
+    consulta.tamano = 50;
     filtro.Negacion = false;
     filtro.Operador = Operacion.OP_STARTS;
     filtro.Propiedad = 'Texto',

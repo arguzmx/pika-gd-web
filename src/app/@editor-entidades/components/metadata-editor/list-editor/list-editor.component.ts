@@ -8,6 +8,7 @@ import { first, distinctUntilChanged, tap, switchMap, filter, debounceTime, fina
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-list-editor',
@@ -32,7 +33,7 @@ export class ListEditorComponent extends EditorCampo
     filteredItems: any;
     isLoading = false;
     selectedItem: any = "";
-    minLengthTerm = 3;
+    minLengthTerm = 2;
     errorMsg!: string;
 
     onSelected(item) {
@@ -82,6 +83,10 @@ export class ListEditorComponent extends EditorCampo
         )
       )
       .subscribe( items => {
+        console.log(items);
+        if(items.length == 0) {
+          this.applog.AdvertenciaT('ui.sin-regitros-busqueda', null, { texto : this.group.get(this.shadowControl).value } );
+        }
         this.filteredItems = items;
         this.cdr.detectChanges();
       })
@@ -103,9 +108,9 @@ export class ListEditorComponent extends EditorCampo
 
   @ViewChild('lista') Lista: any;
     
-  constructor(eventos: EventosInterprocesoService,
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService,
     private fb: FormBuilder, private cdr: ChangeDetectorRef) {
-    super(eventos);
+    super(eventos, applog);
   }
 
   private GetFiltrosPropiedad(): FiltroConsulta[] {

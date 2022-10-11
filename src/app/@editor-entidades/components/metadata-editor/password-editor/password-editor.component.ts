@@ -2,6 +2,7 @@ import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, ViewChild, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-password-editor',
@@ -26,8 +27,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   propValidName: string = '';
   match: boolean = false;
 
-  constructor(eventos: EventosInterprocesoService ) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
   }
 
   private texto1: string = '';

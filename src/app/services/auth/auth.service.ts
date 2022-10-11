@@ -31,7 +31,7 @@ export class AuthService {
   startTimer() {
     this.interval = setInterval(() => {
       const mins = this.getMinutesBetweenDates(this.ExpirationDate);
-      if(mins > 0){
+      if(mins < 5){
         this.pauseTimer()
         this.oauthService.refreshToken().then(()=> {
           this.programRefresh(this.oauthService.getAccessTokenExpiration());
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   private navigateToInicio() {
-    if( this.path.indexOf('bienvenida')>0 ) {
+    if(this.path.indexOf('bienvenida')>0 || (this.path == '/')) {
       this.path='';
     }
     // TODO: Remember current URL

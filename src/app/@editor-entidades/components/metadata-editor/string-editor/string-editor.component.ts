@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EditorCampo } from '../editor-campo';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-string-editor',
@@ -22,8 +23,8 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   isTextArea: boolean = false;
 
-  constructor(eventos: EventosInterprocesoService ) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
   }
 
   cambiovalor(evento){
