@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { EntidadesService } from '../../services/entidades.service';
-import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { ConfiguracionEntidad } from '../../model/configuracion-entidad';
 import { EditorEntidadesBase } from '../../model/editor-entidades-base';
@@ -34,6 +33,7 @@ import { EditorTemasSeleccionComponent } from '../editor-temas-seleccion/editor-
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 import { AppLogService } from '../../../services/app-log/app-log.service';
 import { FormBuilder } from '@angular/forms';
+import { MapaDialogos } from '../../../services/dialogos-dinamicos/mapa-dialogos';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -47,13 +47,13 @@ const EMPTYGUID = '00000000-0000-0000-0000-000000000000';
 })
 export class EditorTabularComponent extends EditorEntidadesBase implements OnInit,
   OnDestroy, OnChanges {
-   
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<MetadataEditorComponent>;
   @ViewChildren(MetadataBuscadorComponent) buscadorMetadatos: QueryList<MetadataBuscadorComponent>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
   @ViewChild('dialogLinkPicker', { static: true }) dialogLinks: TemplateRef<any>;
   @ViewChild('dialogReportPicker', { static: true }) dialogReportPicker: TemplateRef<any>;
   @ViewChild('dialogVistaCommando', { static: true }) dialogVistaCommando: TemplateRef<any>;
+  @ViewChild("dynDialog", { read: ViewContainerRef }) dynDialogRef;
   @ViewChild("dialogVistaCommandoContainer", { read: ViewContainerRef }) containerVistaComando;
   @ViewChild('dialogoTemasSeleccion', { static: true }) dialogoTemasSeleccion: TemplateRef<any>;
   @ViewChildren(MetadataTablaComponent) tablas: QueryList<MetadataTablaComponent>;
@@ -86,15 +86,14 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
   accent: string = "info";
-
   public alturaComponente = '500px';
 
   // Deternima si es factible la edición
   public editarDisponible: boolean = false;
-
   // Determina si la entidad acepta búsquedas de texto
   public BuscarPorTexto: boolean = false;
-
+  // Determina si es posible elminar todo slos elementos de la tabla
+  public PermisoEliminarTodo: boolean = false;
   // Nombre del tipo de entidad en edición
   public NombreEntidad: string = '';
   // Nombre de la instancia de entidad en edición
@@ -143,6 +142,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   public HabilitarSeleccion: boolean = false;
   public temas: ValorListaOrdenada[] = [];
 
+  // Entidad padre del contenido tabular
+  public EntidadPadre : any = null;
 
   public barraEntidades: boolean = true;
   public barraSeleccion: boolean = false;
@@ -203,6 +204,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this._CerrarDialogos();
     this.busquedaLateral = false;
     this.BuscarPorTexto = false;
+    this.textoBusqueda = '';
     this.tieneReportes = false;
     this.InstanciaSeleccionada = false;
     this.editarDisponible = false;
@@ -230,6 +232,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.barraEntidades = true;
     this.barraSeleccion = false;
     this.idSeleccion = null;
+    this.EntidadPadre = null;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -254,7 +257,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.T.ts = ['ui.actualizar', 'ui.crear', 'ui.buscar', 'ui.selcol', 'ui.reportes', 'ui.busqueda-lateral',
       'ui.borrarfiltros', 'ui.cerrar', 'ui.guardar', 'ui.editar', 'ui.eliminar', 'ui.elementoseleccionado',
       'ui.propiedades', 'ui.regresar', 'ui.eliminar-filtro', 'ui.total-regitros', 'ui.alternar-selector-checkbox',
-      'ui.seleccionados',
+      'ui.seleccionados', 'ui.eliminar-todo',
       'ui.seleccionados-mostrar',
       'ui.seleccionados-adicionar',
       'ui.seleccionados-eliminar',
@@ -287,6 +290,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
         });
     }
   }
+
   private GetFiltrosDeafault(): FiltroConsulta[] {
     const filtros: FiltroConsulta[] = [];
     if (this.EliminarLogico) {
@@ -319,8 +323,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
   private Procesaentidad() {
-
     if(this.metadata) {
+      this.PermisoEliminarTodo = this.metadata.PermiteEliminarTodo;
       this.BuscarPorTexto = this.metadata.BuscarPorTexto;
       if(this.BuscarPorTexto) {
         this.hookTypeAhead();
@@ -381,10 +385,10 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       this.NombreInstanciaDisponible = false;
       this.NombreInstancia = '';
       this.MostrarRegresar = false;
-      const entidad = this.entidades.GetCacheInstanciaAntidad(this.config.OrigenTipo, this.config.OrigenId);
-      if (entidad) {
+      this.EntidadPadre = this.entidades.GetCacheInstanciaAntidad(this.config.OrigenTipo, this.config.OrigenId);
+      if (this.EntidadPadre) {
         this.NombreInstanciaDisponible = true;
-        this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, entidad);
+        this.NombreInstancia = this.entidades.ObtenerNombreEntidad(this.config.OrigenTipo, this.EntidadPadre);
         this.MostrarRegresar = true;
         this.Procesaentidad();
       } else {
@@ -404,6 +408,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
                 // Y posteriormente una instancia en base al ID
                 // para establecer los títulos
                 if (e) {
+                  this.EntidadPadre = e;
                   this.entidades.SetCacheInstanciaEntidad(this.config.OrigenTipo, this.config.OrigenId, e);
                   this.NombreInstanciaDisponible = true;
                   this.NombreInstancia = this.entidades.ObtenerNombreEntidad(
@@ -525,6 +530,22 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     }
   }
 
+  public eliminarTodoEntidades(): void {
+    this.ConfirmarEliminarTodoEntidades();
+  }
+
+  public ConfirmarEliminarTodoEntidades(): void {
+    this.TipoEliminacion  = this.ELIMINAR_TODOSVINCULADOS;
+    const msg ='editor-pika.mensajes.warn-crud-eliminar-todos';
+    this.T.translate.get(msg)
+      .pipe(first())
+      .subscribe(m => {
+        this.dialogComnfirmDelRef = this.dialogService
+          .open(this.dialogConfirmDelete, { context: m });
+      });
+  }
+
+
   public eliminarEntidades(): void {
     if (this.InstanciaSeleccionada) {
       this.ConfirmarEliminarEntidades();
@@ -534,6 +555,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
   public ConfirmarEliminarEntidades(): void {
+    this.TipoEliminacion  = this.ELIMINAR_SELECCION;
     const msg = this.metadata.ElminarLogico ?
       'editor-pika.mensajes.warn-crud-eliminar-logico' : 'editor-pika.mensajes.warn-crud-eliminar';
     let nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
@@ -547,6 +569,34 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
         this.dialogComnfirmDelRef = this.dialogService
           .open(this.dialogConfirmDelete, { context: m });
       });
+  }
+  
+  private TipoEliminacion: string ='';
+  private ELIMINAR_SELECCION  = 'seleccion';
+  private ELIMINAR_TODOSVINCULADOS  = 'todosvinculados';
+
+  seleccionarEliminacion() {
+    switch(this.TipoEliminacion){
+      case this.ELIMINAR_SELECCION:
+        this.eliminarSeleccionados();
+        break;
+
+      case this.ELIMINAR_TODOSVINCULADOS:
+        this.eliminarTodosVinculados();
+        break;
+    }
+    this.TipoEliminacion  = '';
+  }
+
+
+  private eliminarTodosVinculados() {
+    this.dialogComnfirmDelRef.close();
+
+    this.entidades.DeleteTodosVinculados(this.config.OrigenId, this.config.TipoEntidad)
+    .pipe(first()).subscribe(resultado => {
+      if (resultado) this.tablas.first.obtenerPaginaDatos(false, true);
+    });
+
   }
 
   // LLamdado desde el dialogo de confirmación en el teplate
@@ -713,10 +763,12 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   }
 
 
-
   public procesaNavegarVista(link: LinkVista, parametros: Map<string, string>, newWindow: boolean = false) {
+    
+    const registrosSeleccionados = this.tablas.first.ObtieneEntidadesSeleccionadas();
+    
     if (link.RequiereSeleccion) {
-      if (this.InstanciaSeleccionada) {
+      if (registrosSeleccionados.length > 0) {
         switch (link.Tipo) {
           case TipoVista.Vista:
             this.ejecutaNavegarVista(this.metadata.Tipo, link, this.entidad, this.metadata, parametros, newWindow);
@@ -731,7 +783,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             break;
 
           case  TipoVista.WebCommand:
-            const validar = link.Condicion.split('[').join('this.entidad[');
+            const validar = link.Condicion.replace(/entidad/g,'this.entidad').replace(/padre/,'this.EntidadPadre');
+
             if (validar!=''){
               const valido = eval(validar);
               if (!valido){
@@ -745,21 +798,42 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             }
 
             const vista = `vistas.${link.Vista}`;
-            const nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
-            this.T.ObtenerTraduccion([vista, `${vista}-conf`], { tema: nombre } ).pipe(first()).subscribe(t=> {
-                this.dialogService
-                .open(ConfirmacionComponent, {
+            let nombre = '';
+
+            if (registrosSeleccionados.length == 1) {
+              // A veece sl nombre no ecist epor ejemplo cuando se obtiene de un Id vinculado
+              nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, registrosSeleccionados[0] );
+            }
+
+            let Titulo = vista;
+            let Cuerpo = `${vista}-conf`;
+
+            if(registrosSeleccionados.length > 1){
+              Cuerpo = `${vista}-conf-n`
+            }
+
+            this.T.ObtenerTraduccion([Titulo, Cuerpo], { tema: nombre, conteo: registrosSeleccionados.length} ).pipe(first()).subscribe(t=> {
+            const c = MapaDialogos.get(link.Vista);
+             
+              this.dialogService
+                .open(c, {
                   context: {
-                    titulo: t[vista],
+                    titulo: t[Titulo],
                     entidades: this.entidades,
                     metadata: this.metadata,
-                    texto: t[`${vista}-conf`] 
+                    texto: t[Cuerpo] 
                   }
                 })
                 .onClose.subscribe(confirmacion => {
-                  if (confirmacion) {
-                    this.ejecutaNavegarWebCommand(link, this.entidad, this.metadata);
-                  }
+                 if((typeof confirmacion) == 'boolean') {
+                    if(confirmacion){
+                      this.ejecutaNavegarWebCommand(link, registrosSeleccionados, this.metadata);
+                    }
+                 } else {
+                    if (confirmacion['Ok']) {
+                      this.ejecutaNavegarWebCommand(link, registrosSeleccionados, this.metadata, confirmacion['Payload']);
+                    }
+                 }
                 });
             });
             break;

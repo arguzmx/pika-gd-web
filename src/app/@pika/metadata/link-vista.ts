@@ -1,5 +1,6 @@
 export interface ParametroLinkVista {
     Vista: string;
+    Multiple?: boolean;
 }
 
 export enum TipoVista

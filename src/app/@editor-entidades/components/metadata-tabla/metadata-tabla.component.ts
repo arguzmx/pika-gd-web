@@ -120,6 +120,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.IdBusquedaPersonalizada = '';
     this.plantillaSeleccionada = '';
     this.AsociadoMetadatos = false;
+    this.renglonesSeleccionados.clear();
     this._CerrarDialogos();
     this.entidadseleccionada = null;
     this.entidadesseleccionadas = [];
@@ -310,6 +311,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.entidadesseleccionadas = [];
     this.entidadseleccionada = null;
     this.renglonSeleccionado = -1;
+    this.renglonesSeleccionados.clear();
     this.NuevaSeleccion.emit(this.entidadseleccionada);
     this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas)
   }
@@ -666,6 +668,22 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     } else {
       if(this.entidadseleccionada!=null){
         lista.push(this.entidadseleccionada[campoId]);
+      } 
+    }
+    return lista;
+  }
+
+  public ObtieneEntidadesSeleccionadas(): string[] {
+    const lista: any[] = [];
+    if(this.configuration.checkboxes) {
+      if(this.entidadesseleccionadas.length>0){
+        this.entidadesseleccionadas.forEach(item=> {
+          lista.push({...item});
+        });
+      } 
+    } else {
+      if(this.entidadseleccionada!=null){
+        lista.push({...this.entidadseleccionada});
       } 
     }
     return lista;

@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, filter, finalize, first, switchMap,
 import {
   EntidadVinculada,
   TipoDespliegueVinculo,
-  MetadataInfo, LinkVista,
+  MetadataInfo, LinkVista, ValorListaOrdenada,
 } from '../../@pika/pika-module';
 import { forkJoin, Subject } from 'rxjs';
 import { ConfiguracionEntidad } from './configuracion-entidad';
@@ -366,12 +366,22 @@ export class EditorEntidadesBase {
     // Debe estar presente en la clase derivada
   }
 
-  public ejecutaNavegarWebCommand(link: LinkVista, entidad: any, metadata: MetadataInfo) {
-    const parametros = {};
+  public ejecutaNavegarWebCommand(link: LinkVista, entidad: any[], metadata: MetadataInfo, data: unknown = null) {
+    const parametros = { data: data};
     if (entidad != null) {
       metadata.Propiedades.forEach(p => {
         if (p.ParametroLinkVista) {
-          parametros[p.Id] = entidad[p.Id];
+          if(p.ParametroLinkVista.Multiple) {
+            const valores: any[] = []; 
+            entidad.forEach(e=> {
+                valores.push(e[p.Id]);
+            });
+            parametros[p.Id] = valores;
+          } else {
+            if(entidad.length>0){
+              parametros[p.Id] = entidad[0][p.Id];
+            }
+          }
         }
       });
     }
@@ -379,7 +389,6 @@ export class EditorEntidadesBase {
     this.entidades.PostCommand(metadata.Tipo, link.Vista, parametros)
     .pipe(first())
     .subscribe(r=> {
-      // console.log(r)
       if (r) {
         if (r.Estatus) {
           this.refrescarTabla();
@@ -401,6 +410,22 @@ export class EditorEntidadesBase {
           null,
           null,
         );  
+      }
+    }, (ex)=> {
+      let msg = 'editor-pika.mensajes.err-ejecutar-comandoweb';
+      if(ex.error?.Message) {
+        msg =`entidades.propiedades.${metadata.Tipo.toLowerCase()}.${ex.error.Message}`; 
+        this.applog.AdvertenciaT(
+          msg,
+          null,
+          null,
+        );  
+      } else {
+        this.applog.FallaT(
+          'editor-pika.mensajes.err-ejecutar-comandoweb',
+          null,
+          null,
+        );
       }
     }) 
   }

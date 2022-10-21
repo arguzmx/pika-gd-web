@@ -26,8 +26,6 @@ import { ConsultaBackend, FiltroConsultaBackend } from '../../@pika/consulta';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 import { AppLogService } from '../../services/app-log/app-log.service';
 
-
-
 export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
 export const GLOBAL = 'GLOBAL';
@@ -450,7 +448,7 @@ export class EntidadesService {
         subject.complete();
       },
     (err) => {
-      subject.next(null);
+      subject.error(err);
       subject.complete();
     });
     return subject;
@@ -491,6 +489,22 @@ export class EntidadesService {
       subject.complete();
     });
 
+    return subject;
+  }
+
+  DeleteTodosVinculados(idPadre: string, entidad: string): Observable<any> {
+    const subject = new AsyncSubject<any>();
+    this.cliente.DeleteTodosVinculados(idPadre, entidad).pipe(
+      debounceTime(500),
+    ).subscribe(resultado => {
+      this.applog.ExitoT('editor-pika.mensajes.ok-vinculados-del-all', null, { nombre: '' });
+      subject.next(true);
+    }, (error) => {
+      this.handleHTTPError(error, entidad, '');
+      subject.next(false);
+    }, () => {
+      subject.complete();
+    });
     return subject;
   }
 

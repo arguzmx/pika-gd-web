@@ -31,6 +31,7 @@ export class MetadataInfo {
     PermiteBajas: boolean = true;
     PermiteCambios: boolean = true;
     BuscarPorTexto: boolean = false;
+    PermiteEliminarTodo: boolean = false;
     TipoSeguridad: TipoSeguridad = TipoSeguridad.Default;
     FiltrosDefault: FiltroDefault[];
 }

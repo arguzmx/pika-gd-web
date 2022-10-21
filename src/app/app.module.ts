@@ -11,11 +11,23 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {
+  NbAccordionModule,
+  NbActionsModule,
+  NbButtonModule,
+  NbCardModule,
+  NbCheckboxModule,
   NbDatepickerModule,
   NbDialogModule,
+  NbFormFieldModule,
+  NbIconModule,
+  NbInputModule,
   NbMenuModule,
+  NbPopoverModule,
+  NbRadioModule,
+  NbSelectModule,
   NbSidebarModule,
   NbToastrModule,
+  NbToggleModule,
   NbWindowModule,
 } from '@nebular/theme';
 import { CommonModule } from '@angular/common';
@@ -40,13 +52,14 @@ import { AppLogService } from './services/app-log/app-log.service';
 import { CanalTareasService } from './services/canal-tareas/canal-tareas.service';
 import { AuthService } from './services/auth/auth.service';
 import { AuthCoreModule } from './services/auth/auth.core.module';
+import { DialogoDeclinarActivoTxComponent } from './services/dialogos-dinamicos/dialogo-declinar-activo-tx/dialogo-declinar-activo-tx.component';
 
 export function servicesOnRun(config: AppConfig, token: TokenProvider) {
   return () => config.load().then(() => token.load());
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, DialogoDeclinarActivoTxComponent],
   imports: [
     PikaModule,
     NgxLocalStorageModule.forRoot({ prefix: 'pika' }),
@@ -72,6 +85,22 @@ export function servicesOnRun(config: AppConfig, token: TokenProvider) {
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
+    NbPopoverModule,
+    NbToggleModule,
+    NbInputModule,
+    NbActionsModule,
+    NbCardModule,
+    NbButtonModule,
+    NbAccordionModule,
+    NbActionsModule,
+    NbCheckboxModule,
+    NbRadioModule,
+    NbFormFieldModule,
+    NbIconModule,
+    NbDatepickerModule,
+    NbSelectModule,
+    NbIconModule,
+    NbCardModule,
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
     CoreModule.forRoot(),

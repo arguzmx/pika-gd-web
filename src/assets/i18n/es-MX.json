@@ -207,7 +207,20 @@
         "visorcontenido": "Visor de contenido",
         "buscarcontenido": "Buscar contenido",
         "crearcontenidoactivo": "Contenido",
-        "cambiarcontrasena": "Contraseña"
+        "cambiarcontrasena": "Contraseña",
+        "aceptar-activos-tx": "Aceptar activos",
+        "aceptar-activos-tx-conf": "El activo {{tema}} será marcado como <b>Aceptado</b para la trasnferencia",
+        "aceptar-activos-tx-conf-n": "Los {{conteo}} activos seleccionados serán marcados como <b>Aceptados</b> para la trasnferencia",
+        "declinar-activos-tx": "Declinar activos",
+        "declinar-activos-tx-conf": "El activo seleccionado será declinado",
+        "declinar-activos-tx-motivo": "Indique el motivo",
+        "declinar-activos-tx-conf-n": "Los {{conteo}} activos seleccionados serán declinados",
+        "enviar-transferencia": "Enviar a revisión",
+        "enviar-transferencia-conf": "La transferencia {{tema}} será enviada a revisión en el archivo destino",
+        "aceptar-transferencia": "Aceptar transferencia",
+        "aceptar-transferencia-conf": "La transferencia {{tema}} será marcada como Aceptada pero los activos declinados no serán incluidos",
+        "declinar-transferencia": "Declinar transferencia",
+        "declinar-transferencia-conf": "La transferencia {{tema}} será marcada como Declinada y ninguno de los activos serán incluidos"
     },
     "busqueda": {
         "bmetadatos": "Buscar por plantilla",
@@ -265,6 +278,7 @@
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|markunread_mailbox",
         "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|dvr",
         "archivo":"Archivo|Archivos|el|los|inventory_2",
+        "permisosarchivo": "Permiso Archivo|Permisos Archivos|el|los|security",
         "almacenarchivo":"Almacén Archivo|Almacenes Archivo|el|los|home-outline",
         "zonaalmacen":"Zona Almacén|Zonas Almacén|la|las|place",
         "contenedoralmacen":"Caja Almacén|Cajas Almacén|la|las|inventory_2",
@@ -292,8 +306,16 @@
                 "ActivoId": "Activo",
                 "TransferenciaId": "Transferencia",
                 "Declinado": "Declinado",
-                "MotivoDeclinado": "Motivo",
-                "UsuarioIdDeclinadoId": "Declinado por"
+                "MotivoDeclinado": "Motivo declinado",
+                "UsuarioReceptorId": "Receptor",
+                "Aceptado": "Aceptado",
+                "Notas": "Notas",
+                "UsuarioId": "Creador",
+                "FechaVoto": "Fecha revisión",
+                "FechaRetencion": "Retención",
+                "CuadroClasificacionId": "Cuadro",
+                "EntradaClasificacionId": "Clave",
+                "APICODE-TX-PERMISO-INVALIDO": "No tiene permisos en el archivo para la operación"
             },
             "transferencia" : {
                 "Id": "Id",
@@ -309,8 +331,16 @@
                 "UsuarioId": "Creador",
                 "TemaId": "Selección",
                 "EliminarTema": "Eliminar selección",
+                "RangoDias": "Días límite",
+                "FechaCorte": "Fecha límite",
+                "Recibidas": "Recibidas",
+                "APICODE-TX-PERMISO-INVALIDO": "No tiene permisos en el archivo para la operación",
+                "APICODE-TX-ESTADO-INVALIDO": "El estado no es válido para la transferencia",
                 "APICODE-TRANSFERENCIAS-ODIDENTICO": "EL archivo de orígen y destino deben ser diferentes",
-                "APICODE-TRANSFERENCIAS-ERRORCCEC": "El cuadro o la serie no corresponden"
+                "APICODE-TRANSFERENCIAS-ERRORCCEC": "El cuadro o la serie no corresponden",
+                "APICODE-ACT-TX-TRANSFERENCIA-CERRADA": "La transferencia no puede aceptar más activos debido a su estado",
+                "APICODE-TX-SIN-ACPTADOS": "No puede recibirse una transferencia sin activos aceptados",
+                "APICODE-TX-SIN-VALIDAR": "Hay activos en la transferencia que no han sido validados"
             },
             "valorlistaplantilla": {
                 "PropiedadId": "PropiedadId",
@@ -526,6 +556,20 @@
                 "TipoOrigenId": "TipoOrigenId",
                 "OrigenId": "OrigenId"
             },
+            "permisosarchivo": {
+                "Id": "Id",
+                "ArchivoId": "IdArchivo",
+                "DestinatarioId":"Rol",
+                "LeerAcervo":"Leer Acervo",
+                "CrearAcervo": "Crear Acervo",
+                "ActualizarAcervo": "Actualizar Acervo",
+                "ElminarAcervo":"Elminar Acervo",
+                "CancelarTrasnferencia": "Cancelar trasnferencias",
+                "CrearTrasnferencia": "Crear trasnferencias",
+                "EliminarTrasnferencia": "Eliminar trasnferencias",
+                "EnviarTrasnferencia": "Enviar trasnferencias",
+                "RecibirTrasnferencia": "Recibir trasnferencia"
+            },
             "almacenarchivo": {
                 "Id": "Id",
                 "Nombre": "Nombre",
@@ -695,6 +739,8 @@
             "comandoweb-400": "Datos no válios para el comando",
             "prestamo-entregado": "El préstamo ha sido marcado como entregado",
             "prestamo-devuelto": "El préstamo ha sido marcado como devuelto",
+            "activos-tx-aceptados": "Los activos han sido marcados como Aceptados",
+            "activos-tx-declinados": "Los activos han sido marcados como Declinados",
             "error-prestamo-entregado": "El préstamo no puede ser marcado como entregado",
             "error-prestamo-devuelto": "El préstamo no puede ser marcado como devuelto",
             "err-ejecutar-comandoweb": "Ocurrión un error al ejecutar el comando",
@@ -717,6 +763,7 @@
             "ok-entidad-add": "El elemento {{nombre}} ha sido adicionado satisfactoriamente",
             "ok-entidad-act": "El elemento {{nombre}} ha sido actualizado satisfactoriamente",
             "ok-entidad-del": "El elemento {{nombre}} ha sido eliminado satisfactoriamente",
+            "ok-vinculados-del-all": "Los elementos vinculados se han eliminado satisfactoriamente",
             "ok-seleccion-add": "Los elementos han sido adicionados a la selección",
             "ok-seleccion-del": "Los elementos han sido eliminados de la selección",
             "ok-seleccion-empty": "La lista de seleción ha sido eliminada",
@@ -730,9 +777,15 @@
             "err-config-vinculo": "La configuración del vínculo no es válida",
             "warn-crud-eliminar": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado será permanente y no podrá ser revertido.",
             "warn-crud-eliminar-logico": "<div class='bm-1'><b>¿Desea eliminar {{nombre}}?</b></div><br>El borrado podrá ser revertido.",
+            "warn-crud-eliminar-todos": "<div class='bm-1'><b>¿Desea eliminar todos los elementos vinculados?</b></div><br>El borrado podrá será permanente.",
             "confirm-crud-eliminarid": "Digite {{nombre}} para validar.",
             "ok-tema-add": "El tema ha sido adicionado",
-            "err-tema-add": "Error al añadir tema"
+            "err-tema-add": "Error al añadir tema",
+            "enviar-transferencia-ok": "Transferencia enviada satisfactoriamente",
+            "aceptar-transferencia-ok": "Transferencia aceptada satisfactoriamente",
+            "declinar-transferencia-ok": "Transferencia declinada satisfactoriamente",
+            "declinar-activos-tx-ok": "Los activos han sido declinados satisfactoriamente",
+            "aceptar-activos-tx-ok": "Los activos han sido aceptados satisfactoriamente"
         }
     },
     "link-contenido": {

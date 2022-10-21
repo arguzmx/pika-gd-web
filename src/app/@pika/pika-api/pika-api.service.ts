@@ -13,9 +13,8 @@ import { ValorListaOrdenada } from '../metadata/valor-lista';
 import { AtributoLista } from '../metadata/atributo-valorlista';
 import { SesionQuery } from '../state';
 import { ContenidoVinculado } from '../conteido/contenido-vinculado';
-import { RequestListaIds } from '../consulta/request-paginado-ids';
 import { FiltroConsultaPropiedad } from '../consulta/filtro.-consulta-propiedad';
-import { PermisoACL, PostTareaEnDemanda, RespuestaComandoWeb } from '../pika-module';
+import { PostTareaEnDemanda, RespuestaComandoWeb } from '../pika-module';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 import { PermisoPuntoMontaje } from '../conteido/permiso-punto-montaje';
 
@@ -164,6 +163,14 @@ export class PikaApiService<T, U> {
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.delete(endpoint + ids, { 'headers': headers })
+      .pipe(
+        retry(retryCount),
+      );
+  }
+
+  DeleteTodosVinculados(idPadre: string, entidad: string): Observable<any> {
+    const endpoint = this.CrearEndpoint(entidad) + `vinculos/todos/${idPadre}`;
+    return this.http.delete(endpoint)
       .pipe(
         retry(retryCount),
       );

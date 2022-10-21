@@ -13,6 +13,7 @@ export const MetadataElemento: MetadataInfo =
     "ColumaEliminarLogico": "Eliminada",
     "PermiteAltas": true,
     "PermiteBajas": true,
+    "PermiteEliminarTodo": false,
     "PermiteCambios": true,
     "BuscarPorTexto": true,
     "Propiedades": [
