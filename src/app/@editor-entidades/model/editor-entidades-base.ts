@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, filter, finalize, first, switchMap,
 import {
   EntidadVinculada,
   TipoDespliegueVinculo,
-  MetadataInfo, LinkVista, ValorListaOrdenada,
+  MetadataInfo, LinkVista, ValorListaOrdenada, FiltroConsulta, Operacion,
 } from '../../@pika/pika-module';
 import { forkJoin, Subject } from 'rxjs';
 import { ConfiguracionEntidad } from './configuracion-entidad';
@@ -24,6 +24,7 @@ import { Traductor } from '../services/traductor';
 import { DiccionarioNavegacion } from './i-diccionario-navegacion';
 import { AppLogService } from '../../services/app-log/app-log.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Menu } from '../../@pika/menu';
 
 export class EditorEntidadesBase {
   // Propiedades para la edición indivicual en una entidad vinculada
@@ -39,9 +40,14 @@ export class EditorEntidadesBase {
   public textoBusqueda: string = '';
   public minLengthTerm =2;
   public botonesLinkVista: LinkVista[] = [];
+  public botonesFiltro: LinkVista[] = [];
+  public menus: Menu[] = [];
+  public tieneBotonesFiltro: boolean = false;
   public tieneBotonesVista: boolean = false;
   public onDestroy$: Subject<void> = new Subject<void>();
-  
+  public tieneMenus: boolean = false;
+  public botonesFiltroActivos: LinkVista[] = [];
+
   constructor(
     public fb: FormBuilder,
     public appEventBus: AppEventBus,
@@ -64,6 +70,54 @@ export class EditorEntidadesBase {
       }
     });
 
+   }
+
+   BorrarFIltros() {
+    this.botonesFiltroActivos = []; 
+   }
+
+   Id?: string;
+
+   // Indica si la condición debe manejarse como una negación
+   Negacion: boolean;
+ 
+   // Nombre de la propiedad a filtrar
+   Propiedad: string;
+ 
+   // Debe corresponde con alguna de las constantes OP_XXX
+   Operador: Operacion;
+ 
+   // Valores para el filtro
+   Valor: any[];
+ 
+   // Valores serializados para la consulta de la API
+   ValorString?: string;
+ 
+   Valido?: boolean;
+ 
+   // Determina si el filtro es oculto
+   Oculto?: boolean;
+
+   AlternarFiltro(link: LinkVista) {
+    const index = this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista); 
+    if ( index < 0) {
+      this.botonesFiltroActivos.push(link);
+    }  else {
+      this.botonesFiltroActivos.splice(index, 1);
+    }
+    this.AplicarFiltros([]);
+   }
+
+   FiltroActivo(link: LinkVista) {
+    return this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista) > 0;
+   }
+
+   ColorFiltro(link: LinkVista): string {
+    let color = "";
+    if(this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista) >= 0) {
+      color = "warn";
+    }  
+    return(color);
    }
 
    EliminarBusquedaTexto() {
@@ -128,6 +182,11 @@ export class EditorEntidadesBase {
   // -------------------------------------------------------------
   // -------------------------------------------------------------
 
+  public AplicarFiltros(filtros: FiltroConsulta[]) {
+    // Esta funcion debe incluirse como override en la clase heredada
+    throw new Error('Method not implemented.');
+   }
+   
   public CerrarDialogos() {
     // Esta funcion debe incluirse como override en la clase heredada
     throw new Error('Method not implemented.');
@@ -446,6 +505,10 @@ export class EditorEntidadesBase {
 
   public tituloNavegarLista(link: LinkVista) {
     return this.T.t[`vistas.${link.Vista}`];
+  }
+
+  public tituloMenu(m: Menu) {
+    return this.T.t[`vistas.${m.Titulo}`];
   }
 
 }

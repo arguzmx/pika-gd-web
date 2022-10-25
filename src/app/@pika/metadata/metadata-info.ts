@@ -4,6 +4,7 @@ import { EntidadVinculada } from './entidad-vinculada';
 import { CatalogoVinculado } from './catelogo-vinculado';
 import { LinkVista } from './link-vista';
 import { FiltroDefault } from './atributo-filtrodefault';
+import { Menu } from '../menu';
 
 
 export enum TipoSeguridad
@@ -34,4 +35,5 @@ export class MetadataInfo {
     PermiteEliminarTodo: boolean = false;
     TipoSeguridad: TipoSeguridad = TipoSeguridad.Default;
     FiltrosDefault: FiltroDefault[];
+    Menus?: Menu[];
 }

@@ -4,12 +4,12 @@ import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { PermisoAplicacion } from './../../../@pika/seguridad/permiso-aplicacion';
 import { CONTEXTO, EventosFiltrado } from './../../services/entidades.service';
 import { FiltroConsulta, IProveedorReporte, LinkVista, TipoDespliegueVinculo } from '../../../@pika/pika-module';
-import { NbDialogService, NbDialogRef, NbSelectComponent } from '@nebular/theme';
+import { NbDialogService, NbDialogRef, NbSelectComponent, NbButtonModule, NbButtonComponent } from '@nebular/theme';
 import { MetadataEditorComponent } from './../metadata-editor/metadata-editor.component';
 import { MetadataInfo } from '../../../@pika/pika-module';
 import {
   Component, OnInit, OnDestroy, ViewChildren, QueryList, ViewChild,
-  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, HostListener, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ComponentRef
+  TemplateRef, Input, OnChanges, SimpleChanges, Output, EventEmitter, HostListener, ViewContainerRef, ComponentFactoryResolver, ComponentFactory, ComponentRef, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { EntidadesService } from '../../services/entidades.service';
@@ -34,6 +34,7 @@ import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 import { AppLogService } from '../../../services/app-log/app-log.service';
 import { FormBuilder } from '@angular/forms';
 import { MapaDialogos } from '../../../services/dialogos-dinamicos/mapa-dialogos';
+import { MatButton } from '@angular/material/button';
 
 const CONTENIDO_BUSCAR = 'buscar';
 const CONTENIDO_EDITAR = 'editar';
@@ -44,9 +45,10 @@ const EMPTYGUID = '00000000-0000-0000-0000-000000000000';
   selector: 'ngx-editor-tabular',
   templateUrl: './editor-tabular.component.html',
   styleUrls: ['./editor-tabular.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorTabularComponent extends EditorEntidadesBase implements OnInit,
-  OnDestroy, OnChanges {
+  OnDestroy, OnChanges, AfterViewInit {
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<MetadataEditorComponent>;
   @ViewChildren(MetadataBuscadorComponent) buscadorMetadatos: QueryList<MetadataBuscadorComponent>;
   @ViewChild('dialogConfirmDelete', { static: true }) dialogConfirmDelete: TemplateRef<any>;
@@ -151,6 +153,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
   // Cosntructor del componente
   constructor(
+    private cdr: ChangeDetectorRef,
     appeventBus: AppEventBus,
     private cacheFiltros: CacheFiltrosBusqueda,
     entidades: EntidadesService,
@@ -167,6 +170,9 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.T = new Traductor(ts);
     this.Permiso = this.entidades.permisoSinAcceso;
     this.setAlturaPanelLateral(window.innerHeight);
+  }
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   private setAlturaPanelLateral(altura: number) {
@@ -233,6 +239,11 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.barraSeleccion = false;
     this.idSeleccion = null;
     this.EntidadPadre = null;
+    this.menus =[];
+    this.tieneMenus = false;
+    this.tieneBotonesFiltro = false;
+    this.botonesFiltro =[];
+    this.botonesFiltroActivos = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -369,14 +380,43 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       this.tieneBotonesVista = this.metadata.VistasVinculadas.length > 0;
     }
 
-    this.T.ObtenerTraducciones();
+    if(this.metadata.VistasVinculadas) {
+      this.botonesLinkVista = this.metadata.VistasVinculadas.filter(x => x.Tipo != TipoVista.WebFilter && ( x.MenuId == null || x.MenuId == '') ) ?? [];
+      this.botonesFiltro = this.metadata.VistasVinculadas.filter(x => x.Tipo == TipoVista.WebFilter && ( x.MenuId == null || x.MenuId == '') ) ?? [];
+    } else {
+      this.botonesLinkVista = [];
+      this.botonesFiltro = [];
+    }
 
-    this.botonesLinkVista = this.metadata.VistasVinculadas ?? [];
+    if(this.metadata.Menus) {
+
+      this.tieneMenus = this.metadata.Menus.length > 0;
+      const menus = this.metadata.Menus.sort((a, b) => b.MenuIndex-a.MenuIndex);
+      menus.forEach(m => {
+        this.T.ts.push(`vistas.${m.Titulo}`);
+        m.Links = this.metadata.VistasVinculadas.filter(v => v.MenuId == m.MenuId).sort((a, b) => b.MenuIndex-a.MenuIndex);
+      });
+      this.menus = menus;
+    }
+
+
+    this.T.ObtenerTraducciones();
 
     this.T.translate.get([KeyNombreEntidad]).pipe(first())
       .subscribe(t => {
         this.NombreEntidad = this.T.ObtienePlural(t[KeyNombreEntidad]);
       });
+  }
+
+  menuItems(MenuId): LinkVista[] {
+    const m = this.menus.find(m=>m.MenuId ==MenuId);
+    const Items = {...m.Links};
+    return Items;
+  } 
+
+  public establecerFiltro(link: LinkVista) {
+    this.AlternarFiltro(link);
+    this.cdr.detectChanges();
   }
 
   private ProcesaConfiguracion(): void {
@@ -631,7 +671,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     }
   }
 
-  public EventoFiltrar(filtros: FiltroConsulta[]) {
+
+  public AplicarFiltros(filtros: FiltroConsulta[]) {
     const cache: FiltroConsulta[] = [];
     let conteoFiltrosDefault: number = 0;
     const defaults: FiltroConsulta[] = this.GetFiltrosDeafault();
@@ -645,11 +686,55 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
         cache.push(f);
       }
     });
+
+    const filtrosActivos: FiltroConsulta[] = [];
+    this.botonesFiltroActivos.forEach(f=> {
+      filtrosActivos.push( {Negacion: false,  Propiedad: f.Vista, Operador: Operacion.OP_EQ, Valor: [ "true" ], ValorString: "true", Valido: true});
+    });
+
+    if(filtrosActivos.length > 0) {
+      filtrosActivos.forEach(f=> {
+        cache.push({...f});
+      });
+    }
+
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;
     this.tablas.first.obtenerPaginaDatos(true, true);
   }
+
+  // public EventoFiltrar(filtros: FiltroConsulta[]) {
+  //   const cache: FiltroConsulta[] = [];
+  //   let conteoFiltrosDefault: number = 0;
+  //   const defaults: FiltroConsulta[] = this.GetFiltrosDeafault();
+  //   filtros.forEach(f => {
+  //     if (f.Valido) {
+  //       defaults.forEach(fd => {
+  //         if (fd === f) {
+  //           conteoFiltrosDefault++;
+  //         }
+  //       });
+  //       cache.push(f);
+  //     }
+  //   });
+
+  //   const filtrosActivos: FiltroConsulta[] = [];
+  //   this.botonesFiltroActivos.forEach(f=> {
+  //     filtrosActivos.push( {Negacion: false,  Propiedad: f.Vista, Operador: Operacion.OP_EQ, Valor: [ "true" ], ValorString: "true", Valido: true});
+  //   });
+
+  //   if(filtrosActivos.length > 0) {
+  //     filtrosActivos.forEach(f=> {
+  //       cache.push({...f});
+  //     });
+  //   }
+
+  //   this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
+  //   this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
+  //   this.VistaTrasera = false;
+  //   this.tablas.first.obtenerPaginaDatos(true, true);
+  // }
 
   public ConteoRegistros(total: number): void {
     this.totalRegistros = total;
@@ -667,8 +752,9 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.tablas.first.MostrarSelectorColumnas();
   }
 
-  public eliminarFiltros(): void {
+  public EliminarFiltros(): void {
     const cache: FiltroConsulta[] = (this.GetFiltrosDeafault());
+    this.BorrarFIltros();
     this.filtrosActivos = false;
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.tablas.first.obtenerPaginaDatos(true, true);
