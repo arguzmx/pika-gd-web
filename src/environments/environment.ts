@@ -12,6 +12,7 @@
 // ---------------------------------------------------
 export const environment = {
   production: false,
-  version: '1.4.21'
+  version: '1.4.21',
+  cloudurl: "https://localhost:7001/"
 };
 

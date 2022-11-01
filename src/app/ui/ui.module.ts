@@ -60,6 +60,7 @@ import { RouterModule } from '@angular/router';
 import { VisorImagenesModule } from '../@visor-imagenes/visor-imagenes.module';
 import { BienvenidaComponent } from './bienvenida/bienvenida.component'
 import { ConfiguracionModule } from '../@configuracion/configuracion.module';
+import { ActivacionComponent } from './activacion/activacion.component';
 
 @NgModule({
   imports: [
@@ -143,7 +144,8 @@ import { ConfiguracionModule } from '../@configuracion/configuracion.module';
   declarations: [
     UIRootComponent,
     UiComponent,
-    BienvenidaComponent
+    BienvenidaComponent,
+    ActivacionComponent
   ],
 })
 export class UiModule { }
