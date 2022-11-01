@@ -26,8 +26,6 @@ import { ConsultaBackend, FiltroConsultaBackend } from '../../@pika/consulta';
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 import { AppLogService } from '../../services/app-log/app-log.service';
 
-
-
 export const CONTEXTO = 'CONTEXTO';
 export const SESION = 'SESION';
 export const GLOBAL = 'GLOBAL';
@@ -450,7 +448,7 @@ export class EntidadesService {
         subject.complete();
       },
     (err) => {
-      subject.next(null);
+      subject.error(err);
       subject.complete();
     });
     return subject;
@@ -491,6 +489,22 @@ export class EntidadesService {
       subject.complete();
     });
 
+    return subject;
+  }
+
+  DeleteTodosVinculados(idPadre: string, entidad: string): Observable<any> {
+    const subject = new AsyncSubject<any>();
+    this.cliente.DeleteTodosVinculados(idPadre, entidad).pipe(
+      debounceTime(500),
+    ).subscribe(resultado => {
+      this.applog.ExitoT('editor-pika.mensajes.ok-vinculados-del-all', null, { nombre: '' });
+      subject.next(true);
+    }, (error) => {
+      this.handleHTTPError(error, entidad, '');
+      subject.next(false);
+    }, () => {
+      subject.complete();
+    });
     return subject;
   }
 
@@ -545,7 +559,7 @@ export class EntidadesService {
   // ---------------------------------------------------------------
   GetFiltroBusqueda(entidad: string, id: string): Observable<FiltroConsultaPropiedad[]> {
     const subject = new AsyncSubject<FiltroConsultaPropiedad[]>();
-    const key = this.cache.ClaveFiltroBusqueda(entidad);
+    const key = this.cache.ClaveFiltroBusqueda(`${entidad}${id}`);
 
     if (this.cache.has(key)) {
       subject.next(this.cache.get(key));
@@ -736,11 +750,11 @@ export class EntidadesService {
 
   // realiza una consulta de pagina relacional
   public ObtenerPaginaRelacional(TipoOrigen: string, OrigenId: string, Entidad: string,
-    consulta: Consulta): Observable<Paginado<any>> {
+    consulta: Consulta, Texto: string = null): Observable<Paginado<any>> {
 
     const subject = new AsyncSubject<Paginado<any>>();
 
-    this.cliente.PageRelated(TipoOrigen, OrigenId, consulta, Entidad).pipe(
+    this.cliente.PageRelated(TipoOrigen, OrigenId, consulta, Entidad, Texto).pipe(
       debounceTime(500), first(),
     ).subscribe(data => {
 
@@ -804,12 +818,12 @@ export class EntidadesService {
     return subject;
   }
   
-  public ObtenerPagina(Entidad: string,
-    consulta: Consulta): Observable<Paginado<any>> {
+
+  public ObtenerPagina(Entidad: string, consulta: Consulta, Texto: string = null): Observable<Paginado<any>> {
 
     const subject = new AsyncSubject<Paginado<any>>();
 
-    this.cliente.Page(consulta, Entidad).pipe(
+    this.cliente.Page(consulta, Entidad, Texto).pipe(
       debounceTime(500), first(),
     ).subscribe(data => {
       this.BuscaTextoDeIdentificadores(Entidad, data).pipe(first())

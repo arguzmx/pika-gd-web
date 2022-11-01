@@ -40,6 +40,7 @@ import { CacheFiltrosBusqueda } from '../../services/cache-filtros-busqueda';
 import { TipoVista } from '../../../@pika/metadata';
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
 import { AppLogService } from '../../../services/app-log/app-log.service';
+import { FormBuilder } from '@angular/forms';
 
 
 const CONTENIDO_BUSCAR = 'buscar';
@@ -66,23 +67,21 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
     ts: TranslateService,
     applog: AppLogService,
     router: Router,
+    fb: FormBuilder,
     private dialogService: NbDialogService,
     private location: Location,
     diccionarioNavegacion: DiccionarioNavegacion,
   ) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.T = new Traductor(ts);
     this.PermisoJ = this.entidades.permisoSinAcceso;
     this.PermisoC = this.entidades.permisoSinAcceso;
   }
 
-
-
   @Input() config: ConfiguracionEntidadJerarquica;
   // config: ConfiguracionEntidad;
   configJ: ConfiguracionEntidad;
   configC: ConfiguracionEntidad;
-  private onDestroy$: Subject<void> = new Subject<void>();
 
   @ViewChildren(MetadataEditorComponent) editorMetadatos: QueryList<
     MetadataEditorComponent

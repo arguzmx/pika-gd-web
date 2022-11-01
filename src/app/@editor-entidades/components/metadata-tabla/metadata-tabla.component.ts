@@ -28,6 +28,7 @@ import { ConsultaBackend } from '../../../@pika/consulta';
 import { BusquedaContenido, HighlightHit } from '../../../@busqueda-contenido/busqueda-contenido.module';
 import { AsyncSubject, Observable, Subject, timer } from 'rxjs';
 import { AppLogService } from '../../../services/app-log/app-log.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'ngx-metadata-tabla',
@@ -50,12 +51,12 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @ViewChild('listaplantilla') listaplantilla: NbSelectComponent;
 
   private dialogColPickRef: any;
-  private onDestroy$: Subject<void> = new Subject<void>();
 
   // Parámetros de configuración
   @Input() config: ConfiguracionEntidad;
   @Input() idSeleccion: string;
   @Input() metadata: MetadataInfo;
+  @Input() textoBusqueda: string;
   @Input() busuedaPersonalizada: boolean = false;
   @Output() NuevaSeleccion = new EventEmitter();
   @Output() NuevaSeleccionMultiple = new EventEmitter();
@@ -119,6 +120,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.IdBusquedaPersonalizada = '';
     this.plantillaSeleccionada = '';
     this.AsociadoMetadatos = false;
+    this.renglonesSeleccionados.clear();
     this._CerrarDialogos();
     this.entidadseleccionada = null;
     this.entidadesseleccionadas = [];
@@ -173,8 +175,9 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     entidades: EntidadesService,
     translate: TranslateService,
     diccionarioNavegacion: DiccionarioNavegacion,
+    fb: FormBuilder,
     applog: AppLogService, router: Router, private dialogService: NbDialogService) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.consulta = this.GetConsultaInicial();
     this.T = new Traductor(translate);
   }
@@ -208,6 +211,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.ProcesaConfiguracion();
             break;
 
+          case 'textoBusqueda':
+            this.GetDataPage(true, true);
+            break;
+            
           case 'idSeleccion':
               this.GetDataPage(true, true);
               break;            
@@ -304,6 +311,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     this.entidadesseleccionadas = [];
     this.entidadseleccionada = null;
     this.renglonSeleccionado = -1;
+    this.renglonesSeleccionados.clear();
     this.NuevaSeleccion.emit(this.entidadseleccionada);
     this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas)
   }
@@ -665,6 +673,22 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     return lista;
   }
 
+  public ObtieneEntidadesSeleccionadas(): string[] {
+    const lista: any[] = [];
+    if(this.configuration.checkboxes) {
+      if(this.entidadesseleccionadas.length>0){
+        this.entidadesseleccionadas.forEach(item=> {
+          lista.push({...item});
+        });
+      } 
+    } else {
+      if(this.entidadseleccionada!=null){
+        lista.push({...this.entidadseleccionada});
+      } 
+    }
+    return lista;
+  }
+
   // listener para eventos de la tabla
   eventosTabla($event: { event: string; value: any }): void {
     this.LimpiarSeleccion();
@@ -999,7 +1023,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       }
       if (this.usarPaginadoRelacional) {
         this.entidades.ObtenerPaginaRelacional(this.config.OrigenTipo,
-          this.config.OrigenId, this.config.TipoEntidad, this.consulta)
+          this.config.OrigenId, this.config.TipoEntidad, this.consulta, this.textoBusqueda)
           .pipe(first())
           .subscribe(data => {
             if (data) {
@@ -1024,7 +1048,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   
           });
       } else {
-        this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta)
+        this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta, this.textoBusqueda)
           .pipe(first())
           .subscribe(data => {
             if (data) {

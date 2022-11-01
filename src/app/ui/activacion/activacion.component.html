@@ -1,0 +1,124 @@
+<form *ngIf="accesoRegistro && !activarConClave" [formGroup]="propsForm">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <h6>{{T.t['ui.activacion-titulo']}}</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <nb-form-field>
+                <input nbInput fullWidth id="Email" formControlName="Email"
+                    placeholder="{{T.t['ui.activacion-email']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <nb-form-field>
+                <input nbInput fullWidth id="Nombre" formControlName="Nombre"
+                    placeholder="{{T.t['ui.activacion-nombre']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12  pt-2">
+            <nb-form-field>
+                <input nbInput fullWidth id="Empresa" formControlName="Empresa"
+                    placeholder="{{T.t['ui.activacion-empresa']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <nb-form-field>
+                <input nbInput fullWidth id="Puesto" formControlName="Puesto"
+                    placeholder="{{T.t['ui.activacion-puesto']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <nb-form-field>
+                <input nbInput fullWidth id="PaginaWeb" formControlName="PaginaWeb"
+                    placeholder="{{T.t['ui.activacion-www']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <nb-form-field>
+                <input nbInput fullWidth id="Telefono" formControlName="Telefono"
+                    placeholder="{{T.t['ui.activacion-telefono']}}">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12  pt-2">
+            <nb-form-field>
+                <nb-select formControlName="PaisId" fullWidth placeholder="{{T.t['ui.activacion-pais']}}">
+                    <nb-option *ngFor="let pais of paises" [value]="pais.Id">
+                        {{ pais.Texto }} </nb-option>
+                </nb-select>
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12  pt-2">
+            <nb-form-field>
+                <nb-select formControlName="MedioEnterado" fullWidth
+                    placeholder="{{T.t['ui.activacion-medioenterado']}}">
+                    <nb-option *ngFor="let medio of medios" [value]="medio.Id">
+                        {{ medio.Texto }} </nb-option>
+                </nb-select>
+            </nb-form-field>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 pt-2">
+            <nb-form-field>
+                <input nbInput fullWidth id="MedioOtro" formControlName="MedioOtro"
+                    placeholder="{{T.t['ui.activacion-otro-comentarios']}}">
+                <input type="hidden" id="FingerPrint" formControlName="FingerPrint">
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <nb-checkbox id="RequiereContacto" formControlName="RequiereContacto">
+                {{T.t['ui.activacion-requiere-contacto']}}
+            </nb-checkbox>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <div class="float-right">
+                <button nbButton fullWidth status="primary" (click)="registrar()"
+                    [disabled]="ocupado ||!propsForm.valid">
+                    <mat-icon>mail</mat-icon>
+                    &nbsp;{{T.t['ui.activacion-registrar']}}
+                </button>
+                <div class="pt-2">
+                    <button nbButton fullWidth (click)="toggleConClave()">
+                        <mat-icon>key</mat-icon>
+                        &nbsp;{{T.t['ui.tengo-codigo']}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<form *ngIf="activarConClave" [formGroup]="activacionForm">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <h6>{{T.t['ui.activacion-clave-titulo']}}</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <nb-form-field class="pt-4">
+                <label for="inputCodigo" class="label">{{T.t['ui.activacion-codigo']}}</label>
+                <textarea nbInput fullWidth rows="8" id="inputCodigo" formControlName="inputCodigo"
+                    placeholder="">
+                </textarea>
+            </nb-form-field>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            &nbsp;;
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 pt-2">
+            <div class="float-right">
+                <button nbButton fullWidth status="primary" (click)="activarClave()"
+                    [disabled]="ocupado || !activacionForm.valid">
+                    <mat-icon>key</mat-icon>
+                    &nbsp;{{T.t['ui.tengo-codigo']}}
+                </button>
+                <div *ngIf="accesoRegistro" class="pt-2">
+                    <button nbButton fullWidth (click)="toggleConClave()">
+                        <mat-icon>mail</mat-icon>
+                        &nbsp;{{T.t['ui.activacion-registrar']}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,13 +1,13 @@
 import { EventoAplicacion, PayloadItem } from './../../@pika/eventos/evento-aplicacion';
 import { AppEventBus, EventoCerrarPlugins, VISOR } from './../../@pika/state/app-event-bus';
 import { EntidadesService, CONTEXTO } from './../services/entidades.service';
-import { first } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, finalize, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import {
   EntidadVinculada,
   TipoDespliegueVinculo,
-  MetadataInfo, LinkVista,
+  MetadataInfo, LinkVista, ValorListaOrdenada, FiltroConsulta, Operacion,
 } from '../../@pika/pika-module';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { ConfiguracionEntidad } from './configuracion-entidad';
 import {
   PARAM_TIPO,
@@ -23,6 +23,8 @@ import { Router } from '@angular/router';
 import { Traductor } from '../services/traductor';
 import { DiccionarioNavegacion } from './i-diccionario-navegacion';
 import { AppLogService } from '../../services/app-log/app-log.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Menu } from '../../@pika/menu';
 
 export class EditorEntidadesBase {
   // Propiedades para la edición indivicual en una entidad vinculada
@@ -33,11 +35,21 @@ export class EditorEntidadesBase {
   // Determina si la entida den edición es una entidad vinculada
   public EditandoVinculada = false;
   public contenidoVisible: boolean = true;
-
+  public baseFormGroup: FormGroup;
+  public searchCtrl: FormControl = new FormControl('');
+  public textoBusqueda: string = '';
+  public minLengthTerm =2;
   public botonesLinkVista: LinkVista[] = [];
+  public botonesFiltro: LinkVista[] = [];
+  public menus: Menu[] = [];
+  public tieneBotonesFiltro: boolean = false;
   public tieneBotonesVista: boolean = false;
+  public onDestroy$: Subject<void> = new Subject<void>();
+  public tieneMenus: boolean = false;
+  public botonesFiltroActivos: LinkVista[] = [];
 
   constructor(
+    public fb: FormBuilder,
     public appEventBus: AppEventBus,
     public entidades: EntidadesService,
     public applog: AppLogService,
@@ -60,10 +72,121 @@ export class EditorEntidadesBase {
 
    }
 
+   BorrarFIltros() {
+    this.botonesFiltroActivos = []; 
+   }
+
+   Id?: string;
+
+   // Indica si la condición debe manejarse como una negación
+   Negacion: boolean;
+ 
+   // Nombre de la propiedad a filtrar
+   Propiedad: string;
+ 
+   // Debe corresponde con alguna de las constantes OP_XXX
+   Operador: Operacion;
+ 
+   // Valores para el filtro
+   Valor: any[];
+ 
+   // Valores serializados para la consulta de la API
+   ValorString?: string;
+ 
+   Valido?: boolean;
+ 
+   // Determina si el filtro es oculto
+   Oculto?: boolean;
+
+   AlternarFiltro(link: LinkVista) {
+    const index = this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista); 
+    if ( index < 0) {
+      this.botonesFiltroActivos.push(link);
+    }  else {
+      this.botonesFiltroActivos.splice(index, 1);
+    }
+    this.AplicarFiltros([]);
+   }
+
+   FiltroActivo(link: LinkVista) {
+    return this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista) > 0;
+   }
+
+   ColorFiltro(link: LinkVista): string {
+    let color = "";
+    if(this.botonesFiltroActivos.findIndex(x=>x.Vista == link.Vista) >= 0) {
+      color = "warn";
+    }  
+    return(color);
+   }
+
+   EliminarBusquedaTexto() {
+    if(this.baseFormGroup) {
+      this.searchCtrl.patchValue('');  
+      this.textoBusqueda = '';
+    }  
+   }
+
+
+   hookTypeAhead() {
+
+    this.baseFormGroup = this.fb.group({});
+    this.baseFormGroup.addControl('searchCtrl', this.searchCtrl);
+    this.searchCtrl.valueChanges
+    .pipe(takeUntil(this.onDestroy$))
+    .pipe(
+      filter(res => {
+        return res !== null && res!== undefined && res.length >= this.minLengthTerm
+      }),
+      distinctUntilChanged(),
+      debounceTime(1000),
+    )
+    .subscribe(v=> {
+      this.textoBusqueda = v;
+    });
+
+
+
+    // this.searchCtrl.valueChanges
+    // .pipe(
+    //   filter(res => {
+    //     return res !== null && res!== undefined && res.length >= this.minLengthTerm
+    //   }),
+    //   distinctUntilChanged(),
+    //   debounceTime(1000),
+    //   tap(() => {
+    //     console.log('tap');
+    //     // this.errorMsg = "";
+    //     // this.filteredItems = [];
+    //     // this.isLoading = true;
+    //   }),
+    //   // switchMap( term => console.log(term))
+    //   //   .pipe(
+    //   //     finalize(() => {
+    //   //       // this.isLoading = false
+    //   //     }),
+    //   //   )
+    //   // )
+    // )
+    // .subscribe( items => {
+    //   console.log(items);
+    //   // if(items.length == 0) {
+    //   //   this.applog.AdvertenciaT('ui.sin-regitros-busqueda', null, { texto : this.group.get(this.shadowControl).value } );
+    //   // }
+    //   // this.filteredItems = items;
+    //   // this.cdr.detectChanges();
+    // })
+  }
+
   // Gestion de vínculose
   // -------------------------------------------------------------
   // -------------------------------------------------------------
 
+  public AplicarFiltros(filtros: FiltroConsulta[]) {
+    // Esta funcion debe incluirse como override en la clase heredada
+    throw new Error('Method not implemented.');
+   }
+   
   public CerrarDialogos() {
     // Esta funcion debe incluirse como override en la clase heredada
     throw new Error('Method not implemented.');
@@ -302,12 +425,22 @@ export class EditorEntidadesBase {
     // Debe estar presente en la clase derivada
   }
 
-  public ejecutaNavegarWebCommand(link: LinkVista, entidad: any, metadata: MetadataInfo) {
-    const parametros = {};
+  public ejecutaNavegarWebCommand(link: LinkVista, entidad: any[], metadata: MetadataInfo, data: unknown = null) {
+    const parametros = { data: data};
     if (entidad != null) {
       metadata.Propiedades.forEach(p => {
         if (p.ParametroLinkVista) {
-          parametros[p.Id] = entidad[p.Id];
+          if(p.ParametroLinkVista.Multiple) {
+            const valores: any[] = []; 
+            entidad.forEach(e=> {
+                valores.push(e[p.Id]);
+            });
+            parametros[p.Id] = valores;
+          } else {
+            if(entidad.length>0){
+              parametros[p.Id] = entidad[0][p.Id];
+            }
+          }
         }
       });
     }
@@ -315,7 +448,6 @@ export class EditorEntidadesBase {
     this.entidades.PostCommand(metadata.Tipo, link.Vista, parametros)
     .pipe(first())
     .subscribe(r=> {
-      // console.log(r)
       if (r) {
         if (r.Estatus) {
           this.refrescarTabla();
@@ -338,6 +470,22 @@ export class EditorEntidadesBase {
           null,
         );  
       }
+    }, (ex)=> {
+      let msg = 'editor-pika.mensajes.err-ejecutar-comandoweb';
+      if(ex.error?.Message) {
+        msg =`entidades.propiedades.${metadata.Tipo.toLowerCase()}.${ex.error.Message}`; 
+        this.applog.AdvertenciaT(
+          msg,
+          null,
+          null,
+        );  
+      } else {
+        this.applog.FallaT(
+          'editor-pika.mensajes.err-ejecutar-comandoweb',
+          null,
+          null,
+        );
+      }
     }) 
   }
 
@@ -357,6 +505,10 @@ export class EditorEntidadesBase {
 
   public tituloNavegarLista(link: LinkVista) {
     return this.T.t[`vistas.${link.Vista}`];
+  }
+
+  public tituloMenu(m: Menu) {
+    return this.T.t[`vistas.${m.Titulo}`];
   }
 
 }

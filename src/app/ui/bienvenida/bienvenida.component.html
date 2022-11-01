@@ -6,66 +6,95 @@
                     <nb-card-body>
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12">
-                                <div class="col text-center">
-                                    <img src="../../../assets/images/logo_pika.png">
-                                    <br>
-                                    <nb-accordion>
-                                        <nb-accordion-item>
-                                            <nb-accordion-item-header>
-                                                <ngx-monitor-salud (DatosListos)="DatosListos($event)"
-                                                    [Expanded] = false
-                                                    (ServidorSaludable)="ServidorSaludable($event)">
-                                                </ngx-monitor-salud>
-                                                &nbsp;{{T.t['componentes.monitor-salud.titulo']}}
-                                            </nb-accordion-item-header>
-                                            <nb-accordion-item-body>
-                                                <div *ngif="cargaFinalizada && !servidorSaludable">
-                                                    {{T.t['componentes.monitor-salud.nosaludable']}}</div>
-                                                <ngx-monitor-salud (DatosListos)="DatosListos($event)"
-                                                    [Expanded] = true 
-                                                    (ServidorSaludable)="ServidorSaludable($event)">
-                                                </ngx-monitor-salud>
-                                            </nb-accordion-item-body>
-                                        </nb-accordion-item>
-                                    </nb-accordion>
-                                    <br>
-                                    <form [formGroup]="loginForm">
-                                        <div class="row">
-                                            <div class="col-lg-8">
-                                                <nb-form-field>
-                                                    <input type="text" nbInput fullWidth id="inputUsuario"
-                                                        formControlName="inputUsuario"
-                                                        placeholder="{{T.t['ui.usuario']}}">
-                                                </nb-form-field>
-                                                <nb-form-field>
-                                                    <input [type]="getInputType()" nbInput fullWidth id="inputPass"
-                                                        formControlName="inputPass"
-                                                        placeholder="{{T.t['ui.contrasena']}}">
+                                <span *ngIf="servidorActivado">
+                                    <div class="col text-center">
+                                        <img src="../../../assets/images/logo_pika.png">
+                                        <br>
+                                        <nb-accordion>
+                                            <nb-accordion-item>
+                                                <nb-accordion-item-header>
+                                                    <ngx-monitor-salud (DatosListos)="DatosListos($event)"
+                                                        [Expanded]=false
+                                                        (ServidorSaludable)="ServidorSaludable($event)">
+                                                    </ngx-monitor-salud>
+                                                    &nbsp;{{T.t['componentes.monitor-salud.titulo']}}
+                                                </nb-accordion-item-header>
+                                                <nb-accordion-item-body>
+                                                    <div *ngif="cargaFinalizada && !servidorSaludable">
+                                                        {{T.t['componentes.monitor-salud.nosaludable']}}</div>
+                                                    <ngx-monitor-salud (DatosListos)="DatosListos($event)"
+                                                        [Expanded]=true (ServidorSaludable)="ServidorSaludable($event)">
+                                                    </ngx-monitor-salud>
+                                                </nb-accordion-item-body>
+                                            </nb-accordion-item>
+                                        </nb-accordion>
+                                        <br>
+                                        <form [formGroup]="loginForm">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <nb-form-field>
+                                                        <input type="text" nbInput fullWidth id="inputUsuario"
+                                                            formControlName="inputUsuario"
+                                                            placeholder="{{T.t['ui.usuario']}}">
+                                                    </nb-form-field>
+                                                    <nb-form-field>
+                                                        <input [type]="getInputType()" nbInput fullWidth id="inputPass"
+                                                            formControlName="inputPass"
+                                                            placeholder="{{T.t['ui.contrasena']}}">
                                                         <button nbSuffix nbButton ghost (click)="toggleShowPassword()">
-                                                            <nb-icon [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
-                                                                     pack="eva"
-                                                                     [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
+                                                            <nb-icon
+                                                                [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+                                                                pack="eva"
+                                                                [attr.aria-label]="showPassword ? 'hide password' : 'show password'">
                                                             </nb-icon>
-                                                          </button>
-                                                </nb-form-field>
+                                                        </button>
+                                                    </nb-form-field>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <button nbButton
+                                                        [disabled]="!servidorSaludable || !servidorActivado"
+                                                        on-click="login()" aria-label="Iniciar sesión">
+                                                        <mat-icon>fingerprint</mat-icon>
+                                                        {{T.t['ui.ingresar']}}
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="col-lg-4">
-                                                <button nbButton on-click="login()" aria-label="Iniciar sesión">
-                                                    <mat-icon>fingerprint</mat-icon>
-                                                    {{T.t['ui.ingresar']}}
-                                                </button>
-                                            </div>
+                                        </form>
+                                    </div>
+                                </span>
+                                <span *ngIf="!servidorActivado">
+                                    <div class="col text-center">
+                                        <img src="../../../assets/images/logo_pika.png">
+                                        <br>
+                                        <div style="text-align:justify;" 
+                                        innerHTML="{{T.t['ui.activacion-leyenda']}}">   
                                         </div>
-                                    </form>
-                                </div>
-                                
+                                    </div>
+                                        <nb-form-field class="pt-4">
+                                            <label for="inputCodigo"
+                                                class="label">{{T.t['ui.activacion-fingerprint']}}</label>
+                                            <textarea  ng-readonly="true" nbInput fullWidth rows="4" 
+                                                id="inputCodigo"  
+                                                [ngModel] = "codigoActivacion"
+                                                placeholder="">
+                                            </textarea>
+                                        </nb-form-field>
+                                </span>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="text-right">
                                     <span class="caption text-hint">{{ver}}</span>
                                 </div>
                                 <div class="padded">
-                                    <h2>Noticias</h2>
+                                    <span *ngIf="servidorActivado">
+                                        <h2>Noticias</h2>
+                                    </span>
+                                    <span *ngIf="!servidorActivado">
+                                        <ngx-activacion 
+                                            (CodigoActivacion)="SetCodigoActivacion($event)"
+                                            (AccesoServidorRegistro)="SetAccesoServidorRegistro($event)"
+                                            (Activado)="ServidorActivado($event)" ></ngx-activacion>
+                                    </span>
                                 </div>
                             </div>
                         </div>

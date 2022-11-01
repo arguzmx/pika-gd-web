@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { tDouble, tInt64, tInt32 } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-numeric-editor',
@@ -25,8 +26,8 @@ implements ICampoEditable, OnInit, OnDestroy {
   mask: string = 'separator.4';
   negativos: boolean = true;
 
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
    }
 
 ngOnDestroy(): void {

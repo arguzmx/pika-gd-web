@@ -4,10 +4,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthErrorEvent, OAuthService } from 'angular-oauth2-oidc';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, map, windowWhen } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { AppConfig } from '../../app-config';
 import { AppLogService } from '../app-log/app-log.service';
-import { interval } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
@@ -22,6 +21,7 @@ export class AuthService {
   private profileSubject$ = new BehaviorSubject<object>(null);
   public profile$ = this.profileSubject$.asObservable();
 
+  private path: string = '/pages/inicio'
   private ExpirationDate: Date;
 
 
@@ -31,7 +31,7 @@ export class AuthService {
   startTimer() {
     this.interval = setInterval(() => {
       const mins = this.getMinutesBetweenDates(this.ExpirationDate);
-      if(mins > 0){
+      if(mins < 5){
         this.pauseTimer()
         this.oauthService.refreshToken().then(()=> {
           this.programRefresh(this.oauthService.getAccessTokenExpiration());
@@ -77,8 +77,16 @@ export class AuthService {
   }
 
   private navigateToInicio() {
+    if(this.path.indexOf('bienvenida')>0 || (this.path == '/')) {
+      this.path='';
+    }
     // TODO: Remember current URL
-    this.router.navigateByUrl('/pages/inicio');
+    if(this.path) {
+      this.router.navigateByUrl(this.path);
+    } else {
+      this.router.navigateByUrl('/pages/inicio');
+    }
+    
   }
 
   constructor(
@@ -146,6 +154,8 @@ export class AuthService {
     // }
 
 
+    this.path = `${window.location.pathname}${window.location.search}`;
+
     return this.appConfig.load().then(()=>{
       this.oauthService.issuer = this.appConfig.config.authUrl;
       // console.log("Config loeaded");
@@ -196,9 +206,9 @@ export class AuthService {
               'consent_required',
             ];
 
-            console.log("No silent refresh");
+            // console.log("No silent refresh");
 
-            console.log(result);
+            // console.log(result);
 
             if (result
               && result.reason

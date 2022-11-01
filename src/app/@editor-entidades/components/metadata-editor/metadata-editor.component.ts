@@ -78,7 +78,6 @@ export class MetadataEditorComponent
   @Output() NuevaEntidad = new EventEmitter();
   @Output() EntidadActualizada = new EventEmitter();
   @Output() CapturaFinalizada = new EventEmitter();
-  private onDestroy$: Subject<void> = new Subject<void>();
 
   // Forma reactiva host de los componentes
   public formGroup: FormGroup;
@@ -131,10 +130,10 @@ export class MetadataEditorComponent
     applog: AppLogService,
     router: Router,
     diccionarioNavegacion: DiccionarioNavegacion,
-    private fb: FormBuilder,
+    fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {
-    super(appeventBus, entidades, applog, router, diccionarioNavegacion);
+    super(fb, appeventBus, entidades, applog, router, diccionarioNavegacion);
     this.transaccionId = new Date().getMilliseconds().toString();
     this.T = new Traductor(ts);
     this.T.ts = ["ui.editar", "ui.guardar", "ui.guardar-adicionar"];
@@ -143,7 +142,7 @@ export class MetadataEditorComponent
 
     this.formGroup.valueChanges.subscribe((campos) => {
       if (!environment.production) {
-        console.debug(campos);
+       // console.debug(campos);
       }
       this.cdr.detectChanges();
     });

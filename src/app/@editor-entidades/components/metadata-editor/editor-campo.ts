@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { EventosInterprocesoService } from '../../services/eventos-interproceso.service';
 import { FiltroConsulta, FiltroConsultaBackend } from '../../../@pika/consulta';
 import { FiltroConsultaPropiedad } from '../../../@pika/consulta/filtro.-consulta-propiedad';
+import { AppLogService } from '../../../services/app-log/app-log.service';
 
 export class EditorCampo {
     transaccionId: string;
@@ -16,7 +17,7 @@ export class EditorCampo {
     
     oculto: boolean = false;
 
-    constructor(public eventos: EventosInterprocesoService ) {}
+    constructor(public eventos: EventosInterprocesoService, public applog: AppLogService ) {}
 
 
     hookEscuchaEventos() {

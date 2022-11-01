@@ -1,7 +1,7 @@
 import { PropiedadesUsuario } from './../model/propiedades-usuario';
 import { AppConfig } from './../../app-config';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ValorListaOrdenada } from '../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,11 +9,13 @@ import { ActDominioOU } from '../model/act-dominio-ou';
 import { ReporteSalud } from '../model/reporte-salud';
 import { AppLogService } from '../../services/app-log/app-log.service';
 import { EstadoOCR } from '../model/estado-ocr';
-
+import { environment } from '../../../environments/environment';
 @Injectable()
 export class ApiConfiguracion {
   private endpointSalud: string;
-
+  private endpointActivacion: string;
+  private endpointRegistro: string;
+  
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
   }
@@ -23,8 +25,9 @@ export class ApiConfiguracion {
     private applog: AppLogService,
     private ts: TranslateService,
   ) { 
-
     this.endpointSalud = this.DepuraUrl(this.app.config.pikaApiUrl) + this.app.config.healthendpoint;
+    this.endpointActivacion = this.DepuraUrl(this.app.config.apiUrl) + 'Sistema/AppConfig';
+    this.endpointRegistro = this.DepuraUrl(environment.cloudurl) + 'registro';
   }
 
   private CrearEndpoint(sufijo: string): string {
@@ -82,7 +85,7 @@ export class ApiConfiguracion {
   }
 
   public ObtienePaises(): Observable<ValorListaOrdenada[]> {
-    const url = this.CrearEndpoint('contacto/pais/pares');
+    const url = this.CrearEndpoint('contacto/pais/pares?i=0&t=10000');
     return this.http
       .get<ValorListaOrdenada[]>(url);
   }
@@ -110,5 +113,28 @@ export class ApiConfiguracion {
   ObtieneEstadoServidor(): Observable<ReporteSalud> {
     return this.http.get<ReporteSalud>(this.endpointSalud);
   }
+
+  ObtieneServidorActivado(): Observable<any> {
+    return this.http.get(`${this.endpointActivacion}/activado`);
+  }
+
+  ObtieneServidorFingerprint(): Observable<string> {
+    return this.http.get(`${this.endpointActivacion}/fingerprint`, { responseType: 'text' });
+  }
+
+  ObtieneAccessoServidorRegistro(): Observable<any> {
+    return this.http.get(`${this.endpointRegistro}/ping`);
+  }
+
+  GenerarRegistro(registro: any): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'application/json');
+    return this.http.post(`${this.endpointRegistro}/activar`, registro, { 'headers': headers } );
+  }
+
+  ActivarServidor(activacion: string): Observable<any> {
+    const headers = new HttpHeaders().set('content-type', 'text/plain');
+    return this.http.post(`${this.endpointActivacion}/activar`, activacion, { 'headers': headers } );
+  }
+
 }
 

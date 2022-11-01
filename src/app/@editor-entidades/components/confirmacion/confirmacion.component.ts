@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { NbDialogRef } from '@nebular/theme';
+import { Component, Input, OnChanges, OnInit, Optional, SimpleChanges } from '@angular/core';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { TranslateService } from '@ngx-translate/core';
 import { MetadataInfo } from '../../../@pika/metadata';
 import { Traductor } from '../../editor-entidades.module';
@@ -22,7 +22,7 @@ export class ConfirmacionComponent implements OnInit {
   public confirmacionActivo: boolean = true;
 
   constructor(
-    protected ref: NbDialogRef<ConfirmacionComponent>,
+    @Optional() protected ref: NbDialogRef<ConfirmacionComponent>,
    ts: TranslateService, 
   ) { 
     this.T = new Traductor(ts);

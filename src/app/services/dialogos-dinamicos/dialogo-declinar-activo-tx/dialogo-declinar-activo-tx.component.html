@@ -1,0 +1,36 @@
+<nb-card>
+    <nb-card-header>{{titulo}}</nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div [innerHTML]="texto"></div>
+            </div>
+        </div>
+        <div class="row tm-2">
+            <label for=""></label>
+            <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+                <textarea [id]="msgDeclinar" name="msgDeclinar"
+                 nbInput fullWidth placeholder="{{ T.t['vistas.declinar-activos-tx-motivo'] }}" 
+                 class="form-control" [(ngModel)]="msgDeclinar"></textarea>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <div class="row">
+            <div class="col-lg-6">
+                <div>
+                    <button nbButton size="medium" (click)="cerrar()">
+                        {{ T.t["ui.cancelar"] }}
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="float-right">
+                    <button nbButton size="medium" [disabled]="!confirmacionActivo" status="primary" (click)="aceptar()">
+                        {{ T.t["ui.aceptar"] }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nb-card-footer>
+</nb-card>

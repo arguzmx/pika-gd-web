@@ -9,6 +9,7 @@ import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-modu
 import { AtributoLista } from '../../../../@pika/pika-module';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
 import { timer } from 'rxjs';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 
 @Component({
@@ -38,8 +39,8 @@ implements ICampoEditable, OnInit, OnDestroy {
 
   @ViewChild('lista') Lista: any;
 
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
   }
 
 

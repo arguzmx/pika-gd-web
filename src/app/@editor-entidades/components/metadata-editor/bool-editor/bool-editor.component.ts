@@ -2,6 +2,7 @@ import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-bool-editor',
@@ -20,8 +21,8 @@ implements ICampoEditable, OnInit, OnDestroy {
     this.elementoVisible = !oculto;
   }
 
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService,  applog: AppLogService) {
+    super(eventos, applog);
    }
 
   ngOnDestroy(): void {

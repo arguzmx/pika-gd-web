@@ -3,6 +3,7 @@ import { EditorCampo } from './../editor-campo';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ICampoEditable } from '../../../model/i-campo-editable';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 
 @Component({
@@ -14,8 +15,8 @@ export class HiddenEditorComponent
 extends EditorCampo
 implements ICampoEditable, OnInit, OnDestroy {
 
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService) {
+    super(eventos, applog);
   }
 
   cambiovalor(evento){

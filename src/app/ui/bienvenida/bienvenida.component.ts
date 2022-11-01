@@ -23,8 +23,11 @@ export class BienvenidaComponent implements OnInit {
   ver: string = "";
   cargaFinalizada: boolean = false;
   servidorSaludable: boolean = false;
+  servidorActivado: boolean = false;
+  servidorRegistroDisponible: boolean = false;
   loginForm: FormGroup;
   showPassword = false;
+  codigoActivacion: string ='';
 
   isAuthenticated$: Observable<boolean>;
   isDoneLoading$: Observable<boolean>;
@@ -53,8 +56,10 @@ export class BienvenidaComponent implements OnInit {
       "ui.ingresar",
       "ui.contrasena",
       "ui.usuario",
+      "ui.activacion-leyenda",
       "componentes.monitor-salud.titulo",
       "componentes.monitor-salud.nosaludable",
+      "ui.activacion-fingerprint",
     ];
     this.T.ObtenerTraducciones();
   }
@@ -67,6 +72,22 @@ export class BienvenidaComponent implements OnInit {
     this.servidorSaludable = saludable;
     this.cdr.detectChanges();
   }
+
+  ServidorActivado(activado: boolean) {
+    this.servidorActivado = activado;
+    this.cdr.detectChanges();
+  }
+
+  SetCodigoActivacion(Codigo:string) {
+    this.codigoActivacion = Codigo;
+    this.cdr.detectChanges();
+  }
+
+  SetAccesoServidorRegistro(disponible: boolean) {
+    this.servidorRegistroDisponible= disponible;
+    this.cdr.detectChanges();
+  }
+
 
   login() {
 

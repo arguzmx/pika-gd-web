@@ -1,26 +1,25 @@
 import { EditorCampo } from './../editor-campo';
-import { AtributoLista, AtributoEvento, Evento, HTML_SELECT_MULTI } from '../../../../@pika/pika-module';
+import { AtributoLista, AtributoEvento, Evento } from '../../../../@pika/pika-module';
 import { ICampoEditable } from './../../../model/i-campo-editable';
-import { Component, OnInit, OnDestroy, ViewChild, OnChanges, SimpleChanges, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, HostBinding, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ValorListaOrdenada } from '../../../../@pika/pika-module';
-import { Subject, of, timer } from 'rxjs';
-import { first, distinctUntilChanged, tap, switchMap, catchError } from 'rxjs/operators';
+import { Subject, timer } from 'rxjs';
+import { first, distinctUntilChanged, tap, switchMap, filter, debounceTime, finalize } from 'rxjs/operators';
 import { Consulta, FiltroConsulta, Operacion } from '../../../../@pika/pika-module';
-import { MatSelect } from '@angular/material/select';
 import { EventosInterprocesoService } from '../../../services/eventos-interproceso.service';
-
-
+import { FormBuilder, FormControl } from '@angular/forms';
+import { AppLogService } from '../../../../services/app-log/app-log.service';
 
 @Component({
   selector: 'ngx-list-editor',
   templateUrl: './list-editor.component.html',
   styleUrls: ['./list-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEditorComponent extends EditorCampo
   implements ICampoEditable, OnInit, OnDestroy  {
-    @ViewChild('ngSelect')
-    ngSelect: MatSelect;
-    
+
+   
     @HostBinding('class.col-lg-4')
     @HostBinding('class.col-md-6')
     @HostBinding('class.col-sm-12') elementoVisible: boolean;
@@ -28,6 +27,71 @@ export class ListEditorComponent extends EditorCampo
     habilitarClases(oculto: boolean) {
       this.elementoVisible = !oculto;
     }
+
+    shadowControl: string = '';
+    controlBusqueda = new FormControl();
+    filteredItems: any;
+    isLoading = false;
+    selectedItem: any = "";
+    minLengthTerm = 2;
+    errorMsg!: string;
+
+    onSelected(item) {
+      if(item) {
+        this.selectedItem = item.option.value;
+        this.group.get(this.propiedad.Id).patchValue(item.option.value.Id);
+      } else {
+        this.group.get(this.propiedad.Id).patchValue(null);
+      }
+    }
+
+    displayFn(state) {
+      if(state) {
+        return state.Texto;
+      } 
+      return '';
+    }
+
+    createControl() {
+      return this.fb.control({ disabled: false, value: null }, []);
+    }
+  
+    borraBusqueda() {
+      this.selectedItem = null;
+    }
+
+    hookTypeAhead() {
+      this.group.addControl(this.shadowControl, this.createControl());
+      this.group.controls[this.shadowControl].valueChanges
+      .pipe(
+        filter(res => {
+          return res !== null && res!== undefined && res.length >= this.minLengthTerm
+        }),
+        distinctUntilChanged(),
+        debounceTime(1000),
+        tap(() => {
+          this.errorMsg = "";
+          this.filteredItems = [];
+          this.isLoading = true;
+        }),
+        switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term, this.GetFiltrosPropiedad())
+          .pipe(
+            finalize(() => {
+              this.isLoading = false
+            }),
+          )
+        )
+      )
+      .subscribe( items => {
+        if(items.length == 0) {
+          this.applog.AdvertenciaT('ui.sin-regitros-busqueda', null, { texto : this.group.get(this.shadowControl).value } );
+        }
+        this.filteredItems = items;
+        this.cdr.detectChanges();
+      })
+  }
+  
+
 
   list: ValorListaOrdenada[];
   selected: any = null;
@@ -43,8 +107,9 @@ export class ListEditorComponent extends EditorCampo
 
   @ViewChild('lista') Lista: any;
     
-  constructor(eventos: EventosInterprocesoService) {
-    super(eventos);
+  constructor(eventos: EventosInterprocesoService, applog: AppLogService,
+    private fb: FormBuilder, private cdr: ChangeDetectorRef) {
+    super(eventos, applog);
   }
 
   private GetFiltrosPropiedad(): FiltroConsulta[] {
@@ -135,24 +200,6 @@ export class ListEditorComponent extends EditorCampo
    this.destroy();
   }
 
-  private getTypeAhead() {
-    this.listInput$
-    .pipe(
-        distinctUntilChanged(),
-        tap(() => {
-          this.listaLoading = true;
-          // console.log(this.filtrosQ);
-        }),
-        switchMap( term => this.eventos.TypeAhead(this.propiedad.AtributoLista, term, this.GetFiltrosPropiedad())
-        .pipe(
-          catchError(() => of([])), // empty list on error
-          tap(() => this.listaLoading = false),
-        )),
-    ).subscribe( items => {
-      this.elementos = items;
-    }) ;
-  }
-
   onTypeaheadChange($event: ValorListaOrdenada) {
     const newval = $event ? $event.Id : null;
     this.eventoCambiarValor(newval);
@@ -167,16 +214,18 @@ export class ListEditorComponent extends EditorCampo
     this.iteracionesTimer = 3;
     this.timerRefresco = timer(100, 500).subscribe(t => {
       let aheadval = '';
-      if(this.group.get(this.propiedad.Id).value) {
-        this.propiedad.AtributoLista.Default = this.group.get(this.propiedad.Id).value;
+      const valor =this.group.get(this.propiedad.Id).value;
+      if(valor) {
+        this.propiedad.AtributoLista.Default = valor;
         aheadval = this.propiedad.AtributoLista.Default;
         if (this.isUpdate && aheadval) {
           this.eventos.ValoresLista([aheadval ],
           this.propiedad.AtributoLista.Entidad ).subscribe( items => {
-            this.elementos = items;
-            if(this.ngSelect) {
-              this.ngSelect.toggle();
+            this.filteredItems = items;
+            if(items.length>0){
+              this.selectedItem = items[0];
             }
+            this.cdr.detectChanges();
           });
         }
         verificar = true;
@@ -199,6 +248,10 @@ export class ListEditorComponent extends EditorCampo
     this.elementoVisible = true;
     this.hookEscuchaEventos();
     let aheadval = '';
+
+
+    this.shadowControl = `${this.propiedad.Id}shadow`;
+
     // console.log(this.propiedad);
     // console.log(this.isUpdate);
     // console.log(this.propiedad.AtributoLista);
@@ -218,18 +271,7 @@ export class ListEditorComponent extends EditorCampo
           if (this.propiedad.AtributoLista.TypeAhead) {
             this.isTypeAhead = true;
             // Los dato se obtienen medainete TypeAhead
-            this.getTypeAhead();
-
-            // Carga la lista de valores si es un update
-            // if (this.isUpdate && aheadval) {
-            //   // console.log(this.eventos.ValoresLista);
-            //   // console.log(aheadval);
-            //   this.eventos.ValoresLista([aheadval ],
-            //   this.propiedad.AtributoLista.Entidad ).subscribe( items => {
-            //     this.elementos = items;
-            //     this.ngSelect.toggle();
-            //   });
-            // }
+            this.hookTypeAhead();
           }
 
           if ( (!tieneEventos && !this.isTypeAhead) ||  (this.propiedad.AtributoLista.EsListaTemas) ) {
