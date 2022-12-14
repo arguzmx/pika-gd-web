@@ -3,7 +3,7 @@ import { Paginado } from './../../../@pika/consulta/paginado';
 import { ValorListaOrdenada } from './../../../@pika/metadata/valor-lista';
 import { CacheFiltrosBusqueda } from './../../services/cache-filtros-busqueda';
 import { EntidadesService } from './../../services/entidades.service';
-import { first, takeUntil } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { EditorEntidadesBase } from './../../model/editor-entidades-base';
 import {
   Component, OnInit, Input, OnChanges, SimpleChanges,
@@ -64,6 +64,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @Output() ConteoRegistros = new EventEmitter();
   @Output() EventoResultadoBusqueda = new EventEmitter();
 
+
+
+  public traduccionesCSV: Map<string,string> = new Map<string, string>();
+
   // Determina si la entidad en edición se elimina de manera lógica
   public eliminarLogico: boolean = false;
 
@@ -115,6 +119,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   // Inicializa el espacio de tabla
   public _Reset(): void {
+    this.traduccionesCSV.clear();
     this.HighlightHits = [];
     this.muestraOCR = false;
     this.IdBusquedaPersonalizada = '';
@@ -236,6 +241,27 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // --------------------------------------------------------------------
   private ProcesaConfiguracion() {
     if (this.metadata) {
+
+      const traducciones = [];
+      this.metadata.Propiedades.forEach(p=> {
+        if(p.AtributoLista?.ValoresCSV){
+            const lista = p.AtributoLista?.ValoresCSV.split(',');
+            lista.forEach(i=> {
+              traducciones.push(i.split('|')[1]);
+            });
+        }
+      })
+
+      if (traducciones.length > 0) {
+        this.T.ObtenerTraduccion(traducciones)
+          .pipe(first())
+          .subscribe((ts) => {
+            traducciones.forEach((t) => {
+              this.traduccionesCSV.set(t, ts[t]);
+            });
+          });
+      }
+
       this.eliminarLogico = (this.metadata.ElminarLogico === true) ? true : false;
       this.metadata = this.ProcesarMetadatos(this.metadata);
       if (this.metadata.EntidadesVinculadas) {
@@ -323,12 +349,22 @@ export class MetadataTablaComponent extends EditorEntidadesBase
     if (this.metadata) {
       const i = this.metadata.Propiedades.findIndex(x => x.Id === EntidadId);
       let e = '';
-      if (i >= 0 && this.metadata.Propiedades[i].AtributoLista) {
-        e = this.metadata.Propiedades[i].AtributoLista.Entidad;
-        const index = this.entidades.ListaIds.findIndex(x => x.Id === Id &&
-          x.Entidad === e);
-        if (index >= 0) {
-          return this.entidades.ListaIds[index].Texto;
+      if (i >= 0) {
+        if (this.metadata.Propiedades[i].AtributoLista?.ValoresCSV) {
+          const lista = this.metadata.Propiedades[i].AtributoLista.ValoresCSV.split(',');
+          const item = lista.find(s=>s.startsWith(`${Id}|`));
+          if (item) {
+              return this.traduccionesCSV.get(item.split('|')[1]);
+          }
+        } else {
+          if (this.metadata.Propiedades[i].AtributoLista) {
+            e = this.metadata.Propiedades[i].AtributoLista.Entidad;
+            const index = this.entidades.ListaIds.findIndex(x => x.Id === Id &&
+              x.Entidad === e);
+            if (index >= 0) {
+              return this.entidades.ListaIds[index].Texto;
+            }
+          }
         }
       }
     }
@@ -483,8 +519,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         let eslista = false;
         const esFecha = ['date', 'datetime', 'time'].indexOf(c.TipoDatoId) < 0 ? false : true;
         const esNumerico = ['double', 'int', 'long'].indexOf(c.TipoDatoId) < 0 ? false : true;
-
-        if (c.AtributoLista && c.AtributoLista.DatosRemotos && c.AtributoLista.Entidad !== '') {
+        if (c.AtributoLista && ((c.AtributoLista.DatosRemotos && c.AtributoLista.Entidad !== '') || c.AtributoLista.ValoresCSV)) {
           eslista = true;
         }
         if (c.MostrarEnTabla) {

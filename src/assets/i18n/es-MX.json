@@ -70,7 +70,8 @@
             "jueves": "Jueves",
             "viernes":"viernes",
             "sabado": "Sábado",
-            "domingo":"Domingo"
+            "domingo":"Domingo",
+            "habilidata": "Habilitada"
         }
     },
     "ui": {
@@ -573,7 +574,13 @@
             },
             "tipoarchivo": {
                 "Id": "Id",
-                "Nombre": "Nombre"
+                "Nombre": "Nombre",
+                "Tipo": "Tipo",
+                "enum": {
+                    "t": "Trámite",
+                    "c": "Concentración",
+                    "h": "historico"
+                }
             },
             "archivo": {
                 "Id": "Id",
@@ -712,7 +719,9 @@
                 "UbicacionRack": "Ubicación Anaquél",
                 "ContenedorAlmacenId": "Caja",
                 "ZonaAlmacenId": "Zona",
-                "AlmacenArchivoId": "Almacén"
+                "AlmacenArchivoId": "Almacén",
+                "FechaCreacion": "Creación",
+                "UsuarioId": "Usuario"
             },
             "ampliacion": {
                 "Id": "Id",
@@ -774,6 +783,7 @@
             "error-prestamo-devuelto": "El préstamo no puede ser marcado como devuelto",
             "err-ejecutar-comandoweb": "Ocurrión un error al ejecutar el comando",
             "warn-condicion-link": "La operación no es compatible con el elemento seleccionado",
+            "err-eval-condicion-link": "No se pudo evaluar la condición de acceso, notifique al administrador",
             "msg-informacion": "Información",
             "msg-advertencia": "Advertencia",
             "msg-error": "Error",

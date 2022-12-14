@@ -872,20 +872,28 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             const validar = link.Condicion.replace(/entidad/g,'this.entidad').replace(/padre/,'this.EntidadPadre');
 
             if (validar!=''){
-              const valido = eval(validar);
-              if (!valido){
-                this.applog.AdvertenciaT(
-                  'editor-pika.mensajes.warn-condicion-link',
+              try {
+                const valido = eval(validar);
+                if (!valido){
+                  this.applog.AdvertenciaT(
+                    'editor-pika.mensajes.warn-condicion-link',
+                    null,
+                    null,
+                  );
+                    return;
+                }  
+              }
+              catch(e){
+                this.applog.FallaT(
+                  'editor-pika.mensajes.err-eval-condicion-link',
                   null,
                   null,
                 );
-                  return;
               }
             }
 
             const vista = `vistas.${link.Vista}`;
             let nombre = '';
-
             if (registrosSeleccionados.length == 1) {
               // A veece sl nombre no ecist epor ejemplo cuando se obtiene de un Id vinculado
               nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, registrosSeleccionados[0] );
@@ -899,8 +907,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
             }
 
             this.T.ObtenerTraduccion([Titulo, Cuerpo], { tema: nombre, conteo: registrosSeleccionados.length} ).pipe(first()).subscribe(t=> {
-            const c = MapaDialogos.get(link.Vista);
-             
+              const c = MapaDialogos.get(link.Vista);
               this.dialogService
                 .open(c, {
                   context: {

@@ -7,7 +7,9 @@ export type TipoDialogos = 'confirmacion'
     | 'aceptar-activos-tx'
     | 'enviar-transferencia'
     | 'aceptar-transferencia'
-    | 'declinar-transferencia';
+    | 'declinar-transferencia'
+    | 'gd-prestamo-entregar'
+    | 'gd-prestamo-devolver';
 
 export const MapaDialogos  =  new Map<string, any>([
     [ 'confirmacion', ConfirmacionComponent ],
@@ -15,6 +17,8 @@ export const MapaDialogos  =  new Map<string, any>([
     [ 'aceptar-activos-tx', ConfirmacionComponent ],
     [ 'enviar-transferencia', ConfirmacionComponent ],
     [ 'aceptar-transferencia', ConfirmacionComponent ],
-    [ 'declinar-transferencia', ConfirmacionComponent ]
+    [ 'declinar-transferencia', ConfirmacionComponent ],
+    [ 'gd-prestamo-entregar', ConfirmacionComponent],
+    [ 'gd-prestamo-devolver', ConfirmacionComponent]
 ]);
 

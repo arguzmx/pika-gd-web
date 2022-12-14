@@ -241,6 +241,12 @@ export class MetadataEditorComponent
     this.metadata.Propiedades.forEach((p) => {
       const control = entidad[p.Id];
       if (control) {
+
+        // Convierte a entero para los enums del backend
+        if(p.AtributoLista?.ValoresCSV && !isNaN(entidad[p.Id]) ) {
+            entidad[p.Id] = parseInt(entidad[p.Id], 0);
+        }
+
         switch (p.TipoDatoId) {
           case tString:
             if(p.AtributosVistaUI?.findIndex(x=>x.Control=='checkboxgroupeditor') >= 0) {

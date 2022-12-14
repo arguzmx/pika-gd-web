@@ -218,7 +218,7 @@ export class ListEditorComponent extends EditorCampo
       if(valor) {
         this.propiedad.AtributoLista.Default = valor;
         aheadval = this.propiedad.AtributoLista.Default;
-        if (this.isUpdate && aheadval) {
+        if (this.isUpdate && aheadval && this.propiedad.AtributoLista?.DatosRemotos) {
           this.eventos.ValoresLista([aheadval ],
           this.propiedad.AtributoLista.Entidad ).subscribe( items => {
             this.filteredItems = items;
@@ -273,7 +273,7 @@ export class ListEditorComponent extends EditorCampo
             // Los dato se obtienen medainete TypeAhead
             this.hookTypeAhead();
           }
-
+          
           if ( (!tieneEventos && !this.isTypeAhead) ||  (this.propiedad.AtributoLista.EsListaTemas) ) {
             // Los datos se obtienen em una sola llamada cuando no 
             // dependen de un evento y no es typeahead
@@ -291,6 +291,7 @@ export class ListEditorComponent extends EditorCampo
           }
 
       } else {
+        
         if(Boolean(this.propiedad.AtributoLista.ValoresCSV) === false) {
           this.propiedad.ValoresLista = this.propiedad.AtributoLista.Valores;
         }
