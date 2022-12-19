@@ -1,5 +1,6 @@
 import { TraduccionAplicacionModulo } from './traduccion-aplicacion-modulo';
 import { ModuloAplicacion } from './modulo-aplicacion';
+import { TipoEventoAuditoria } from './tipo-evento-auditoria';
 
 export interface Aplicacion {
     Id: string;

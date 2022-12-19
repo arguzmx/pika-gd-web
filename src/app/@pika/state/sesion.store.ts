@@ -141,7 +141,6 @@ export class SesionStore extends Store<SesionState> {
         menu: this.serviceSesion.ObtieneMenu().pipe(first()),
       })
         .subscribe(data => {
-
           const cm: ConstructorMenu = new  ConstructorMenu;
           const menu = cm.CreaMenu(data.menu, data.acl);
 

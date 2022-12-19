@@ -2,7 +2,6 @@ import { PermisosModuloComponent } from './components/permisos-modulo/permisos-m
 import { PermisosAplicacionComponent } from './components/permisos-aplicacion/permisos-aplicacion.component';
 import { PermisosHostComponent } from './components/permisos-host/permisos-host.component';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AngularSplitModule } from 'angular-split';
 import { A11yModule } from '@angular/cdk/a11y';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -51,11 +50,14 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NbTooltipModule, NbPopoverModule, NbToggleModule, NbInputModule,
 NbCardModule, NbButtonModule, NbActionsModule, NbUserModule, NbCheckboxModule,
 NbRadioModule, NbFormFieldModule, NbIconModule, NbDatepickerModule,
-NbSelectModule, NbMenuModule, NbAutocompleteModule } from '@nebular/theme';
+NbSelectModule, NbMenuModule, NbAutocompleteModule, NbAccordionModule } from '@nebular/theme';
 import { TableModule } from 'ngx-easy-table';
 import { ThemeModule } from '../@theme/theme.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { EventosConfigHostComponent } from './components/eventos-config-host/eventos-config-host.component';
+import { EventosConfigAplicacionComponent } from './components/eventos-config-aplicacion/eventos-config-aplicacion.component';
+import { EventosConfigModuloComponent } from './components/eventos-config-modulo/eventos-config-modulo.component';
 
 
 
@@ -116,6 +118,7 @@ import { RouterModule } from '@angular/router';
     NbButtonModule,
     NbActionsModule,
     NbUserModule,
+    NbAccordionModule,
     NbCheckboxModule,
     NbRadioModule,
     NbFormFieldModule,
@@ -132,9 +135,9 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     MatSliderModule,
   ],
-  declarations: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent],
+  declarations: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent, EventosConfigHostComponent, EventosConfigAplicacionComponent, EventosConfigModuloComponent],
   exports: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent],
 })
 class GestorPermisosModule { }
 
-export { GestorPermisosModule, PermisosHostComponent, PermisosModuloComponent };
+export { GestorPermisosModule, PermisosHostComponent, PermisosModuloComponent, EventosConfigHostComponent };

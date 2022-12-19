@@ -1,0 +1,10 @@
+<nb-accordion>
+    <nb-accordion-item *ngFor="let app of aplicaciones">
+        <nb-accordion-item-header>
+            {{app.Nombre}}
+        </nb-accordion-item-header>
+        <nb-accordion-item-body>
+            <ngx-eventos-config-modulo [modulos]="app.Modulos"></ngx-eventos-config-modulo>
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+</nb-accordion>

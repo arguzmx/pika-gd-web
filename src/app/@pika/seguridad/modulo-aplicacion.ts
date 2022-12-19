@@ -1,3 +1,4 @@
+import { TipoEventoAuditoria } from './tipo-evento-auditoria';
 import { TraduccionAplicacionModulo } from './traduccion-aplicacion-modulo';
 
 export enum TipoModulo {
@@ -18,5 +19,6 @@ export interface ModuloAplicacion {
     Tipo: TipoModulo;
     Modulos: ModuloAplicacion[];
     Traducciones: TraduccionAplicacionModulo[];
+    EventosAuditables: TipoEventoAuditoria[]
 }
 

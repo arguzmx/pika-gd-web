@@ -49,7 +49,6 @@ export class CanalTareasService {
       this.cliente.ObtenerTareasEnDemanda().pipe(first()).subscribe( tareas => {
           this.BusTareas.next(tareas);
       }, (err)=> {
-        console.error(err);
         this.startTimer();
       }, ()=> {
         this.startTimer();} )
