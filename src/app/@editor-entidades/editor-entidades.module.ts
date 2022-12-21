@@ -1,5 +1,5 @@
 import { CacheFiltrosBusqueda } from './services/cache-filtros-busqueda';
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Traductor } from './services/traductor';
 
 import {
@@ -25,7 +25,6 @@ import { TableModule } from 'ngx-easy-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ThemeModule } from '../@theme/theme.module';
 import { RouterModule } from '@angular/router';
 import { BoolSearchComponent } from './components/metadata-buscador/bool-search/bool-search.component';
 import { CampoBusquedaDirective } from './directives/campo-busqueda.directive';

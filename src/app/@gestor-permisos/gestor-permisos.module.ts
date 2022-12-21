@@ -58,6 +58,8 @@ import { RouterModule } from '@angular/router';
 import { EventosConfigHostComponent } from './components/eventos-config-host/eventos-config-host.component';
 import { EventosConfigAplicacionComponent } from './components/eventos-config-aplicacion/eventos-config-aplicacion.component';
 import { EventosConfigModuloComponent } from './components/eventos-config-modulo/eventos-config-modulo.component';
+import { VisorEventosComponent } from './components/visor-eventos/visor-eventos.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 
 
@@ -134,10 +136,12 @@ import { EventosConfigModuloComponent } from './components/eventos-config-modulo
     NbMenuModule,
     RouterModule,
     MatSliderModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
-  declarations: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent, EventosConfigHostComponent, EventosConfigAplicacionComponent, EventosConfigModuloComponent],
+  declarations: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent, EventosConfigHostComponent, EventosConfigAplicacionComponent, EventosConfigModuloComponent, VisorEventosComponent],
   exports: [PermisosHostComponent, PermisosAplicacionComponent, PermisosModuloComponent],
 })
 class GestorPermisosModule { }
 
-export { GestorPermisosModule, PermisosHostComponent, PermisosModuloComponent, EventosConfigHostComponent };
+export { GestorPermisosModule, PermisosHostComponent, PermisosModuloComponent, EventosConfigHostComponent, VisorEventosComponent };

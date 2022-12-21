@@ -1,0 +1,110 @@
+<div class="row">
+    <div class="col-lg-12">
+        <mat-toolbar class="mat-elevation-z2 mat-toolbar-white">
+            <span>
+                {{T.t["componentes.auditoria.titulo"]}}
+            </span>
+            <span class="toolbar-spacer"></span>
+            <button mat-icon-button on-click="Buscar()" [nbTooltip]="T.t['componentes.auditoria.buscar']"
+                nbTooltipPlacement="bottom" aria-label="T.t['componentes.auditoria.buscar']">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button on-click="Limpiar()" [nbTooltip]="T.t['componentes.auditoria.limpiar']"
+                nbTooltipPlacement="bottom" aria-label="T.t['componentes.auditoria.limpiar']">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-toolbar>
+    </div>
+    <div class="col-lg-12">
+        &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <nb-card>
+            <nb-card-body class="mat-elevation-z2">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <label class="label">{{T.t["componentes.auditoria.lbl-aplicacion"]}}</label>
+                        <nb-form-field>
+                            <nb-select fullWidth="true" size="small"
+                                placeholder='{{T.t["componentes.auditoria.ph-aplicacion"]}}'
+                                (selectedChange)="AppSeleccioanda($event)" #selectapp>
+                                <nb-option *ngFor="let app of apps" value="{{app.Id}}">{{app.Nombre}}</nb-option>
+                            </nb-select>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <label class="label">{{T.t["componentes.auditoria.lbl-modulo"]}}</label>
+                        <nb-form-field>
+                            <nb-select fullWidth="true" size="small"
+                                placeholder='{{T.t["componentes.auditoria.ph-modulo"]}}'
+                                (selectedChange)="ModSeleccioanda($event)" #selectmod>
+                                <nb-option *ngFor="let mod of mods" value="{{mod.Id}}">{{mod.Nombre}}</nb-option>
+                            </nb-select>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <label class="label">{{T.t["componentes.auditoria.lbl-evento"]}}</label>
+                        <nb-form-field>
+                            <nb-select fullWidth="true" size="small" multiple="true"
+                                placeholder='{{T.t["componentes.auditoria.ph-evento"]}}' #selectev>
+                                <nb-option *ngFor="let ev of eventos" value="{{ev.Id}}">{{ev.Descripcion}}</nb-option>
+                            </nb-select>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <label class="label">&nbsp;{{T.t["componentes.auditoria.lbl-fechai"]}}</label>
+                        <nb-form-field>
+                            <input type="text" nbInput fieldSize="small" [owlDateTime]="dti" [owlDateTimeTrigger]="dti"
+                                nbInput #tdti fullWidth="true" />
+                            <owl-date-time pickerType="calendar" #dti></owl-date-time>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <label class="label">&nbsp;{{T.t["componentes.auditoria.lbl-fechaf"]}}</label>
+                        <nb-form-field>
+                            <input type="text" nbInput fieldSize="small" [owlDateTime]="dtf" [owlDateTimeTrigger]="dtf"
+                                nbInput #tdtf fullWidth="true" />
+                            <owl-date-time pickerType="calendar" #dtf></owl-date-time>
+                        </nb-form-field>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <label class="label">{{T.t["componentes.auditoria.lbl-usuarios"]}}</label>
+                        <nb-form-field>
+                            <nb-select fullWidth="true" multiple="true" size="small"
+                                placeholder='{{T.t["componentes.auditoria.ph-usuarios"]}}' #selectusers>
+                                <nb-option *ngFor="let p of personas" value="{{p.Id}}">{{p.Texto}}</nb-option>
+                            </nb-select>
+                        </nb-form-field>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <nb-card size="large">
+            <nb-card-body class="mat-elevation-z1">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ngx-table #table [configuration]="configuration" [data]="data" [columns]="columns"
+                            [pagination]="pagination" (event)="eventosTabla($event)"
+                            [noResultsTemplate]="noResultsTemplate">
+                        </ngx-table>
+                    </div>
+                </div>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>
+<ng-template #noResultsTemplate>
+    <td [attr.colspan]="columns.length" class="no-results">
+        {{T.t["ui.sin-resultados-tabla"]}}
+    </td>
+</ng-template>
+<!-- Tmplate para despliegue de fechas-->
+<ng-template #fechaTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <span>{{EtiquetasFecha(row[column.key], column.key, column, rowIndex)}}</span>
+</ng-template>

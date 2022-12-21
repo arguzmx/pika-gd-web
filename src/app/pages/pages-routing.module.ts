@@ -8,7 +8,7 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 // tslint:disable-next-line: max-line-length
 import { EditorBootTabularComponent, EditorBootJerarquicoComponent } from '../@editor-entidades/editor-entidades.module';
-import { EventosConfigHostComponent, PermisosHostComponent, PermisosModuloComponent } from '../@gestor-permisos/gestor-permisos.module';
+import { EventosConfigHostComponent, PermisosHostComponent, PermisosModuloComponent, VisorEventosComponent } from '../@gestor-permisos/gestor-permisos.module';
 import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
 import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-busqueda-contenido.component';
 import { EntidadesResolver } from '../@pika/pika-module';
@@ -39,6 +39,10 @@ const routes: Routes = [{
     {
       path: 'bitacora-config',
       component: EventosConfigHostComponent,
+    },
+    {
+      path: 'bitacora',
+      component: VisorEventosComponent,
     },
     {
       path: 'visor',
