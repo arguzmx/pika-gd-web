@@ -990,7 +990,11 @@
             "U-EV-ACTIVO-TRANSFERENCIA": "Actualizar activos de la transferencias",
             "D-EV-ACTIVO-TRANSFERENCIA": "Elminar activos de la transferencias",
             "EV-ENTREGA-PRESTAMO": "Entregar un préstamo",
-            "EV-DEVOLUCION-PRESTAMO": "Devolver un préstamo"
+            "EV-DEVOLUCION-PRESTAMO": "Devolver un préstamo",
+            "EV-ENVIAR-TX": "Enviar transferencia a revisión",
+            "EV-ACEPTAR-OK-TX": "Recibir transferencia completa",
+            "EV-ACEPTAR-PARCIAL-TX": "Recibir transferencia parcial",
+            "EV-DECLINAR-TX": "Declinar transferencia"
         }
     }
 }
