@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: true,
-  version: '1.4.21',
+  version: '2.beta',
   cloudurl: "https://pika"
 };
 

@@ -36,26 +36,26 @@
             "reindexado-error-ok": "OCR reiniciado para erróneos",
             "reindexado-error-err": "Error al reiniciar OCR para erróneos",
             "reprocesar-errores": "Reprocesar errores",
-            "nosaludable": "El servidor puede permitir el acceso", 
+            "nosaludable": "El servidor puede permitir el acceso",
             "identityserver": "Identidad",
-            "mysql": "Base de datos", 
-            "rabbitmq":  "Bus de eventos",
+            "mysql": "Base de datos",
+            "rabbitmq": "Bus de eventos",
             "elasticsearch": "Base indexado",
             "refrescar-ocr": "Actualizar conteo",
             "refrescar-ocr-ok": "Conteo actualizado",
             "refrescar-ocr-err": "Erro Actualizar conteo"
         },
         "visor-documento": {
-            "lbl-paginas":  "Páginas",
-            "lbl-swap-vert":  "Reflejo vertical",
-            "lbl-swap-horiz":  "Reflejo horizontal",
-            "lbl-rot-180":  "Girar 180",
-            "lbl-rot-der":  "Girar a la derecha",
-            "lbl-rot-izq":  "Girar a la izquierda",
-            "titulo-pdf-ack":  "Crear PDF",
+            "lbl-paginas": "Páginas",
+            "lbl-swap-vert": "Reflejo vertical",
+            "lbl-swap-horiz": "Reflejo horizontal",
+            "lbl-rot-180": "Girar 180",
+            "lbl-rot-der": "Girar a la derecha",
+            "lbl-rot-izq": "Girar a la izquierda",
+            "titulo-pdf-ack": "Crear PDF",
             "porciento-pdf": "Escala de las imágenes",
-            "crear-pdf-ack":  "La solictud de PDF ha sido recibida",
-            "crear-zip-ack":  "La solictud de ZIP ha sido recibida",
+            "crear-pdf-ack": "La solictud de PDF ha sido recibida",
+            "crear-zip-ack": "La solictud de ZIP ha sido recibida",
             "tarea-existente": "Ya hay una tarea en el servidor para esta solicitud",
             "elemento-inexistente": "El documento objetivo de la tarea no fué localizado en el servidor"
         },
@@ -69,7 +69,7 @@
             "col-fecha": "Creado",
             "col-caducidad": "Caduca",
             "col-tarea": "Tarea"
-        } 
+        }
     },
     "listas": {
         "tareaautomatica": {
@@ -83,9 +83,9 @@
             "martes": "Martes",
             "miercoles": "Miércoles",
             "jueves": "Jueves",
-            "viernes":"viernes",
+            "viernes": "viernes",
             "sabado": "Sábado",
-            "domingo":"Domingo",
+            "domingo": "Domingo",
             "habilidata": "Habilitada"
         }
     },
@@ -215,7 +215,7 @@
         "activacion-codigo": "Ingrese código de activación",
         "activacion-activar-ok": "La activación de su aplicación ha sido existosa",
         "activacion-activar-error": "Ocurrió un error al activar su aplicación, verifique que el código sea correcto y corresponda al servidor",
-        "tengo-codigo": "Activar con una clave", 
+        "tengo-codigo": "Activar con una clave",
         "activacion-clave-titulo": "Activar con la clave que recibí por email",
         "activacion-leyenda": "Su copia de PIKA-GD aún no se encuentra registrada, el producto es gratuito a perpetuidad y el registro nos permite conocer a nuestros usuarios para estar más cerca la comunidad y mejorar la aplicación. Si no cuenta con acceso a internet visite nuestra página en <a href=\"http://pikagd.arguz.com/activar\">http://pikagd.arguz.com/activar</a> y copie el código de activación siguiente."
     },
@@ -280,7 +280,7 @@
         "fuzzy-alta": "Alta",
         "fuzzy-media": "Media",
         "fuzzy-baja": "Baja",
-        "fuzzy-similar": "Similar", 
+        "fuzzy-similar": "Similar",
         "col-documento": "Documento",
         "col-posicion": "Página",
         "col-highlight": "Texto"
@@ -321,13 +321,13 @@
         "usuariosrol": "Usuario del rol|Usuarios del rol|el|los|groups",
         "unidadorganizacional": "Unidad organizacional|Unidades Organizacionales|la|las|other_houses",
         "direccionpostal": "Dirección postal|Direcciones postales|la|las|markunread_mailbox",
-        "tipoarchivo":"Tipo archivo|Tipos archivo|el|los|dvr",
-        "archivo":"Archivo|Archivos|el|los|inventory_2",
+        "tipoarchivo": "Tipo archivo|Tipos archivo|el|los|dvr",
+        "archivo": "Archivo|Archivos|el|los|inventory_2",
         "permisosarchivo": "Permiso Archivo|Permisos Archivos|el|los|security",
-        "almacenarchivo":"Almacén Archivo|Almacenes Archivo|el|los|home-outline",
-        "zonaalmacen":"Zona Almacén|Zonas Almacén|la|las|place",
-        "contenedoralmacen":"Caja Almacén|Cajas Almacén|la|las|inventory_2",
-        "posicionalmacen":"Rack Almacén|Racks Almacén|la|las|apps",
+        "almacenarchivo": "Almacén Archivo|Almacenes Archivo|el|los|home-outline",
+        "zonaalmacen": "Zona Almacén|Zonas Almacén|la|las|place",
+        "contenedoralmacen": "Caja Almacén|Cajas Almacén|la|las|inventory_2",
+        "posicionalmacen": "Rack Almacén|Racks Almacén|la|las|apps",
         "activocontenedoralmacen": "Activo|Activos|el|los|document_scanner",
         "unidadadministrativaarchivo": "Unidad Administrativa|Unidades Administrativas|la|las|hub",
         "permisosunidadadministrativaarchivo": "Permiso Unidad Administrativa|Permisos Unidad Administrativa|el|los|security",
@@ -342,7 +342,7 @@
         "propiedadplantilla": "Campo plantilla|Campos plantilla|el|los|dvr",
         "tipodatoid": "Propiedad|Propiedades|la|las|translate",
         "valorlistaplantilla": "Valor|Valores|el|los|dvr",
-		"tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
+        "tareaautomatica": "Tarea automática|Tareas automáticas|el|los|dvr",
         "bitacoratarea": "Bitácora|Bitácoras|la|las|dvr",
         "activotransferencia": "Activo transferencia|Activos transferencia|el|los|document_scanner",
         "propiedades": {
@@ -363,7 +363,7 @@
                 "APICODE-TX-PERMISO-INVALIDO": "No tiene permisos en el archivo para la operación",
                 "APICODE-TX-TRANSFERENCIA-NOENREVISION": "La transferencia no ha se encuentra en estado de revisión"
             },
-            "transferencia" : {
+            "transferencia": {
                 "Id": "Id",
                 "Nombre": "Nombre",
                 "FechaCreacion": "Creación",
@@ -386,7 +386,8 @@
                 "APICODE-TRANSFERENCIAS-ERRORCCEC": "El cuadro o la serie no corresponden",
                 "APICODE-ACT-TX-TRANSFERENCIA-CERRADA": "La transferencia no puede aceptar más activos debido a su estado",
                 "APICODE-TX-SIN-ACPTADOS": "No puede recibirse una transferencia sin activos aceptados",
-                "APICODE-TX-SIN-VALIDAR": "Hay activos en la transferencia que no han sido validados"            },
+                "APICODE-TX-SIN-VALIDAR": "Hay activos en la transferencia que no han sido validados"
+            },
             "valorlistaplantilla": {
                 "PropiedadId": "PropiedadId",
                 "Id": "Id",
@@ -451,7 +452,7 @@
                 "OrigenId": "Origen",
                 "TipoOrigenId": "TipoOrigen"
             },
-            "direccionpostal" : {
+            "direccionpostal": {
                 "Id": "Id",
                 "Nombre": "Etiqueta",
                 "Calle": "Calle",
@@ -463,9 +464,9 @@
                 "EstadoId": "Estado",
                 "PaisId": "Pais",
                 "TipoOrigenId": "TipoOrigenId",
-                "OrigenId":  "OrigenId",
+                "OrigenId": "OrigenId",
                 "EsDefault": "Pnricipal"
-                },
+            },
             "propiedadesusuario": {
                 "UsuarioId": "Id",
                 "username": "Usuario",
@@ -496,18 +497,17 @@
                 "Nombre": "Nombre",
                 "PaisId": "PaisId"
             },
-            "elementoclasificacion":{
+            "elementoclasificacion": {
                 "Id": "Id",
                 "Clave": "Sección",
                 "Nombre": "Nombre",
                 "Eliminada": "Eliminada",
                 "Posicion": "Posición"
-
             },
             "cuadroclasificacion": {
                 "Id": "Id",
                 "Nombre": "Nombre",
-                "EstadoCuadroClasificacionId":"Estado",
+                "EstadoCuadroClasificacionId": "Estado",
                 "OrigenId": "Dominio",
                 "Eliminada": "Eliminado"
             },
@@ -557,8 +557,8 @@
                 "PuntoMontajeIdId": "PuntoMontajeIdId",
                 "DestinatarioId": "Grupo",
                 "Crear": "Crear",
-                "Actualizar":"Actualizar",
-                "Elminar":"Elminar",
+                "Actualizar": "Actualizar",
+                "Elminar": "Elminar",
                 "GestionContenido": "Contenido",
                 "GestionMetadatos": "Metadatos",
                 "Leer": "Leer"
@@ -610,11 +610,11 @@
             "permisosarchivo": {
                 "Id": "Id",
                 "ArchivoId": "IdArchivo",
-                "DestinatarioId":"Rol",
-                "LeerAcervo":"Leer Acervo",
+                "DestinatarioId": "Rol",
+                "LeerAcervo": "Leer Acervo",
                 "CrearAcervo": "Crear Acervo",
                 "ActualizarAcervo": "Actualizar Acervo",
-                "ElminarAcervo":"Elminar Acervo",
+                "ElminarAcervo": "Elminar Acervo",
                 "CancelarTrasnferencia": "Cancelar transferencias",
                 "CrearTrasnferencia": "Crear transferencias",
                 "EliminarTrasnferencia": "Eliminar transferencias",
@@ -632,12 +632,12 @@
                 "HabilitarFoliado": "Habilitar foliado"
             },
             "zonaalmacen": {
-                    "Id": "Id",
-                    "Nombre": "Nombre",
-                    "ArchivoId": "Archivo",
-                    "AlmacenArchivoId": "Almacén"
+                "Id": "Id",
+                "Nombre": "Nombre",
+                "ArchivoId": "Archivo",
+                "AlmacenArchivoId": "Almacén"
             },
-            "posicionalmacen":{
+            "posicionalmacen": {
                 "Id": "Id",
                 "Nombre": "Nombre",
                 "ArchivoId": "Archivo",
@@ -646,7 +646,7 @@
                 "Indice": "Charola",
                 "IncrementoContenedor": "% Incremento",
                 "CodigoBarras": "Código Barras",
-                "CodigoElectronico":"Código Electrónico",
+                "CodigoElectronico": "Código Electrónico",
                 "Ocupacion": "% Ocupación"
             },
             "contenedoralmacen": {
@@ -657,7 +657,7 @@
                 "ZonaAlmacenId": "Zona",
                 "PosicionAlmacenId": "Rack",
                 "CodigoBarras": "Código Barras",
-                "CodigoElectronico":"Código Electrónico",
+                "CodigoElectronico": "Código Electrónico",
                 "Ocupacion": "% Ocupación"
             },
             "unidadadministrativaarchivo": {
@@ -671,18 +671,18 @@
                 "Domicilio": "Domicilio",
                 "UbicacionFisica": "Ubicacion Física",
                 "ArchivoId": "ArchivoId",
-                "ArchivoTramiteId": "Archivo Trámite",     
+                "ArchivoTramiteId": "Archivo Trámite",
                 "ArchivoConcentracionId": "Archivo Concentración",
                 "ArchivoHistoricoId": "Archivo Histórico"
             },
             "permisosunidadadministrativaarchivo": {
                 "Id": "Id",
                 "UnidadAdministrativaArchivoId": "IdUnidadAministrativa",
-                "DestinatarioId":"Rol",
-                "LeerAcervo":"Leer Acervo",
+                "DestinatarioId": "Rol",
+                "LeerAcervo": "Leer Acervo",
                 "CrearAcervo": "Crear Acervo",
                 "ActualizarAcervo": "Actualizar Acervo",
-                "ElminarAcervo":"Elminar Acervo"
+                "ElminarAcervo": "Elminar Acervo"
             },
             "prestamo": {
                 "Id": "Id",
@@ -746,9 +746,9 @@
                 "Inicio": "Fecha inicio",
                 "Fin": "Fecha final",
                 "FundamentoLegal": "Fundamento",
-                "Anos":"Años",
-                "Meses":"Meses",
-                "Dias":"Días"
+                "Anos": "Años",
+                "Meses": "Meses",
+                "Dias": "Días"
             },
             "usuariosrol": {
                 "RolId": "Id del rol",
@@ -765,8 +765,8 @@
                 "Periodo": "Periodo",
                 "FechaHoraEjecucion": "Fecha ejecución",
                 "Intervalo": "Intervalo",
-                "TipoOrigenId":"TipoOrigenId",
-                "OrigenId":"OrigenId",
+                "TipoOrigenId": "TipoOrigenId",
+                "OrigenId": "OrigenId",
                 "Ensamblado": "Ensamblado",
                 "DiaMes": "Día mes",
                 "DiaSemana": "Día semana",
@@ -781,7 +781,7 @@
                 "FechaEjecucion": "Fecha ejecución",
                 "Duracion": "Minutos",
                 "Exito": "Exitosa",
-                "CodigoError":"Último error"
+                "CodigoError": "Último error"
             }
         }
     },
@@ -805,10 +805,10 @@
             "msg-exito": "Finalizado",
             "err-entidad-ruta": "Error Leer la entidad desde la ruta",
             "err-param-ruta": "Error Leer los parámetros de la ruta",
-            "err-get-metadata" : "Error Leer los metadatos de la entidad '{{valor}}'",
-            "ok-pagina-datos" : "{{cantidad}} elementos encontrados",
-            "err-pagina-datos" : "Error Leer la página de resultados: {{error}}",
-            "warn-sin-filtros-busqueda": "No tiene filtros válidos para la búsqueda" ,
+            "err-get-metadata": "Error Leer los metadatos de la entidad '{{valor}}'",
+            "ok-pagina-datos": "{{cantidad}} elementos encontrados",
+            "err-pagina-datos": "Error Leer la página de resultados: {{error}}",
+            "warn-sin-filtros-busqueda": "No tiene filtros válidos para la búsqueda",
             "warn-filtros-existente": "El filtro ya ha sido añadido previamente",
             "warn-sin-columnas": "Debe seleccionar al menos una columna para el despliegue",
             "warn-sin-seleccion": "Debe seleccionar un registro para la operación",
@@ -916,7 +916,7 @@
             "C-EV-CONTENEDOR-ALMACEN": "Crear cajas de archivo",
             "R-EV-CONTENEDOR-ALMACEN": "Leer propiedades de cajas de archivo",
             "U-EV-CONTENEDOR-ALMACEN": "Actualizar cajas de archivo",
-            "D-EV-CONTENEDOR-ALMACEN": "Elminar cajas de archivo",            
+            "D-EV-CONTENEDOR-ALMACEN": "Elminar cajas de archivo",
             "C-EV-ACTIVO-CONTENEDOR-ALMACEN": "Al añadir activos a cajas",
             "R-EV-ACTIVO-CONTENEDOR-ALMACEN": "Leer propiedades de activos en cajas",
             "U-EV-ACTIVO-CONTENEDOR-ALMACEN": "Actualizar activos en cajas",
@@ -994,7 +994,81 @@
             "EV-ENVIAR-TX": "Enviar transferencia a revisión",
             "EV-ACEPTAR-OK-TX": "Recibir transferencia completa",
             "EV-ACEPTAR-PARCIAL-TX": "Recibir transferencia parcial",
-            "EV-DECLINAR-TX": "Declinar transferencia"
+            "EV-DECLINAR-TX": "Declinar transferencia",
+            "C-EV-CARPETA": "Crear carpeta",
+            "U-EV-CARPETA": "Actualizar carpeta",
+            "D-EV-CARPETA": "Eliminar carpeta",
+            "R-EV-CARPETA": "Leer propiedades carpeta",
+            "C-EV-PARTE": "Crear parte contenido",
+            "U-EV-PARTE": "Actualizar parte contenido",
+            "D-EV-PARTE": "Eliminar parte contenido",
+            "R-EV-PARTE": "Leer propiedades parte contenido",
+            "C-EV-VERSION": "Crear versión contenido",
+            "U-EV-VERSION": "Actualizar versión contenido",
+            "D-EV-VERSION": "Eliminar versión contenido",
+            "R-EV-VERSION": "Leer propiedades versión contenido",
+            "C-EV-PERMISO": "Crear permiso contenido",
+            "U-EV-PERMISO": "Actualizar permiso contenido",
+            "D-EV-PERMISO": "Eliminar permiso contenido",
+            "R-EV-PERMISO": "Leer permiso contenido",
+            "C-EV-DESTINATARIO-PERMISO": "Crear destinatario permiso",
+            "U-EV-DESTINATARIO-PERMISO": "Actualizar destinatario permiso",
+            "D-EV-DESTINATARIO-PERMISO": "Eliminar destinatario permiso",
+            "R-EV-DESTINATARIO-PERMISO": "Leer destinatario permiso",
+            "C-EV-ELEMENTO": "Crear contenido",
+            "U-EV-ELEMENTO": "Actualizar contenido",
+            "D-EV-ELEMENTO": "Eliminar contenido",
+            "R-EV-ELEMENTO": "Leer propiedades contenido",
+            "EV-VERSION-ADD-PAG": "Adicionar páginas al contenido",
+            "EV-VERSION-DEL-PAG": "Eliminar páginas del contenido",
+            "EV-VERSION-UPD-PAG": "Actualizar páginas de contenido",
+            "EV-VERSION-ROT-PAG": "Rotar páginas del contenido",
+            "EV-VERSION-MV-PAG": "Mover páginas del contenido",
+            "EV-VERSION-RX-PAG": "Reflejar páginas del contenido",
+            "EV-VERSION-EXPORT-PDF": "Exportar contenido a PDF",
+            "EV-VERSION-EXPORT-ZIP": "Exportar contenido a ZIP",
+            "EV-VERSION-ADD-METADATA": "Crear metados contenido",
+            "EV-VERSION-UPD-METADATA": "Actualizar metados contenido",
+            "EV-VERSION-DEL-METADATA": "Eliminar metados contenido",
+            "EV-VERSION-ADD-VER": "Crear versión independiente de contenido",
+            "EV-VERSION-DEL-VER": "Eliminar versión independiente de contenido",
+            "EV-VERSION-UPD-VER": "Actualizar versión independiente de contenido",
+            "C-EV-GESTOR-CONFIG-LOCAL": "Configurar gestor local",
+            "U-EV-GESTOR-CONFIG-LOCAL": "Actualizar gestor local",
+            "D-EV-GESTOR-CONFIG-LOCAL": "Eliminar configuración gestor local",
+            "R-EV-GESTOR-CONFIG-LOCAL": "Leer configuración gestor local",
+            "C-EV-VOLUMEN-PM": "Crear vínculo volumen contenido",
+            "U-EV-VOLUMEN-PM": "Actualizar vínculo volumen contenido",
+            "D-EV-VOLUMEN-PM": "Eliminar vínculo volumen contenido",
+            "R-EV-VOLUMEN-PM": "Leer propiedades vínculo volumen contenido",
+            "C-EV-PM": "Crear repositorio contenido",
+            "U-EV-PM": "Actualizar repositorio contenido",
+            "D-EV-PM": "Eliminar repositorio contenido",
+            "R-EV-PM": "Leer propiedades repositorio contenido",
+            "C-EV-PERMISOS-PM": "Crear permiso repositorio",
+            "U-EV-PERMISOS-PM": "Actualzar permiso repositorio",
+            "D-EV-PERMISOS-PM": "Eliminar permiso repositorio",
+            "R-EV-PERMISOS-PM": "Leer  permiso repositorio",
+            "C-EV-VOLUMEN": "Crear volumen contenido",
+            "U-EV-VOLUMEN": "Actualzar volumen contenido",
+            "D-EV-VOLUMEN": "Eliminar volumen contenido",
+            "R-EV-VOLUMEN": "Leer propiedades volumen contenido",
+            "C-EV-METADATA-PLANTILLA": "Crear plantilla metadatos",
+            "U-EV-METADATA-PLANTILLA": "Actualizar plantilla metadatos",
+            "D-EV-METADATA-PLANTILLA": "Eliminar plantilla metadatos",
+            "R-EV-METADATA-PLANTILLA": "Leer propiedades plantilla metadatos",
+            "C-EV-METADATA-PROPIEDADPLANTILLA": "Crear propiedad plantilla metadatos",
+            "U-EV-METADATA-PROPIEDADPLANTILLA": "Actualizar propiedad plantilla metadatos",
+            "D-EV-METADATA-PROPIEDADPLANTILLA": "Eliminar propiedad plantilla metadatos",
+            "R-EV-METADATA-PROPIEDADPLANTILLA": "Lees propiedad plantilla metadatos",
+            "C-METADATA-PLANTILLA-NUMVAL": "Crear configuracion numérica propiedad",
+            "U-METADATA-PLANTILLA-NUMVAL": "Actualizar configuracion numérica propiedad",
+            "D-METADATA-PLANTILLA-NUMVAL": "Eliminar configuracion numérica propiedad",
+            "R-METADATA-PLANTILLA-NUMVAL": "Leer configuracion numérica propiedad",
+            "C-METADATA-PLANTILLA-TEXTVAL": "Crear configuracion texto propiedad",
+            "U-METADATA-PLANTILLA-TEXTVAL": "Actualizar configuracion texto propiedad",
+            "D-METADATA-PLANTILLA-TEXTVAL": "Eliminar configuracion texto propiedad",
+            "R-METADATA-PLANTILLA-TEXTVAL": "Leer configuracion texto propiedad"
         }
     }
 }

@@ -142,6 +142,8 @@ export class SesionStore extends Store<SesionState> {
       })
         .subscribe(data => {
           const cm: ConstructorMenu = new  ConstructorMenu;
+          console.log(data.menu);
+          console.log(data.acl);
           const menu = cm.CreaMenu(data.menu, data.acl);
 
           menu.push (  {icon: 'people-outline', group: false, home: false, link: '', pathMatch: 'full', title: 'Usuario' , 
