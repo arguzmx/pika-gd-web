@@ -1,73 +1,69 @@
-import { AppConfig } from './../../app-config';
-import { RutaTipo } from './configuracion/ruta-tipo';
-import { PikaSesionService } from './../pika-api/pika-sesion-service';
-import { DominioActivo } from './../sesion/dominio-activo';
-import { Sesion } from './sesion';
-import { Injectable } from '@angular/core';
-import { Store, StoreConfig } from '@datorama/akita';
-import { NbMenuItem } from '@nebular/theme';
-import { LocalStorageService } from 'ngx-localstorage';
-import { IPreferencias } from './preferencias/i-preferencias';
-import { IConfiguracion } from './configuracion/i-configuracion';
-import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { ConstructorMenu } from '../aplicacion/constructor-menu';
-import { AuthService } from '../../services/auth/auth.service';
+import { AppConfig } from "./../../app-config";
+import { RutaTipo } from "./configuracion/ruta-tipo";
+import { PikaSesionService } from "./../pika-api/pika-sesion-service";
+import { DominioActivo } from "./../sesion/dominio-activo";
+import { Sesion } from "./sesion";
+import { Injectable } from "@angular/core";
+import { Store, StoreConfig } from "@datorama/akita";
+import { NbMenuItem } from "@nebular/theme";
+import { LocalStorageService } from "ngx-localstorage";
+import { IPreferencias } from "./preferencias/i-preferencias";
+import { IConfiguracion } from "./configuracion/i-configuracion";
+import { forkJoin } from "rxjs";
+import { first } from "rxjs/operators";
+import { ConstructorMenu } from "../aplicacion/constructor-menu";
+import { AuthService } from "../../services/auth/auth.service";
 export interface SesionState {
   sesion: Sesion | null;
   preferencias: IPreferencias | null;
   configuracion: IConfiguracion | null;
 }
 
-export const PREF_STORAGE_NAME = 'preferencias';
+export const PREF_STORAGE_NAME = "preferencias";
 
 export enum PropiedadesSesion {
-  IdUsuario = 'IdUsuario',
-  IdDominio = 'IdDominio',
-  IdUnidadOrganizacional = 'IdUnidadOrganizacional',
-  AvatarBase64 = 'AvatarBase64',
-  token = 'token',
-  Nombre = 'Nombre',
-  isLoggedIn = 'isLoggedIn',
-  MenuItems = 'MenuItems',
-  ACL = 'ACL',
-  MenuApp = 'MenuApp',
+  IdUsuario = "IdUsuario",
+  IdDominio = "IdDominio",
+  IdUnidadOrganizacional = "IdUnidadOrganizacional",
+  AvatarBase64 = "AvatarBase64",
+  token = "token",
+  Nombre = "Nombre",
+  isLoggedIn = "isLoggedIn",
+  MenuItems = "MenuItems",
+  ACL = "ACL",
+  MenuApp = "MenuApp",
 }
-
-
 
 export function createInitialState(): SesionState {
   return {
     sesion: {
-      IdUsuario: '',
-      IdDominio: '',
-      IdUnidadOrganizacional: '',
-      AvatarBase64: '',
-      token: '',
-      Nombre: '',
+      IdUsuario: "",
+      IdDominio: "",
+      IdUnidadOrganizacional: "",
+      AvatarBase64: "",
+      token: "",
+      Nombre: "",
       isLoggedIn: false,
-      uilocale: 'es-MX',
+      uilocale: "es-MX",
       Dominios: [],
       MenuItems: [],
       MenuApp: null,
       ACL: null,
-      ModoVisorActivado: false
+      ModoVisorActivado: false,
     },
-    preferencias: { Dominio: '', UnidadOrganizacional: '' },
+    preferencias: { Dominio: "", UnidadOrganizacional: "" },
     configuracion: { RutasEntidades: [] },
   };
 }
-
 
 export function creaSesion(sesion: Sesion) {
   return { ...sesion };
 }
 
-@Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'sesion' })
+@Injectable({ providedIn: "root" })
+@StoreConfig({ name: "sesion" })
 export class SesionStore extends Store<SesionState> {
-
-  private GetUserInfo:boolean =true;
+  private GetUserInfo: boolean = true;
 
   // Obtiene las preferncias desde el almacenamiento local
   private ObtienePreferencias(): IPreferencias {
@@ -75,7 +71,7 @@ export class SesionStore extends Store<SesionState> {
     if (p) {
       return p;
     } else {
-      return { Dominio: '', UnidadOrganizacional: '' };
+      return { Dominio: "", UnidadOrganizacional: "" };
     }
   }
 
@@ -83,26 +79,25 @@ export class SesionStore extends Store<SesionState> {
     private app: AppConfig,
     private auth: AuthService,
     private localStorage: LocalStorageService,
-    private serviceSesion: PikaSesionService) {
+    private serviceSesion: PikaSesionService
+  ) {
     super(createInitialState());
 
     const prefs = this.ObtienePreferencias();
     this.setPreferencias(prefs);
-    
-    this.auth.isAuthenticated$.subscribe(autenticado => {
-      if(autenticado) {
+
+    this.auth.isAuthenticated$.subscribe((autenticado) => {
+      if (autenticado) {
         this.setPropiedad(PropiedadesSesion.isLoggedIn, true);
         this.setPropiedad(PropiedadesSesion.token, this.auth.accessToken);
         this.procesaUsuario();
-        if(this.GetUserInfo) {
+        if (this.GetUserInfo) {
           this.GetUserInfo = false;
         }
       } else {
-
       }
     });
   }
-
 
   private ObtieneDominios() {
     if (this.getValue().sesion.Dominios.length === 0) {
@@ -113,9 +108,13 @@ export class SesionStore extends Store<SesionState> {
         let OrgValida: boolean = false;
 
         if (p.Dominio && p.UnidadOrganizacional) {
-          const d = dominios.find(x => x.Id === p.Dominio);
-          if (d && (d.UnidadesOrganizacionales.find(
-            x => x.Id === p.UnidadOrganizacional))) {
+          const d = dominios.find((x) => x.Id === p.Dominio);
+          if (
+            d &&
+            d.UnidadesOrganizacionales.find(
+              (x) => x.Id === p.UnidadOrganizacional
+            )
+          ) {
             // El dominio y la unidad orgaizacioal son válidos
             OrgValida = true;
           }
@@ -127,57 +126,74 @@ export class SesionStore extends Store<SesionState> {
         }
 
         this.setPropiedad(PropiedadesSesion.IdDominio, p.Dominio);
-        this.setPropiedad(PropiedadesSesion.IdUnidadOrganizacional, p.UnidadOrganizacional);
-
+        this.setPropiedad(
+          PropiedadesSesion.IdUnidadOrganizacional,
+          p.UnidadOrganizacional
+        );
       });
     }
   }
 
   private ObtieneMenu() {
-    if ((!(this.getValue().sesion.ACL)) ||
-      (!(this.getValue().sesion.MenuApp))) {
+    if (!this.getValue().sesion.ACL || !this.getValue().sesion.MenuApp) {
       forkJoin({
         acl: this.serviceSesion.ObtieneACL().pipe(first()),
         menu: this.serviceSesion.ObtieneMenu().pipe(first()),
-      })
-        .subscribe(data => {
-          const cm: ConstructorMenu = new  ConstructorMenu;
-          console.log(data.menu);
-          console.log(data.acl);
+      }).subscribe(
+        (data) => {
+          const cm: ConstructorMenu = new ConstructorMenu();
+          // console.log(data.menu);
+          // console.log(data.acl);
           const menu = cm.CreaMenu(data.menu, data.acl);
 
-          menu.push (  {icon: 'people-outline', group: false, home: false, link: '', pathMatch: 'full', title: 'Usuario' , 
-          children: [
-              {icon: null, group: false, home: false, link: '/pages/perfil/', pathMatch: 'full', title: 'Mi Perfil'  },
-          ] });
+          menu.push({
+            icon: "people-outline",
+            group: false,
+            home: false,
+            link: "",
+            pathMatch: "full",
+            title: "Usuario",
+            children: [
+              {
+                icon: null,
+                group: false,
+                home: false,
+                link: "/pages/perfil/",
+                pathMatch: "full",
+                title: "Mi Perfil",
+              },
+            ],
+          });
 
           this.setPropiedad(PropiedadesSesion.MenuItems, menu);
           this.setPropiedad(PropiedadesSesion.ACL, data.acl);
           this.setPropiedad(PropiedadesSesion.MenuApp, data.menu);
-
-        }
-          , (e) => {}, () => {} );
+        },
+        (e) => {},
+        () => {}
+      );
     }
   }
 
   private procesaUsuario() {
     if (this.getValue().sesion.isLoggedIn) {
-        this.ObtieneDominios();
-        this.ObtieneMenu();
+      this.ObtieneDominios();
+      this.ObtieneMenu();
     }
   }
 
-
   private GetDefaultOrg(dominios: DominioActivo[]): IPreferencias {
-    const p = { ... this.getValue().preferencias };
+    const p = { ...this.getValue().preferencias };
 
-    p.Dominio = '';
-    p.UnidadOrganizacional = '';
+    p.Dominio = "";
+    p.UnidadOrganizacional = "";
     if (dominios.length > 0) {
       p.Dominio = dominios[0].Id;
-      p.UnidadOrganizacional = '';
-      if (dominios[0].UnidadesOrganizacionales &&
-        dominios[0].UnidadesOrganizacionales.length > 0) {
+      p.UnidadOrganizacional = "";
+      if (
+        dominios[0].UnidadesOrganizacionales &&
+        dominios[0].UnidadesOrganizacionales.length > 0
+      ) {
         p.UnidadOrganizacional = dominios[0].UnidadesOrganizacionales[0].Id;
       }
     }
@@ -196,7 +212,6 @@ export class SesionStore extends Store<SesionState> {
     this.update({ configuracion: conf });
   }
 
-
   setOrganizacion(dominioId: string, uoId: string) {
     const prefs = { ...this.getValue().preferencias };
     prefs.UnidadOrganizacional = uoId;
@@ -206,7 +221,10 @@ export class SesionStore extends Store<SesionState> {
 
   setPreferencias(prefencias: IPreferencias): void {
     this.localStorage.set(PREF_STORAGE_NAME, prefencias);
-    this.setPropiedad(PropiedadesSesion.IdUnidadOrganizacional, prefencias.UnidadOrganizacional);
+    this.setPropiedad(
+      PropiedadesSesion.IdUnidadOrganizacional,
+      prefencias.UnidadOrganizacional
+    );
     this.setPropiedad(PropiedadesSesion.IdDominio, prefencias.Dominio);
     this.update({ preferencias: prefencias });
   }
