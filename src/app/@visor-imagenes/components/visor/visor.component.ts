@@ -2,66 +2,63 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  ViewChild, 
+  ViewChild,
   Input,
-  AfterViewInit} from '@angular/core';
-import { VisorImagenesService } from '../../services/visor-imagenes.service';
-import { fabric } from 'fabric';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { Pagina, OperacionHeader } from '../../model/pagina';
-import { DomSanitizer } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
-import { is } from 'date-fns/locale';
+  AfterViewInit,
+} from "@angular/core";
+import { VisorImagenesService } from "../../services/visor-imagenes.service";
+import { fabric } from "fabric";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { map, switchMap, takeUntil } from "rxjs/operators";
+import { Pagina, OperacionHeader } from "../../model/pagina";
+import { DomSanitizer } from "@angular/platform-browser";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: 'ngx-visor',
-  templateUrl: './visor.component.html',
-  styleUrls: ['./visor.component.scss'],
+  selector: "ngx-visor",
+  templateUrl: "./visor.component.html",
+  styleUrls: ["./visor.component.scss"],
 })
 export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
-@ViewChild('imgPag') domImg;
-@ViewChild('emptyCanvas') emptyCanvas;
-@ViewChild("contenedorImg") contenedorImg;
-@Input() alturaComponente: string;
+  @ViewChild("imgPag") domImg;
+  @ViewChild("emptyCanvas") emptyCanvas;
+  @ViewChild("contenedorImg") contenedorImg;
+  @Input() alturaComponente: string;
 
-  canvasId = 'canvas' + (new Date()).getMilliseconds().toString();
+  canvasId = "canvas" + new Date().getMilliseconds().toString();
   canvas: any;
   paginaVisible: Pagina = null;
   oImg: any = null;
   muestraZoom: boolean = false;
   loading = false;
   canvasColor: string = "#000";
-  private srcImg: string = '';
+  esImagen: boolean = false;
+  private srcImg: string = "";
 
-  private src$ = new BehaviorSubject('');
+  private src$ = new BehaviorSubject("");
 
-  public dataUrl$ : Observable<any>;
-  
+  public dataUrl$: Observable<any>;
+
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor(private servicioVisor: VisorImagenesService,
-              private httpClient: HttpClient,
-              private domSanitizer: DomSanitizer) {}
-
+  constructor(
+    private servicioVisor: VisorImagenesService,
+    private httpClient: HttpClient,
+    private domSanitizer: DomSanitizer
+  ) {}
 
   ngAfterViewInit(): void {
     this.IniciaCanvas();
     this.CanvasInicial();
   }
 
-
   ngOnInit(): void {
-    
     this.EscuchaCambiosPagina();
     this.EscuchaCambiosHeader();
-    
-    this.dataUrl$ = this.src$
-    .pipe(takeUntil(this.onDestroy$))
-    .pipe(
-      switchMap(url => {
-            return this.cargaImgSegura(url);
-          }
-       )
+
+    this.dataUrl$ = this.src$.pipe(takeUntil(this.onDestroy$)).pipe(
+      switchMap((url) => {
+        return this.cargaImgSegura(url);
+      })
     );
   }
 
@@ -70,43 +67,52 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy$.complete();
   }
 
-  
   private cargaImgSegura(url: string): Observable<any> {
-    if(this.srcImg != url) this.srcImg = url;
+    if (this.esImagen) {
+      if (this.srcImg != url) this.srcImg = url;
+    } else {
+      this.srcImg = "";
+      url = "";
+    }
+
     return this.httpClient
-      .get(url, {responseType: 'blob'})
+      .get(url, { responseType: "blob" })
       .pipe(
-        map(e => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))));
+        map((e) =>
+          this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))
+        )
+      );
   }
 
   imagenCargada($event: any) {
+    console.log(2);
     this.MuestraPaginaVisible();
     this.loading = false;
   }
 
   private IniciaCanvas() {
-    this.canvas = new fabric.Canvas(this.canvasId, {backgroundColor : "#000"});
-    
+    this.canvas = new fabric.Canvas(this.canvasId, { backgroundColor: "#000" });
+
     //const canvas = this.canvas;
-    
+
     // ====== zoom ======
-    this.canvas.on('mouse:wheel', function (opt) {
+    this.canvas.on("mouse:wheel", function (opt) {
       const delta = opt.e.deltaY;
       try {
         let zoom = this.canvas.getZoom();
         zoom *= 0.999 ** delta;
         if (zoom > 20) zoom = 20;
         if (zoom < 0.01) zoom = 0.01;
-        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);  
+        this.canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
       } catch (error) {
-        // console.error(error);        
+        // console.error(error);
       }
       opt.e.preventDefault();
       opt.e.stopPropagation();
     });
-    
+
     // ====== paneo ======
-    this.canvas.on('mouse:down', function(opt) {
+    this.canvas.on("mouse:down", function (opt) {
       const evt = opt.e;
       this.isDragging = true;
       this.selection = false;
@@ -114,7 +120,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
       this.lastPosY = evt.clientY;
     });
 
-    this.canvas.on('mouse:move', function(opt) {
+    this.canvas.on("mouse:move", function (opt) {
       if (this.isDragging) {
         const e = opt.e;
         const vpt = this.viewportTransform;
@@ -126,12 +132,11 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    this.canvas.on('mouse:up', function(opt) {
+    this.canvas.on("mouse:up", function (opt) {
       this.setViewportTransform(this.viewportTransform);
       this.isDragging = false;
       this.selection = true;
     });
-
   }
 
   ZoomIn(event) {
@@ -150,61 +155,63 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     zoom *= 0.999 ** 100;
     if (zoom > 20) zoom = 20;
     if (zoom < 0.01) zoom = 0.01;
-    
+
     this.canvas.zoomToPoint({ x: 500, y: 200 }, zoom);
     event.preventDefault();
     event.stopPropagation();
   }
 
   private AlturaCanvas(): number {
-    return parseInt(this.alturaComponente.replace('px','')) - 50;
+    return parseInt(this.alturaComponente.replace("px", "")) - 50;
   }
 
   private AlturaCanvasPx(): string {
-    return this.AlturaCanvas().toString() + 'px';
+    return this.AlturaCanvas().toString() + "px";
   }
 
   private CanvasInicial() {
-    const anchura = parseInt(this.contenedorImg.nativeElement.clientWidth)-100;
+    const anchura =
+      parseInt(this.contenedorImg.nativeElement.clientWidth) - 100;
     this.canvas.clear();
-    this.canvas.setDimensions({ width: anchura , height: this.AlturaCanvas() });
+    this.canvas.setDimensions({ width: anchura, height: this.AlturaCanvas() });
   }
 
   private MuestraPaginaVisible() {
-   
     if (this.paginaVisible.EsImagen && this.canvas !== null) {
-
       const anchura = parseInt(this.contenedorImg.nativeElement.clientWidth);
 
       // para cargar la img segura, fue necesario añadirla en un elemento img en el dom
       // debido a que en el método fabric.Image.fromURL el blob da un error 404
       const domImg = this.domImg.nativeElement;
-      const instanciaImg = new fabric.Image(domImg, { selectable: false })
-                          .set({ originX:  'middle', originY: 'middle' });
-      
+      const instanciaImg = new fabric.Image(domImg, { selectable: false }).set({
+        originX: "middle",
+        originY: "middle",
+      });
+
       this.oImg = instanciaImg;
       this.canvas.clear();
-      this.canvas.setDimensions({ width: anchura , height: this.AlturaCanvas() });
+      this.canvas.setDimensions({
+        width: anchura,
+        height: this.AlturaCanvas(),
+      });
       this.canvas.add(instanciaImg);
       this.canvas.renderAll();
-      
+
       var z: number = 1;
-      
+
       if (instanciaImg.width > instanciaImg.height) {
-        z = anchura/instanciaImg.width;
+        z = anchura / instanciaImg.width;
       } else {
-        z = this.AlturaCanvas()/instanciaImg.height;
-      }
-      
-      if(z!=Infinity){
-        this.canvas.zoomToPoint({ x: 0 , y: 0   }, z * 0.95);
-        this.canvas.viewportCenterObject(instanciaImg);
+        z = this.AlturaCanvas() / instanciaImg.height;
       }
 
-    } else
-     {
+      if (z != Infinity) {
+        this.canvas.zoomToPoint({ x: 0, y: 0 }, z * 0.95);
+        this.canvas.viewportCenterObject(instanciaImg);
+      }
+    } else {
       this.canvas.clear();
-     }
+    }
   }
 
   private GiraPagina(dir: OperacionHeader) {
@@ -212,13 +219,15 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     if (dir === OperacionHeader.GIRAR_DER) this.oImg.angle = angulo + 90;
     if (dir === OperacionHeader.GIRAR_IZQ) this.oImg.angle = angulo - 90;
     if (dir === OperacionHeader.GIRAR_180) this.oImg.angle = angulo + 180;
-    
+
     this.canvas.renderAll();
   }
 
   private ReflejaPagina(dir: OperacionHeader) {
-    if (dir === OperacionHeader.REFLEJO_HOR) this.oImg.set('flipX', !this.oImg.flipX);
-    if (dir === OperacionHeader.REFLEJO_VER) this.oImg.set('flipY', !this.oImg.flipY);
+    if (dir === OperacionHeader.REFLEJO_HOR)
+      this.oImg.set("flipX", !this.oImg.flipX);
+    if (dir === OperacionHeader.REFLEJO_VER)
+      this.oImg.set("flipY", !this.oImg.flipY);
     this.canvas.renderAll();
   }
 
@@ -228,6 +237,8 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
         if (p) {
+          console.log(p);
+          this.esImagen = p.EsImagen;
           this.loading = true;
           this.src$.next(p.Url);
           this.paginaVisible = p;
@@ -237,23 +248,22 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private EscuchaCambiosHeader() {
     this.servicioVisor
-    .ObtieneOperacionHeader()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((op) => {
-      if(op) {
-        this.src$.next(`${this.srcImg}?${Date.now()}`)
-      }
-      
-      // if (this.oImg ) {
-      //   switch (op) {
-      //     case OperacionHeader.GIRAR_DER :
-      //     case OperacionHeader.GIRAR_IZQ :
-      //     case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
-      //     case OperacionHeader.REFLEJO_HOR :
-      //     case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
-      //   }
-      // }
-    });
+      .ObtieneOperacionHeader()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((op) => {
+        if (op) {
+          this.src$.next(`${this.srcImg}?${Date.now()}`);
+        }
+
+        // if (this.oImg ) {
+        //   switch (op) {
+        //     case OperacionHeader.GIRAR_DER :
+        //     case OperacionHeader.GIRAR_IZQ :
+        //     case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
+        //     case OperacionHeader.REFLEJO_HOR :
+        //     case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
+        //   }
+        // }
+      });
   }
 }
-

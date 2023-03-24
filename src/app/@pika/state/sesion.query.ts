@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Query } from '@datorama/akita';
-import { SesionStore, SesionState } from './sesion.store';
+import { Injectable } from "@angular/core";
+import { Query } from "@datorama/akita";
+import { SesionStore, SesionState } from "./sesion.store";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class SesionQuery extends Query<SesionState> {
   constructor(protected store: SesionStore) {
     super(store);
@@ -14,17 +14,23 @@ export class SesionQuery extends Query<SesionState> {
 
   public sesion$ = this.select(({ sesion }) => sesion);
 
-  public preferencias$ = this.select(({  preferencias }) => preferencias);
+  public preferencias$ = this.select(({ preferencias }) => preferencias);
 
-  public menus$ = this.select(state => state.sesion.MenuItems);
-  
-  public modoVisorActivado$ = this.select(state => state.sesion.ModoVisorActivado);
+  public menus$ = this.select((state) => state.sesion.MenuItems);
+
+  public modoVisorActivado$ = this.select(
+    (state) => state.sesion.ModoVisorActivado
+  );
 
   public uilocale$ = this.select(({ sesion }) => sesion.uilocale);
 
   public dominioid$ = this.select(({ sesion }) => sesion.IdDominio);
 
   public dominios$ = this.select(({ sesion }) => sesion.Dominios);
+
+  get getJWT() {
+    return this.getValue().sesion.token;
+  }
 
   get dominios() {
     return this.getValue().sesion.Dominios;
@@ -42,5 +48,4 @@ export class SesionQuery extends Query<SesionState> {
   get ACL() {
     return this.getValue().sesion.ACL;
   }
-
 }

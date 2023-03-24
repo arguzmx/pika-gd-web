@@ -6,6 +6,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
+import { ReCaptchaV3Service } from "ng-recaptcha";
 import { Observable, pipe } from "rxjs";
 import { environment } from "../../../environments/environment";
 import { Traductor } from "../../@editor-entidades/editor-entidades.module";
@@ -27,18 +28,19 @@ export class BienvenidaComponent implements OnInit {
   servidorRegistroDisponible: boolean = false;
   loginForm: FormGroup;
   showPassword = false;
-  codigoActivacion: string ='';
+  codigoActivacion: string = "";
 
   isAuthenticated$: Observable<boolean>;
   isDoneLoading$: Observable<boolean>;
   canActivateProtectedRoutes$: Observable<boolean>;
 
   constructor(
+    private recaptchaV3Service: ReCaptchaV3Service,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
     ts: TranslateService,
     formBuilder: FormBuilder,
-    private applog: AppLogService,
+    private applog: AppLogService
   ) {
     this.loginForm = formBuilder.group({
       inputUsuario: ["", [Validators.required]],
@@ -78,33 +80,33 @@ export class BienvenidaComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  SetCodigoActivacion(Codigo:string) {
+  SetCodigoActivacion(Codigo: string) {
     this.codigoActivacion = Codigo;
     this.cdr.detectChanges();
   }
 
   SetAccesoServidorRegistro(disponible: boolean) {
-    this.servidorRegistroDisponible= disponible;
+    this.servidorRegistroDisponible = disponible;
     this.cdr.detectChanges();
   }
 
-
   login() {
-
-    this.authService.login(
-        this.loginForm.get('inputUsuario').value, 
-        this.loginForm.get('inputPass').value)
-    .then(()=> {
-          })
-    .catch(()=> {
-    });
+    this.recaptchaV3Service
+      .execute("importantAction")
+      .subscribe((token: string) => {
+        this.authService
+          .login(
+            this.loginForm.get("inputUsuario").value,
+            this.loginForm.get("inputPass").value
+          )
+          .then(() => {})
+          .catch(() => {});
+      });
   }
-
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
-
 
   getInputType() {
     if (this.showPassword) {

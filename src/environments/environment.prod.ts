@@ -5,7 +5,10 @@
  */
 export const environment = {
   production: true,
-  version: '2.beta',
-  cloudurl: "https://pika"
+  version: "2.0.1.beta",
+  cloudurl: "https://pika",
+  clouded: true,
+  recaptcha: {
+    siteKey: "6LeZvColAAAAALsalRv0S2UnQ6p-4EcDRD4uv23m",
+  },
 };
-

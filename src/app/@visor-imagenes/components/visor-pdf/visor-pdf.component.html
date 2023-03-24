@@ -1,7 +1,9 @@
-<ngx-extended-pdf-viewer [src]="url" 
-useBrowserLocale="true" height="80vh" 
-[showDownloadButton]="false" 
+<ngx-extended-pdf-viewer [src]="url"
+useBrowserLocale="true" height="80vh"
+[showDownloadButton]="false"
 [showOpenFileButton]="false"
 [showBookmarkButton]="false"
-[textLayer]="true">
+[textLayer]="true"
+[authorization]="bearerToken"
+>
 </ngx-extended-pdf-viewer>
