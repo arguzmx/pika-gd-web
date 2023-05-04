@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -19,7 +20,7 @@ import { AuthService } from "../../services/auth/auth.service";
   styleUrls: ["./bienvenida.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BienvenidaComponent implements OnInit {
+export class BienvenidaComponent implements OnInit, OnDestroy {
   public T: Traductor;
   ver: string = "";
   cargaFinalizada: boolean = false;
@@ -102,6 +103,12 @@ export class BienvenidaComponent implements OnInit {
           .then(() => {})
           .catch(() => {});
       });
+  }
+
+  ngOnDestroy() {
+    let element = document.getElementsByClassName("grecaptcha-badge");
+    element[0].setAttribute("id", "grecaptcha_badge");
+    document.getElementById("grecaptcha_badge").style.display = "none";
   }
 
   toggleShowPassword() {

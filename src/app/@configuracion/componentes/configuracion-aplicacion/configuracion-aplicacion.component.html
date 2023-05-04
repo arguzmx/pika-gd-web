@@ -20,7 +20,7 @@
                                 </div>
                             </nb-card-body>
                         </nb-card>
-                        <nb-card [nbSpinner]="cargandoSalud" nbSpinnerStatus="danger">
+                        <nb-card *ngIf="mostrarOCR" [nbSpinner]="cargandoSalud" nbSpinnerStatus="danger">
                             <nb-card-header>{{T.t['componentes.monitor-salud.indexado']}}
                             </nb-card-header>
                             <nb-card-body>

@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-import { forkJoin } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
-import { AppLogService } from '../../../services/app-log/app-log.service';
-import { ActDominioOU } from '../../model/act-dominio-ou';
-import { EstadoOCR } from '../../model/estado-ocr';
-import { ApiConfiguracion } from '../../services/api-configuracion';
-
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
+import { forkJoin } from "rxjs";
+import { first } from "rxjs/operators";
+import { Traductor } from "../../../@editor-entidades/editor-entidades.module";
+import { AppLogService } from "../../../services/app-log/app-log.service";
+import { ActDominioOU } from "../../model/act-dominio-ou";
+import { EstadoOCR } from "../../model/estado-ocr";
+import { ApiConfiguracion } from "../../services/api-configuracion";
+import { environment } from "../../../../environments/environment";
 @Component({
   selector: "ngx-configuracion-aplicacion",
   templateUrl: "./configuracion-aplicacion.component.html",
@@ -16,6 +16,7 @@ import { ApiConfiguracion } from '../../services/api-configuracion';
   providers: [ApiConfiguracion],
 })
 export class ConfiguracionAplicacionComponent implements OnInit {
+  mostrarOCR: boolean = false;
   cargandoSalud: boolean = true;
   domainForm: FormGroup;
   estadoOCR: EstadoOCR = { Completo: 0, Error: 0, Pendiente: 0 };
@@ -41,6 +42,7 @@ export class ConfiguracionAplicacionComponent implements OnInit {
   ngOnInit(): void {
     this.CargaTraducciones();
     this.DatosIniciales();
+    this.mostrarOCR = !environment.clouded;
   }
 
   onDominioUpdate() {
@@ -85,7 +87,7 @@ export class ConfiguracionAplicacionComponent implements OnInit {
       "componentes.monitor-salud.indexado-pendiente",
       "componentes.monitor-salud.indexado-error",
       "componentes.monitor-salud.reprocesar-errores",
-      'componentes.monitor-salud.refrescar-ocr'
+      "componentes.monitor-salud.refrescar-ocr",
     ];
     this.T.ObtenerTraducciones();
   }
@@ -105,16 +107,21 @@ export class ConfiguracionAplicacionComponent implements OnInit {
     this.domainForm.get("unidad").setValue(data.OU);
   }
 
-
   onRefreshOCR(notificar: boolean) {
-    this.api.ObtieneEstadoOCR().pipe(first()).subscribe(r=> {
-      this.estadoOCR = r;
-      if(notificar) {
-        this.applog.ExitoT("componentes.monitor-salud.refrescar-ocr-ok");
-      }
-    }, (e) => {
-      this.applog.ExitoT("componentes.monitor-salud.refrescar-ocr-err");
-    });
+    this.api
+      .ObtieneEstadoOCR()
+      .pipe(first())
+      .subscribe(
+        (r) => {
+          this.estadoOCR = r;
+          if (notificar) {
+            this.applog.ExitoT("componentes.monitor-salud.refrescar-ocr-ok");
+          }
+        },
+        (e) => {
+          this.applog.ExitoT("componentes.monitor-salud.refrescar-ocr-err");
+        }
+      );
   }
 
   onReprocesarOCRError() {
