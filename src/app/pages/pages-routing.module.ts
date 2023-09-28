@@ -12,7 +12,7 @@ import { EventosConfigHostComponent, PermisosHostComponent, PermisosModuloCompon
 import { HostVisorContenidoComponent } from './host-visor-contenido/host-visor-contenido.component';
 import { HostBusquedaContenidoComponent } from './host-busqueda-contenido/host-busqueda-contenido.component';
 import { EntidadesResolver } from '../@pika/pika-module';
-import { ConfiguracionAplicacionComponent, PerfilUsuarioComponent } from '../@configuracion/configuracion.module';
+import { CargaInventarioComponent, ConfiguracionAplicacionComponent, PerfilUsuarioComponent } from '../@configuracion/configuracion.module';
 
 const routes: Routes = [{
   path: '',
@@ -59,9 +59,13 @@ const routes: Routes = [{
       path: 'perfil',
       component: PerfilUsuarioComponent,
     },
-        {
+    {
       path: 'cofiguracionsistema',
       component: ConfiguracionAplicacionComponent,
+    },
+    {
+      path: 'cargainventario',
+      component: CargaInventarioComponent,
     },
     {
       path: 'linkcontenidogenerico',

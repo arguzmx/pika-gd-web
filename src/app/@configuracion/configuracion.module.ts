@@ -25,6 +25,7 @@ import { EditorEntidadesModule } from '../@editor-entidades/editor-entidades.mod
 import { ThemeModule } from '../@theme/theme.module';
 import { CambiarContrasenaComponent } from './componentes/cambiar-contrasena/cambiar-contrasena.component';
 import { MonitorSaludComponent } from './componentes/monitor-salud/monitor-salud.component';
+import { CargaInventarioComponent } from './componentes/carga-inventario/carga-inventario.component';
 
 
 
@@ -72,10 +73,10 @@ import { MonitorSaludComponent } from './componentes/monitor-salud/monitor-salud
     NbEvaIconsModule, 
     NbIconModule
   ],
-  declarations: [PerfilUsuarioComponent, ConfiguracionAplicacionComponent, CambiarContrasenaComponent, MonitorSaludComponent],
+  declarations: [PerfilUsuarioComponent, ConfiguracionAplicacionComponent, CambiarContrasenaComponent, MonitorSaludComponent, CargaInventarioComponent],
   exports: [CambiarContrasenaComponent, MonitorSaludComponent]
 })
 class ConfiguracionModule { }
 
 // el orden en el modulo debe ser imports, declarations, exports para poder exponerlos a angular
- export {ConfiguracionModule, ConfiguracionAplicacionComponent, PerfilUsuarioComponent, MonitorSaludComponent};
+ export {ConfiguracionModule, ConfiguracionAplicacionComponent, PerfilUsuarioComponent, MonitorSaludComponent, CargaInventarioComponent};

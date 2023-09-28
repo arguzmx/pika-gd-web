@@ -3,7 +3,7 @@ import { AppConfig } from './../../app-config';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ValorListaOrdenada } from '../../@pika/pika-module';
+import { Consulta, ValorListaOrdenada } from '../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
 import { ActDominioOU } from '../model/act-dominio-ou';
 import { ReporteSalud } from '../model/reporte-salud';
@@ -15,6 +15,8 @@ export class ApiConfiguracion {
   private endpointSalud: string;
   private endpointActivacion: string;
   private endpointRegistro: string;
+  private endpointActivo: string;
+  private endpointUA: string;
   
   private DepuraUrl(url: string): string {
     return url.replace(/\/$/, '') + '/';
@@ -27,7 +29,9 @@ export class ApiConfiguracion {
   ) { 
     this.endpointSalud = this.DepuraUrl(this.app.config.pikaApiUrl) + this.app.config.healthendpoint;
     this.endpointActivacion = this.DepuraUrl(this.app.config.apiUrl) + 'Sistema/AppConfig';
-    this.endpointRegistro = this.DepuraUrl(environment.cloudurl) + 'registro';
+    this.endpointActivo = this.DepuraUrl(this.app.config.pikaApiUrl) + 'api/v1.0/gd/Activo';
+    this.endpointUA = this.DepuraUrl(this.app.config.pikaApiUrl) + 'api/v1.0/gd/UnidadAdministrativaArchivo';
+    
   }
 
   private CrearEndpoint(sufijo: string): string {
@@ -136,5 +140,50 @@ export class ApiConfiguracion {
     return this.http.post(`${this.endpointActivacion}/activar`, activacion, { 'headers': headers } );
   }
 
-}
+  ObtienePlantillaInventario(): Observable<Blob> {
+    const httpOptions = {
+      responseType: 'blob' as 'json'
+    };
+    return this.http.get<Blob>(`${this.endpointActivo}/importar`, httpOptions);
+  }
 
+  CargaInventario(data: FormData): Observable<Blob> {
+    const httpOptions = {
+      responseType: 'blob' as 'json'
+    };
+    return this.http.post<Blob>(`${this.endpointActivo}/importar`, data, httpOptions);
+  }
+
+  ObtieneUAs(): Observable<ValorListaOrdenada[]> {
+    const consulta: Consulta = new Consulta();
+    consulta.tamano = 1000;
+    const qs = this.getQueryStringConsulta(consulta);
+    return this.http.get<ValorListaOrdenada[]>(`${this.endpointUA}/pares${qs}`);
+  }
+
+
+  private getQueryStringConsulta(consulta: Consulta): string {
+    let qs: string = `?i=${consulta.indice}&t=${consulta.tamano}`;
+    qs = qs + `&ordc=${consulta.ord_columna}&ordd=${consulta.ord_direccion}&idcache=${consulta.IdCache ?? ''}`;
+
+    if(consulta.IdSeleccion) {
+      qs = qs + `&sel=${consulta.IdSeleccion}`;
+    }
+
+    let index: number = 0;
+    if (consulta.FiltroConsulta) {
+      consulta.FiltroConsulta.forEach((f) => {
+        qs =
+          qs +
+          `&f[${index}][p]=${f.Propiedad}&f[${index}][o]=${f.Operador}&f[${index}][v]=${f.ValorString}`;
+
+        if (f.Negacion) qs =
+          qs + `&f[${index}][n]=1`;
+
+        index++;
+      });
+    }
+    return qs;
+  }
+
+}
