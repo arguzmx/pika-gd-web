@@ -9,7 +9,7 @@ import { ActDominioOU } from '../model/act-dominio-ou';
 import { ReporteSalud } from '../model/reporte-salud';
 import { AppLogService } from '../../services/app-log/app-log.service';
 import { EstadoOCR } from '../model/estado-ocr';
-import { environment } from '../../../environments/environment';
+import { RespuestaImportacion } from '../model/respuesta-importar';
 @Injectable()
 export class ApiConfiguracion {
   private endpointSalud: string;
@@ -147,11 +147,15 @@ export class ApiConfiguracion {
     return this.http.get<Blob>(`${this.endpointActivo}/importar`, httpOptions);
   }
 
-  CargaInventario(data: FormData): Observable<Blob> {
+  CargaInventario(data: FormData): Observable<RespuestaImportacion> {
+    return this.http.post<RespuestaImportacion>(`${this.endpointActivo}/importar`, data);
+  }
+
+  DescargaInventario(id: string): Observable<Blob> {
     const httpOptions = {
       responseType: 'blob' as 'json'
     };
-    return this.http.post<Blob>(`${this.endpointActivo}/importar`, data, httpOptions);
+    return this.http.get<Blob>(`${this.endpointActivo}/importar/${id}`,  httpOptions);
   }
 
   ObtieneUAs(): Observable<ValorListaOrdenada[]> {
@@ -159,6 +163,11 @@ export class ApiConfiguracion {
     consulta.tamano = 1000;
     const qs = this.getQueryStringConsulta(consulta);
     return this.http.get<ValorListaOrdenada[]>(`${this.endpointUA}/pares${qs}`);
+  }
+
+  ObtieneArchivos(id: string): Observable<ValorListaOrdenada[]> {
+    const consulta: Consulta = new Consulta();
+    return this.http.get<ValorListaOrdenada[]>(`${this.endpointUA}/${id}/archivo/pares`);
   }
 
 

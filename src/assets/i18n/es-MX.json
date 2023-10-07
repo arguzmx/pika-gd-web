@@ -729,14 +729,15 @@
                 "FechaRetencionAT": "Fecha retención Archivo Tramite",
                 "FechaRetencionAC": "Fecha retención Archivo Concetración",
                 "OrigenId": "OrigenId",
-                "Vencidos": "Dias para vencer",
+                "Vencidos": "Caducan",
                 "UbicacionCaja": "Ubicación Caja",
                 "UbicacionRack": "Ubicación Anaquél",
                 "ContenedorAlmacenId": "Caja",
                 "ZonaAlmacenId": "Zona",
                 "AlmacenArchivoId": "Almacén",
                 "FechaCreacion": "Creación",
-                "UsuarioId": "Usuario"
+                "UsuarioId": "Usuario",
+                "EstadoVencimiento": "Dias para vencer"
             },
             "ampliacion": {
                 "Id": "Id",

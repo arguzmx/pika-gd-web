@@ -32,8 +32,6 @@ export class VisorPdfComponent implements OnInit, OnChanges {
   }
 
   muestraPDF() {
-    console.log(this.url);
-    console.log(this.pagina.Url);
     this.url = this.pagina.Url ? this.pagina.Url : "";
   }
 }

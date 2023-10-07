@@ -5,6 +5,7 @@ import { ApiConfiguracion } from '../../services/api-configuracion';
 import { Traductor } from '../../../@editor-entidades/editor-entidades.module';
 import { first } from 'rxjs/operators';
 import { ValorListaOrdenada } from '../../../@pika/metadata';
+import { RespuestaImportacion } from '../../model/respuesta-importar';
 
 @Component({
   selector: 'ngx-carga-inventario',
@@ -20,7 +21,20 @@ export class CargaInventarioComponent implements OnInit {
   fileName = '';
   file: File;
   selectedItem: string = '';
+  selectedItemA: string = '';
   uas: ValorListaOrdenada[] = [];
+  archivos: ValorListaOrdenada[] = [];
+  importado: boolean = false;
+  descargable = false;
+  respuesta: RespuestaImportacion = { Archivo: "",
+    Error: "",
+    FechaInicio: null,
+    FechaFin: null,
+    Total: 0,
+    Ok: 0,
+    Erroneos: 0
+  };
+
   constructor(
     ts: TranslateService,
     private applog: AppLogService,
@@ -32,11 +46,17 @@ export class CargaInventarioComponent implements OnInit {
   ngOnInit(): void {
     this.CargaTraducciones();
     this.api.ObtieneUAs().pipe(first()).subscribe((uas) => {
-      console.log(uas);
       this.uas = uas;
     });
   }
 
+  uaSelected($event) {
+    this.archivos = [];
+    this.selectedItemA = '';
+    this.api.ObtieneArchivos($event).pipe(first()).subscribe((archivos) => {
+      this.archivos = archivos;
+    });
+  }
 
   descarga() {
     if (!this.descargando) {
@@ -67,10 +87,14 @@ export class CargaInventarioComponent implements OnInit {
 
   cargar() {
 
-    if (this.selectedItem != '' && this.cargaValida) {
+    if (this.selectedItem != '' && this.selectedItemA != '' && this.cargaValida) {
+
+      this.importado = false;
+      this.descargable = false;
+
       const formData = new FormData();
       formData.append("formFile", this.file);
-      formData.append("ArchivoId", this.selectedItem);
+      formData.append("ArchivoId", this.selectedItemA);
       formData.append("UnidadAdministrativaId", this.selectedItem);
       formData.append("TipoOrigenId", '-');
       formData.append("OrigenId", '-');
@@ -79,20 +103,32 @@ export class CargaInventarioComponent implements OnInit {
 
       this.api.CargaInventario(formData).pipe(first()).subscribe((data) => {
         this.descargando = false;
-        this.blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        this.importado = true;
+        this.respuesta = data;
+        if(data.Archivo!="") {
+          this.descargable = true;
+        }
         this.applog.Advertencia('Finalizado','El archivo se ha procesado satisfactoriamente');
-        var downloadURL = window.URL.createObjectURL(data);
-        var link = document.createElement('a');
-        link.href = downloadURL;
-        link.download = "plnatilla-importar-salida.xlsx";
-        link.click();
+      }, ()=> {
+        this.applog.Falla('Error','Ocurrió un error al cargar el archivo intente más tarde');
       });
     } else {
 
-      this.applog.Advertencia('Datos incompletos','Debe seleccionar un archivo de excel y la unidad administrativa');
+      this.applog.Advertencia('Datos incompletos','Debe seleccionar un archivo de excel, la unidad administrativa y su archivo destino');
     }
   }
 
+  private DescargaInventario() {
+    this.api.DescargaInventario(this.respuesta.Archivo).pipe(first()).subscribe((data) => {
+      this.descargando = false;
+      this.blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      var downloadURL = window.URL.createObjectURL(data);
+      var link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = "plnatilla-importar-salida.xlsx";
+      link.click();
+    });
+  }
 
   private CargaTraducciones() {
     // this.T.ts = [

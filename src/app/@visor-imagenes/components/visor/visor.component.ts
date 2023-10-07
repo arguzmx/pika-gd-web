@@ -85,7 +85,6 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   imagenCargada($event: any) {
-    console.log(2);
     this.MuestraPaginaVisible();
     this.loading = false;
   }
@@ -237,7 +236,6 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
         if (p) {
-          console.log(p);
           this.esImagen = p.EsImagen;
           this.loading = true;
           this.src$.next(p.Url);
