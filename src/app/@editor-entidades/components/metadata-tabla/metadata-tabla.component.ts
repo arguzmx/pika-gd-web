@@ -765,9 +765,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             const index = this.entidadesseleccionadas.findIndex(x=>x[campoId] == $event.value.row[campoId]);
             if(index>=0) this.entidadesseleccionadas.splice(index,1);
             this.renglonesSeleccionados.delete($event.value.rowId);
+            this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas);
           } else {
             this.renglonesSeleccionados.add($event.value.rowId);
             this.entidadesseleccionadas.push($event.value.row)
+            this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas);
           }
           break;
 
@@ -776,9 +778,11 @@ export class MetadataTablaComponent extends EditorEntidadesBase
           this.data.forEach((_, key) => {
             if (this.renglonesSeleccionados.has(key)) {
               this.renglonesSeleccionados.delete(key);
+              this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas);
             } else {
               this.renglonesSeleccionados.add(key);
               this.entidadesseleccionadas = this.data;
+              this.NuevaSeleccionMultiple.emit(this.entidadesseleccionadas);
             }
           });
           break;      

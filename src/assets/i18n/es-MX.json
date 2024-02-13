@@ -33,6 +33,7 @@
             "indexado-completo": "Completos",
             "indexado-pendiente": "Pendientes",
             "indexado-error": "Con error",
+            "indexado-enproceso": "En proceso",
             "reindexado-error-ok": "OCR reiniciado para erróneos",
             "reindexado-error-err": "Error al reiniciar OCR para erróneos",
             "reprocesar-errores": "Reprocesar errores",
@@ -1069,7 +1070,29 @@
             "C-METADATA-PLANTILLA-TEXTVAL": "Crear configuracion texto propiedad",
             "U-METADATA-PLANTILLA-TEXTVAL": "Actualizar configuracion texto propiedad",
             "D-METADATA-PLANTILLA-TEXTVAL": "Eliminar configuracion texto propiedad",
-            "R-METADATA-PLANTILLA-TEXTVAL": "Leer configuracion texto propiedad"
+            "R-METADATA-PLANTILLA-TEXTVAL": "Leer configuracion texto propiedad",
+            "C-EV-ROL": "Crear rol",
+            "U-EV-ROL": "Actualizar rol",
+            "D-EV-ROL": "Eliminar rol",
+            "R-EV-ROL": "Leer roles",
+            "C-EV-USAURIOS-ROL": "Adicionar usuarios al rol",
+            "U-EV-USAURIOS-ROL": "Actualizar usuarios del rol",
+            "D-EV-USAURIOS-ROL": "Eliminar usuarios del rol",
+            "R-EV-USAURIOS-ROL": "Visualizar usuarios del rol",
+            "EV-LINK-USR-ROL": "Vincular usuario al rol",
+            "EV-UNLINK-USR-ROL": "Eliminar vínculo usuario de rol",
+            "EV-DOMINIO-UPDATE-ORG": "Actualizar datos de la organización",
+            "C-EV-USR-SIS": "Crear propiedades de usuario",
+            "U-EV-USR-SIS": "Actualizar propiedades de usuario",
+            "D-EV-USR-SIS": "Elminar propiedades de usuario",
+            "R-EV-USR-SIS": "Visualziar propiedades de usuario",
+            "EV-USR-PASS-ADM": "Modificar contraseña por administrador",
+            "EV-USR-PASS-USR": "Modificar contraseña por usuario",
+            "EV-USR-LOGIN": "Acceso al sistema",
+            "EV-LOG-READ": "Visualizar bitácora",
+            "EV-LOG-DELETE": "Eliminar bitácora",
+            "EV-ACL-UPDATE": "Actualziar permisos de usuari",
+            "EV-LOG-CONFIG": "Modificar configuración de auditoría"
         }
     }
 }

@@ -135,7 +135,7 @@ export class ActivacionComponent implements OnInit {
   private DatosIniciales() {
 
     const paises = this.api.ObtienePaises().pipe(first());
-    const activado = this.api.ObtieneServidorActivado().pipe(first());
+    const activado = true; //this.api.ObtieneServidorActivado().pipe(first());
     const fp = this.api.ObtieneServidorFingerprint().pipe(first());
     
     forkJoin([paises, activado, fp]).subscribe(resultados => {
@@ -145,7 +145,7 @@ export class ActivacionComponent implements OnInit {
         this.propsForm.get("FingerPrint").setValue(resultados[2]);
         this.CodigoActivacion.emit(resultados[2]);
       }
-    });
+    }, ( error) => { this.CodigoActivacion.emit(true) } );
 
     this.api.ObtieneAccessoServidorRegistro().pipe(first())
     .subscribe(status => {

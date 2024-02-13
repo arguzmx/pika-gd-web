@@ -19,7 +19,7 @@ export class ConfiguracionAplicacionComponent implements OnInit {
   mostrarOCR: boolean = false;
   cargandoSalud: boolean = true;
   domainForm: FormGroup;
-  estadoOCR: EstadoOCR = { Completo: 0, Error: 0, Pendiente: 0 };
+  estadoOCR: EstadoOCR = { Completo: 0, Error: 0, Pendiente: 0, EnProceso: 0 };
   public T: Traductor;
 
   constructor(
@@ -86,6 +86,7 @@ export class ConfiguracionAplicacionComponent implements OnInit {
       "componentes.monitor-salud.indexado-completo",
       "componentes.monitor-salud.indexado-pendiente",
       "componentes.monitor-salud.indexado-error",
+      "componentes.monitor-salud.indexado-enproceso",
       "componentes.monitor-salud.reprocesar-errores",
       "componentes.monitor-salud.refrescar-ocr",
     ];

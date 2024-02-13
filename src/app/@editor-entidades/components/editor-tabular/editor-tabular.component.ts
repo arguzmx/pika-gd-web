@@ -66,6 +66,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   private dialogReportPickerRef: any;
   private dialogCommandRef: NbDialogRef<any>;
   private dialogoTemasSeleccionRef: NbDialogRef<any>;
+  private seleccionMultiple: boolean = false;
 
   @Input() config: ConfiguracionEntidad;
   @Input() mostrarBarra: boolean = true;
@@ -473,6 +474,11 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.tablas.first.obtenerPaginaDatos(false, true);
   }
 
+  public NuevaSeleccionMultiple(entidad: unknown[]) { 
+    this.editarDisponible = false;
+    this.InstanciaSeleccionada = entidad.length > 0;
+  }
+
   // Recibe el evento de nueva selección desde la tabla
   public NuevaSeleccion(entidad: unknown) {
     this.entidad = entidad;
@@ -587,19 +593,29 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
 
   public eliminarEntidades(): void {
-    if (this.InstanciaSeleccionada) {
-      this.ConfirmarEliminarEntidades();
+    if( 
+        (this.seleccionMultiple  && this.tablas.first.ObtieneIdsSeleccionados().length > 0 ) ||  
+        (this.InstanciaSeleccionada && !this.seleccionMultiple)
+      ) {
+        this.ConfirmarEliminarEntidades();
     } else {
       this.applog.AdvertenciaT('editor-pika.mensajes.warn-sin-seleccion', null, null);
     }
   }
 
   public ConfirmarEliminarEntidades(): void {
+
+    let nombre = '';
+    if(this.seleccionMultiple) {
+      nombre = this.tablas.first.ObtieneIdsSeleccionados().length + ' elementos seleccionados' ;
+    } else {
+      nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
+      nombre = (nombre === '') ? this.T.t['ui.elementoseleccionado'] : '\'' + nombre + '\'';
+    }
+
     this.TipoEliminacion  = this.ELIMINAR_SELECCION;
     const msg = this.metadata.ElminarLogico ?
       'editor-pika.mensajes.warn-crud-eliminar-logico' : 'editor-pika.mensajes.warn-crud-eliminar';
-    let nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
-    nombre = (nombre === '') ? this.T.t['ui.elementoseleccionado'] : '\'' + nombre + '\'';
     this.T.translate.get(msg, {
       nombre:
         nombre
@@ -642,8 +658,18 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   // LLamdado desde el dialogo de confirmación en el teplate
   private eliminarSeleccionados() {
     this.dialogComnfirmDelRef.close();
-    const Id = this.entidades.ObtenerIdEntidad(this.config.TipoEntidad, this.entidad);
-    const nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad);
+
+    let Id: string = '';
+    let ids: string[] = [];
+    let nombre: string = '';
+    if(this.seleccionMultiple) {
+      ids = this.tablas.first.ObtieneIdsSeleccionados();
+      nombre = this.tablas.first.ObtieneIdsSeleccionados().length + ' elementos';
+    } else {
+      Id = this.entidades.ObtenerIdEntidad(this.config.TipoEntidad, this.entidad);
+      nombre = this.entidades.ObtenerNombreEntidad(this.config.TipoEntidad, this.entidad)  
+    }
+    
 
     switch (this.config.TipoDespliegue.toString()) {
       case TipoDespliegueVinculo.Membresia.toString():
@@ -663,10 +689,17 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
         break;
 
       default:
-        this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
+        if(this.seleccionMultiple) {
+          this.entidades.EliminarEntidadMultiple(this.config.TipoEntidad, ids, nombre)
           .pipe(first()).subscribe(resultado => {
             if (resultado) this.tablas.first.obtenerPaginaDatos(false, true);
           });
+        } else {
+          this.entidades.EliminarEntidad(this.config.TipoEntidad, Id, nombre)
+          .pipe(first()).subscribe(resultado => {
+            if (resultado) this.tablas.first.obtenerPaginaDatos(false, true);
+          });
+        }
         break;
     }
   }
@@ -946,6 +979,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
 
 
   AlternatCheckboxes() {
+    this.seleccionMultiple = !this.seleccionMultiple;
     this.tablas.first.AlternarCheckboxes();
   }
 

@@ -394,7 +394,7 @@ export class PikaApiService<T, U> {
     Ids.forEach(x => {
       ids = ids + x + ',';
     });
-
+    console.log(ids);
     const headers = new HttpHeaders()
       .set('content-type', 'application/json');
     return this.http.delete(endpoint + ids, { 'headers': headers })

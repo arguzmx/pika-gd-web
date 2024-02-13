@@ -12,9 +12,9 @@
 // ---------------------------------------------------
 export const environment = {
   production: false,
-  version: "2.0.5",
+  version: "2.1.0",
   cloudurl: "https://localhost:7001/",
-  clouded: true,
+  clouded: false,
   recaptcha: {
     siteKey: "6LeGwyolAAAAAJ7lafqVP4auFcx7TM5NoJyETq0J",
   },

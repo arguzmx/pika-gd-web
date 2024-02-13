@@ -509,6 +509,34 @@ export class EntidadesService {
     return subject;
   }
 
+  public EliminarEntidadMultiple(
+    tipo: string,
+    ids: string[],
+    nombre: string
+  ): Observable<boolean> {
+    const subject = new AsyncSubject<any>();
+    this.cliente
+      .Delete(ids, tipo)
+      .pipe(debounceTime(500))
+      .subscribe(
+        (resultado) => {
+          this.applog.ExitoT("editor-pika.mensajes.ok-entidad-del", null, {
+            nombre: nombre,
+          });
+          subject.next(true);
+        },
+        (error) => {
+          this.handleHTTPError(error, tipo, "");
+          subject.next(false);
+        },
+        () => {
+          subject.complete();
+        }
+      );
+
+    return subject;
+  }
+
   ActualizarEntidad(tipo: string, Id: string, entidad: any): Observable<any> {
     const subject = new AsyncSubject<any>();
     const nombre = this.ObtenerNombreEntidad(tipo, entidad);
