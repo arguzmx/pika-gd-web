@@ -16,6 +16,6 @@ export const authConfigPassword: AuthConfig = {
   requireHttps: false,
   clientId: 'api-pika-gd-angular-password', 
   responseType: 'password',
-  dummyClientSecret : 'oHKb6sZcnn31C4UUCEVx',
+  dummyClientSecret : '',
   scope: 'openid profile offline_access pika-gd', 
 };
