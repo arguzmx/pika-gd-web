@@ -44,7 +44,7 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
     private servicioVisor: VisorImagenesService,
     private httpClient: HttpClient,
     private domSanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngAfterViewInit(): void {
     this.IniciaCanvas();
@@ -263,5 +263,10 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
         //   }
         // }
       });
+  }
+
+
+  demo() {
+    console.log('demo');
   }
 }

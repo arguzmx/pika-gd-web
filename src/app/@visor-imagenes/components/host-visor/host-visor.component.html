@@ -2,9 +2,9 @@
   <div *ngIf="verificandoPermisos; then verificando else verificados"></div>
   <ng-template #verificando>
     <div class="col-lg-12 col-md-12 col-sm-12">
-      <nb-card *ngIf="verificandoPermisos" size="tiny" [nbSpinner]="verificandoPermisos"
-      nbSpinnerStatus="danger" nbSpinnerSize="large" nbSpinnerMessage="Verificando permisos de acceso">
-    </nb-card>
+      <nb-card *ngIf="verificandoPermisos" size="tiny" [nbSpinner]="verificandoPermisos" nbSpinnerStatus="danger"
+        nbSpinnerSize="large" nbSpinnerMessage="Verificando permisos de acceso">
+      </nb-card>
     </div>
   </ng-template>
   <ng-template #verificados>
@@ -12,14 +12,10 @@
       No cuenta con los permisos de acceso al elemento
     </div>
     <div *ngIf="accesoPermitido" class="col-lg-12">
-      <ngx-header-thumbs 
-      (irAPagina) = "irAPagina($event)"
-      (modoVista) = "evModoVista($event)"
-      (cerrarVista)="evCerrarVista()" 
-      (cerrarDocumento)="evCerrarDocumento($event)"
-      (callUpload)="callUpload()" [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()"
-      (paginasEliminadas)="paginasEliminadas($event)">
-    </ngx-header-thumbs>
+      <ngx-header-thumbs (irAPagina)="irAPagina($event)" (modoVista)="evModoVista($event)"
+        (cerrarVista)="evCerrarVista()" (cerrarDocumento)="evCerrarDocumento($event)" (callUpload)="callUpload()"
+        [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()" (paginasEliminadas)="paginasEliminadas($event)">
+      </ngx-header-thumbs>
       <div [ngStyle]="{width: '100%', height: alturaPanelThumbs}">
         <as-split direction="horizontal">
           <as-split-area [size]="35" class="hideScroll">
@@ -28,13 +24,13 @@
                 <div class="padded">
                   <nb-tabset fullWidth accent="danger">
                     <nb-tab *ngIf="MostrarResultadosTexto" tabTitle="Búsqueda" [active]="true">
-                      <ngx-full-text-results 
-                        [documento]="documento"
-                        [hit]="highlightHit" (NuevaSeleccion)="NuevaSeleccion($event)">
+                      <ngx-full-text-results [documento]="documento" [hit]="highlightHit"
+                        (NuevaSeleccion)="NuevaSeleccion($event)">
                       </ngx-full-text-results>
                     </nb-tab>
                     <nb-tab tabTitle="Documento" [active]="!MostrarResultadosTexto">
-                      <ngx-host-thumbnails [modoVista]="modoVista" [alturaComponente]="alturaComponente" #thumbnails [documento]="documento">
+                      <ngx-host-thumbnails [modoVista]="modoVista" [alturaComponente]="alturaComponente" #thumbnails
+                        [documento]="documento">
                       </ngx-host-thumbnails>
                     </nb-tab>
                     <nb-tab tabTitle="Metadatos">
@@ -45,7 +41,7 @@
               </div>
             </div>
           </as-split-area>
-          <as-split-area [size]="65">
+          <as-split-area [size]="65" [minSize]="40">
             <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="padded">
@@ -63,6 +59,4 @@
   </ng-template>
 
 </div>
-<ngx-uploader #uploader
-  [accept]="'*'"
-  [config]="config" [maxSize]='0'></ngx-uploader>
+<ngx-uploader #uploader [accept]="'*'" [config]="config" [maxSize]='0'></ngx-uploader>

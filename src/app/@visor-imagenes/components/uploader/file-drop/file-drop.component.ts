@@ -7,6 +7,7 @@ import {
 import { forkJoin, Subject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { first } from 'rxjs/operators';
+import { InfoService } from '../../../services/info.service';
 
 @Component({
   selector: 'ngx-file-drop',
@@ -31,7 +32,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   lastInvalids: any;
   fileDropDisabled: any;
   baseDropValid: any;
-  selectedAdicionId: string ="1";
+  selectedAdicionId: string = "1";
   //#endregion
 
   //#region upload variables
@@ -53,10 +54,11 @@ export class FileDropComponent implements OnInit, OnDestroy {
   t: object;
 
   private onDestroy$: Subject<void> = new Subject<void>();
-  constructor( private ref: ChangeDetectorRef,
-              private translate: TranslateService,
-              public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
-              @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
+  constructor(private ref: ChangeDetectorRef,
+    private translate: TranslateService,
+    private infoService: InfoService,
+    public bottomSheetRef: MatBottomSheetRef<FileDropComponent>,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.accept = data.accept;
     this.maxSize = data.maxSize;
     this.posicionInicio = data.posicionInicio;
@@ -70,6 +72,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy$.next(null);
     this.onDestroy$.complete();
+    this.infoService.data.next(true);
   }
 
   private CargaTraducciones() {
@@ -114,7 +117,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
       let subido = false;
 
       // El servivio emite el evento de actualización de páginas al finalizar
-      this.uploadService.Posicion = parseInt(this.selectedAdicionId,10);
+      this.uploadService.Posicion = parseInt(this.selectedAdicionId, 10);
       this.uploadService.PosicionInicio = this.posicionInicio;
       this.progress = this.uploadService.upload(this.files);
 
@@ -128,15 +131,15 @@ export class FileDropComponent implements OnInit, OnDestroy {
           else
             subido = false;
 
-          this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
+          this.ActualizaUIArchivo(this.files.find(x => x.name === key), subido);
           this.ref.detectChanges();
         },
-        error => {
-          this.ActualizaUIArchivo(this.files.find( x => x.name === key), subido);
-          this.LimpiaUIArchivos();
-        }, () => {
-          this.LimpiaUIArchivos();
-        });
+          error => {
+            this.ActualizaUIArchivo(this.files.find(x => x.name === key), subido);
+            this.LimpiaUIArchivos();
+          }, () => {
+            this.LimpiaUIArchivos();
+          });
       }
 
       // convert the progress map into an array
@@ -149,13 +152,14 @@ export class FileDropComponent implements OnInit, OnDestroy {
       forkJoin(allProgressObservables).subscribe((end) => {
         this.LimpiaUIArchivos();
       });
-    }else
+    } else
       this.LimpiaUIArchivos();
   }
 
   ActualizaUIArchivo(file: any, exito: boolean) {
     file.subido = exito;
     file.style = exito ? 'text-success' : 'text-danger';
+
   }
 
   LimpiaUIArchivos() {
@@ -171,7 +175,7 @@ export class FileDropComponent implements OnInit, OnDestroy {
   EstablecePropiedades() {
     this.LimpiaUIArchivos();
     if (this.files.length > 0) {
-      this.files.forEach( f => {
+      this.files.forEach(f => {
         if (!f.style) {
           f.style = '';
           f.subido = false;

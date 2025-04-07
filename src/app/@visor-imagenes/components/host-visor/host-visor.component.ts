@@ -26,6 +26,7 @@ import { UploaderComponent } from "../uploader/uploader.component";
 import { IUploadConfig } from "../../model/i-upload-config";
 import { HostThumbnailsComponent } from "../host-thumbnails/host-thumbnails.component";
 import { MODO_VISTA_MINIATURAS } from "../../model/constantes";
+import { InfoService } from "../../services/info.service";
 
 @Component({
   selector: "ngx-host-visor",
@@ -41,8 +42,7 @@ import { MODO_VISTA_MINIATURAS } from "../../model/constantes";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HostVisorComponent
-  implements OnInit, OnDestroy, AfterViewInit, OnChanges
-{
+  implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   private onDestroy$: Subject<void> = new Subject<void>();
   public documento: Documento;
   private paginas: Pagina[] = [];
@@ -57,6 +57,7 @@ export class HostVisorComponent
   modoVista: string = MODO_VISTA_MINIATURAS;
   verificandoPermisos: boolean = true;
   accesoPermitido: boolean = false;
+  cierraCarga: boolean;
 
   @ViewChild("thumbnails", { static: false })
   thumbnails: HostThumbnailsComponent;
@@ -74,8 +75,17 @@ export class HostVisorComponent
   constructor(
     private cdr: ChangeDetectorRef,
     private servicioVisor: VisorImagenesService,
-    private uploadService: UploadService
-  ) {}
+    private uploadService: UploadService,
+    private infoService: InfoService
+  ) {
+    this.infoService.data.subscribe(val => {
+      this.cierraCarga = val;
+      if (this.cierraCarga) {
+        this.CargaDocumento();
+      }
+      cdr.detectChanges();
+    })
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     for (const propName in changes) {
@@ -133,6 +143,7 @@ export class HostVisorComponent
   }
 
   ngOnInit(): void {
+    this.infoService.data.subscribe(res => this.cierraCarga = res);
     this.VistaTrasera = false;
     this.setAlturaPanel(window.innerHeight);
   }
@@ -231,7 +242,7 @@ export class HostVisorComponent
     let h = parseInt(altura.toString(), 0) - 300;
     h = h < 0 ? 200 : h;
     const a = `${h}px`;
-    const b = `${h-50}px`;
+    const b = `${h - 50}px`;
     this.alturaComponente = a;
     this.alturaPanelThumbs = b;
   }

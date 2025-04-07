@@ -1,9 +1,86 @@
-<ngx-extended-pdf-viewer [src]="url"
-useBrowserLocale="true" height="80vh"
-[showDownloadButton]="false"
-[showOpenFileButton]="false"
-[showBookmarkButton]="false"
-[textLayer]="true"
-[authorization]="bearerToken"
->
-</ngx-extended-pdf-viewer>
+<!-- <ngx-extended-pdf-viewer [src]="url" useBrowserLocale="true" height="80vh" [showDownloadButton]="false"
+    [showOpenFileButton]="false" [showBookmarkButton]="false" [textLayer]="true" [authorization]="bearerToken">
+</ngx-extended-pdf-viewer> -->
+
+
+<div style="position: relative;">
+    <div id="preview">
+        <div class="thumbnailpage" *ngFor="let item of thumbnail" id="page{{item.page}}">
+            <img src="{{item.url}}" style="height: 100; width: 100px"><span class="pagenumber">{{item.page}}</span>
+        </div>
+
+    </div>
+
+    <div class="btn-group">
+        <button (click)="muestraOpciones()">
+            <span>
+                <mat-icon>menu</mat-icon>
+            </span>
+        </button>
+        <div style="display: flex;" *ngIf="muestraMenu">
+            <button (click)="zoomIn()">
+                <span>
+                    <mat-icon>zoom_in</mat-icon>
+                </span>
+            </button>
+            <button (click)="zoomOut()">
+                <span>
+                    <mat-icon>zoom_out</mat-icon>
+                </span>
+            </button>
+            <button (click)="rotate(-90)">
+                <span>
+                    <mat-icon>rotate_left</mat-icon>
+                </span>
+            </button>
+            <button (click)="rotate(90)">
+                <span>
+                    <mat-icon>rotate_right</mat-icon>
+                </span>
+            </button>
+
+            <button (click)="encuentraXPagina()">
+                <span>
+                    <mat-icon>find_in_page</mat-icon>
+                </span>
+            </button>
+
+            <button (click)="imprimirPDF()">
+                <span>
+                    <mat-icon>print</mat-icon>
+                </span>
+            </button>
+
+            <div style="display: flex;" *ngIf="!showAll">
+                <button (click)="incremetPage(-1)">
+                    <span>
+                        <mat-icon>keyboard_arrow_up</mat-icon>
+                    </span>
+                </button>
+                <mat-form-field style="width: 40%;">
+                    <input matInput [(ngModel)]="page" type="number">
+                </mat-form-field>
+                <div style="display: flex; align-content: center; flex-wrap: wrap;">
+                    <span *ngIf="this.pdf">de {{this.pdf.numPages}}</span>
+                </div>
+                <button (click)="incremetPage(1)">
+                    <span>
+                        <mat-icon>keyboard_arrow_down</mat-icon>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="outerContainer">
+    <div class="pdf-container">
+        <pdf-viewer #pdfViewer [src]="pdfObject" [page]="this.page" [rotation]="rotation"
+            (mousemove)="onDrag($event, pdfViewer)" [fit-to-page]="true" (wheel)="wheelZoom($event)"
+            (mousedown)="onDragStarted($event)" (mouseup)="onDragEnded($event, 'up')"
+            (mouseleave)="onDragEnded($event, 'leave')" [original-size]="true" [zoom]="pdfZoom" [render-text]="true"
+            [stick-to-page]="true" [external-link-target]="'blank'" [show-all]="showAll"
+            (after-load-complete)="onLoaded($event)"></pdf-viewer>
+    </div>
+</div>

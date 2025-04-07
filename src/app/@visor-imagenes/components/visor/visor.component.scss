@@ -1,9 +1,8 @@
-
-.divContenedor{
+.divContenedor {
     position: relative;
 }
 
-.btnZoomGroup{
+.btnZoomGroup {
     position: fixed;
     z-index: 1;
     padding-left: 0.5%;
@@ -12,11 +11,11 @@
     transition: opacity 250ms ease-in-out;
 }
 
-.zoomVisible{
+.zoomVisible {
     opacity: 0.9;
 }
 
-.loadingCard{
+.loadingCard {
     position: sticky;
     top: 20%;
     z-index: 5;

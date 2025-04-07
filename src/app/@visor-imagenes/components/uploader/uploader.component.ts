@@ -14,7 +14,7 @@ import { UploadService } from '../../services/uploader.service';
   templateUrl: './uploader.component.html',
   styleUrls: ['./uploader.component.scss'],
 })
-export class UploaderComponent implements OnInit, OnDestroy  {
+export class UploaderComponent implements OnInit, OnDestroy {
   @Input() accept: string;
   @Input() config: IUploadConfig;
   @Input() maxSize: number; // bytes . 1024 = 1kb . 1048576 b = 1mb . 10485760 b = 10 mb
@@ -27,40 +27,40 @@ export class UploaderComponent implements OnInit, OnDestroy  {
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
     public uploadService: UploadService,
-    private servicioVisor: VisorImagenesService) {}
-  
+    private servicioVisor: VisorImagenesService) { }
+
   ngOnDestroy(): void {
-      this.onDestroy$.next(null);
-      this.onDestroy$.complete();
+    this.onDestroy$.next(null);
+    this.onDestroy$.complete();
   }
-  
+
   ngOnInit(): void {
     this.ConfiguraObservables();
   }
 
-  
+
   ConfiguraObservables() {
     this.servicioVisor.ObtieneAbrirUpload()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe(abrir => {
-      if (abrir) {
-        this.openUploadSheet();
-        this.servicioVisor.EstableceAbrirUpload(false);
-       }
-    });
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(abrir => {
+        if (abrir) {
+          this.openUploadSheet();
+          this.servicioVisor.EstableceAbrirUpload(false);
+        }
+      });
 
     this.servicioVisor.ObtienePaginasSeleccionadas()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((p) => {
-      this.MaxIndice = 0;
-      if (p.length > 0) {
-        p.forEach(pagina => {
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((p) => {
+        this.MaxIndice = 0;
+        if (p.length > 0) {
+          p.forEach(pagina => {
             if (pagina.Indice > this.MaxIndice) {
               this.MaxIndice = pagina.Indice;
             }
-        });
-      }
-    });
+          });
+        }
+      });
   }
 
 

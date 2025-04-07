@@ -1,0 +1,21 @@
+button {
+    display: block;
+    background-color: transparent;
+    border: none;
+}
+
+.btn-group {
+    position: fixed;
+    z-index: 1;
+    background-color: #f8f8f8;
+    opacity: 0.8;
+}
+
+input[type='number'] {
+    appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
