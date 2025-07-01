@@ -24,7 +24,8 @@ export class AppConfig {
 
     public config: ApplicationConfiguration = null;
     load() {
-        var url = environment.production ? './config.json' : './config.json'; 
+        console.debug(environment.production);
+        var url = environment.production ? './config/config.json' : './config.json'; 
         return new Promise((resolve, reject) => {
             return this.client.get<ApplicationConfiguration>(url).subscribe(config=>{
                 

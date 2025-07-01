@@ -1,0 +1,41 @@
+{
+  "production": false,
+  "authUrl": "http://localhost/identidad/",
+  "apiUrl": "http://localhost/servicios/api/v1.0/",
+  "pikaApiUrl": "http://localhost/servicios/",
+  "apiVersion": "1.0",
+  "editorToken": "tipo",
+  "callbackRoute": "/pages/tabular?tipo=volumen&id=&sub=",
+  "cacheActivo": true,
+  "uploadUrl": "http://localhost/servicios/api/v1.0/upload",
+  "visordUrl": "http://localhost/servicios/api/v1.0/visor",
+  "mediaUrl": "http://localhost/servicios/api/v1.0/media",
+  "hosts": [
+    {
+        "host": "127.0.0.1",
+        "authUrl": "http://127.0.0.1/identidad/",
+        "apiUrl": "http://127.0.0.1/servicios/api/v1.0/",
+        "pikaApiUrl": "http://127.0.0.1/servicios/",
+        "apiVersion": "1.0",
+        "editorToken": "tipo",
+        "callbackRoute": "/pages/tabular?tipo=volumen&id=&sub=",
+        "cacheActivo": true,
+        "uploadUrl": "http://127.0.0.1/servicios/api/v1.0/upload",
+        "visordUrl": "http://127.0.0.1/servicios/api/v1.0/visor",
+        "mediaUrl": "http://127.0.0.1/servicios/api/v1.0/media"
+      },
+    {
+        "host": "www.pika.net",
+        "authUrl": "http://www.pika.net/identidad/",
+        "apiUrl": "http://www.pika.net/servicios/api/v1.0/",
+        "pikaApiUrl": "http://www.pika.net/servicios/",
+        "apiVersion": "1.0",
+        "editorToken": "tipo",
+        "callbackRoute": "/pages/tabular?tipo=volumen&id=&sub=",
+        "cacheActivo": true,
+        "uploadUrl": "http://www.pika.net/servicios/api/v1.0/upload",
+        "visordUrl": "http://www.pika.net/servicios/api/v1.0/visor",
+        "mediaUrl": "http://www.pika.net/servicios/api/v1.0/media"
+      }
+  ]
+}
