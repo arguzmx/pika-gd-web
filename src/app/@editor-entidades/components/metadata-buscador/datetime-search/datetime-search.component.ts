@@ -3,7 +3,6 @@ import { ICampoBuscable } from '../../../model/i-campo-buscable';
 import { BuscadorEntidadesBase } from '../../../model/buscador-entidades-base';
 import { HTML_DATE, HTML_TIME, HTML_DATETIME } from '../../../../@pika/pika-module';
 import { TranslateService } from '@ngx-translate/core';
-import { EntidadesService } from '../../../services/entidades.service';
 import { isDate, formatISO } from 'date-fns';
 import { Operacion } from '../../../../@pika/pika-module';
 import { CTL_OP_PREFIX, CTL_NEG_PREFIX, CTL1_PREFIX, CTL2_PREFIX } from '../../../model/constantes';
@@ -112,3 +111,4 @@ export class DatetimeSearchComponent extends BuscadorEntidadesBase
 
 
 }
+
