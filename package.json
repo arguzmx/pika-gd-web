@@ -90,7 +90,7 @@
     "ngx-localstorage": "^3.1.0",
     "ngx-mask": "^9.1.2",
     "ngx-scrollbar": "^7.5.3",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.3",
     "normalize.css": "6.0.0",
     "pace-js": "1.0.2",
     "roboto-fontface": "0.8.0",
