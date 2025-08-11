@@ -164,7 +164,6 @@ export class VisorImagenesService {
   public GeneraUrlPaginas(): Pagina[] {
     const paginas = [...this.documento.Paginas].sort((a, b) => a.Indice - b.Indice);
     this.documento.Paginas = paginas;
-    
     for (let i = 0; i < this.documento.Paginas.length; i++ ) {
       let url = `${this.config.VolumenId}/`;
       url = url + `${this.config.ElementoId}/`;
@@ -173,7 +172,7 @@ export class VisorImagenesService {
       url = url + `${this.documento.Paginas[i].Extension}`;
 
       this.documento.Paginas[i].Url = `${this.DepuraUrl(this.app.config.mediaUrl)}pagina/` + url;
-      if ( this.documento.Paginas[i].TieneMiniatura ) {
+      if ( this.documento.Paginas[i].EsImagen) {
         this.documento.Paginas[i].UrlThumbnail = `${this.DepuraUrl(this.app.config.mediaUrl)}mini/` + url;
       } else {
         let tipoImg = null;

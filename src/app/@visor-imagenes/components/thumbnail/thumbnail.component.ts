@@ -128,6 +128,7 @@ export class ThumbnailComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private cargaImgSegura(url: string): Observable<any> {
+    console.log(url);
     return (
       this.httpClient
         .get(url, { responseType: 'blob' })

@@ -238,8 +238,14 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
         if (p) {
           this.esImagen = p.EsImagen;
           this.loading = true;
-          this.src$.next(p.Url);
-          this.paginaVisible = p;
+          try {
+            this.src$.next(p.Url);
+            this.paginaVisible = p;
+            this.loading = false;
+          } catch (error) {
+            console.error('Error al obtener la página visible:', error);
+            this.loading = true;
+          } 
         }
       });
   }
