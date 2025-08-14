@@ -6,15 +6,17 @@ import {
   HttpEventType,
   HttpResponse,
   HttpResponseBase,
+  HttpHeaders,
 } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { filter, first, map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { TraduccionEntidad } from '../../@pika/pika-module';
+import { SesionQuery, TraduccionEntidad } from '../../@pika/pika-module';
 import { VisorImagenesService } from './visor-imagenes.service';
 import { Pagina } from '../model/pagina';
 import { IUploadConfig } from '../model/i-upload-config';
 import { AppLogService } from '../../services/app-log/app-log.service';
+import { TokenScanner } from '../model/scanner';
 
 
 
@@ -29,10 +31,11 @@ export class UploadService {
 
   constructor(
     private app: AppConfig,
-    private http: HttpClient, 
+    private http: HttpClient,
     private applog: AppLogService,
     private ts: TranslateService,
-    private servicioVisor: VisorImagenesService) {
+    private servicioVisor: VisorImagenesService,
+    private sessionQuery: SesionQuery) {
     this.indiceCarga = 1;
     this.url = this.app.config.uploadUrl;
     this.Posicion = 0;
@@ -52,6 +55,24 @@ export class UploadService {
 
   public SetConfig(config: IUploadConfig) {
     this. uConfig = config;
+  }
+
+  public CreaTokenScanner(elementoId: string, versionId: string): Observable<TokenScanner>{
+    const endpoint = this.url + `/scanner/token/${elementoId}/${versionId}`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.sessionQuery.getJWT}`
+    });
+
+    const req = new HttpRequest('POST', endpoint, null, {
+      headers,
+      reportProgress: true,
+      responseType: 'json',
+    });
+
+    return this.http.request<TokenScanner>(req).pipe(
+      filter(event => event.type === HttpEventType.Response),
+      map((event: HttpResponse<TokenScanner>) => event.body as TokenScanner)
+    );
   }
 
   public upload(files: any[] = []): { [key: string]:
@@ -112,7 +133,7 @@ export class UploadService {
 
       status[file.name] = {
         progress: progress.asObservable(),
-      }; 
+      };
     }
 
     return status;
