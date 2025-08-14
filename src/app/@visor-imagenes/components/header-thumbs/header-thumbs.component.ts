@@ -22,6 +22,8 @@ import { DocumentosService } from "../../services/documentos.service";
 import { VisorImagenesService } from "../../services/visor-imagenes.service";
 import { ConfirmacionVisorComponent } from "../confirmacion-visor/confirmacion-visor.component";
 import { PdfDownloadComponent } from "../pdf-download/pdf-download.component";
+import { UploadService } from "../../services/uploader.service";
+import { IUploadConfig } from "../../visor-imagenes.module";
 
 enum operacionesPaginas {
   ninguna,
@@ -46,9 +48,10 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   @Output() flipHorizontal = new EventEmitter();
   @Output() rotarVertical = new EventEmitter();
   @Input() documento: Documento;
+  @Input() config: IUploadConfig;
 
 
-  
+
   // Bandera para indicar que hay una operación de confirmación pendiente
   confirmacionPendiente: boolean = false;
   operacionPagina: operacionesPaginas = operacionesPaginas.ninguna;
@@ -75,12 +78,14 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private servicioVisor: VisorImagenesService,
     private docService: DocumentosService,
+    private uploadService: UploadService,
     ts: TranslateService,
     private dialogService: NbDialogService,
     public applog: AppLogService
   ) {
     this.T = new Traductor(ts);
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if(this.documento){
       let s = 0;
@@ -112,13 +117,14 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
           this.esImagen = p.EsImagen;
         }
       });
-  
+
     this.servicioVisor.ObtienePaginasSeleccionadas()
     .pipe(takeUntil(this.onDestroy$))
     .subscribe((p) => {
       this.paginas = p;
     });
-    
+    console.log('Imprimiendo configuracion');
+    console.log(this.config);
   }
 
   private CargaTraducciones() {
@@ -127,6 +133,7 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       'ui.cerrardocumento',
       'ui.subirarchivos',
       'ui.descargararchivos',
+      'ui.lanzarcliente',
       'ui.descargarpdf',
       'ui.todos-docs',
       'ui.solo-img',
@@ -153,9 +160,9 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       this.EstablecePaginaActiva(1)
     }
   }
-  
+
   IrALaPagina() {
-    if(this.documento && this.documento.Paginas.length > 0  && this.paginaidx){ 
+    if(this.documento && this.documento.Paginas.length > 0  && this.paginaidx){
       this.EstablecePaginaActiva(parseInt(this.paginaidx))
     }
   }
@@ -170,7 +177,7 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     this.irAPagina.emit(index);
     this.paginaidx = `${index}`;
   }
-  
+
   cambiaPaginaidx(idx: string) {
     const i = parseInt(idx);
     this.paginaidx = `${i}`;
@@ -347,7 +354,7 @@ moverPaginas() {
       null,
     );
   }
-  
+
 }
 
   doEliminar() {
@@ -380,6 +387,29 @@ moverPaginas() {
     }
   }
 
+  doScanner(){
+    console.log('scanner');
+    console.log(this.config.ElementoId);
+    console.log(this.config.VersionId);
+    const newWindow = window.open('', '_blank');
+    this.uploadService.CreaTokenScanner(this.config.ElementoId, this.config.VersionId)
+    .subscribe({
+      next: (e) => {
+        if (e && e.Token) {
+          const scannerUrl = `pikascan://?token=${encodeURIComponent(e.Token)}`;
+          newWindow.location.href = scannerUrl;
+        } else {
+          newWindow.close();
+          console.error('No se recibió token');
+        }
+      },
+      error: (err) => {
+        newWindow.close();
+        console.error('Error al generar token:', err);
+      }
+    });
+  }
+
 
   EstableceOperacionPagina(operacion: OperacionHeader) {
 
@@ -404,7 +434,7 @@ moverPaginas() {
         giro = true;
         param = '180';
         break;
-     
+
         case OperacionHeader.GIRAR_DER:
         giro = true;
         param = '90';
@@ -439,7 +469,7 @@ moverPaginas() {
         this.servicioVisor.EstableceOperacionHeader(operacion);
       }, (err)=> { });
     }
-    
+
   }
-  
+
 }
