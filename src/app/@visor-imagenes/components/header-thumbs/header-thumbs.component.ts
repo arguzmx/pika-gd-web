@@ -388,15 +388,21 @@ moverPaginas() {
   }
 
   doScanner(){
-    console.log('scanner');
-    console.log(this.config.ElementoId);
-    console.log(this.config.VersionId);
     const newWindow = window.open('', '_blank');
     this.uploadService.CreaTokenScanner(this.config.ElementoId, this.config.VersionId)
     .subscribe({
       next: (e) => {
         if (e && e.Token) {
-          const scannerUrl = `pikascan://?token=${encodeURIComponent(e.Token)}`;
+          e.Caducidad = new Date(e.Caducidad);
+          const datos = new URLSearchParams({
+            token: e.Token,
+            elementoId: e.ElementoId,
+            versionId: e.VersionId,
+            volumenId: this.config.VolumenId,
+            puntoMontajeId: this.config.PuntoMontajeId,
+            caducidad: e.Caducidad.toISOString()
+          });
+          const scannerUrl = `pikascan://?token=${datos.toString()}`;
           newWindow.location.href = scannerUrl;
         } else {
           newWindow.close();

@@ -95,6 +95,10 @@ export class UploadService {
       formData.append('VersionId', this.uConfig.VersionId);
       formData.append('file', file, file.name);
 
+      console.log(this.indiceCarga.toString());
+      console.log(this.Posicion.toString());
+      console.log(this.PosicionInicio.toString());
+
       const req = new HttpRequest('POST', this.url, formData, {
         reportProgress: true,
         responseType: 'text',
