@@ -57,7 +57,7 @@ export class UploadService {
     this. uConfig = config;
   }
 
-  public CreaTokenScanner(elementoId: string, versionId: string): Observable<TokenScanner>{
+  public CreaTokenScanner(elementoId: string, versionId: string): Observable<string>{
     const endpoint = this.url + `/scanner/token/${elementoId}/${versionId}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.sessionQuery.getJWT}`
@@ -66,12 +66,12 @@ export class UploadService {
     const req = new HttpRequest('POST', endpoint, null, {
       headers,
       reportProgress: true,
-      responseType: 'json',
+      responseType: 'text',
     });
 
-    return this.http.request<TokenScanner>(req).pipe(
+    return this.http.request<string>(req).pipe(
       filter(event => event.type === HttpEventType.Response),
-      map((event: HttpResponse<TokenScanner>) => event.body as TokenScanner)
+      map((event: HttpResponse<string>) => event.body as string )
     );
   }
 

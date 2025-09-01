@@ -709,6 +709,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const cache: FiltroConsulta[] = [];
     let conteoFiltrosDefault: number = 0;
     const defaults: FiltroConsulta[] = this.GetFiltrosDeafault();
+
+    console.log('Defaults', defaults );
     filtros.forEach(f => {
       if (f.Valido) {
         defaults.forEach(fd => {
@@ -731,6 +733,8 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       });
     }
 
+    
+    console.log('cache', cache );
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;

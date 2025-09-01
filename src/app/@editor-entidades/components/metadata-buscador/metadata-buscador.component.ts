@@ -256,7 +256,10 @@ export class MetadataBuscadorComponent extends EditorEntidadesBase
       );
       return;
     }
-    this.EventoFiltrar.emit(this.filtros);
+
+    const cache = this.cacheFiltros.GetCacheFiltros(this.config.TransactionId)
+    var filtros = [... this.filtros, ...cache];
+    this.EventoFiltrar.emit(filtros);
   }
 
   EstadoFiltro(filtro: FiltroConsulta) {

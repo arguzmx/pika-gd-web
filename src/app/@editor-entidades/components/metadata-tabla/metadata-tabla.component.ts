@@ -241,7 +241,6 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // --------------------------------------------------------------------
   private ProcesaConfiguracion() {
     if (this.metadata) {
-
       const traducciones = [];
       this.metadata.Propiedades.forEach(p=> {
         if(p.AtributoLista?.ValoresCSV){
@@ -924,6 +923,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         consultaIds.tamano = 0;
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
+          console.log(elementos); 
           if (elementos) {
             this.EventoResultadoBusqueda.emit(elementos);
           }
@@ -1342,8 +1342,10 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, {... consultaIds} )
     .pipe(first()).subscribe( elementos => {
+      console.log(elementos);
       if (elementos) {
         this.configuration.paginationEnabled = true;
+        console.log(this.APaginado(elementos));
         this.entidades.BuscaTextoDeIdentificadores(this.metadata.Tipo, this.APaginado(elementos), this.metadata)
         .pipe(first()).subscribe( ok => {
           if (this.muestraOCR) {

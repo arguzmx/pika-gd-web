@@ -411,13 +411,13 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
           partes[0],
           '',
         );
-        filtros.push(this.FiltroEq(p.Id, valor, true));
+        filtros.push(this.FiltroEq(p.Id, valor, true, true));
       }
     });
     return filtros;
   }
 
-  private FiltroEq(propiedad: string, valor: any, Oculto?: boolean): FiltroConsulta {
+  private FiltroEq(propiedad: string, valor: any, Oculto?: boolean, valido?: boolean ): FiltroConsulta {
     return {
       Negacion: false,
       Operador: Operacion.OP_EQ,
@@ -425,7 +425,8 @@ export class EditorJerarquicoComponent extends EditorEntidadesBase
       Propiedad: propiedad,
       Id: propiedad,
       Valor: [valor],
-      Oculto: Oculto
+      Oculto: Oculto,
+      Valido: valido
     };
   }
 

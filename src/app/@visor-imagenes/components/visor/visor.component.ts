@@ -271,8 +271,4 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-
-  demo() {
-    console.log('demo');
-  }
 }

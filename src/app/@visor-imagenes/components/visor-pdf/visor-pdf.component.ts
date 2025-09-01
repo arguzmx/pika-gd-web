@@ -78,8 +78,7 @@ export class VisorPdfComponent implements OnInit, OnChanges {
     if (this.isDragging) {
       const x = pdfViewer.element.nativeElement.children[0].scrollLeft - event.movementX;
       const y = pdfViewer.element.nativeElement.children[0].scrollTop - event.movementY;
-      console.log(pdfViewer.element.nativeElement.children[0].scrollTop);
-
+     
       pdfViewer.element.nativeElement.children[0].scrollTo(x, y);
     }
   }
