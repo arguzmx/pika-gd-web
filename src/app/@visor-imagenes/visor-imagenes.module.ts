@@ -102,6 +102,7 @@ import { ConfirmacionVisorComponent } from './components/confirmacion-visor/conf
 import { PdfDownloadComponent } from './components/pdf-download/pdf-download.component';
 import { PdfViewerModule } from "ng2-pdf-viewer";
 import { InfoService } from './services/info.service';
+import { ModalScannerComponent } from './components/modal-scanner/modal-scanner.component';
 
 @NgModule({
   imports: [
@@ -189,7 +190,7 @@ import { InfoService } from './services/info.service';
     PieVisorComponent, HostThumbnailsComponent, HeaderVisorComponent,
     VisorTifComponent, VisorPdfComponent, VisorAudioComponent,
     VisorVideoComponent, VisorOtroComponent,
-    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent, ConfirmacionVisorComponent, PdfDownloadComponent
+    UploaderComponent, FileDropComponent, EditorPlantillaComponent, DialogMetadataComponent, VisorFavoritosComponent, HeaderThumbsComponent, FullTextResultsComponent, ConfirmacionVisorComponent, PdfDownloadComponent, ModalScannerComponent
   ],
   exports: [HostVisorComponent, ThumbnailComponent, VisorComponent,
     PieVisorComponent, HostThumbnailsComponent, VisorFavoritosComponent],

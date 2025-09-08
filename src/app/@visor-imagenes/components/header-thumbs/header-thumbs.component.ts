@@ -24,6 +24,8 @@ import { ConfirmacionVisorComponent } from "../confirmacion-visor/confirmacion-v
 import { PdfDownloadComponent } from "../pdf-download/pdf-download.component";
 import { UploadService } from "../../services/uploader.service";
 import { IUploadConfig } from "../../visor-imagenes.module";
+import { MatDialog } from "@angular/material/dialog";
+import { ModalScannerComponent } from "../modal-scanner/modal-scanner.component";
 
 enum operacionesPaginas {
   ninguna,
@@ -49,6 +51,7 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   @Output() rotarVertical = new EventEmitter();
   @Input() documento: Documento;
   @Input() config: IUploadConfig;
+  @Input() uploadService: UploadService;
 
 
 
@@ -78,10 +81,10 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private servicioVisor: VisorImagenesService,
     private docService: DocumentosService,
-    private uploadService: UploadService,
     ts: TranslateService,
     private dialogService: NbDialogService,
-    public applog: AppLogService
+    public applog: AppLogService,
+    private dialog: MatDialog
   ) {
     this.T = new Traductor(ts);
   }
@@ -123,8 +126,6 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     .subscribe((p) => {
       this.paginas = p;
     });
-    console.log('Imprimiendo configuracion');
-    console.log(this.config);
   }
 
   private CargaTraducciones() {
@@ -388,39 +389,13 @@ moverPaginas() {
   }
 
   doScanner(){
-    const newWindow = window.open('', '_blank');
-    this.uploadService.CreaTokenScanner(this.config.ElementoId, this.config.VersionId)
-    .subscribe({
-      next: (e) => {
-        if(e){
-          console.log('Token recibido:', e);
-          const scannerUrl = `pikascan://?token=${e}`;
-          newWindow.location.href = scannerUrl;
-        } else {
-          newWindow.close();
-          console.error('No se recibió token');
-        }
-
-        // if (e && e.Token) {
-        //   e.Caducidad = new Date(e.Caducidad);
-        //   const datos = new URLSearchParams({
-        //     token: e.Token,
-        //     elementoId: e.ElementoId,
-        //     versionId: e.VersionId,
-        //     volumenId: this.config.VolumenId,
-        //     puntoMontajeId: this.config.PuntoMontajeId,
-        //     caducidad: e.Caducidad.toISOString()
-        //   });
-        // } else {
-        //   newWindow.close();
-        //   console.error('No se recibió token');
-        // }
-      },
-      error: (err) => {
-        newWindow.close();
-        console.error('Error al generar token:', err);
+    this.dialog.open(ModalScannerComponent,{
+      width: '400px',
+      data: {
+        config: this.config,
+        uploadService: this.uploadService
       }
-    });
+    })
   }
 
 
@@ -484,5 +459,4 @@ moverPaginas() {
     }
 
   }
-
 }
