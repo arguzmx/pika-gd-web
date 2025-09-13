@@ -219,8 +219,14 @@
         "activacion-activar-error": "Ocurrió un error al activar su aplicación, verifique que el código sea correcto y corresponda al servidor",
         "tengo-codigo": "Activar con una clave",
         "activacion-clave-titulo": "Activar con la clave que recibí por email",
-        "activacion-leyenda": "Su copia de PIKA-GD aún no se encuentra registrada, el producto es gratuito a perpetuidad y el registro nos permite conocer a nuestros usuarios para estar más cerca la comunidad y mejorar la aplicación. Si no cuenta con acceso a internet visite nuestra página en <a href=\"http://pikagd.arguz.com/activar\">http://pikagd.arguz.com/activar</a> y copie el código de activación siguiente."
-    },
+        "activacion-leyenda": "Su copia de PIKA-GD aún no se encuentra registrada, el producto es gratuito a perpetuidad y el registro nos permite conocer a nuestros usuarios para estar más cerca la comunidad y mejorar la aplicación. Si no cuenta con acceso a internet visite nuestra página en <a href=\"http://pikagd.arguz.com/activar\">http://pikagd.arguz.com/activar</a> y copie el código de activación siguiente.",
+        "modal-scanner-titulo": "Colocar las páginas",
+        "modal-scanner-alinicio": "Al inicio",
+        "modal-scanner-alfinal": "Al final",
+        "modal-scanner-enposicion": "En posición:",
+        "modal-scanner-aceptar": "Aceptar",
+        "modal-scanner-cargando": "Cargando..."
+      },
     "mensajes": {
         "no-org": "No hay informaión pra seleccionar una organización",
         "salvar-ok": "La información ha sido almacenada"

@@ -16,7 +16,7 @@ import { VisorImagenesService } from './visor-imagenes.service';
 import { Pagina } from '../model/pagina';
 import { IUploadConfig } from '../model/i-upload-config';
 import { AppLogService } from '../../services/app-log/app-log.service';
-import { TokenScanner } from '../model/scanner';
+import { TokenScanner, TokenScannerRequest } from '../model/scanner';
 
 
 
@@ -57,22 +57,13 @@ export class UploadService {
     this. uConfig = config;
   }
 
-  public CreaTokenScanner(elementoId: string, versionId: string): Observable<string>{
-    const endpoint = this.url + `/scanner/token/${elementoId}/${versionId}`;
+  public CreaTokenScanner(payload: TokenScannerRequest): Observable<string> {
+    const endpoint = `${this.url}/scanner/token`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.sessionQuery.getJWT}`
     });
 
-    const req = new HttpRequest('POST', endpoint, null, {
-      headers,
-      reportProgress: true,
-      responseType: 'text',
-    });
-
-    return this.http.request<string>(req).pipe(
-      filter(event => event.type === HttpEventType.Response),
-      map((event: HttpResponse<string>) => event.body as string )
-    );
+    return this.http.post(endpoint, payload, { headers, responseType: 'text' });
   }
 
   public upload(files: any[] = []): { [key: string]:

@@ -15,7 +15,7 @@
       <ngx-header-thumbs (irAPagina)="irAPagina($event)" (modoVista)="evModoVista($event)"
         (cerrarVista)="evCerrarVista()" (cerrarDocumento)="evCerrarDocumento($event)" (callUpload)="callUpload()"
         [documento]="documento" (eventMuestraInfo)="eventMuestraInfo()" (paginasEliminadas)="paginasEliminadas($event)"
-        [config]="config">
+        [config]="config" [uploadService]="uploadService">
       </ngx-header-thumbs>
       <div [ngStyle]="{width: '100%', height: alturaPanelThumbs}">
         <as-split direction="horizontal">

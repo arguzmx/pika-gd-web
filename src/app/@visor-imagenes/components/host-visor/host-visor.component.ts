@@ -65,6 +65,8 @@ export class HostVisorComponent
   @Output() cerrarDocumento = new EventEmitter();
   @Output() cerrarVista = new EventEmitter();
   @Input() config: IUploadConfig;
+  UploadService: UploadService;
+
   @ViewChild("uploader") uploader: UploaderComponent;
 
   @HostListener("window:resize", ["$event"])
@@ -108,6 +110,7 @@ export class HostVisorComponent
           this.Titulo = this.config.Nombre;
           this.servicioVisor.config = this.config;
           this.uploadService.SetConfig(this.config);
+          this.UploadService = this.uploadService;
           this.configuraBusquedaTexto();
           this.verificandoPermisos = false;
           this.accesoPermitido = p.Leer || p.Crear;
