@@ -28,6 +28,7 @@ export class ModalScannerComponent implements OnInit {
     private ts: TranslateService
   ) {
     this.T = new Traductor(ts);
+    this.numeroPagina = data.numeroPagina;
   }
 
   ngOnInit(): void {
@@ -35,13 +36,13 @@ export class ModalScannerComponent implements OnInit {
   }
 
  aceptar() {
-    const newWindow = window.open('', '_blank');
     const modo = this.opcionSeleccionada ?? PosicionCarga.al_final;
-
     if (modo === PosicionCarga.en_posicion && (!this.numeroPagina || this.numeroPagina < 1)) {
       alert('Por favor, ingresa un número de página válido.');
       return;
     }
+
+    const newWindow = window.open('', '_blank');
 
     const payload: TokenScannerRequest = {
       ElementoId: this.data.config.ElementoId,
@@ -71,6 +72,16 @@ export class ModalScannerComponent implements OnInit {
         console.error('Error al generar token:', err);
       }
     });
+  }
+
+  validarNumeroPagina(): boolean {
+    if (this.opcionSeleccionada !== PosicionCarga.en_posicion) {
+      return true;
+    }
+
+    return this.numeroPagina !== null &&
+          this.numeroPagina >= 1 &&
+          this.numeroPagina <= this.data.numeroPaginas;
   }
 
   cancelar() {

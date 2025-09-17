@@ -275,6 +275,11 @@ export class HostVisorComponent
     this.cerrarVista.emit();
   }
 
+  evActualizar(){
+    this.CargaDocumento();
+    this.cdr.detectChanges();
+  }
+
   paginasEliminadas(paginas: Pagina[]) {
     // const copia = [...this.documento.Paginas];
     // paginas.forEach(p=> {

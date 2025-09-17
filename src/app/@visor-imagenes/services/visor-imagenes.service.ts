@@ -1,13 +1,14 @@
 import { HighlightHit } from './../../@busqueda-contenido/model/highlight-hit';
 import { AppConfig } from './../../app-config';
-import { first } from 'rxjs/operators';
+import { catchError, finalize, first, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable, AsyncSubject, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, AsyncSubject, BehaviorSubject, Subject, of } from 'rxjs';
 import { Documento } from '../model/documento';
 import { DocumentosService } from './documentos.service';
 import { Pagina, OperacionHeader } from '../model/pagina';
 import { IUploadConfig } from '../model/i-upload-config';
 import { PermisoPuntoMontaje } from '../../@pika/pika-module';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class VisorImagenesService {
@@ -40,6 +41,7 @@ export class VisorImagenesService {
   finSeleccion: Pagina = null;
 
   constructor(
+    private http: HttpClient,
     private app: AppConfig,
     private docService: DocumentosService) {
     }
@@ -188,7 +190,7 @@ export class VisorImagenesService {
         this.documento.Paginas[i].UrlThumbnail =  '/assets/images/' + tipoImg;
       }
     }
-    
+
     return this.documento.Paginas;
   }
 
@@ -202,6 +204,26 @@ export class VisorImagenesService {
 
   public ObtieneAbrirUpload(): Observable<boolean> {
     return this.subjectOpenUpload.asObservable();
+  }
+
+  public CompletaTrassacciones(transaccionId: string, elementoId: string): Observable<number> {
+    return this.http
+      .post<Pagina[]>(this.app.config.uploadUrl + `/completar/${transaccionId}`, null)
+      .pipe(
+        first(),
+        map(paginasNuevas => {
+          if (paginasNuevas) {
+            this.EstableceActualizarPaginas(paginasNuevas, elementoId);
+          }
+          return 1;
+        }),
+        catchError(err => {
+          return of(0);
+        }),
+        finalize(() => {
+          this.SetLeyendoPaginas(false);
+        })
+    );
   }
 
   public EstableceActualizarPaginas(paginas: Pagina[], ElementoId: string) {

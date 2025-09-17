@@ -7,6 +7,9 @@
             <button mat-icon-button on-click="CerrarDocumento()" nbTooltip='{{ T.t["ui.cerrardocumento"] }}'>
                 <mat-icon>close</mat-icon>
             </button>
+            <button mat-icon-button on-click="ActualizarDocumento()" nbTooltip='{{ T.t["ui.actualizardocumento"] }}'>
+              <mat-icon>refresh</mat-icon>
+            </button>
             <mat-icon class="gray-icon">more_vert</mat-icon>
                 <button *ngIf="verDetalle" mat-icon-button on-click="seModoVista('mini')" nbTooltip='{{T.t["ui.vista-miniaturas"]}}'>
                     <mat-icon>format_list_bulleted</mat-icon>
