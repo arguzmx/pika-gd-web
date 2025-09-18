@@ -12,13 +12,17 @@
         [(ngModel)]="numeroPagina"
         style="margin-left: 8px; width: 80px;"
       />
+      <small *ngIf="opcionSeleccionada === PosicionCarga.en_posicion" style="margin-left: 8px;">
+        (1 - {{ data.numeroPaginas }})
+      </small>
     </mat-radio-button>
   </mat-radio-group>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancelar()" [disabled]="cargando">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="aceptar()" [disabled]="cargando">
+  <button mat-raised-button color="primary" (click)="aceptar()"
+          [disabled]="cargando || (opcionSeleccionada === PosicionCarga.en_posicion && !validarNumeroPagina())">
     {{ cargando ? 'Cargando...' : 'Aceptar' }}
   </button>
 </mat-dialog-actions>

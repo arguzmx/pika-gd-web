@@ -7,6 +7,7 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { NbDialogService } from "@nebular/theme";
 import { TranslateService } from "@ngx-translate/core";
@@ -49,6 +50,8 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   @Output() rotar180 = new EventEmitter();
   @Output() flipHorizontal = new EventEmitter();
   @Output() rotarVertical = new EventEmitter();
+  @Output() actualizarDocumento = new EventEmitter<void>();
+
   @Input() documento: Documento;
   @Input() config: IUploadConfig;
   @Input() uploadService: UploadService;
@@ -76,6 +79,7 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   private paginas: Pagina[];
   private pagina: Pagina;
   public T: Traductor;
+  private MaxIndice: number = 0;
 
   private onDestroy$: Subject<void> = new Subject<void>();
   constructor(
@@ -126,12 +130,14 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     .subscribe((p) => {
       this.paginas = p;
     });
+    this.PaginaSeleccionada();
   }
 
   private CargaTraducciones() {
     this.T.ts = [
       'ui.cerrarvista','ui.cancelar','ui.aceptar',
       'ui.cerrardocumento',
+      'ui.actualizardocumento',
       'ui.subirarchivos',
       'ui.descargararchivos',
       'ui.lanzarcliente',
@@ -256,6 +262,10 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     this.cerrarVista.emit();
   }
 
+  ActualizarDocumento(){
+    this.actualizarDocumento.emit();
+  }
+
   seModoVista(modo: string) {
     if(modo === MODO_VISTA_MINIATURAS) {
       this.verMiniaturas = true;
@@ -286,77 +296,77 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     this.servicioVisor.EliminarSeleccion();
   }
 
-reordenarPorNombre() {
-  this.dialogService
-  .open(ConfirmacionVisorComponent, {
-    context: {
-      titulo: this.T.t['visor.reordenar-por-nombre-titulo'],
-      texto: this.T.t['visor.reordenar-por-nombre'],
-    },
-  })
-  .onClose.subscribe((confirmacion) => {
-    if (confirmacion) {
-      this.servicioVisor.ReordenarPorNombre(this.documento.Id).pipe(first())
-      .subscribe(ok => {
-        this.applog.ExitoT('visor.reordenar-por-nombre-ok');
-        const paginasEliminadas = [];
-        this.paginasEliminadas.emit(paginasEliminadas)
-
-      }, (err)=> { this.applog.ExitoT('visor.reordenar-por-nombre-error'); console.error(err)});
-    }
-  });
-}
-
-
-iniciarMover() {
-  if (this.paginas.length > 0) {
-    this.applog.ExitoT(
-      'visor.mover-paginas-msg',
-      null,
-      null,
-    );
-    this.estadoConfirmacion(true, operacionesPaginas.mover, this.T.t["visor.mover-paginas"]);
-    this.paginasOperacion = JSON.parse(JSON.stringify(this.paginas));
-  } else {
-    this.applog.AdvertenciaT(
-      'visor.warn-sin-seleccion',
-      null,
-      null,
-    );
-  }
-}
-
-moverPaginas() {
-  if(this.paginas.length == 1) {
-    const target: number = this.paginas[0].Indice;
-    const paginas: number[]  = [];
-    this.paginasOperacion.forEach(p=> {
-      paginas.push(p.Indice);
+  reordenarPorNombre() {
+    this.dialogService
+    .open(ConfirmacionVisorComponent, {
+      context: {
+        titulo: this.T.t['visor.reordenar-por-nombre-titulo'],
+        texto: this.T.t['visor.reordenar-por-nombre'],
+      },
     })
-
-    this.servicioVisor.MoverPaginas(this.documento.Id, target, paginas).pipe(first())
+    .onClose.subscribe((confirmacion) => {
+      if (confirmacion) {
+        this.servicioVisor.ReordenarPorNombre(this.documento.Id).pipe(first())
         .subscribe(ok => {
-          this.applog.AdvertenciaT(
-            'visor.mover-paginas-ok',
-            null,
-            null,
-          );
-          this.estadoConfirmacion();
-          this.paginasEliminadas.emit([]);
-        }, (err)=> {          this.applog.AdvertenciaT(
-          'visor.mover-paginas-error',
-          null,
-          null,
-        );} );
-  } else {
-    this.applog.AdvertenciaT(
-      'visor.mover-paginas-solo-una',
-      null,
-      null,
-    );
+          this.applog.ExitoT('visor.reordenar-por-nombre-ok');
+          const paginasEliminadas = [];
+          this.paginasEliminadas.emit(paginasEliminadas)
+
+        }, (err)=> { this.applog.ExitoT('visor.reordenar-por-nombre-error'); console.error(err)});
+      }
+    });
   }
 
-}
+
+  iniciarMover() {
+    if (this.paginas.length > 0) {
+      this.applog.ExitoT(
+        'visor.mover-paginas-msg',
+        null,
+        null,
+      );
+      this.estadoConfirmacion(true, operacionesPaginas.mover, this.T.t["visor.mover-paginas"]);
+      this.paginasOperacion = JSON.parse(JSON.stringify(this.paginas));
+    } else {
+      this.applog.AdvertenciaT(
+        'visor.warn-sin-seleccion',
+        null,
+        null,
+      );
+    }
+  }
+
+  moverPaginas() {
+    if(this.paginas.length == 1) {
+      const target: number = this.paginas[0].Indice;
+      const paginas: number[]  = [];
+      this.paginasOperacion.forEach(p=> {
+        paginas.push(p.Indice);
+      })
+
+      this.servicioVisor.MoverPaginas(this.documento.Id, target, paginas).pipe(first())
+          .subscribe(ok => {
+            this.applog.AdvertenciaT(
+              'visor.mover-paginas-ok',
+              null,
+              null,
+            );
+            this.estadoConfirmacion();
+            this.paginasEliminadas.emit([]);
+          }, (err)=> {          this.applog.AdvertenciaT(
+            'visor.mover-paginas-error',
+            null,
+            null,
+          );} );
+    } else {
+      this.applog.AdvertenciaT(
+        'visor.mover-paginas-solo-una',
+        null,
+        null,
+      );
+    }
+
+  }
 
   doEliminar() {
     if (this.paginas.length > 0) {
@@ -388,12 +398,29 @@ moverPaginas() {
     }
   }
 
+  public PaginaSeleccionada(){
+    this.servicioVisor.ObtienePaginasSeleccionadas()
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((p) => {
+        this.MaxIndice = 0;
+        if (p.length > 0) {
+          p.forEach(pagina => {
+            if (pagina.Indice > this.MaxIndice) {
+              this.MaxIndice = pagina.Indice;
+            }
+          });
+        }
+      });
+  }
+
   doScanner(){
     this.dialog.open(ModalScannerComponent,{
       width: '400px',
       data: {
         config: this.config,
-        uploadService: this.uploadService
+        uploadService: this.uploadService,
+        numeroPagina: this.MaxIndice,
+        numeroPaginas: this.documento.Paginas.length
       }
     })
   }
