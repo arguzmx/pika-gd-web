@@ -74,16 +74,6 @@ export class ModalScannerComponent implements OnInit {
     });
   }
 
-  validarNumeroPagina(): boolean {
-    if (this.opcionSeleccionada !== PosicionCarga.en_posicion) {
-      return true;
-    }
-
-    return this.numeroPagina !== null &&
-          this.numeroPagina >= 1 &&
-          this.numeroPagina <= this.data.numeroPaginas;
-  }
-
   cancelar() {
     this.dialogRef.close();
   }

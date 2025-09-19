@@ -1,20 +1,10 @@
 <h2 mat-dialog-title>{{ T.t["ui.modal-scanner-titulo"] }}</h2>
 <mat-dialog-content>
   <mat-radio-group [(ngModel)]="opcionSeleccionada">
-    <mat-radio-button [value]="PosicionCarga.al_inicio">Al inicio</mat-radio-button><br />
-    <mat-radio-button [value]="PosicionCarga.al_final">Al final</mat-radio-button><br />
+    <mat-radio-button [value]="PosicionCarga.al_inicio">{{ T.t["ui.modal-scanner-alinicio"] }}</mat-radio-button><br />
+    <mat-radio-button [value]="PosicionCarga.al_final">{{ T.t["ui.modal-scanner-alfinal"] }}</mat-radio-button><br />
     <mat-radio-button [value]="PosicionCarga.en_posicion">
-      En posición:
-      <input
-        *ngIf="opcionSeleccionada === PosicionCarga.en_posicion"
-        type="number"
-        min="1"
-        [(ngModel)]="numeroPagina"
-        style="margin-left: 8px; width: 80px;"
-      />
-      <small *ngIf="opcionSeleccionada === PosicionCarga.en_posicion" style="margin-left: 8px;">
-        (1 - {{ data.numeroPaginas }})
-      </small>
+      {{ T.t["ui.modal-scanner-enposicion"] }}
     </mat-radio-button>
   </mat-radio-group>
 </mat-dialog-content>
@@ -22,7 +12,7 @@
 <mat-dialog-actions align="end">
   <button mat-button (click)="cancelar()" [disabled]="cargando">Cancelar</button>
   <button mat-raised-button color="primary" (click)="aceptar()"
-          [disabled]="cargando || (opcionSeleccionada === PosicionCarga.en_posicion && !validarNumeroPagina())">
+          [disabled]="cargando">
     {{ cargando ? 'Cargando...' : 'Aceptar' }}
   </button>
 </mat-dialog-actions>
