@@ -60,6 +60,10 @@ export class ModalScannerComponent implements OnInit {
           const scannerUrl = this.generarDeeplink(e);
           newWindow.location.href = scannerUrl;
           this.dialogRef.close();
+          setTimeout(() => {
+            newWindow.close();
+          }, 5000); 
+
         } else {
           this.cargando = false;
           newWindow.close();
