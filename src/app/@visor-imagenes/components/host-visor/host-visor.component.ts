@@ -327,4 +327,8 @@ export class HostVisorComponent
       }
     }
   }
+
+  doScannerDownload() {
+    window.open('/assets/PikaScanSetup.msi', '_blank');
+  }
 }

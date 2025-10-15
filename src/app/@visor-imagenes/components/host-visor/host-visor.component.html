@@ -37,6 +37,15 @@
                     <nb-tab tabTitle="Metadatos">
                       <ngx-editor-plantilla [config]="config"></ngx-editor-plantilla>
                     </nb-tab>
+                    <nb-tab tabTitle="Software">
+                      <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <button mat-icon-button on-click="doScannerDownload()">
+                            Descargar PikaScan&nbsp;&nbsp;<mat-icon>cloud_download</mat-icon>
+                          </button>
+                        </div>
+                    </div>
+                    </nb-tab>
                   </nb-tabset>
                 </div>
               </div>
