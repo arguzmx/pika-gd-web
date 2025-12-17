@@ -29,6 +29,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
   @ViewChild("metadatos") metadatos: BMetadatosComponent;
   @ViewChild('tabla') tabla: EditorBootTabularComponent;
 
+  buscando: boolean = false;
   IdRepositorio: string = '';
   ElementoBusquedaActivo = false;
   MostrarRegresar: boolean = true;
@@ -239,6 +240,7 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
     }
 
     if (esValida) {
+      this.buscando = true;
       this.busquedaActual = b;
       this.tabla.obtenerPaginaDatosPersonalizada(true, 'api/v1.0/contenido/Busqueda', b);
     } else {
@@ -249,6 +251,10 @@ export class HostBusquedaComponent implements OnInit, OnDestroy {
       );
     }
 
+  }
+
+  handlerFinalizarBusqueda() {
+    this.buscando = false;
   }
 
   handlerEventoResultadoBusqueda(data: unknown) {

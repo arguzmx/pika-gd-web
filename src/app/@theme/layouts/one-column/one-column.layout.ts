@@ -2,6 +2,7 @@ import { Component, ViewChild, TemplateRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NbDialogService, NbMediaBreakpointsService, NbSidebarService } from '@nebular/theme';
 import { first } from 'rxjs/internal/operators/first';
+import { AppConfig } from '../../../app-config';
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -10,7 +11,14 @@ import { first } from 'rxjs/internal/operators/first';
 })
 export class OneColumnLayoutComponent {
   toggled: boolean = false;
-  constructor(private barService: NbSidebarService,) {
+  logo: string = "../../../assets/images/sidebar_pika.png";
+
+  constructor(private barService: NbSidebarService, private config: AppConfig,) {
+    if(this.config.config.headerLogo) 
+    {
+      this.logo = this.config.config.headerLogo;
+    }
+
     barService.onToggle().subscribe(t=> {
       this.toggled = !this.toggled;
     });

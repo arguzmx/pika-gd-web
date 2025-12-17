@@ -310,7 +310,7 @@
       [textoBusqueda] = 'textoBusqueda'
       (EventoResultadoBusqueda)="ResultadoBusquedaHandler($event)" [busuedaPersonalizada]='busuedaPersonalizada'
       (ConteoRegistros)="ConteoRegistros($event)" (NuevaSeleccion)="NuevaSeleccion($event)"
-      (EditarSeleccion)="EditarSeleccion($event)">
+      (EditarSeleccion)="EditarSeleccion($event)" (EventoBusquedaFinalizada) = "EmiteBusquedaFinalizada()">
     </ngx-metadata-tabla>
   </ng-template>
 </span>

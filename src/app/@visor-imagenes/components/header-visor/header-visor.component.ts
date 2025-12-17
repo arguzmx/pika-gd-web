@@ -103,13 +103,4 @@ export class HeaderVisorComponent implements OnInit, OnDestroy, OnChanges {
   doUpload() {
     this.callUpload.emit();
   }
-
-  doZipDownload() {
-    this.docService.ObtieneZIP(this.documento.Id, this.documento.VersionId);
-  }
-
-  doPDFDownload() {
-    // this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId);
-  }
-
 }

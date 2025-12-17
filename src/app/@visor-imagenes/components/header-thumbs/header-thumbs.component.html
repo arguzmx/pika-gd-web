@@ -79,7 +79,7 @@
             <button *ngIf="leer" mat-icon-button on-click="doPDFDownload()" nbTooltip='{{T.t["ui.descargarpdf"]}}'>
                 <mat-icon>picture_as_pdf</mat-icon>
             </button>
-            <button *ngIf="leer" mat-icon-button on-click="doScanner()" nbTooltip='{{T.t["ui.lanzarcliente"]}}'>
+            <button *ngIf="crear" mat-icon-button on-click="doScanner()" nbTooltip='{{T.t["ui.lanzarcliente"]}}'>
                 <mat-icon>camera_outline_pro</mat-icon>
             </button>
             <span class="toolbar-spacer"></span>

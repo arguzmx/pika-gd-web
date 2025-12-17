@@ -63,6 +63,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   @Output() EditarSeleccion = new EventEmitter();
   @Output() ConteoRegistros = new EventEmitter();
   @Output() EventoResultadoBusqueda = new EventEmitter();
+  @Output() EventoBusquedaFinalizada = new EventEmitter();
 
 
 
@@ -83,6 +84,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // Define si el paginao de la entidad es relacional
   private usarPaginadoRelacional: boolean = false;
 
+  public loading: boolean = false;
 
   // Plantillas de datos disponibles
   public plantillas: ValorListaOrdenada[] = [];
@@ -829,6 +831,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
   // Obtiene una nueva página de datos
   public obtenerPaginaPeronalizada(notificar: boolean, reiniciarPaginado: boolean): void {
 
+    this.loading = true;
+    this.cdr.detectChanges();
     this.consultaIds.indice = (this.pagination.offset - 1) < 0 ? 0 : this.pagination.offset - 1;
     this.consultaIds.tamano = this.pagination.limit;
     this.consultaIds.ord_columna = this.pagination.sort;
@@ -845,7 +849,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
   // Obtiene una nueva página de datos
   public obtenerPaginaDatos(notificar: boolean, reiniciarPaginado: boolean): void {
-
+    this.loading = true;
+    this.cdr.detectChanges();
     if (this.plantillaSeleccionada) {
        if(this.EsPropiedadExtendida(this.pagination.sort)) {
           this.RealizaPaginadoMetadatos();
@@ -923,7 +928,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         consultaIds.tamano = 0;
         this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, consultaIds)
         .pipe(first()).subscribe( elementos => {
-          console.log(elementos); 
+          
           if (elementos) {
             this.EventoResultadoBusqueda.emit(elementos);
           }
@@ -942,6 +947,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
                   });
                   u['ocr'] = texto;
                 }
+                this.FinalizarBusqueda();
               });
               
               this.ActualizarDatosElemento(updated, metadatos);
@@ -956,13 +962,18 @@ export class MetadataTablaComponent extends EditorEntidadesBase
           }
 
           
-        }, (err) => { console.error(err); })
+        }, (err) => { console.error(err); this.FinalizarBusqueda();})
 
-      }, (err) => { console.error(err); });
+      }, (err) => { console.error(err); this.FinalizarBusqueda();});
 
 
   }
 
+  private FinalizarBusqueda() {
+    this.loading = false;
+    this.cdr.detectChanges();
+    this.EventoBusquedaFinalizada.emit();
+  }
 
   // ONtiene una pagina de datos a partir de los metadtos
   private RealizaPaginadoMetadatos() {
@@ -1084,7 +1095,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
             this.IniciaTimerRefresco();
-  
+            this.FinalizarBusqueda();
           });
       } else {
         this.entidades.ObtenerPagina(this.config.TipoEntidad, this.consulta, this.textoBusqueda)
@@ -1106,10 +1117,13 @@ export class MetadataTablaComponent extends EditorEntidadesBase
             this.pagination.count = data.ConteoTotal;
             this.pagination = { ...this.pagination };
             this.IniciaTimerRefresco();
+            this.FinalizarBusqueda();
           });
       }
     }
-    
+    else {
+      this.FinalizarBusqueda();
+    }
   }
 
   private ActualizaCamposLabel(data: Paginado<any>): Observable<Paginado<any>> {
@@ -1342,10 +1356,8 @@ export class MetadataTablaComponent extends EditorEntidadesBase
 
     this.entidades.ObtenerPaginaPorIds(this.metadata.Tipo, {... consultaIds} )
     .pipe(first()).subscribe( elementos => {
-      console.log(elementos);
       if (elementos) {
         this.configuration.paginationEnabled = true;
-        console.log(this.APaginado(elementos));
         this.entidades.BuscaTextoDeIdentificadores(this.metadata.Tipo, this.APaginado(elementos), this.metadata)
         .pipe(first()).subscribe( ok => {
           if (this.muestraOCR) {
@@ -1366,11 +1378,13 @@ export class MetadataTablaComponent extends EditorEntidadesBase
               this.ActualizarDatosPlantilla(updated || []);
               this.configuration.isLoading = false;
               this.IniciaTimerRefresco();
+              this.FinalizarBusqueda();
             })
           } else {
             this.ActualizarDatosPlantilla(elementos || []);
             this.configuration.isLoading = false;
             this.IniciaTimerRefresco();
+            this.FinalizarBusqueda();
           }
         });
 
@@ -1378,7 +1392,7 @@ export class MetadataTablaComponent extends EditorEntidadesBase
         this.NotificarErrorDatos(0);
       }
 
-    }, (err) => { this.configuration.isLoading = false; this.configuration.paginationEnabled = false;})
+    }, (err) => { this.configuration.isLoading = false; this.configuration.paginationEnabled = false; this.FinalizarBusqueda(); })
   }
 
 

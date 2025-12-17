@@ -1,13 +1,15 @@
 <nb-card>
     <nb-card-header>{{titulo}}</nb-card-header>
     <nb-card-body>
-        <div class="row">
+        <form [formGroup]="form">
+
+        <div *ngIf="mostrarPorcentaje" class="row">
             <div class="col-lg-6 col-md-6 col-sm-12">
                 {{ T.t["componentes.visor-documento.porciento-pdf"] }}
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
-                <nb-select selected="100"  size="small" filled status="info" (selectedChange)="porciento($event)" 
-                fullWidth="true" #selectporciento>
+                <nb-select selected="100" size="small" filled status="info" (selectedChange)="porciento($event)"
+                    fullWidth="true" #selectporciento>
                     <nb-option value="100">100 %</nb-option>
                     <nb-option value="75">75 %</nb-option>
                     <nb-option value="50">50 %</nb-option>
@@ -15,6 +17,60 @@
                 </nb-select>
             </div>
         </div>
+        <div class="row pt-2">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {{ T.t["componentes.visor-documento.paginas-selector"] }}
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <nb-select selected="100" size="small" filled status="info" [(selected)]="tipoPagina" (selectedChange)="paginas($event)"
+                    fullWidth="true" #selectporciento>
+                    <nb-option value="0">Todas</nb-option>
+                    <nb-option value="1">Intervalo</nb-option>
+                    <nb-option value="2">Lista</nb-option>
+                </nb-select>
+            </div>
+        </div>
+        <div *ngIf="paginasIntervalo" class="row pt-2">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {{ T.t["componentes.visor-documento.paginas-rango"] }}
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                    <div class="col-5">
+                        <input type="text" [(ngModel)]="paginaDe"  formControlName="paginaDe" nbInput fullWidth fieldSize="small" placeholder=""
+                            fullWidth>
+                    </div>
+                    <div class="col-2">
+                        a
+                    </div>
+                    <div class="col-5">
+                        <input type="number" [(ngModel)]="paginaA"  formControlName="paginaA" nbInput fullWidth fieldSize="small" placeholder=""
+                            fullWidth>
+                    </div>
+                </div>
+                                    <div *ngIf="form.get('paginaDe')?.errors || form.get('paginaA')?.errors">
+                                        <small class="text-danger">
+                                            {{ T.t["componentes.visor-documento.paginas-lista-error"] }}
+                                        </small>
+                                    </div>
+            </div>
+        </div>
+        <div *ngIf="paginasLista" class="row pt-2">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                {{ T.t["componentes.visor-documento.paginas-lista"] }}
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+
+                <input type="text" [(ngModel)]="paginaList" nbInput formControlName="paginaList" fullWidth fieldSize="small" placeholder=""
+                    fullWidth>
+                    <div *ngIf="form.get('paginaList')?.errors">
+                        <small class="text-danger">
+                            {{ T.t["componentes.visor-documento.paginas-lista-error"] }}
+                        </small>
+                    </div>
+            </div>
+        </div>
+    </form>
     </nb-card-body>
     <nb-card-footer>
         <div class="row">
@@ -27,7 +83,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="float-right">
-                    <button nbButton size="medium" status="primary" (click)="aceptar()">
+                    <button nbButton size="medium" [disabled]="!form.valid" status="primary" (click)="aceptar()">
                         {{ T.t["ui.aceptar"] }}
                     </button>
                 </div>

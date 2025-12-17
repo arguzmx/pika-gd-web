@@ -110,9 +110,10 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       .ObtienePermisos()
       .pipe(first())
       .subscribe((p) => {
+        console.log('Permisos recibidos en header', p);
         this.crear = p.Crear;
         this.leer = p.Leer;
-        this.eliminar = p.GestionContenido;
+        this.eliminar = p.Elminar;
       });
 
       this.servicioVisor.ObtienePaginaVisible()
@@ -150,6 +151,8 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       'ui.vista-miniaturas',
       'ui.vista-detalle',
       'ui.reordernar-nombre',
+      'componentes.visor-documento.crear-pdf-title',
+      'componentes.visor-documento.crear-zip-title',
       'componentes.visor-documento.titulo-pdf-ack','ui.sel-invertir','ui.sel-todos','ui.sel-eliminar',
       'visor.reordenar-por-nombre','visor.reordenar-por-nombre-titulo','visor.reordenar-por-nombre-ok',
       'visor.reordenar-por-nombre-error',
@@ -236,7 +239,21 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   doZipDownload() {
-    this.docService.ObtieneZIP(this.documento.Id, this.documento.VersionId);
+      this.dialogService
+      .open(PdfDownloadComponent, {
+        context: {
+          titulo: this.T.t['componentes.visor-documento.crear-zip-title'], 
+          maxValue: this.documento.Paginas.length,
+          mostrarPorcentaje: false
+        },
+      })
+      .onClose.subscribe((confirmacion) => {
+        if (confirmacion.confirma) {
+          this.docService.ObtieneZIP(this.documento.Id, this.documento.VersionId, confirmacion.paginado);
+        }
+      });
+
+    
   }
 
   doPDFDownload() {
@@ -244,12 +261,14 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       this.dialogService
       .open(PdfDownloadComponent, {
         context: {
-          titulo: this.T.t['componentes.visor-documento.titulo-pdf-ack']
+          titulo: this.T.t['componentes.visor-documento.crear-pdf-title'], 
+          maxValue: this.documento.Paginas.length,
+          mostrarPorcentaje: true
         },
       })
       .onClose.subscribe((confirmacion) => {
         if (confirmacion.confirma) {
-          this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId, confirmacion.porciento);
+          this.docService.ObtienePDF(this.documento.Id, this.documento.VersionId, confirmacion.paginado);
         }
       });
   }

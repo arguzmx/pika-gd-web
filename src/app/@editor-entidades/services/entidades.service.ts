@@ -262,7 +262,6 @@ export class EntidadesService {
       .pipe(debounceTime(500))
       .subscribe(
         (resultado) => {
-          console.log(resultado);
           subject.next(resultado);
         },
         (error) => {

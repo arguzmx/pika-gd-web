@@ -1,4 +1,3 @@
-import { CacheEntidadesService } from './../@editor-entidades/services/cache-entidades.service';
 import { NgModule } from '@angular/core';
 import { HostVisorComponent } from './components/host-visor/host-visor.component';
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';

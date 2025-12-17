@@ -1,9 +1,12 @@
 {
+  "logo": "../../../assets/images/logo_pika.png",
+  "headerLogo": "../../../assets/images/sidebar_pika.png",
   "production": false,
   "authUrl": "http://localhost:4000/",
   "apiUrl": "http://localhost:5000/api/v1.0/",
   "pikaApiUrl": "http://localhost:5000/",
   "apiVersion": "1.0",
+  "uiVersion": "3.0.4",
   "editorToken": "tipo",
   "callbackRoute": "/pages/tabular?tipo=volumen&id=&sub=",
   "cacheActivo": true,

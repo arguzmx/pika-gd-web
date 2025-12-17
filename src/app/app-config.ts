@@ -15,6 +15,9 @@ export interface ApplicationConfiguration {
     visordUrl: string,
     mediaUrl: string,
     healthendpoint: string,
+    logo?: string,
+    uiVersion?: string,
+    headerLogo?: string,
     hosts?: ApplicationConfiguration[]
 }
 
@@ -24,7 +27,6 @@ export class AppConfig {
 
     public config: ApplicationConfiguration = null;
     load() {
-        console.debug(environment.production);
         var url = environment.production ? './config/config.json' : './config.json'; 
         return new Promise((resolve, reject) => {
             return this.client.get<ApplicationConfiguration>(url).subscribe(config=>{

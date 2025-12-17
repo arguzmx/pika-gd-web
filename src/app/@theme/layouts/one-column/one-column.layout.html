@@ -3,7 +3,7 @@
       <ngx-header></ngx-header>
     </nb-layout-header>
     <nb-sidebar class="menu-sidebar" tag="menu-sidebar" responsive>
-      <img *ngIf="!toggled" class="img-fluid pb-4" style="max-height: 150px;" src="../../../assets/images/sidebar_pika.png" fixed>
+      <img *ngIf="!toggled" class="img-fluid pb-4" style="max-height: 150px;" src="{{logo}}" fixed>
       <ng-content select="nb-menu">
       </ng-content>
     </nb-sidebar>

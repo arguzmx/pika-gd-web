@@ -13,7 +13,9 @@
 
 
             <!-- Separadador -->
-            <button style="width:fit-content;" mat-icon-button on-click="buscar()" [nbTooltip]="T.t['busqueda.buscar']"
+            <button [nbSpinner]="buscando" nbSpinnerStatus="primary" 
+                [disabled]="buscando"
+                style="width:fit-content;" mat-icon-button on-click="buscar()" [nbTooltip]="T.t['busqueda.buscar']"
                 nbTooltipPlacement="bottom" aria-label="T.t['busqueda.buscar']">
                 <mat-icon class="text-danger">search</mat-icon> {{T.t['busqueda.buscar']}}
             </button>
@@ -101,7 +103,9 @@
                                 <ngx-editor-boot-tabular #tabla [tipo]='Tipo'
                                     [busuedaPersonalizada]="busuedaPersonalizada"
                                     (EventoResultadoBusqueda)="handlerEventoResultadoBusqueda($event)"
-                                    (EventNuevaSeleccion)="handlerEventNuevaSeleccion($event)" [desdeRuta]='DesdeRuta'
+                                    (EventNuevaSeleccion)="handlerEventNuevaSeleccion($event)" 
+                                    (EventoBusquedaFinalizada) ="handlerFinalizarBusqueda()"
+                                    [desdeRuta]='DesdeRuta'
                                     [mostrarBarra]='mostrarBarra'>
                                 </ngx-editor-boot-tabular>
                             </div>

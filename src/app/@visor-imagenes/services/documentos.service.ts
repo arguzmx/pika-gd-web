@@ -11,6 +11,7 @@ import { DocumentoPlantilla, PermisoPuntoMontaje, PostTareaEnDemanda, RequestVal
 import { HighlightHit } from '../../@busqueda-contenido/busqueda-contenido.module';
 import { Pagina } from '../model/pagina';
 import { AppLogService } from '../../services/app-log/app-log.service';
+import { ExportPaginado } from '../model/export-paginado';
 
 @Injectable()
 export class DocumentosService implements IDocumentoService {
@@ -96,11 +97,11 @@ export class DocumentosService implements IDocumentoService {
   }
 
 
-  ObtieneZIP(id: string, version: string) {
+  ObtieneZIP(id: string, version: string, paginado : ExportPaginado) {
     const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/zip/${id}/${version}`;
     const headers = new HttpHeaders();
    
-    this.http.post<PostTareaEnDemanda>(url, { observe: 'response', headers }).subscribe(
+    this.http.post<PostTareaEnDemanda>(url, paginado, { observe: 'response', headers }).subscribe(
       (r) => {
         this.applog.ExitoT('componentes.visor-documento.crear-zip-ack');
       },
@@ -116,11 +117,11 @@ export class DocumentosService implements IDocumentoService {
     );
   }
 
-  ObtienePDF(id: string, version: string, porcentaje: number) {
-    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}/${porcentaje}`;
+  ObtienePDF(id: string, version: string, paginado : ExportPaginado) {
+    const url = this.DepuraUrl(this.app.config.apiUrl) + `contenido/Elemento/pdf/${id}/${version}`;
     const headers = new HttpHeaders();
    
-    this.http.post<PostTareaEnDemanda>(url, { observe: 'response', headers }).subscribe(
+    this.http.post<PostTareaEnDemanda>(url, paginado, { observe: 'response', headers }).subscribe(
       (r) => {
         this.applog.ExitoT('componentes.visor-documento.crear-pdf-ack');
       },

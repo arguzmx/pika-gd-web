@@ -15,6 +15,7 @@ import { Traductor } from "../../@editor-entidades/editor-entidades.module";
 import { AppLogService } from "../../services/app-log/app-log.service";
 import { AuthService } from "../../services/auth/auth.service";
 import { map, take } from "rxjs/operators";
+import { AppConfig } from "../../app-config";
 
 const countdown$ = timer(0, 1000).pipe(
   take(5),
@@ -39,6 +40,8 @@ export class BienvenidaComponent implements OnInit, OnDestroy, AfterViewInit {
   codigoActivacion: string = "";
   secondsLeft: number = 5000;
 
+  logo ="../../../assets/images/logo_pika.png";
+
   isAuthenticated$: Observable<boolean>;
   isDoneLoading$: Observable<boolean>;
   canActivateProtectedRoutes$: Observable<boolean>;
@@ -49,13 +52,25 @@ export class BienvenidaComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef,
     ts: TranslateService,
     formBuilder: FormBuilder,
+    private config: AppConfig,
     private applog: AppLogService
   ) {
+
+    this.ver = environment.version;
+    if(this.config.config.uiVersion) {
+      this.ver = this.config.config.uiVersion;
+    }
+    
+    if(this.config.config.logo) 
+    {
+      this.logo = this.config.config.logo;
+    }
+   
     this.loginForm = formBuilder.group({
       inputUsuario: ["", [Validators.required]],
       inputPass: ["", [Validators.required]],
     });
-    this.ver = environment.version;
+    
     this.T = new Traductor(ts);
     this.CargaTraducciones();
   }

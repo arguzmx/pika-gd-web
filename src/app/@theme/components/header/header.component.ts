@@ -15,6 +15,7 @@ import { CentroMensajesComponent } from '../centro-mensajes/centro-mensajes.comp
 import { AppLogService } from '../../../services/app-log/app-log.service';
 import { CanalTareasService } from '../../../services/canal-tareas/canal-tareas.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { AppConfig } from '../../../app-config';
 
 
 @Component({
@@ -78,9 +79,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private themeService: NbThemeService,
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
+              private config: AppConfig,
               @Inject(NB_WINDOW) private window
               ) {
                 this.ver = environment.version;
+                if(this.config.config.uiVersion) {
+                  this.ver = this.config.config.uiVersion;
+                }
+                
 
                 this.auth.profile$.subscribe(p=> {
                   if(p!=null) {

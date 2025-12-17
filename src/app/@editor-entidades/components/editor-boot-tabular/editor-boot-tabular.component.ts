@@ -30,6 +30,8 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   @ViewChild("editor") editor: EditorTabularComponent;
   @Output() EventoResultadoBusqueda = new EventEmitter();
   @Output() EventNuevaSeleccion = new EventEmitter();
+  @Output() EventoBusquedaFinalizada = new EventEmitter();
+
 
   constructor(
     private sesionStore: SesionStore,
@@ -180,7 +182,11 @@ export class EditorBootTabularComponent implements OnInit, OnDestroy {
   handlerEventNuevaSeleccion(data: unknown) {
     this.EventNuevaSeleccion.emit(data);
   }
-  
+
+  handlerFinalizarBusqueda() {
+    this.EventoBusquedaFinalizada.emit();
+  }
+
   public NavegarLinkPorTag(tag: string, parametros: Map<string, string>, newWindow: boolean = false) {
     this.editor.navegarVistaPoTag(tag, parametros, newWindow);
   }

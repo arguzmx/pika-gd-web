@@ -259,15 +259,15 @@ export class VisorComponent implements OnInit, OnDestroy, AfterViewInit {
           this.src$.next(`${this.srcImg}?${Date.now()}`);
         }
 
-        // if (this.oImg ) {
-        //   switch (op) {
-        //     case OperacionHeader.GIRAR_DER :
-        //     case OperacionHeader.GIRAR_IZQ :
-        //     case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
-        //     case OperacionHeader.REFLEJO_HOR :
-        //     case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
-        //   }
-        // }
+        if (this.oImg ) {
+          switch (op) {
+            case OperacionHeader.GIRAR_DER :
+            case OperacionHeader.GIRAR_IZQ :
+            case OperacionHeader.GIRAR_180 : this.GiraPagina(op); break;
+            case OperacionHeader.REFLEJO_HOR :
+            case OperacionHeader.REFLEJO_VER : this.ReflejaPagina(op); break;
+          }
+        }
       });
   }
 

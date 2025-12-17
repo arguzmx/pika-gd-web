@@ -74,6 +74,7 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
   @Output() eventoConteoRegistros = new EventEmitter();
   @Output() EventoResultadoBusqueda = new EventEmitter();
   @Output() EventNuevaSeleccion = new EventEmitter();
+  @Output() EventoBusquedaFinalizada = new EventEmitter();
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -479,6 +480,10 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     this.InstanciaSeleccionada = entidad.length > 0;
   }
 
+  public EmiteBusquedaFinalizada() {
+    this.EventoBusquedaFinalizada.emit(); 
+  }
+
   // Recibe el evento de nueva selección desde la tabla
   public NuevaSeleccion(entidad: unknown) {
     this.entidad = entidad;
@@ -709,8 +714,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
     const cache: FiltroConsulta[] = [];
     let conteoFiltrosDefault: number = 0;
     const defaults: FiltroConsulta[] = this.GetFiltrosDeafault();
-
-    console.log('Defaults', defaults );
     filtros.forEach(f => {
       if (f.Valido) {
         defaults.forEach(fd => {
@@ -733,8 +736,6 @@ export class EditorTabularComponent extends EditorEntidadesBase implements OnIni
       });
     }
 
-    
-    console.log('cache', cache );
     this.filtrosActivos = (conteoFiltrosDefault !== cache.length);
     this.cacheFiltros.SetCacheFiltros(this.config.TransactionId, cache);
     this.VistaTrasera = false;

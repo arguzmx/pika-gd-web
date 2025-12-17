@@ -107,7 +107,6 @@ export class FileDropComponent implements OnInit, OnDestroy {
   }
 
   uploadFiles() {
-    console.log(this.selectedAdicionId);
     this.progresoGlobal = 0;
     this.bottomSheetRef.disableClose = true;
     this.uploading = true;
