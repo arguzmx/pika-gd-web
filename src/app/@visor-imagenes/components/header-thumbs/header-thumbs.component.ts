@@ -110,7 +110,6 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       .ObtienePermisos()
       .pipe(first())
       .subscribe((p) => {
-        console.log('Permisos recibidos en header', p);
         this.crear = p.Crear;
         this.leer = p.Leer;
         this.eliminar = p.Elminar;

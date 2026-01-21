@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: true,
-  version: "3.0.9",
+  version: "3.1.0",
   cloudurl: "https://pika",
   clouded: false,
   recaptcha: {

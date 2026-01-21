@@ -76,6 +76,12 @@ export class BienvenidaComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
+    const username = localStorage.getItem('username');
+    if(username) {
+      this.loginForm.get("inputUsuario").setValue(username);
+    }
+
     countdown$.subscribe(secondsLeft => {
       this.secondsLeft = secondsLeft;
       if(this.secondsLeft<=1){

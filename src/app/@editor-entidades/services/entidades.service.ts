@@ -93,6 +93,7 @@ export class EntidadesService {
   }
 
   PermitirAccesoACL(p: PermisoAplicacion) {
+    console.log('Permiso Aplicacion', p);
     if (p.NegarAcceso) return false;
     // NO importa que otros permisos teaga como es la UI al menos debe tener leer
     // si no tiene leer no puede consultar la información en pantalla

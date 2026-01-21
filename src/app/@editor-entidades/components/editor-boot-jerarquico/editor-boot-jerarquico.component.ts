@@ -71,7 +71,6 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
                 this.entidades.GetACL(datos.contenido.Tipo, params[PARAM_ID_JERARQUICO]).pipe(first()).subscribe(mask => {
                   parbol = this.entidades.CreaPermiso(datos.arbol.TokenApp, datos.arbol.TokenMod, mask);
                   pcontenido = this.entidades.CreaPermiso(datos.contenido.TokenApp, datos.contenido.TokenMod, mask);
-              
                   parbol.PermiteAltas = datos.arbol.PermiteAltas;
                   parbol.PermiteCambios = datos.arbol.PermiteCambios;
                   parbol.PermiteBajas = datos.arbol.PermiteBajas;
@@ -81,11 +80,11 @@ export class EditorBootJerarquicoComponent implements OnInit, OnDestroy {
                   
                   permisos = permisos &&  this.entidades.PermitirAccesoACL(parbol);
                   permisos = permisos &&  this.entidades.PermitirAccesoACL(pcontenido);
-                  
                   this.GotoEntidad(permisos, parbol, pcontenido, params[PARAM_ID_JERARQUICO] || '');
 
-                }, (err)=> {this.router.navigateByUrl('/pages/sinacceso');});
+                }, (err)=> { console.log(err); this.router.navigateByUrl('/pages/sinacceso');});
               } else {
+
                 if (datos.arbol.TokenApp && datos.arbol.TokenMod) {
                   parbol = this.entidades.ObtienePermiso(datos.arbol.TokenApp, datos.arbol.TokenMod);
                   parbol.PermiteAltas = datos.arbol.PermiteAltas;

@@ -62,6 +62,7 @@ export class PermisosHostComponent implements OnInit, OnDestroy {
       }
 
       if (!this.permisoLeer){
+        console.warn('El usuario no tiene permisos de lectura en el módulo de seguridad.');
         route.navigateByUrl('/pages/sinacceso');
       }
 

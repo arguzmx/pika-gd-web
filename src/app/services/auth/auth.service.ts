@@ -77,6 +77,7 @@ export class AuthService {
   }
 
   private navigateToInicio() {
+
     if(this.path.indexOf('bienvenida')>0 || (this.path == '/')) {
       this.path='';
     }
@@ -277,6 +278,7 @@ export class AuthService {
           this.oauthService
             .fetchTokenUsingPasswordFlowAndLoadUserProfile(user, password)
             .then((resp) => {
+                localStorage.setItem('username', user);
                 this.programRefresh(this.oauthService.getAccessTokenExpiration());
                 this.profileSubject$.next( this.oauthService.getIdentityClaims());
                 this.navigateToInicio();
