@@ -65,21 +65,21 @@ export class EditorPlantillaComponent
     );
     const containerRef = this.metadatosUnicos;
     this.vinculos.Documentos.forEach((v) => {
+      const mm = this.metadatos.find((m) => m.Tipo === v.PlantillaId);
+      const doc = this.documentosMetadatos.find((d) => d.Id === v.DocumentoId);
+      
       // Algunos links purden estar rotos y no hay datos
-      if (this.documentosMetadatos.find((d) => d.Id === v.DocumentoId)) {
+      if (doc) {
         this.sinMetadatos = false;
         const component: ComponentRef<OfflineMetadataVisorComponent> =
           containerRef.createComponent(componentFactory);
-        component.instance.metadatos = this.metadatos.find(
-          (m) => m.Tipo === v.PlantillaId
-        );
-        component.instance.valores = this.documentosMetadatos.find(
-          (d) => d.Id === v.DocumentoId
-        ).Valores;
-        component.instance.etiqueta =
-          v.Nombre !== ""
-            ? v.Nombre
-            : this.metadatos.find((m) => m.Tipo === v.PlantillaId).FullName;
+          
+        component.instance.metadatos = mm;
+
+        component.instance.valores = doc.Valores;
+
+        component.instance.etiqueta =v.Nombre !== "" ? v.Nombre : mm.FullName;
+
         component.instance.registroId = v.DocumentoId;
         component.instance.EventoEditar.subscribe((id) => {
           this.EditarUnico(id);

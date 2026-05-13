@@ -20,7 +20,8 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
   @Input() etiqueta: string;
   @Input() metadatos: MetadataInfo;
   @Input() valores: ValorPropiedad[];
-  constructor() { }
+  
+  constructor() {}
   
   ngOnChanges(changes: SimpleChanges): void {
     if(!environment.production){
@@ -36,23 +37,23 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
     const temp : ValorPropiedad[] = [];
 
     this.metadatos.Propiedades.forEach(p => {
-      
-      p.TipoDatoId
       const contenido = this.valores.find(v=>v.PropiedadId === p.Id);
       const textoValor = this.ObtieneValorPropiedad(contenido, p.TipoDatoId);
-
-
       const valor : ValorPropiedad = {
         PropiedadId: p.Nombre,
         Valor: textoValor
       };
       temp.push(valor);
     });
+
     this.propiedadesTabla = temp;
   }
 
 
   private ObtieneValorPropiedad(contenido: ValorPropiedad, tipo: string): string {
+    try {
+      
+  
     let valor = contenido !== null ? contenido.Valor : '';
 
     switch (tipo) {
@@ -108,6 +109,10 @@ export class OfflineMetadataVisorComponent implements OnInit, OnChanges {
     }
 
     return valor;
+      } catch (error) {
+      return '';
+    }
+    
   }
 
   public Editar(event): void {

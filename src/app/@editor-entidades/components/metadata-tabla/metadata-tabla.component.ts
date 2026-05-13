@@ -437,13 +437,14 @@ export class MetadataTablaComponent extends EditorEntidadesBase
       const c = p.AtributosVistaUI.find(x => x.Plataforma === 'web');
       if (f) {
         const fechaSinOffset = new Date(f);
-        const fecha = addMinutes(fechaSinOffset, (this.timeZoneOffset * -1));
+        const fecha = fechaSinOffset ; 
+        // addMinutes(fechaSinOffset, (this.timeZoneOffset * -1));
         switch (c.Control) {
           case HTML_DATE:
-            texto = format(fecha, 'yyyy-MM-dd');
+            texto = format(fecha, 'dd/MM/yyyy');
             break;
           case HTML_DATETIME:
-            texto = format(fecha, 'yyyy-MM-dd HH:mm:ss');
+            texto = format(fecha, 'dd/MM/yyyy HH:mm:ss');
             break;
           case HTML_TIME:
             texto = format(fecha, 'HH:mm:ss');
