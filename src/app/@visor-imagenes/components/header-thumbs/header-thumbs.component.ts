@@ -118,10 +118,10 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       this.servicioVisor.ObtienePaginaVisible()
       .pipe(takeUntil(this.onDestroy$))
       .subscribe((p) => {
-        if(p) {
-          this.paginaidx = `${p.Indice}`;
+        if(p !== null) {
+          this.paginaidx = `${p.Indice + 1}`;
           this.pagina = p;
-          this.esImagen = p.EsImagen;
+          this.esImagen = p.EsImagen;          
         }
       });
 
@@ -140,6 +140,7 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
       'ui.actualizardocumento',
       'ui.subirarchivos',
       'ui.descargararchivos',
+      'ui.descargarseleccionado',
       'ui.lanzarcliente',
       'ui.descargarpdf',
       'ui.todos-docs',
@@ -166,25 +167,26 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
 
   IrALaPaginaInicio() {
     if(this.documento && this.documento.Paginas.length > 0 ){
-      this.EstablecePaginaActiva(1)
+      this.EstablecePaginaActiva(0)
     }
   }
 
   IrALaPagina() {
     if(this.documento && this.documento.Paginas.length > 0  && this.paginaidx){
-      this.EstablecePaginaActiva(parseInt(this.paginaidx))
+      this.EstablecePaginaActiva(parseInt(this.paginaidx) - 1)
     }
   }
 
   IrALaPaginaFinal() {
+    
     if(this.documento && this.documento.Paginas.length > 0 ){
-      this.EstablecePaginaActiva(this.documento.Paginas.length)
+      this.EstablecePaginaActiva(this.documento.Paginas.length - 1)
     }
   }
 
   EstablecePaginaActiva(index: number) {
     this.irAPagina.emit(index);
-    this.paginaidx = `${index}`;
+    this.paginaidx = `${index + 1}`;
   }
 
   cambiaPaginaidx(idx: string) {
@@ -198,6 +200,8 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
     if( i > this.documento.Paginas.length) {
       this.paginaidx = `${this.documento.Paginas.length}`;
     }
+
+    this.irAPagina.emit(i - 1);
   }
 
   Confirmar(ok: boolean){
@@ -235,6 +239,18 @@ export class HeaderThumbsComponent implements OnInit, OnDestroy, OnChanges {
 
   doUpload() {
     this.callUpload.emit();
+  }
+
+  doDownloadOne() {
+    if(this.paginas.length==0){
+      this.applog.AdvertenciaT(
+        'visor.warn-sin-seleccion',
+        null,
+        null,
+      );
+      return;
+    }
+    this.docService.DescargaArchivo(this.pagina.Url, this.pagina.Nombre);
   }
 
   doZipDownload() {

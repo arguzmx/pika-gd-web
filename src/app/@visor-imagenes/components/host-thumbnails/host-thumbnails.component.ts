@@ -37,19 +37,23 @@ export class HostThumbnailsComponent implements OnInit, OnDestroy, OnChanges, Af
   }
 
   ngAfterViewInit(): void {
-    this.viewport.scrolledIndexChange
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe((p) => {
-      this.SetPageByIndex(p);
-    });
+    // this.viewport.scrolledIndexChange
+    // .pipe(takeUntil(this.onDestroy$))
+    // .subscribe((p) => {
+    //   this.SetPageByIndex(p);
+    // });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.setAlturaVisor();
+    if(this.documento && this.documento.Paginas.length > 0) {
+      this.SetPageByIndex(0);
+    }
   }
 
   gotoPage(page: number) {
     this.viewport.scrollToIndex(page);
+    this.SetPageByIndex(page);
   }
 
 

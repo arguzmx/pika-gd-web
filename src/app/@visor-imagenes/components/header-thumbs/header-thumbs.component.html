@@ -70,6 +70,9 @@
             <button *ngIf="eliminar" mat-icon-button on-click="doEliminar()" nbTooltip='{{T.t["ui.eliminar-contenido"]}}'>
                 <mat-icon>delete_outline</mat-icon>
             </button>
+            <button *ngIf="leer" mat-icon-button on-click="doDownloadOne()" nbTooltip='{{T.t["ui.descargarseleccionado"]}}'>
+                <mat-icon>sim_card_download</mat-icon>
+            </button>
             <button *ngIf="crear" mat-icon-button on-click="doUpload()" nbTooltip='{{T.t["ui.subirarchivos"]}}'>
                 <mat-icon>cloud_upload</mat-icon>
             </button>

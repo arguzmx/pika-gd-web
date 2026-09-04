@@ -71,6 +71,7 @@ export class UploadService {
     files = files.filter(x => !x.subido);
     const status: { [key: string]: { progress: Observable<{progreso: number, status: number}> } } = {};
     let total: number = files.length;
+    let transactionId: string = Date.now().toString(); ;
     this.servicioVisor.SetLeyendoPaginas(true);
     for (let i = total - 1; i >= 0; i--) {
       const file = files[i];
@@ -79,7 +80,7 @@ export class UploadService {
       formData.append('VolumenId', this.uConfig.VolumenId);
       formData.append('PuntoMontajeId', this.uConfig.PuntoMontajeId);
       formData.append('ElementoId', this.uConfig.ElementoId);
-      formData.append('TransaccionId', this.uConfig.TransactionId);
+      formData.append('TransaccionId', transactionId);
       formData.append('Indice', this.indiceCarga.toString());
       formData.append('Posicion', this.Posicion.toString());
       formData.append('PosicionInicio', this.PosicionInicio.toString());
@@ -102,7 +103,7 @@ export class UploadService {
           total--;
           if (total === 0) {
             this.http
-              .post<Pagina[]>(this.url + `/completar/${this.uConfig.TransactionId}`, null)
+              .post<Pagina[]>(this.url + `/completar/${transactionId}`, null)
               .pipe(first())
               .subscribe((paginasNuevas) => {
                 if (paginasNuevas) {

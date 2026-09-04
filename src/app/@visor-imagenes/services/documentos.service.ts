@@ -57,6 +57,14 @@ export class DocumentosService implements IDocumentoService {
     return this.http.post<any>(endpoint,paginas);
   }
 
+  DesacargarPagina(pagina: Pagina) {
+    const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `media/pagina/stream/${pagina.VolumenId}/${pagina.ElementoId}/${pagina.ElementoId}/${pagina.Id}/${pagina.Extension}`;
+    return this.http.get(endpoint, {
+    responseType: 'blob',          // IMPORTANT: expect binary
+    observe: 'response'            // get headers (filename, size, etc.)
+  });
+  }
+
   ReordenarPorNombre(documentoId: string): Observable<any> {
     const endpoint = this.DepuraUrl(this.app.config.apiUrl) +  `contenido/elemento/paginas/${documentoId}/ordernar/alfabetico`;
     return this.http.post<any>(endpoint,null);

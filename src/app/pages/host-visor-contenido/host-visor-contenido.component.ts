@@ -34,6 +34,7 @@ export class HostVisorContenidoComponent implements OnInit {
         CarpetaId: params['CarpetaId'],
         parametros: []
        };
+       console.log('Parametros recibidos: ', this.config);
       });
   }
 

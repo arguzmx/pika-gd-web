@@ -12,7 +12,7 @@
 // ---------------------------------------------------
 export const environment = {
   production: false,
-  version: "3.0.9",
+  version: "3.1.1",
   cloudurl: "https://localhost:7001/",
   clouded: false,
   recaptcha: {
